@@ -1,0 +1,401 @@
+package rs.ac.bg.etf.pp1;
+
+import java_cup.runtime.*;
+import org.apache.log4j.*;
+
+// import java.io.*;
+import rs.ac.bg.etf.pp1.ast.*;
+
+
+parser code {:
+
+	boolean errorDetected = false;
+
+	Logger log = Logger.getLogger(getClass());
+
+
+    // slede redefinisani metodi za prijavu gresaka radi izmene teksta poruke
+
+    public void report_fatal_error(String message, Object info) throws java.lang.Exception {
+      done_parsing();
+      report_error(message, info);
+    }
+
+    public void syntax_error(Symbol cur_token) {
+        report_error("\nSintaksna greska", cur_token);
+    }
+
+    public void unrecovered_syntax_error(Symbol cur_token) throws java.lang.Exception {
+        report_fatal_error("Fatalna greska, parsiranje se ne moze nastaviti", cur_token);
+    }
+
+    public void report_error(String message, Object info) {
+    	errorDetected = true;
+    	StringBuilder msg = new StringBuilder(message);
+    	if (info instanceof Symbol)
+            msg.append (" na liniji ").append(((Symbol)info).left);
+        log.error(msg.toString());
+    }
+
+    public void report_info(String message, Object info) {
+    	StringBuilder msg = new StringBuilder(message);
+    	if (info instanceof Symbol)
+            msg.append (" na liniji ").append(((Symbol)info).left);
+        log.info(msg.toString());
+    }
+
+:}
+
+scan with {:
+	Symbol s = this.getScanner().next_token();
+	if (s != null && s.value != null)
+		log.info(s.toString() + " " + s.value.toString());
+	return s;
+:}
+
+
+terminal PROG, BREAK, CLASS, ELSE, CONST, IF, NEW, PRINT, READ, RETURN, VOID, EXTENDS, CONTINUE, SET, UNION, DO, WHILE, MAP, INTERFACE, PLUS, MINUS, MUL, DIV, MOD, EQEQ, NOTEQ, GR, GREQ, LE, LEQ, AND, OR, EQ, INC, DEC, SEMI, COLON, COMMA, DOT, LPAREN, RPAREN, LBRACKET, RBRACKET, LBRACE, RBRACE, MAIN ;
+terminal Integer NUMBER, BOOL ;
+terminal String IDENT ;
+terminal Character CHAR ;
+
+nonterminal MethodName, ConstDeclAssign, Setop, Mulop, Addop, Relop, Assignop, Label, ProgramDeclList, ProgramDeclElem, ConstDecl, numConst, charConst, boolConst, ConstDeclListValue, ConstDeclList, VarDecl, VarDeclFinal, VarDeclOptionalList, ClassDecl, VarDeclListOptional, MethodSignature, TypeChoice, FormParsOptional, FormPars, MethodDecl, VarDeclList, MethodDeclList, MathodDecl, StatementList, Statement, DesignatorStatement, Designator, DesignatorListElem, DesignatorList, Expr, Term, FactorList, Factor, AddTermList ;
+nonterminal ActPars, FactorOptional, FactorChoice, MapDesignator, DesignatorStatementChoice, CondFact, CondTerm, CondFactList, Condition, ConditionList ;
+nonterminal Program, InterfaceDeclOptionList, InterfaceDecl, VarDeclProgram, VarDeclErrorComma, VarDeclErrorSemi, DesignatorAssign, StatementCondition, VarDeclClass, ClassDeclErrorLBrace, DesignatorAssignWhile, DesignatorStatementWhile ;
+
+nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName;
+nonterminal rs.etf.pp1.symboltable.concepts.Struct Type;
+
+precedence left ELSE;
+
+Program ::= (Program)  PROG ProgName:pe ProgramDeclList LBRACE MethodDeclList RBRACE ;
+
+ProgName ::= (ProgName) IDENT:progName;
+
+ProgramDeclList ::= ProgramDeclList ProgramDeclElem
+                    |
+                    /* epsilon */
+                    ;
+
+ProgramDeclElem ::= ConstDecl
+                    |
+                    VarDeclProgram
+                    |
+                    ClassDecl
+                    |
+                    InterfaceDecl
+                    ;
+
+VarDeclProgram ::= VarDeclErrorSemi
+                   |
+                   VarDeclErrorComma VarDeclFinal VarDeclOptionalList SEMI
+                   |
+                   VarDecl
+                   ;
+
+VarDeclErrorComma ::= error COMMA:l
+                      {: parser.report_error("Izvrsen oporavak do , u liniji " + lleft, null); :}
+                      ;
+
+VarDeclErrorSemi ::= error SEMI:l
+                     {: parser.report_error("Izvrsen oporavak do ; u liniji " + lleft, null); :}
+                     ;
+
+ConstDecl ::= CONST Type ConstDeclList SEMI ;
+
+ConstDeclListValue ::= numConst
+                       |
+                       charConst
+                       |
+                       boolConst
+                       ;
+
+ConstDeclList ::= ConstDeclList COMMA ConstDeclAssign
+                          |
+                          ConstDeclAssign
+                          ;
+
+ConstDeclAssign ::= (ConstDeclAssign)IDENT EQ ConstDeclListValue ;
+
+VarDecl ::= Type VarDeclFinal VarDeclOptionalList SEMI
+            ;
+
+VarDeclFinal ::= (VarDeclFinalArray)IDENT LBRACKET RBRACKET
+                 |
+                 (VarDeclFinalVar)IDENT
+                 ;
+
+VarDeclOptionalList ::= VarDeclOptionalList COMMA VarDeclFinal
+                        |
+                        /* epsilon */
+                        ;
+
+InterfaceDecl ::= INTERFACE IDENT LBRACE InterfaceDeclOptionList RBRACE
+                  ;
+
+InterfaceDeclOptionList ::= InterfaceDeclOptionList MethodDecl
+                            |
+                            InterfaceDeclOptionList MethodSignature SEMI
+                            |
+                            /* epsilon */
+                            ;
+
+ClassDecl ::= CLASS IDENT LBRACE VarDeclListOptional RBRACE
+              |
+              CLASS IDENT EXTENDS Type LBRACE VarDeclListOptional RBRACE
+              |
+              CLASS IDENT EXTENDS ClassDeclErrorLBrace VarDeclListOptional RBRACE
+              |
+              CLASS IDENT LBRACE VarDeclListOptional LBRACE MethodDeclList RBRACE RBRACE
+              |
+              CLASS IDENT EXTENDS Type LBRACE VarDeclListOptional LBRACE MethodDeclList RBRACE RBRACE
+              |
+              CLASS IDENT EXTENDS ClassDeclErrorLBrace VarDeclListOptional LBRACE MethodDeclList RBRACE RBRACE
+              |
+              CLASS IDENT LBRACE VarDeclListOptional ClassDeclErrorLBrace MethodDeclList RBRACE RBRACE
+              |
+              CLASS IDENT EXTENDS Type LBRACE VarDeclListOptional ClassDeclErrorLBrace MethodDeclList RBRACE RBRACE
+              |
+              CLASS IDENT EXTENDS ClassDeclErrorLBrace VarDeclListOptional ClassDeclErrorLBrace MethodDeclList RBRACE RBRACE
+              ;
+
+VarDeclListOptional ::= VarDeclListOptional VarDeclClass
+                        |
+                        /* epsilon */
+                        ;
+
+ClassDeclErrorLBrace ::= error LBRACE:l
+                         {: parser.report_error("Izvrsen oporavak do { u liniji " + lleft, null); :}
+                         ;
+
+VarDeclClass ::= Type IDENT VarDeclFinal VarDeclOptionalList SEMI
+                 |
+                 error SEMI:l
+                 {: parser.report_error("Izvrsen oporavak do ; u liniji " + lleft, null); :}
+                 ;
+
+MethodDeclList ::= MethodDeclList MethodDecl
+                   |
+                   /* epsilon */
+                   ;
+
+MethodSignature ::= TypeChoice MethodName LPAREN FormParsOptional
+                    ;
+
+MethodName ::= (RegularMethod)IDENT
+               |
+               (MainMethod)MAIN
+               ;
+
+TypeChoice ::= Type
+               |
+               VOID
+               ;
+
+FormParsOptional ::=  FormPars
+                      |
+                      RPAREN /* epsilon */
+                      ;
+
+MethodDecl ::= (MethodDecl)MethodSignature VarDeclList LBRACE StatementList RBRACE
+               ;
+
+VarDeclList ::= VarDeclList VarDecl
+                |
+                /* epsilon */
+                ;
+
+FormPars ::= Type VarDeclFinal RPAREN
+             |
+             error RPAREN:l
+             {: parser.report_error("Izvrsen oporavak do ) u liniji " + lleft, null); :}
+             |
+             Type VarDeclFinal COMMA FormPars
+             |
+             VarDeclErrorComma FormPars
+             ;
+
+numConst ::= (NumConst) NUMBER ;
+
+charConst ::= (CharConst) CHAR ;
+
+boolConst ::= (BoolConst) BOOL ;
+
+Type ::= (TypeIdent) IDENT
+         |
+         (TypeSet) SET
+         ;
+
+StatementList ::= StatementList Statement
+                  |
+                  /* epsilon */
+                  ;
+
+Statement ::=   DesignatorStatement
+              |
+              IF LPAREN StatementCondition Statement ELSE Statement
+              |
+              IF LPAREN StatementCondition Statement
+              |
+              BREAK SEMI
+              |
+              CONTINUE SEMI
+              |
+              RETURN SEMI
+              |
+              RETURN Expr SEMI
+              |
+              READ LPAREN Designator RPAREN SEMI
+              |
+              PRINT LPAREN Expr RPAREN SEMI
+              |
+              PRINT LPAREN Expr COMMA numConst RPAREN SEMI
+              |
+              DO Statement WHILE LPAREN RPAREN SEMI
+              |
+              DO Statement WHILE LPAREN Condition RPAREN SEMI
+              |
+              DO Statement WHILE LPAREN Condition COMMA DesignatorStatementWhile RPAREN SEMI
+              |
+              LBRACE StatementList RBRACE
+              ;
+
+DesignatorStatementWhile ::= Designator DesignatorStatementChoice
+                        |
+                        DesignatorAssignWhile
+                        ;
+
+DesignatorAssignWhile ::= Designator Assignop Expr
+                          |
+                          Designator Assignop Designator Setop Designator
+                          ;
+
+StatementCondition ::= Condition RPAREN
+                       |
+                       error RPAREN:l
+                       {: parser.report_error("Izvrsen oporavak do ) u liniji " + lleft, null); :}
+                       ;
+
+
+DesignatorStatement ::= Designator DesignatorStatementChoice SEMI
+                        |
+                        DesignatorAssign
+                        ;
+
+DesignatorAssign ::= Designator Assignop Expr SEMI
+                     |
+                     Designator Assignop Designator Setop Designator SEMI
+                     |
+                     error SEMI:l
+                     {: parser.report_error("Izvrsen oporavak do ; u liniji " + lleft, null); :}
+                     ;
+
+DesignatorStatementChoice ::= LPAREN ActPars RPAREN
+                              |
+                              LPAREN RPAREN
+                              |
+                              INC
+                              |
+                              DEC
+                              ;
+
+Designator ::= IDENT DesignatorList
+               ;
+
+DesignatorList ::= DesignatorList DesignatorListElem
+                   |
+                   /* epsilon */
+                   ;
+
+ActPars ::= Expr COMMA ActPars
+            |
+            Expr
+            ;
+
+Condition ::= CondTerm ConditionList
+              ;
+
+ConditionList ::= ConditionList OR CondTerm
+                  |
+                  /* epsilon */
+                  ;
+
+CondTerm ::= CondFact CondFactList
+             ;
+
+CondFactList ::= CondFactList AND CondFact
+                 |
+                 /* epsilon */
+                 ;
+
+CondFact ::= Expr Relop Expr
+             |
+             Expr
+             ;
+
+Expr ::= MINUS Term AddTermList
+         |
+         Term AddTermList
+         |
+         Designator MapDesignator
+         ;
+
+MapDesignator ::= MAP Designator
+                  ;
+
+AddTermList ::= AddTermList Addop Term
+                |
+                /* epsilon */
+                ;
+
+Term ::= Factor FactorList
+         ;
+
+FactorList ::= FactorList Mulop Factor
+               |
+               /* epsilon */
+               ;
+
+Factor ::= Designator FactorOptional
+           |
+           numConst
+           |
+           charConst
+           |
+           boolConst
+           |
+           NEW Type FactorChoice
+           |
+           LPAREN Expr RPAREN
+           ;
+
+FactorChoice ::= LBRACKET Expr RBRACKET
+                 |
+                 LPAREN ActPars RPAREN
+                 |
+                 LPAREN RPAREN
+                 ;
+
+FactorOptional ::= LPAREN RPAREN
+                   |
+                   LPAREN ActPars RPAREN
+                   |
+                   /* epsilon */
+                   ;
+
+DesignatorListElem ::= DOT IDENT
+                       |
+                       LBRACKET Expr RBRACKET
+                       ;
+
+Label ::= IDENT ;
+
+Assignop ::= EQ ;
+
+Relop ::= EQEQ | NOTEQ | GR | GREQ | LE | LEQ ;
+
+Addop ::= PLUS | MINUS ;
+
+Mulop ::= MUL | DIV | MOD ;
+
+Setop ::= UNION ;

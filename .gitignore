@@ -4,8 +4,9 @@ bin/
 config/
 lib/
 logs/
-spec/
 .classpath
 .project
 build.xml
 MJCompiler.iml
+spec/
+!src/spec/

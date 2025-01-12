@@ -1,0 +1,19 @@
+// test za oporavak od greske B nivo
+
+program p
+
+{
+    // oporavak od greske do ,
+    // void method(int, int x){ }
+    // oporavak od greske do )
+    // void method(int){ }
+    // oporavak od greske do , malo kompleksniji primer
+    // void method(int, char, int x) { }
+    // oporavak od greske do , pa do )
+    // void method(int, int x, int ){ }
+
+    // oporavak od greske do ) unutar if konstrukcije
+    void method(){
+        if (true greska)continue;
+    }
+}

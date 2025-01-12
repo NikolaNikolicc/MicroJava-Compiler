@@ -1,0 +1,3 @@
+program novi const int broj = 32, broj2 = 2; const char nikola = 'a'; const bool dobar=true; int niz[], niz1 []; {
+
+}

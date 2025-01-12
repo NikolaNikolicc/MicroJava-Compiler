@@ -1,0 +1,23 @@
+// test za oporavak od greske A nivo
+
+program p
+
+// ovo ne prepoznaje jer nije definisano kakvo ponasanje zelimo ukoliko se pojave obe greske
+// kompajler ce ga upariti sa prvom greskom na koju naidje
+// int , ;
+// oporavak od greske do ,
+// int , a;
+// oporavak od greske do ;
+// int a, ;
+// oporavak od greske do ,
+// int a, , b;
+// oporavak od greske do , zatim oporavak od greske do ;
+// int a, , b, ;
+{
+    void method(){
+        // oporavak od greske prilikom iskaza dodele (smatram da je svaki DesignatorStatement iskaz dodele) do ;
+        // x (;
+        // oporavak od greske do ;
+        // x = 2 + 3 + ;
+    }
+}

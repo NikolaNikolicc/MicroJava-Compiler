@@ -1,0 +1,16 @@
+// test za oporavak od greske B nivo
+
+program p
+// oporavak od greske do ;
+// class klasa {polje;}
+// oporavak od greske do ; slozeniji primer
+// class klasa {polje; int x; char;}
+// oporavak od greske do {
+// class klasa {polje{}}
+// kombinacija ; i {
+// class klasa {atribut; int x; atribut{}}
+// oporavak od greske nakon extends do {
+class klasa extends int int {}
+{
+
+}

@@ -1,0 +1,40 @@
+program novi interface interfejs {} class MojaKlasa extends OsnovnaKlasa
+{
+    int var[], var1[];  char var2;
+    {
+        char metod2 (int param) int var1, var2[]; {break;}
+        void method (tip_parametra param, tip_par1 param1[])
+            {
+                // dzoni.dzoni_metoda.dzoni_metoda1[-12 * 'a' + 32 * true - false]++;
+                // dzoni[false + 3 * 2]++;
+                // Statement = DesignatorStatement; = Designator; = IDENT[Expr]; = IDENT[- Term]; = IDENT[- Factor]; = IDENT[- Designator()];
+                // Designator = IDENT.IDENT[Term + Term]
+                // Nikola[-nikola.poziv_metode[21 + 32](true + 2 * 'a', 2 + 3)] = 1;
+                // factor peta linija test
+                // nikola[new Type ()] ();
+                // nikola[new Type (1 + 2)] (1);
+                // nikola[new Type [-'a']]++;
+                // factor sesta linija test
+                // nikola[(1)]--;
+                // expr druga linija test
+                // nikola [(Ident1 map Ident2)]--;
+                // designator statement linija 2
+                // ident1 = iden2 union ident3;
+                // statement linija 2 i condFact test
+                // if (a > b)
+                // condition
+                // if (a || b)
+                // condTerm
+                // if (a && b || c && d) dodela=1;
+                // return;
+                // return 1;
+                // read (System.in);
+                // print (-nikola + 'n', 23);
+                // while petlja
+                // do mlin.mleje.mleje--; while (a > b, institucija = radi(););
+                {break; continue;}
+            }
+    }
+}{
+    povratni_tip metod_glavni (int formalni_parametar1) char var_decl[]; {read(System.input);}
+}

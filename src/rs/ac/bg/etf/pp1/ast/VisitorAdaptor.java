@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 12/0/2025 17:57:50
+// 12/0/2025 20:50:53
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -34,8 +34,8 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(CondFactList CondFactList) { }
     public void visit(DesignatorStatementWhile DesignatorStatementWhile) { }
     public void visit(Designator Designator) { }
-    public void visit(MethodName MethodName) { }
     public void visit(DesignatorListElem DesignatorListElem) { }
+    public void visit(MethodName MethodName) { }
     public void visit(Term Term) { }
     public void visit(Condition Condition) { }
     public void visit(FormParsOptional FormParsOptional) { }
@@ -159,10 +159,12 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(MethodDecl MethodDecl) { visit(); }
     public void visit(FormParsOptionalDerived2 FormParsOptionalDerived2) { visit(); }
     public void visit(FormParsOptionalDerived1 FormParsOptionalDerived1) { visit(); }
-    public void visit(TypeChoiceDerived2 TypeChoiceDerived2) { visit(); }
-    public void visit(TypeChoiceDerived1 TypeChoiceDerived1) { visit(); }
+    public void visit(VoidMethod VoidMethod) { visit(); }
+    public void visit(NoVoidMethod NoVoidMethod) { visit(); }
     public void visit(MainMethod MainMethod) { visit(); }
     public void visit(RegularMethod RegularMethod) { visit(); }
+    public void visit(MethodSignatureEndFormPars MethodSignatureEndFormPars) { visit(); }
+    public void visit(MethodSignatureStartFormPars MethodSignatureStartFormPars) { visit(); }
     public void visit(MethodSignatureDerived1 MethodSignatureDerived1) { visit(); }
     public void visit(MethodDeclListDerived2 MethodDeclListDerived2) { visit(); }
     public void visit(MethodDeclListDerived1 MethodDeclListDerived1) { visit(); }

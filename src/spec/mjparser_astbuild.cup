@@ -59,6 +59,8 @@ terminal Integer NUMBER, BOOL ;
 terminal String IDENT ;
 terminal Character CHAR ;
 
+nonterminal MethodSignatureEndFormPars MethodSignatureEndFormPars;
+nonterminal MethodSignatureStartFormPars MethodSignatureStartFormPars;
 nonterminal MethodName MethodName;
 nonterminal ConstDeclAssign ConstDeclAssign;
 nonterminal Setop Setop;
@@ -238,22 +240,26 @@ MethodDeclList ::= MethodDeclList:M1 MethodDecl:M2 {: RESULT=new MethodDeclListD
                    /* epsilon */
                    ;
 
-MethodSignature ::= TypeChoice:T1 MethodName:M2 LPAREN FormParsOptional:F3 {: RESULT=new MethodSignatureDerived1(T1, M2, F3); RESULT.setLine(T1left); :}
+MethodSignature ::= TypeChoice:T1 MethodName:M2 MethodSignatureStartFormPars:M3 FormParsOptional:F4 {: RESULT=new MethodSignatureDerived1(T1, M2, M3, F4); RESULT.setLine(T1left); :}
                     ;
+
+MethodSignatureStartFormPars ::= (MethodSignatureStartFormPars)LPAREN {: RESULT=new MethodSignatureStartFormPars(); :} ;
+
+MethodSignatureEndFormPars ::= (MethodSignatureEndFormPars)RPAREN {: RESULT=new MethodSignatureEndFormPars(); :} ;
 
 MethodName ::= (RegularMethod)IDENT:I1 {: RESULT=new RegularMethod(I1); RESULT.setLine(I1left); :}
                |
                (MainMethod)MAIN {: RESULT=new MainMethod(); :}
                ;
 
-TypeChoice ::= Type:T1 {: RESULT=new TypeChoiceDerived1(T1); RESULT.setLine(T1left); :}
+TypeChoice ::= (NoVoidMethod)IDENT:I1 {: RESULT=new NoVoidMethod(I1); RESULT.setLine(I1left); :}
                |
-               VOID {: RESULT=new TypeChoiceDerived2(); :}
+               (VoidMethod)VOID {: RESULT=new VoidMethod(); :}
                ;
 
 FormParsOptional ::=  FormPars:F1 {: RESULT=new FormParsOptionalDerived1(F1); RESULT.setLine(F1left); :}
                       |
-                      RPAREN {: RESULT=new FormParsOptionalDerived2(); :} /* epsilon */
+                      MethodSignatureEndFormPars:M1 {: RESULT=new FormParsOptionalDerived2(M1); RESULT.setLine(M1left); :} /* epsilon */
                       ;
 
 MethodDecl ::= (MethodDecl)MethodSignature:M1 VarDeclList:V2 LBRACE StatementList:S3 RBRACE {: RESULT=new MethodDecl(M1, V2, S3); RESULT.setLine(M1left); :}
@@ -264,10 +270,10 @@ VarDeclList ::= VarDeclList:V1 VarDecl:V2 {: RESULT=new VarDeclListDerived1(V1, 
                 /* epsilon */
                 ;
 
-FormPars ::= Type:T1 VarDeclFinal:V2 RPAREN {: RESULT=new FormParsDerived1(T1, V2); RESULT.setLine(T1left); :}
+FormPars ::= Type:T1 VarDeclFinal:V2 MethodSignatureEndFormPars:M3 {: RESULT=new FormParsDerived1(T1, V2, M3); RESULT.setLine(T1left); :}
              |
-             error RPAREN:l
-             {: parser.report_error("Izvrsen oporavak do ) u liniji " + lleft, null); :} {: RESULT=new FormParsDerived2(); :}
+             error MethodSignatureEndFormPars:l
+             {: parser.report_error("Izvrsen oporavak do ) u liniji " + lleft, null); :} {: RESULT=new FormParsDerived2(l); RESULT.setLine(lleft); :}
              |
              Type:T1 VarDeclFinal:V2 COMMA FormPars:F3 {: RESULT=new FormParsDerived3(T1, V2, F3); RESULT.setLine(T1left); :}
              |

@@ -1,13 +1,31 @@
 // generated with ast extension for cup
 // version 0.8
-// 12/0/2025 17:57:50
+// 12/0/2025 20:50:52
 
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class TypeChoiceDerived2 extends TypeChoice {
+public class MethodSignatureEndFormPars implements SyntaxNode {
 
-    public TypeChoiceDerived2 () {
+    private SyntaxNode parent;
+    private int line;
+    public MethodSignatureEndFormPars () {
+    }
+
+    public SyntaxNode getParent() {
+        return parent;
+    }
+
+    public void setParent(SyntaxNode parent) {
+        this.parent=parent;
+    }
+
+    public int getLine() {
+        return line;
+    }
+
+    public void setLine(int line) {
+        this.line=line;
     }
 
     public void accept(Visitor visitor) {
@@ -28,10 +46,10 @@ public class TypeChoiceDerived2 extends TypeChoice {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("TypeChoiceDerived2(\n");
+        buffer.append("MethodSignatureEndFormPars(\n");
 
         buffer.append(tab);
-        buffer.append(") [TypeChoiceDerived2]");
+        buffer.append(") [MethodSignatureEndFormPars]");
         return buffer.toString();
     }
 }

@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 12/0/2025 17:57:50
+// 12/0/2025 20:50:52
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -9,12 +9,15 @@ public class FormParsDerived1 extends FormPars {
 
     private Type Type;
     private VarDeclFinal VarDeclFinal;
+    private MethodSignatureEndFormPars MethodSignatureEndFormPars;
 
-    public FormParsDerived1 (Type Type, VarDeclFinal VarDeclFinal) {
+    public FormParsDerived1 (Type Type, VarDeclFinal VarDeclFinal, MethodSignatureEndFormPars MethodSignatureEndFormPars) {
         this.Type=Type;
         if(Type!=null) Type.setParent(this);
         this.VarDeclFinal=VarDeclFinal;
         if(VarDeclFinal!=null) VarDeclFinal.setParent(this);
+        this.MethodSignatureEndFormPars=MethodSignatureEndFormPars;
+        if(MethodSignatureEndFormPars!=null) MethodSignatureEndFormPars.setParent(this);
     }
 
     public Type getType() {
@@ -33,6 +36,14 @@ public class FormParsDerived1 extends FormPars {
         this.VarDeclFinal=VarDeclFinal;
     }
 
+    public MethodSignatureEndFormPars getMethodSignatureEndFormPars() {
+        return MethodSignatureEndFormPars;
+    }
+
+    public void setMethodSignatureEndFormPars(MethodSignatureEndFormPars MethodSignatureEndFormPars) {
+        this.MethodSignatureEndFormPars=MethodSignatureEndFormPars;
+    }
+
     public void accept(Visitor visitor) {
         visitor.visit(this);
     }
@@ -40,17 +51,20 @@ public class FormParsDerived1 extends FormPars {
     public void childrenAccept(Visitor visitor) {
         if(Type!=null) Type.accept(visitor);
         if(VarDeclFinal!=null) VarDeclFinal.accept(visitor);
+        if(MethodSignatureEndFormPars!=null) MethodSignatureEndFormPars.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
         if(Type!=null) Type.traverseTopDown(visitor);
         if(VarDeclFinal!=null) VarDeclFinal.traverseTopDown(visitor);
+        if(MethodSignatureEndFormPars!=null) MethodSignatureEndFormPars.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
         if(Type!=null) Type.traverseBottomUp(visitor);
         if(VarDeclFinal!=null) VarDeclFinal.traverseBottomUp(visitor);
+        if(MethodSignatureEndFormPars!=null) MethodSignatureEndFormPars.traverseBottomUp(visitor);
         accept(visitor);
     }
 
@@ -67,6 +81,12 @@ public class FormParsDerived1 extends FormPars {
 
         if(VarDeclFinal!=null)
             buffer.append(VarDeclFinal.toString("  "+tab));
+        else
+            buffer.append(tab+"  null");
+        buffer.append("\n");
+
+        if(MethodSignatureEndFormPars!=null)
+            buffer.append(MethodSignatureEndFormPars.toString("  "+tab));
         else
             buffer.append(tab+"  null");
         buffer.append("\n");

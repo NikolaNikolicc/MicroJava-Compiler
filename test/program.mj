@@ -17,4 +17,12 @@ program MJProgram
 
 	}
 
+    bool m1(int param1, int param2) int m, b[]; int x[], y; {
+
+    }
+
+    char m2() int m, b[]; int x[], y; {
+
+    }
+
 }

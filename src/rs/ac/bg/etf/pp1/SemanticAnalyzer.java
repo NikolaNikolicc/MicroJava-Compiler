@@ -10,12 +10,14 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     public boolean errorDetected = false;
     private int nVars = 0;
-    private Obj currType = null;
+    private Obj currTypeVar = null;
+    private Obj currTypeMeth = null;
     private Obj currMeth = null;
     private int constValue;
     private Struct constType = null;
     public static Struct boolType = Tab.find("bool").getType();
-    private boolean mainFound = false;
+    private Obj mainMeth = null;
+    private boolean parsingFormPars = false;
 
     Logger log = Logger.getLogger(getClass());
 
@@ -52,8 +54,11 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         Tab.chainLocalSymbols(program.getProgName().obj);
         Tab.closeScope();
 
-        if(!mainFound){
+        if(mainMeth == null){
             report_error("Main metoda mora biti definisana", null);
+        }
+        if(mainMeth != null && mainMeth.getLevel() > 0){
+            report_error("Main metoda mora biti deklarisana bez argumenata!", null);
         }
     }
 
@@ -62,16 +67,37 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         Obj typeNode = Tab.find(type.getI1());
         if(typeNode == Tab.noObj){
             report_error("Greska: Nije pronadjen tip " + type.getI1() + " u tabeli simbola! ", null);
-            currType = null;
+            currTypeVar = null;
             return;
         }
         if(Obj.Type != typeNode.getKind()){
             report_error("Greska: Ime " + type.getI1() + " ne predstavlja tip!", type);
-            currType = null;
+            currTypeVar = null;
             return;
         }
-        currType = typeNode;
+        currTypeVar = typeNode;
         type.struct = typeNode.getType();
+    }
+
+    @Override
+    public void visit(NoVoidMethod type){
+        Obj typeNode = Tab.find(type.getI1());
+        if(typeNode == Tab.noObj){
+            report_error("Greska: Nije pronadjen tip " + type.getI1() + " u tabeli simbola! ", null);
+            currTypeVar = null;
+            return;
+        }
+        if(Obj.Type != typeNode.getKind()){
+            report_error("Greska: Ime " + type.getI1() + " ne predstavlja tip!", type);
+            currTypeVar = null;
+            return;
+        }
+        currTypeMeth = typeNode;
+    }
+
+    @Override
+    public void visit(VoidMethod type){
+        currTypeMeth = null;
     }
 
     @Override
@@ -101,11 +127,11 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         }
         // assignableTo mora da stoji, a ne equals jer onda u slucaju lose procitanih tokena (noType) opet ubacujemo vrednost
         // u tabelu simbola i onda mozemo tu informaciju koristiti za dalju sintaksnu analizu
-        if(!constType.assignableTo(currType.getType())){
-            report_error("Deklariani tip konstante i vrednost koja se dodeljuje nisu kompatibilni", constDeclAssign);
+        if(!constType.assignableTo(currTypeVar.getType())){
+            report_error("Deklariani tip konstante i vrednost koja se dodeljuje nisu kompatibilni!", constDeclAssign);
             return;
         }
-        Obj constNode = Tab.insert(Obj.Con, constDeclAssign.getI1(), currType.getType());
+        Obj constNode = Tab.insert(Obj.Con, constDeclAssign.getI1(), currTypeVar.getType());
         constNode.setAdr(constValue);
     }
 
@@ -123,6 +149,13 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         return node != Tab.noObj;
     }
 
+    private void formPars(Obj varNode){
+        if(parsingFormPars){
+            varNode.setFpPos(1);
+            currMeth.setLevel(currMeth.getLevel() + 1);
+        }
+    }
+
     @Override
     public void visit(VarDeclFinalVar varDeclFinalVar){
         if(checkIsVarDeclared(varDeclFinalVar.getI1())){
@@ -130,7 +163,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
 
-        Obj varNode = Tab.insert(Obj.Var, varDeclFinalVar.getI1(), currType.getType());
+        Obj varNode = Tab.insert(Obj.Var, varDeclFinalVar.getI1(), currTypeVar.getType());
+        formPars(varNode);
     }
 
     @Override
@@ -140,12 +174,13 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
 
-        Struct array = new Struct(Struct.Array, currType.getType());
+        Struct array = new Struct(Struct.Array, currTypeVar.getType());
         Obj varNode = Tab.insert(Obj.Var, varDeclFinalArray.getI1(), array);
+        formPars(varNode);
     }
 
     private void createMethodObjNode(String name){
-        currMeth = Tab.insert(Obj.Meth, name, Tab.noType);
+        currMeth = Tab.insert(Obj.Meth, name, (currTypeMeth == null)? Tab.noType : currTypeMeth.getType());
         Tab.openScope();
     }
 
@@ -156,12 +191,15 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(MainMethod mainMethod){
-        if(mainFound){
-            report_error("Vec je definisan main metod", null);
+        if(mainMeth != null){
+            report_error("Vec je definisan main metod!", null);
             return;
         }
-        mainFound = true;
+        if(currTypeMeth != null){
+            report_error("Main metoda mora biti povratnog tipa void!", null);
+        }
         createMethodObjNode("main");
+        mainMeth = currMeth;
     }
 
     @Override
@@ -169,6 +207,16 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         Tab.chainLocalSymbols(currMeth);
         Tab.closeScope();
         currMeth = null;
+    }
+
+    @Override
+    public void visit(MethodSignatureStartFormPars methodSignatureStartFormPars){
+        parsingFormPars = true;
+    }
+
+    @Override
+    public void visit(MethodSignatureEndFormPars methodSignatureEndFormPars){
+        parsingFormPars = false;
     }
 
 }

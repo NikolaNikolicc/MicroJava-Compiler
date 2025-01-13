@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 12/0/2025 17:57:50
+// 12/0/2025 20:50:52
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -9,13 +9,16 @@ public class MethodSignatureDerived1 extends MethodSignature {
 
     private TypeChoice TypeChoice;
     private MethodName MethodName;
+    private MethodSignatureStartFormPars MethodSignatureStartFormPars;
     private FormParsOptional FormParsOptional;
 
-    public MethodSignatureDerived1 (TypeChoice TypeChoice, MethodName MethodName, FormParsOptional FormParsOptional) {
+    public MethodSignatureDerived1 (TypeChoice TypeChoice, MethodName MethodName, MethodSignatureStartFormPars MethodSignatureStartFormPars, FormParsOptional FormParsOptional) {
         this.TypeChoice=TypeChoice;
         if(TypeChoice!=null) TypeChoice.setParent(this);
         this.MethodName=MethodName;
         if(MethodName!=null) MethodName.setParent(this);
+        this.MethodSignatureStartFormPars=MethodSignatureStartFormPars;
+        if(MethodSignatureStartFormPars!=null) MethodSignatureStartFormPars.setParent(this);
         this.FormParsOptional=FormParsOptional;
         if(FormParsOptional!=null) FormParsOptional.setParent(this);
     }
@@ -36,6 +39,14 @@ public class MethodSignatureDerived1 extends MethodSignature {
         this.MethodName=MethodName;
     }
 
+    public MethodSignatureStartFormPars getMethodSignatureStartFormPars() {
+        return MethodSignatureStartFormPars;
+    }
+
+    public void setMethodSignatureStartFormPars(MethodSignatureStartFormPars MethodSignatureStartFormPars) {
+        this.MethodSignatureStartFormPars=MethodSignatureStartFormPars;
+    }
+
     public FormParsOptional getFormParsOptional() {
         return FormParsOptional;
     }
@@ -51,6 +62,7 @@ public class MethodSignatureDerived1 extends MethodSignature {
     public void childrenAccept(Visitor visitor) {
         if(TypeChoice!=null) TypeChoice.accept(visitor);
         if(MethodName!=null) MethodName.accept(visitor);
+        if(MethodSignatureStartFormPars!=null) MethodSignatureStartFormPars.accept(visitor);
         if(FormParsOptional!=null) FormParsOptional.accept(visitor);
     }
 
@@ -58,12 +70,14 @@ public class MethodSignatureDerived1 extends MethodSignature {
         accept(visitor);
         if(TypeChoice!=null) TypeChoice.traverseTopDown(visitor);
         if(MethodName!=null) MethodName.traverseTopDown(visitor);
+        if(MethodSignatureStartFormPars!=null) MethodSignatureStartFormPars.traverseTopDown(visitor);
         if(FormParsOptional!=null) FormParsOptional.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
         if(TypeChoice!=null) TypeChoice.traverseBottomUp(visitor);
         if(MethodName!=null) MethodName.traverseBottomUp(visitor);
+        if(MethodSignatureStartFormPars!=null) MethodSignatureStartFormPars.traverseBottomUp(visitor);
         if(FormParsOptional!=null) FormParsOptional.traverseBottomUp(visitor);
         accept(visitor);
     }
@@ -81,6 +95,12 @@ public class MethodSignatureDerived1 extends MethodSignature {
 
         if(MethodName!=null)
             buffer.append(MethodName.toString("  "+tab));
+        else
+            buffer.append(tab+"  null");
+        buffer.append("\n");
+
+        if(MethodSignatureStartFormPars!=null)
+            buffer.append(MethodSignatureStartFormPars.toString("  "+tab));
         else
             buffer.append(tab+"  null");
         buffer.append("\n");

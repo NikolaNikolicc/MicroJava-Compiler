@@ -120,8 +120,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(ConstDeclAssign constDeclAssign){
-        Obj node = Tab.find(constDeclAssign.getI1());
-        if(node != Tab.noObj){
+        if(checkIsObjNodeDeclared(constDeclAssign.getI1())){
             report_error("Vec je deklarisana konstanta sa imenom " + constDeclAssign.getI1(), constDeclAssign);
             return;
         }
@@ -135,7 +134,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         constNode.setAdr(constValue);
     }
 
-    private boolean checkIsVarDeclared(String name){
+    private boolean checkIsObjNodeDeclared(String name){
         Obj node;
         if(currMeth != null){
             node = Tab.currentScope().findSymbol(name);
@@ -158,7 +157,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(VarDeclFinalVar varDeclFinalVar){
-        if(checkIsVarDeclared(varDeclFinalVar.getI1())){
+        if(checkIsObjNodeDeclared(varDeclFinalVar.getI1())){
             report_error("Vec je deklarisana promenljiva sa imenom: " + varDeclFinalVar.getI1(), varDeclFinalVar);
             return;
         }
@@ -169,7 +168,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(VarDeclFinalArray varDeclFinalArray){
-        if(checkIsVarDeclared(varDeclFinalArray.getI1())){
+        if(checkIsObjNodeDeclared(varDeclFinalArray.getI1())){
             report_error("Vec je deklarisana promenljiva sa imenom " + varDeclFinalArray.getI1(), varDeclFinalArray);
             return;
         }

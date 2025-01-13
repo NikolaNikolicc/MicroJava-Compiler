@@ -6,7 +6,6 @@ lib/
 logs/
 .classpath
 .project
-build.xml
 MJCompiler.iml
 spec/
 !src/spec/

@@ -76,7 +76,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         currTypeVar = typeNode;
-        type.struct = typeNode.getType();
     }
 
     @Override

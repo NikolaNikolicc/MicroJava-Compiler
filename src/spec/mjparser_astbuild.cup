@@ -59,6 +59,7 @@ terminal Integer NUMBER, BOOL ;
 terminal String IDENT ;
 terminal Character CHAR ;
 
+nonterminal Type Type;
 nonterminal MethodSignatureEndFormPars MethodSignatureEndFormPars;
 nonterminal MethodSignatureStartFormPars MethodSignatureStartFormPars;
 nonterminal MethodName MethodName;
@@ -125,11 +126,10 @@ nonterminal DesignatorAssignWhile DesignatorAssignWhile;
 nonterminal DesignatorStatementWhile DesignatorStatementWhile ;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName;
-nonterminal rs.etf.pp1.symboltable.concepts.Struct Type;
 
 precedence left ELSE;
 
-Program ::= (Program)  PROG ProgName:pe ProgramDeclList:P1 LBRACE MethodDeclList:M2 RBRACE {: RESULT=new Program(pe, P1, M2); RESULT.setLine(peleft); :} ;
+Program ::= (Program)  PROG ProgName:P1 ProgramDeclList:P2 LBRACE MethodDeclList:M3 RBRACE {: RESULT=new Program(P1, P2, M3); RESULT.setLine(P1left); :} ;
 
 ProgName ::= (ProgName) IDENT:progName {: RESULT=new ProgName(progName); RESULT.setLine(progNameleft); :};
 

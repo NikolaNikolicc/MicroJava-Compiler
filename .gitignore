@@ -8,4 +8,5 @@ logs/
 .project
 MJCompiler.iml
 spec/
+src/rs/ac/bg/etf/pp1/ast
 !src/spec/

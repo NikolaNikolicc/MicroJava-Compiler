@@ -171,7 +171,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 //        return node != Tab.noObj;
     }
 
-    private void formPars(Obj varNode){
+    private void formParsSetLevelAndFpPos(Obj varNode){
         if(parsingFormPars){
             varNode.setFpPos(1);
             currMeth.setLevel(currMeth.getLevel() + 1);
@@ -186,7 +186,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         }
 
         Obj varNode = Tab.insert(Obj.Var, varDeclFinalVar.getI1(), currTypeVar.getType());
-        formPars(varNode);
+        formParsSetLevelAndFpPos(varNode);
     }
 
     @Override
@@ -198,11 +198,12 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
         Struct array = new Struct(Struct.Array, currTypeVar.getType());
         Obj varNode = Tab.insert(Obj.Var, varDeclFinalArray.getI1(), array);
-        formPars(varNode);
+        formParsSetLevelAndFpPos(varNode);
     }
 
     private void createMethodObjNode(String name){
         currMeth = Tab.insert(Obj.Meth, name, (currTypeMeth == null)? Tab.noType : currTypeMeth.getType());
+        currMeth.setLevel(0);
         Tab.openScope();
     }
 

@@ -108,6 +108,9 @@ public class MySymbolTableVisitor extends SymbolTableVisitor {
                     case Struct.Int:
                         output.append("int");
                         break;
+                    case Struct.Bool:
+                        output.append("bool");
+                        break;
                     case Struct.Char:
                         output.append("char");
                         break;

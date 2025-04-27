@@ -13,7 +13,7 @@ program MJProgram
 	const bool m = false;
 
 {
-	void main() int m, b[]; int x[], y; {
+	void main() int int, b[]; int x[], y; {
 
 	}
 

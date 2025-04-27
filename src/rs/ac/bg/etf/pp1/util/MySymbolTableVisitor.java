@@ -7,143 +7,129 @@ import rs.etf.pp1.symboltable.concepts.Struct;
 import rs.etf.pp1.symboltable.visitors.SymbolTableVisitor;
 
 public class MySymbolTableVisitor extends SymbolTableVisitor {
+
     protected StringBuilder output = new StringBuilder();
     protected final String indent = "   ";
     protected StringBuilder currentIndent = new StringBuilder();
 
     protected void nextIndentationLevel() {
-        this.currentIndent.append("   ");
+        currentIndent.append(indent);
     }
 
     protected void previousIndentationLevel() {
-        if (this.currentIndent.length() > 0) {
-            this.currentIndent.setLength(this.currentIndent.length() - "   ".length());
-        }
-
+        if (currentIndent.length() > 0)
+            currentIndent.setLength(currentIndent.length()-indent.length());
     }
 
+
+    /* (non-Javadoc)
+     * @see rs.etf.pp1.symboltable.test.SymbolTableVisitor#visitObjNode(symboltable.Obj)
+     */
+    @Override
     public void visitObjNode(Obj objToVisit) {
+        //output.append("[");
         switch (objToVisit.getKind()) {
-            case 0:
-                this.output.append("Con ");
-                break;
-            case 1:
-                this.output.append("Var ");
-                break;
-            case 2:
-                this.output.append("Type ");
-                break;
-            case 3:
-                this.output.append("Meth ");
-                break;
-            case 4:
-                this.output.append("Fld ");
-            case 5:
-            default:
-                break;
-            case 6:
-                this.output.append("Prog ");
+            case Obj.Con:  output.append("Con "); break;
+            case Obj.Var:  output.append("Var "); break;
+            case Obj.Type: output.append("Type "); break;
+            case Obj.Meth: output.append("Meth "); break;
+            case Obj.Fld:  output.append("Fld "); break;
+            case Obj.Prog: output.append("Prog "); break;
         }
 
-        this.output.append(objToVisit.getName());
-        this.output.append(": ");
-        if (1 == objToVisit.getKind() && "this".equalsIgnoreCase(objToVisit.getName())) {
-            this.output.append("");
-        } else {
+        output.append(objToVisit.getName());
+        output.append(": ");
+
+        if ((Obj.Var == objToVisit.getKind()) && "this".equalsIgnoreCase(objToVisit.getName()))
+            output.append("");
+        else
             objToVisit.getType().accept(this);
+
+        output.append(", ");
+        output.append(objToVisit.getAdr());
+        output.append(", ");
+        output.append(objToVisit.getLevel() + " ");
+
+        if (objToVisit.getKind() == Obj.Prog || objToVisit.getKind() == Obj.Meth) {
+            output.append("\n");
+            nextIndentationLevel();
         }
 
-        this.output.append(", ");
-        this.output.append(objToVisit.getAdr());
-        this.output.append(", ");
-        this.output.append(objToVisit.getLevel() + " ");
-        if (objToVisit.getKind() == 6 || objToVisit.getKind() == 3) {
-            this.output.append("\n");
-            this.nextIndentationLevel();
-        }
 
-        for(Obj o : objToVisit.getLocalSymbols()) {
-            this.output.append(this.currentIndent.toString());
+        for (Obj o : objToVisit.getLocalSymbols()) {
+            output.append(currentIndent.toString());
             o.accept(this);
-            this.output.append("\n");
+            output.append("\n");
         }
 
-        if (objToVisit.getKind() == 6 || objToVisit.getKind() == 3) {
-            this.previousIndentationLevel();
-        }
+        if (objToVisit.getKind() == Obj.Prog || objToVisit.getKind() == Obj.Meth)
+            previousIndentationLevel();
+
+        //output.append("]");
 
     }
 
+    /* (non-Javadoc)
+     * @see rs.etf.pp1.symboltable.test.SymbolTableVisitor#visitScopeNode(symboltable.Scope)
+     */
+    @Override
     public void visitScopeNode(Scope scope) {
-        for(Obj o : scope.values()) {
+        for (Obj o : scope.values()) {
             o.accept(this);
-            this.output.append("\n");
+            output.append("\n");
         }
-
     }
 
+    /* (non-Javadoc)
+     * @see rs.etf.pp1.symboltable.test.SymbolTableVisitor#visitStructNode(symboltable.Struct)
+     */
+    @Override
     public void visitStructNode(Struct structToVisit) {
         switch (structToVisit.getKind()) {
-            case 0:
-                this.output.append("notype");
+            case Struct.None:
+                output.append("notype");
                 break;
-            case 1:
-                this.output.append("int");
+            case Struct.Int:
+                output.append("int");
                 break;
-            case 2:
-                this.output.append("char");
+            case Struct.Char:
+                output.append("char");
                 break;
-            case 3:
-                this.output.append("Arr of ");
-                switch (structToVisit.getElemType().getKind()) {
-                    case 0:
-                        this.output.append("notype");
-                        return;
-                    case 1:
-                        this.output.append("int");
-                        return;
-                    case 2:
-                        this.output.append("char");
-                        return;
-                    case 3:
-                    default:
-                        return;
-                    case 4:
-                        this.output.append("Class");
-                        return;
-                }
-            case 4:
-                this.output.append("Class [");
+            case Struct.Bool:
+                output.append("bool");
+                break;
+            case Struct.Array:
+                output.append("Arr of ");
 
-                for(Obj obj : structToVisit.getMembers()) {
+                switch (structToVisit.getElemType().getKind()) {
+                    case Struct.None:
+                        output.append("notype");
+                        break;
+                    case Struct.Int:
+                        output.append("int");
+                        break;
+                    case Struct.Char:
+                        output.append("char");
+                        break;
+                    case Struct.Class:
+                        output.append("Class");
+                        break;
+                }
+                break;
+            case Struct.Class:
+                output.append("Class [");
+                for (Obj obj : structToVisit.getMembers()) {
                     obj.accept(this);
                 }
-
-                this.output.append("]");
-            case 5:
-                this.output.append("bool");
+                output.append("]");
                 break;
-            case 6:
-                this.output.append("Set of ");
-                switch (structToVisit.getElemType().getKind()) {
-                    case 1:
-                        this.output.append("int");
-                        return;
-                    case 2:
-                        this.output.append("char");
-                        return;
-                    case 3:
-                    default:
-                        return;
-                    case 4:
-                        this.output.append("Class");
-                        return;
-                }
         }
 
     }
 
     public String getOutput() {
-        return this.output.toString();
+        return output.toString();
     }
+
+
 }

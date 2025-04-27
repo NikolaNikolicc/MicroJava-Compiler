@@ -64,7 +64,9 @@ public class Compiler {
             // inicijalizacija tabele simbola
             Tab.init();
             Struct boolStruct = new Struct(Struct.Bool);
-            Tab.insert(Obj.Type, "bool", boolStruct);
+            Obj boolObj = Tab.insert(Obj.Type, "bool", boolStruct);
+            boolObj.setAdr(-1);
+            boolObj.setLevel(-1);
 
             log.info(prog.toString(""));
             log.info("===================================");

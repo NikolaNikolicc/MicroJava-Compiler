@@ -15,7 +15,12 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     private Obj currMeth = null;
     private int constValue;
     private Struct constType = null;
-    public static Struct boolType = Tab.find("bool").getType();
+    // because we want to allow initialization of variables that are named int char and bool we are saving pointers to this object nodes
+    // this is used in TypeIdent visitor and in that case we are sure we are getting right object node, in other case Tab.find(name) function can return Object node which overrides those names
+    private static Obj intObj = Tab.find("int");
+    private static Obj charObj = Tab.find("char");
+    private static Obj boolObj = Tab.find("bool");
+    public static Struct boolType = boolObj.getType();
     private Obj mainMeth = null;
     private boolean parsingFormPars = false;
 
@@ -64,7 +69,23 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(TypeIdent type){
-        Obj typeNode = Tab.find(type.getI1());
+        String name = type.getI1();
+        Obj typeNode;
+
+        switch(name){
+            case "int":
+                typeNode = intObj;
+                break;
+            case "char":
+                typeNode = charObj;
+                break;
+            case "bool":
+                typeNode = boolObj;
+                break;
+            default:
+                typeNode = Tab.find(name);
+                break;
+        }
         if(typeNode == Tab.noObj){
             report_error("Greska: Nije pronadjen tip " + type.getI1() + " u tabeli simbola! ", null);
             currTypeVar = null;
@@ -134,17 +155,20 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     }
 
     private boolean checkIsObjNodeDeclared(String name){
-        Obj node;
-        if(currMeth != null){
-            node = Tab.currentScope().findSymbol(name);
-        }else{
-            node = Tab.find(name);
-        }
-
-        if(node == null){
-            return false;
-        }
-        return node != Tab.noObj;
+        Obj node = Tab.currentScope().findSymbol(name);
+        return node != null;
+//        Obj node;
+//        if(currMeth != null){
+//            node = Tab.currentScope().findSymbol(name);
+//        }else{
+//            node = Tab.find(name);
+//        }
+//
+//        // we can't write this as one condition with OR because everything that is not null will pass and we don't want behaviour like that
+//        if(node == null){
+//            return false;
+//        }
+//        return node != Tab.noObj;
     }
 
     private void formPars(Obj varNode){

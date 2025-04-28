@@ -1,42 +1,24 @@
 // generated with ast extension for cup
 // version 0.8
-// 27/3/2025 19:22:29
+// 28/3/2025 18:13:0
 
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class BoolConst implements SyntaxNode {
+public class boolConst extends ConstDeclListValue {
 
-    private SyntaxNode parent;
-    private int line;
-    private Integer B1;
+    private Integer bool;
 
-    public BoolConst (Integer B1) {
-        this.B1=B1;
+    public boolConst (Integer bool) {
+        this.bool=bool;
     }
 
-    public Integer getB1() {
-        return B1;
+    public Integer getBool() {
+        return bool;
     }
 
-    public void setB1(Integer B1) {
-        this.B1=B1;
-    }
-
-    public SyntaxNode getParent() {
-        return parent;
-    }
-
-    public void setParent(SyntaxNode parent) {
-        this.parent=parent;
-    }
-
-    public int getLine() {
-        return line;
-    }
-
-    public void setLine(int line) {
-        this.line=line;
+    public void setBool(Integer bool) {
+        this.bool=bool;
     }
 
     public void accept(Visitor visitor) {
@@ -57,13 +39,13 @@ public class BoolConst implements SyntaxNode {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("BoolConst(\n");
+        buffer.append("boolConst(\n");
 
-        buffer.append(" "+tab+B1);
+        buffer.append(" "+tab+bool);
         buffer.append("\n");
 
         buffer.append(tab);
-        buffer.append(") [BoolConst]");
+        buffer.append(") [boolConst]");
         return buffer.toString();
     }
 }

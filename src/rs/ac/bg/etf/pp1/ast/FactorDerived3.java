@@ -1,25 +1,36 @@
 // generated with ast extension for cup
 // version 0.8
-// 27/3/2025 19:22:29
+// 28/3/2025 18:13:0
 
 
 package rs.ac.bg.etf.pp1.ast;
 
 public class FactorDerived3 extends Factor {
 
-    private CharConst charConst;
+    private Type Type;
+    private FactorChoice FactorChoice;
 
-    public FactorDerived3 (CharConst charConst) {
-        this.charConst=charConst;
-        if(charConst!=null) charConst.setParent(this);
+    public FactorDerived3 (Type Type, FactorChoice FactorChoice) {
+        this.Type=Type;
+        if(Type!=null) Type.setParent(this);
+        this.FactorChoice=FactorChoice;
+        if(FactorChoice!=null) FactorChoice.setParent(this);
     }
 
-    public CharConst getCharConst() {
-        return charConst;
+    public Type getType() {
+        return Type;
     }
 
-    public void setCharConst(CharConst charConst) {
-        this.charConst=charConst;
+    public void setType(Type Type) {
+        this.Type=Type;
+    }
+
+    public FactorChoice getFactorChoice() {
+        return FactorChoice;
+    }
+
+    public void setFactorChoice(FactorChoice FactorChoice) {
+        this.FactorChoice=FactorChoice;
     }
 
     public void accept(Visitor visitor) {
@@ -27,16 +38,19 @@ public class FactorDerived3 extends Factor {
     }
 
     public void childrenAccept(Visitor visitor) {
-        if(charConst!=null) charConst.accept(visitor);
+        if(Type!=null) Type.accept(visitor);
+        if(FactorChoice!=null) FactorChoice.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
-        if(charConst!=null) charConst.traverseTopDown(visitor);
+        if(Type!=null) Type.traverseTopDown(visitor);
+        if(FactorChoice!=null) FactorChoice.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
-        if(charConst!=null) charConst.traverseBottomUp(visitor);
+        if(Type!=null) Type.traverseBottomUp(visitor);
+        if(FactorChoice!=null) FactorChoice.traverseBottomUp(visitor);
         accept(visitor);
     }
 
@@ -45,8 +59,14 @@ public class FactorDerived3 extends Factor {
         buffer.append(tab);
         buffer.append("FactorDerived3(\n");
 
-        if(charConst!=null)
-            buffer.append(charConst.toString("  "+tab));
+        if(Type!=null)
+            buffer.append(Type.toString("  "+tab));
+        else
+            buffer.append(tab+"  null");
+        buffer.append("\n");
+
+        if(FactorChoice!=null)
+            buffer.append(FactorChoice.toString("  "+tab));
         else
             buffer.append(tab+"  null");
         buffer.append("\n");

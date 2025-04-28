@@ -1,25 +1,25 @@
 // generated with ast extension for cup
 // version 0.8
-// 27/3/2025 19:22:29
+// 28/3/2025 18:13:0
 
 
 package rs.ac.bg.etf.pp1.ast;
 
 public class FactorDerived4 extends Factor {
 
-    private BoolConst boolConst;
+    private Expr Expr;
 
-    public FactorDerived4 (BoolConst boolConst) {
-        this.boolConst=boolConst;
-        if(boolConst!=null) boolConst.setParent(this);
+    public FactorDerived4 (Expr Expr) {
+        this.Expr=Expr;
+        if(Expr!=null) Expr.setParent(this);
     }
 
-    public BoolConst getBoolConst() {
-        return boolConst;
+    public Expr getExpr() {
+        return Expr;
     }
 
-    public void setBoolConst(BoolConst boolConst) {
-        this.boolConst=boolConst;
+    public void setExpr(Expr Expr) {
+        this.Expr=Expr;
     }
 
     public void accept(Visitor visitor) {
@@ -27,16 +27,16 @@ public class FactorDerived4 extends Factor {
     }
 
     public void childrenAccept(Visitor visitor) {
-        if(boolConst!=null) boolConst.accept(visitor);
+        if(Expr!=null) Expr.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
-        if(boolConst!=null) boolConst.traverseTopDown(visitor);
+        if(Expr!=null) Expr.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
-        if(boolConst!=null) boolConst.traverseBottomUp(visitor);
+        if(Expr!=null) Expr.traverseBottomUp(visitor);
         accept(visitor);
     }
 
@@ -45,8 +45,8 @@ public class FactorDerived4 extends Factor {
         buffer.append(tab);
         buffer.append("FactorDerived4(\n");
 
-        if(boolConst!=null)
-            buffer.append(boolConst.toString("  "+tab));
+        if(Expr!=null)
+            buffer.append(Expr.toString("  "+tab));
         else
             buffer.append(tab+"  null");
         buffer.append("\n");

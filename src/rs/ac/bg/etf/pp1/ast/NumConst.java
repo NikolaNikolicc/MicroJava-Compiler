@@ -1,42 +1,24 @@
 // generated with ast extension for cup
 // version 0.8
-// 27/3/2025 19:22:29
+// 28/3/2025 18:13:0
 
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class NumConst implements SyntaxNode {
+public class numConst extends ConstDeclListValue {
 
-    private SyntaxNode parent;
-    private int line;
-    private Integer N1;
+    private Integer number;
 
-    public NumConst (Integer N1) {
-        this.N1=N1;
+    public numConst (Integer number) {
+        this.number=number;
     }
 
-    public Integer getN1() {
-        return N1;
+    public Integer getNumber() {
+        return number;
     }
 
-    public void setN1(Integer N1) {
-        this.N1=N1;
-    }
-
-    public SyntaxNode getParent() {
-        return parent;
-    }
-
-    public void setParent(SyntaxNode parent) {
-        this.parent=parent;
-    }
-
-    public int getLine() {
-        return line;
-    }
-
-    public void setLine(int line) {
-        this.line=line;
+    public void setNumber(Integer number) {
+        this.number=number;
     }
 
     public void accept(Visitor visitor) {
@@ -57,13 +39,13 @@ public class NumConst implements SyntaxNode {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("NumConst(\n");
+        buffer.append("numConst(\n");
 
-        buffer.append(" "+tab+N1);
+        buffer.append(" "+tab+number);
         buffer.append("\n");
 
         buffer.append(tab);
-        buffer.append(") [NumConst]");
+        buffer.append(") [numConst]");
         return buffer.toString();
     }
 }

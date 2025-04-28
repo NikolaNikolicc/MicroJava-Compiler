@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 27/3/2025 19:22:29
+// 28/3/2025 18:13:0
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -34,8 +34,8 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(CondFactList CondFactList) { }
     public void visit(DesignatorStatementWhile DesignatorStatementWhile) { }
     public void visit(Designator Designator) { }
-    public void visit(DesignatorListElem DesignatorListElem) { }
     public void visit(MethodName MethodName) { }
+    public void visit(DesignatorListElem DesignatorListElem) { }
     public void visit(Term Term) { }
     public void visit(Condition Condition) { }
     public void visit(FormParsOptional FormParsOptional) { }
@@ -86,8 +86,6 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(FactorChoiceDerived3 FactorChoiceDerived3) { visit(); }
     public void visit(FactorChoiceDerived2 FactorChoiceDerived2) { visit(); }
     public void visit(FactorChoiceDerived1 FactorChoiceDerived1) { visit(); }
-    public void visit(FactorDerived6 FactorDerived6) { visit(); }
-    public void visit(FactorDerived5 FactorDerived5) { visit(); }
     public void visit(FactorDerived4 FactorDerived4) { visit(); }
     public void visit(FactorDerived3 FactorDerived3) { visit(); }
     public void visit(FactorDerived2 FactorDerived2) { visit(); }
@@ -147,9 +145,6 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(StatementListDerived1 StatementListDerived1) { visit(); }
     public void visit(TypeSet TypeSet) { visit(); }
     public void visit(TypeIdent TypeIdent) { visit(); }
-    public void visit(BoolConst BoolConst) { visit(); }
-    public void visit(CharConst CharConst) { visit(); }
-    public void visit(NumConst NumConst) { visit(); }
     public void visit(FormParsDerived4 FormParsDerived4) { visit(); }
     public void visit(FormParsDerived3 FormParsDerived3) { visit(); }
     public void visit(FormParsDerived2 FormParsDerived2) { visit(); }
@@ -194,9 +189,9 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(ConstDeclAssign ConstDeclAssign) { visit(); }
     public void visit(ConstDeclListDerived2 ConstDeclListDerived2) { visit(); }
     public void visit(ConstDeclListDerived1 ConstDeclListDerived1) { visit(); }
-    public void visit(ConstDeclListValueDerived3 ConstDeclListValueDerived3) { visit(); }
-    public void visit(ConstDeclListValueDerived2 ConstDeclListValueDerived2) { visit(); }
-    public void visit(ConstDeclListValueDerived1 ConstDeclListValueDerived1) { visit(); }
+    public void visit(BoolConst boolConst) { visit(); }
+    public void visit(CharConst charConst) { visit(); }
+    public void visit(NumConst numConst) { visit(); }
     public void visit(ConstDeclDerived1 ConstDeclDerived1) { visit(); }
     public void visit(VarDeclErrorSemiDerived1 VarDeclErrorSemiDerived1) { visit(); }
     public void visit(VarDeclErrorCommaDerived1 VarDeclErrorCommaDerived1) { visit(); }

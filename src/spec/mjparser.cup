@@ -59,7 +59,7 @@ terminal Integer NUMBER, BOOL ;
 terminal String IDENT ;
 terminal Character CHAR ;
 
-nonterminal Type, MethodSignatureEndFormPars, MethodSignatureStartFormPars, MethodName, ConstDeclAssign, Setop, Mulop, Addop, Relop, Assignop, Label, ProgramDeclList, ProgramDeclElem, ConstDecl, numConst, charConst, boolConst, ConstDeclListValue, ConstDeclList, VarDecl, VarDeclFinal, VarDeclOptionalList, ClassDecl, VarDeclListOptional, MethodSignature, TypeChoice, FormParsOptional, FormPars, MethodDecl, VarDeclList, MethodDeclList, MathodDecl, StatementList, Statement, DesignatorStatement, Designator, DesignatorListElem, DesignatorList, Expr, Term, FactorList, Factor, AddTermList ;
+nonterminal Type, MethodSignatureEndFormPars, MethodSignatureStartFormPars, MethodName, ConstDeclAssign, Setop, Mulop, Addop, Relop, Assignop, Label, ProgramDeclList, ProgramDeclElem, ConstDecl, ConstDeclListValue, ConstDeclList, VarDecl, VarDeclFinal, VarDeclOptionalList, ClassDecl, VarDeclListOptional, MethodSignature, TypeChoice, FormParsOptional, FormPars, MethodDecl, VarDeclList, MethodDeclList, MathodDecl, StatementList, Statement, DesignatorStatement, Designator, DesignatorListElem, DesignatorList, Expr, Term, FactorList, Factor, AddTermList ;
 nonterminal ActPars, FactorOptional, FactorChoice, MapDesignator, DesignatorStatementChoice, CondFact, CondTerm, CondFactList, Condition, ConditionList ;
 nonterminal Program, InterfaceDeclOptionList, InterfaceDecl, VarDeclProgram, VarDeclErrorComma, VarDeclErrorSemi, DesignatorAssign, StatementCondition, VarDeclClass, ClassDeclErrorLBrace, DesignatorAssignWhile, DesignatorStatementWhile ;
 
@@ -102,11 +102,11 @@ VarDeclErrorSemi ::= error SEMI:l
 
 ConstDecl ::= CONST Type ConstDeclList SEMI ;
 
-ConstDeclListValue ::= numConst
+ConstDeclListValue ::= (numConst)NUMBER:number
                        |
-                       charConst
+                       (charConst)CHAR:char
                        |
-                       boolConst
+                       (boolConst)BOOL:bool
                        ;
 
 ConstDeclList ::= ConstDeclList COMMA ConstDeclAssign
@@ -218,12 +218,6 @@ FormPars ::= Type VarDeclFinal MethodSignatureEndFormPars
              VarDeclErrorComma FormPars
              ;
 
-numConst ::= (NumConst) NUMBER ;
-
-charConst ::= (CharConst) CHAR ;
-
-boolConst ::= (BoolConst) BOOL ;
-
 Type ::= (TypeIdent) IDENT
          |
          (TypeSet) SET
@@ -252,7 +246,7 @@ Statement ::=   DesignatorStatement
               |
               PRINT LPAREN Expr RPAREN SEMI
               |
-              PRINT LPAREN Expr COMMA numConst RPAREN SEMI
+              PRINT LPAREN Expr COMMA NUMBER RPAREN SEMI
               |
               DO Statement WHILE LPAREN RPAREN SEMI
               |
@@ -361,11 +355,7 @@ FactorList ::= FactorList Mulop Factor
 
 Factor ::= Designator FactorOptional
            |
-           numConst
-           |
-           charConst
-           |
-           boolConst
+           ConstDeclListValue
            |
            NEW Type FactorChoice
            |

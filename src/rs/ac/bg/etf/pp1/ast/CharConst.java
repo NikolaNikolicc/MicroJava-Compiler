@@ -1,42 +1,24 @@
 // generated with ast extension for cup
 // version 0.8
-// 27/3/2025 19:22:29
+// 28/3/2025 18:13:0
 
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class CharConst implements SyntaxNode {
+public class charConst extends ConstDeclListValue {
 
-    private SyntaxNode parent;
-    private int line;
-    private Character C1;
+    private Character char;
 
-    public CharConst (Character C1) {
-        this.C1=C1;
+    public charConst (Character char) {
+        this.char=char;
     }
 
-    public Character getC1() {
-        return C1;
+    public Character getChar() {
+        return char;
     }
 
-    public void setC1(Character C1) {
-        this.C1=C1;
-    }
-
-    public SyntaxNode getParent() {
-        return parent;
-    }
-
-    public void setParent(SyntaxNode parent) {
-        this.parent=parent;
-    }
-
-    public int getLine() {
-        return line;
-    }
-
-    public void setLine(int line) {
-        this.line=line;
+    public void setChar(Character char) {
+        this.char=char;
     }
 
     public void accept(Visitor visitor) {
@@ -57,13 +39,13 @@ public class CharConst implements SyntaxNode {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("CharConst(\n");
+        buffer.append("charConst(\n");
 
-        buffer.append(" "+tab+C1);
+        buffer.append(" "+tab+char);
         buffer.append("\n");
 
         buffer.append(tab);
-        buffer.append(") [CharConst]");
+        buffer.append(") [charConst]");
         return buffer.toString();
     }
 }

@@ -1,25 +1,25 @@
 // generated with ast extension for cup
 // version 0.8
-// 27/3/2025 19:22:29
+// 28/3/2025 18:13:0
 
 
 package rs.ac.bg.etf.pp1.ast;
 
 public class FactorDerived2 extends Factor {
 
-    private NumConst numConst;
+    private ConstDeclListValue ConstDeclListValue;
 
-    public FactorDerived2 (NumConst numConst) {
-        this.numConst=numConst;
-        if(numConst!=null) numConst.setParent(this);
+    public FactorDerived2 (ConstDeclListValue ConstDeclListValue) {
+        this.ConstDeclListValue=ConstDeclListValue;
+        if(ConstDeclListValue!=null) ConstDeclListValue.setParent(this);
     }
 
-    public NumConst getNumConst() {
-        return numConst;
+    public ConstDeclListValue getConstDeclListValue() {
+        return ConstDeclListValue;
     }
 
-    public void setNumConst(NumConst numConst) {
-        this.numConst=numConst;
+    public void setConstDeclListValue(ConstDeclListValue ConstDeclListValue) {
+        this.ConstDeclListValue=ConstDeclListValue;
     }
 
     public void accept(Visitor visitor) {
@@ -27,16 +27,16 @@ public class FactorDerived2 extends Factor {
     }
 
     public void childrenAccept(Visitor visitor) {
-        if(numConst!=null) numConst.accept(visitor);
+        if(ConstDeclListValue!=null) ConstDeclListValue.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
-        if(numConst!=null) numConst.traverseTopDown(visitor);
+        if(ConstDeclListValue!=null) ConstDeclListValue.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
-        if(numConst!=null) numConst.traverseBottomUp(visitor);
+        if(ConstDeclListValue!=null) ConstDeclListValue.traverseBottomUp(visitor);
         accept(visitor);
     }
 
@@ -45,8 +45,8 @@ public class FactorDerived2 extends Factor {
         buffer.append(tab);
         buffer.append("FactorDerived2(\n");
 
-        if(numConst!=null)
-            buffer.append(numConst.toString("  "+tab));
+        if(ConstDeclListValue!=null)
+            buffer.append(ConstDeclListValue.toString("  "+tab));
         else
             buffer.append(tab+"  null");
         buffer.append("\n");

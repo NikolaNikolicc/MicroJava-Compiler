@@ -59,7 +59,7 @@ terminal Integer NUMBER, BOOL ;
 terminal String IDENT ;
 terminal Character CHAR ;
 
-nonterminal Type, MethodSignatureEndFormPars, MethodSignatureStartFormPars, MethodName, ConstDeclAssign, Setop, Mulop, Addop, Relop, Assignop, Label, ProgramDeclList, ProgramDeclElem, ConstDecl, ConstDeclList, VarDecl, VarDeclFinal, VarDeclOptionalList, ClassDecl, VarDeclListOptional, MethodSignature, TypeChoice, FormParsOptional, FormPars, MethodDecl, VarDeclList, MethodDeclList, MathodDecl, StatementList, Statement, DesignatorStatement, Designator, DesignatorListElem, DesignatorList, AddTermList ;
+nonterminal Type, MethodSignatureEndFormPars, MethodSignatureStartFormPars, MethodName, ConstDeclAssign, Setop, Mulop, Addop, Relop, Assignop, Label, ProgramDeclList, ProgramDeclElem, ConstDecl, ConstDeclList, VarDecl, VarDeclFinal, VarDeclOptionalList, ClassDecl, VarDeclListOptional, MethodSignature, TypeChoice, FormParsOptional, FormPars, MethodDecl, VarDeclList, MethodDeclList, MathodDecl, StatementList, Statement, DesignatorStatement, Designator, DesignatorListElem, DesignatorList;
 nonterminal ActPars, FactorOptional, FactorChoice, MapDesignator, DesignatorStatementChoice, CondFact, CondTerm, CondFactList, Condition, ConditionList ;
 nonterminal Program, InterfaceDeclOptionList, InterfaceDecl, VarDeclProgram, VarDeclErrorComma, VarDeclErrorSemi, DesignatorAssign, StatementCondition, VarDeclClass, ClassDeclErrorLBrace, DesignatorAssignWhile, DesignatorStatementWhile ;
 
@@ -331,9 +331,11 @@ CondFact ::= Expr Relop Expr
              Expr
              ;
 
-Expr ::= MINUS Term AddTermList
+Expr ::= (ExprTerm) Term
          |
-         Term AddTermList
+         (ExprMinusTerm) MINUS Term
+         |
+         (ExprAddopTerm) Expr Addop Term
          |
          Designator MapDesignator
          ;
@@ -341,14 +343,9 @@ Expr ::= MINUS Term AddTermList
 MapDesignator ::= MAP Designator
                   ;
 
-AddTermList ::= AddTermList Addop Term
-                |
-                /* epsilon */
-                ;
-
-Term ::= Factor
+Term ::= (TermFactor) Factor
          |
-         Term Mulop Factor
+         (TermTermMulopFactor) Term Mulop Factor
          ;
 
 Factor ::= Designator FactorOptional

@@ -233,15 +233,42 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         node.struct = node.getConstDeclListValue().obj.getType();
     }
 
-//    @Override
-//    public void visit(FactorConstDeclListValue node){
-//        node.struct = node.getConstDeclListValue().obj.getType();
-//    }
-//
-//    @Override
-//    public void visit(FactorConstDeclListValue node){
-//        node.struct = node.getConstDeclListValue().obj.getType();
-//    }
+    @Override
+    public void visit(TermFactor node){
+        node.struct = node.getFactor().struct;
+    }
+
+    @Override
+    public void visit(TermTermMulopFactor node){
+        if(!node.getFactor().struct.equals(Tab.intType) || !node.getTerm().struct.equals(Tab.intType)){
+            report_error("Mulop operator zahteva da oba operanda budu int vrednosti.", node);
+            return;
+        }
+        node.struct = node.getFactor().struct;
+    }
+
+    @Override
+    public void visit(ExprTerm node){
+        node.struct = node.getTerm().struct;
+    }
+
+    @Override
+    public void visit(ExprMinusTerm node){
+        if(!node.getTerm().struct.equals(Tab.intType)){
+            report_error("Minus mozemo staviti samo ispred operanda koji je tipa int.", node);
+            return;
+        }
+        node.struct = node.getTerm().struct;
+    }
+
+    @Override
+    public void visit(ExprAddopTerm node){
+        if(!node.getTerm().struct.equals(Tab.intType) || !node.getTerm().struct.equals(Tab.intType)){
+            report_error("Addop operator zahteva da oba operanda budu int vrednosti.", node);
+            return;
+        }
+        node.struct = node.getTerm().struct;
+    }
 
     @Override
     public void visit(MethodSignatureStartFormPars methodSignatureStartFormPars){

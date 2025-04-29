@@ -93,7 +93,6 @@ nonterminal DesignatorStatement DesignatorStatement;
 nonterminal Designator Designator;
 nonterminal DesignatorListElem DesignatorListElem;
 nonterminal DesignatorList DesignatorList;
-nonterminal AddTermList AddTermList ;
 nonterminal ActPars ActPars;
 nonterminal FactorOptional FactorOptional;
 nonterminal FactorChoice FactorChoice;
@@ -385,24 +384,21 @@ CondFact ::= Expr:E1 Relop:R2 Expr:E3 {: RESULT=new CondFactDerived1(E1, R2, E3)
              Expr:E1 {: RESULT=new CondFactDerived2(E1); RESULT.setLine(E1left); :}
              ;
 
-Expr ::= MINUS Term:T1 AddTermList:A2 {: RESULT=new ExprDerived1(T1, A2); RESULT.setLine(T1left); :}
+Expr ::= (ExprTerm) Term:T1 {: RESULT=new ExprTerm(T1); RESULT.setLine(T1left); :}
          |
-         Term:T1 AddTermList:A2 {: RESULT=new ExprDerived2(T1, A2); RESULT.setLine(T1left); :}
+         (ExprMinusTerm) MINUS Term:T1 {: RESULT=new ExprMinusTerm(T1); RESULT.setLine(T1left); :}
          |
-         Designator:D1 MapDesignator:M2 {: RESULT=new ExprDerived3(D1, M2); RESULT.setLine(D1left); :}
+         (ExprAddopTerm) Expr:E1 Addop:A2 Term:T3 {: RESULT=new ExprAddopTerm(E1, A2, T3); RESULT.setLine(E1left); :}
+         |
+         Designator:D1 MapDesignator:M2 {: RESULT=new ExprDerived1(D1, M2); RESULT.setLine(D1left); :}
          ;
 
 MapDesignator ::= MAP Designator:D1 {: RESULT=new MapDesignatorDerived1(D1); RESULT.setLine(D1left); :}
                   ;
 
-AddTermList ::= AddTermList:A1 Addop:A2 Term:T3 {: RESULT=new AddTermListDerived1(A1, A2, T3); RESULT.setLine(A1left); :}
-                | {: RESULT=new AddTermListDerived2(); :}
-                /* epsilon */
-                ;
-
-Term ::= Factor:F1 {: RESULT=new TermDerived1(F1); RESULT.setLine(F1left); :}
+Term ::= (TermFactor) Factor:F1 {: RESULT=new TermFactor(F1); RESULT.setLine(F1left); :}
          |
-         Term:T1 Mulop:M2 Factor:F3 {: RESULT=new TermDerived2(T1, M2, F3); RESULT.setLine(T1left); :}
+         (TermTermMulopFactor) Term:T1 Mulop:M2 Factor:F3 {: RESULT=new TermTermMulopFactor(T1, M2, F3); RESULT.setLine(T1left); :}
          ;
 
 Factor ::= Designator:D1 FactorOptional:F2 {: RESULT=new FactorDerived1(D1, F2); RESULT.setLine(D1left); :}

@@ -1,31 +1,31 @@
 // generated with ast extension for cup
 // version 0.8
-// 30/3/2025 0:10:35
+// 30/3/2025 0:29:55
 
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class AddTermListDerived1 extends AddTermList {
+public class ExprAddopTerm extends Expr {
 
-    private AddTermList AddTermList;
+    private Expr Expr;
     private Addop Addop;
     private Term Term;
 
-    public AddTermListDerived1 (AddTermList AddTermList, Addop Addop, Term Term) {
-        this.AddTermList=AddTermList;
-        if(AddTermList!=null) AddTermList.setParent(this);
+    public ExprAddopTerm (Expr Expr, Addop Addop, Term Term) {
+        this.Expr=Expr;
+        if(Expr!=null) Expr.setParent(this);
         this.Addop=Addop;
         if(Addop!=null) Addop.setParent(this);
         this.Term=Term;
         if(Term!=null) Term.setParent(this);
     }
 
-    public AddTermList getAddTermList() {
-        return AddTermList;
+    public Expr getExpr() {
+        return Expr;
     }
 
-    public void setAddTermList(AddTermList AddTermList) {
-        this.AddTermList=AddTermList;
+    public void setExpr(Expr Expr) {
+        this.Expr=Expr;
     }
 
     public Addop getAddop() {
@@ -49,20 +49,20 @@ public class AddTermListDerived1 extends AddTermList {
     }
 
     public void childrenAccept(Visitor visitor) {
-        if(AddTermList!=null) AddTermList.accept(visitor);
+        if(Expr!=null) Expr.accept(visitor);
         if(Addop!=null) Addop.accept(visitor);
         if(Term!=null) Term.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
-        if(AddTermList!=null) AddTermList.traverseTopDown(visitor);
+        if(Expr!=null) Expr.traverseTopDown(visitor);
         if(Addop!=null) Addop.traverseTopDown(visitor);
         if(Term!=null) Term.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
-        if(AddTermList!=null) AddTermList.traverseBottomUp(visitor);
+        if(Expr!=null) Expr.traverseBottomUp(visitor);
         if(Addop!=null) Addop.traverseBottomUp(visitor);
         if(Term!=null) Term.traverseBottomUp(visitor);
         accept(visitor);
@@ -71,10 +71,10 @@ public class AddTermListDerived1 extends AddTermList {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("AddTermListDerived1(\n");
+        buffer.append("ExprAddopTerm(\n");
 
-        if(AddTermList!=null)
-            buffer.append(AddTermList.toString("  "+tab));
+        if(Expr!=null)
+            buffer.append(Expr.toString("  "+tab));
         else
             buffer.append(tab+"  null");
         buffer.append("\n");
@@ -92,7 +92,7 @@ public class AddTermListDerived1 extends AddTermList {
         buffer.append("\n");
 
         buffer.append(tab);
-        buffer.append(") [AddTermListDerived1]");
+        buffer.append(") [ExprAddopTerm]");
         return buffer.toString();
     }
 }

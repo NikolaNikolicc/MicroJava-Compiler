@@ -5,21 +5,21 @@
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class DesignatorListElemDerived2 extends DesignatorListElem {
+public class TermFactor extends Term {
 
-    private Expr Expr;
+    private Factor Factor;
 
-    public DesignatorListElemDerived2 (Expr Expr) {
-        this.Expr=Expr;
-        if(Expr!=null) Expr.setParent(this);
+    public TermFactor (Factor Factor) {
+        this.Factor=Factor;
+        if(Factor!=null) Factor.setParent(this);
     }
 
-    public Expr getExpr() {
-        return Expr;
+    public Factor getFactor() {
+        return Factor;
     }
 
-    public void setExpr(Expr Expr) {
-        this.Expr=Expr;
+    public void setFactor(Factor Factor) {
+        this.Factor=Factor;
     }
 
     public void accept(Visitor visitor) {
@@ -27,32 +27,32 @@ public class DesignatorListElemDerived2 extends DesignatorListElem {
     }
 
     public void childrenAccept(Visitor visitor) {
-        if(Expr!=null) Expr.accept(visitor);
+        if(Factor!=null) Factor.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
-        if(Expr!=null) Expr.traverseTopDown(visitor);
+        if(Factor!=null) Factor.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
-        if(Expr!=null) Expr.traverseBottomUp(visitor);
+        if(Factor!=null) Factor.traverseBottomUp(visitor);
         accept(visitor);
     }
 
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("DesignatorListElemDerived2(\n");
+        buffer.append("TermFactor(\n");
 
-        if(Expr!=null)
-            buffer.append(Expr.toString("  "+tab));
+        if(Factor!=null)
+            buffer.append(Factor.toString("  "+tab));
         else
             buffer.append(tab+"  null");
         buffer.append("\n");
 
         buffer.append(tab);
-        buffer.append(") [DesignatorListElemDerived2]");
+        buffer.append(") [TermFactor]");
         return buffer.toString();
     }
 }

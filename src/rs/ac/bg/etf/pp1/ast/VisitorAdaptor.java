@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 29/3/2025 15:35:19
+// 30/3/2025 0:10:35
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -23,7 +23,6 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(VarDeclErrorSemi VarDeclErrorSemi) { }
     public void visit(VarDeclClass VarDeclClass) { }
     public void visit(StatementList StatementList) { }
-    public void visit(FactorList FactorList) { }
     public void visit(Addop Addop) { }
     public void visit(DesignatorStatementChoice DesignatorStatementChoice) { }
     public void visit(FactorOptional FactorOptional) { }
@@ -86,12 +85,11 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(FactorChoiceDerived3 FactorChoiceDerived3) { visit(); }
     public void visit(FactorChoiceDerived2 FactorChoiceDerived2) { visit(); }
     public void visit(FactorChoiceDerived1 FactorChoiceDerived1) { visit(); }
-    public void visit(FactorDerived4 FactorDerived4) { visit(); }
     public void visit(FactorDerived3 FactorDerived3) { visit(); }
     public void visit(FactorDerived2 FactorDerived2) { visit(); }
+    public void visit(FactorConstDeclListValue FactorConstDeclListValue) { visit(); }
     public void visit(FactorDerived1 FactorDerived1) { visit(); }
-    public void visit(FactorListDerived2 FactorListDerived2) { visit(); }
-    public void visit(FactorListDerived1 FactorListDerived1) { visit(); }
+    public void visit(TermDerived2 TermDerived2) { visit(); }
     public void visit(TermDerived1 TermDerived1) { visit(); }
     public void visit(AddTermListDerived2 AddTermListDerived2) { visit(); }
     public void visit(AddTermListDerived1 AddTermListDerived1) { visit(); }

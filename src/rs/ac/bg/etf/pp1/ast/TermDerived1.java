@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 29/3/2025 15:35:18
+// 30/3/2025 0:10:35
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -8,13 +8,10 @@ package rs.ac.bg.etf.pp1.ast;
 public class TermDerived1 extends Term {
 
     private Factor Factor;
-    private FactorList FactorList;
 
-    public TermDerived1 (Factor Factor, FactorList FactorList) {
+    public TermDerived1 (Factor Factor) {
         this.Factor=Factor;
         if(Factor!=null) Factor.setParent(this);
-        this.FactorList=FactorList;
-        if(FactorList!=null) FactorList.setParent(this);
     }
 
     public Factor getFactor() {
@@ -25,32 +22,21 @@ public class TermDerived1 extends Term {
         this.Factor=Factor;
     }
 
-    public FactorList getFactorList() {
-        return FactorList;
-    }
-
-    public void setFactorList(FactorList FactorList) {
-        this.FactorList=FactorList;
-    }
-
     public void accept(Visitor visitor) {
         visitor.visit(this);
     }
 
     public void childrenAccept(Visitor visitor) {
         if(Factor!=null) Factor.accept(visitor);
-        if(FactorList!=null) FactorList.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
         if(Factor!=null) Factor.traverseTopDown(visitor);
-        if(FactorList!=null) FactorList.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
         if(Factor!=null) Factor.traverseBottomUp(visitor);
-        if(FactorList!=null) FactorList.traverseBottomUp(visitor);
         accept(visitor);
     }
 
@@ -61,12 +47,6 @@ public class TermDerived1 extends Term {
 
         if(Factor!=null)
             buffer.append(Factor.toString("  "+tab));
-        else
-            buffer.append(tab+"  null");
-        buffer.append("\n");
-
-        if(FactorList!=null)
-            buffer.append(FactorList.toString("  "+tab));
         else
             buffer.append(tab+"  null");
         buffer.append("\n");

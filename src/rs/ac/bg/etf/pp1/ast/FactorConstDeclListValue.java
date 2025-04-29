@@ -5,25 +5,13 @@
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class ConstDeclAssign implements SyntaxNode {
+public class FactorConstDeclListValue extends Factor {
 
-    private SyntaxNode parent;
-    private int line;
-    private String I1;
     private ConstDeclListValue ConstDeclListValue;
 
-    public ConstDeclAssign (String I1, ConstDeclListValue ConstDeclListValue) {
-        this.I1=I1;
+    public FactorConstDeclListValue (ConstDeclListValue ConstDeclListValue) {
         this.ConstDeclListValue=ConstDeclListValue;
         if(ConstDeclListValue!=null) ConstDeclListValue.setParent(this);
-    }
-
-    public String getI1() {
-        return I1;
-    }
-
-    public void setI1(String I1) {
-        this.I1=I1;
     }
 
     public ConstDeclListValue getConstDeclListValue() {
@@ -32,22 +20,6 @@ public class ConstDeclAssign implements SyntaxNode {
 
     public void setConstDeclListValue(ConstDeclListValue ConstDeclListValue) {
         this.ConstDeclListValue=ConstDeclListValue;
-    }
-
-    public SyntaxNode getParent() {
-        return parent;
-    }
-
-    public void setParent(SyntaxNode parent) {
-        this.parent=parent;
-    }
-
-    public int getLine() {
-        return line;
-    }
-
-    public void setLine(int line) {
-        this.line=line;
     }
 
     public void accept(Visitor visitor) {
@@ -71,10 +43,7 @@ public class ConstDeclAssign implements SyntaxNode {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("ConstDeclAssign(\n");
-
-        buffer.append(" "+tab+I1);
-        buffer.append("\n");
+        buffer.append("FactorConstDeclListValue(\n");
 
         if(ConstDeclListValue!=null)
             buffer.append(ConstDeclListValue.toString("  "+tab));
@@ -83,7 +52,7 @@ public class ConstDeclAssign implements SyntaxNode {
         buffer.append("\n");
 
         buffer.append(tab);
-        buffer.append(") [ConstDeclAssign]");
+        buffer.append(") [FactorConstDeclListValue]");
         return buffer.toString();
     }
 }

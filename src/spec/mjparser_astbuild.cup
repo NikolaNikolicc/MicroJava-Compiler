@@ -93,9 +93,6 @@ nonterminal DesignatorStatement DesignatorStatement;
 nonterminal Designator Designator;
 nonterminal DesignatorListElem DesignatorListElem;
 nonterminal DesignatorList DesignatorList;
-nonterminal Expr Expr;
-nonterminal Term Term;
-nonterminal FactorList FactorList;
 nonterminal AddTermList AddTermList ;
 nonterminal ActPars ActPars;
 nonterminal FactorOptional FactorOptional;
@@ -120,7 +117,7 @@ nonterminal ClassDeclErrorLBrace ClassDeclErrorLBrace;
 nonterminal DesignatorAssignWhile DesignatorAssignWhile;
 nonterminal DesignatorStatementWhile DesignatorStatementWhile ;
 
-nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor;
+nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr;
 nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue;
 
 precedence left ELSE;
@@ -403,21 +400,18 @@ AddTermList ::= AddTermList:A1 Addop:A2 Term:T3 {: RESULT=new AddTermListDerived
                 /* epsilon */
                 ;
 
-Term ::= Factor:F1 FactorList:F2 {: RESULT=new TermDerived1(F1, F2); RESULT.setLine(F1left); :}
+Term ::= Factor:F1 {: RESULT=new TermDerived1(F1); RESULT.setLine(F1left); :}
+         |
+         Term:T1 Mulop:M2 Factor:F3 {: RESULT=new TermDerived2(T1, M2, F3); RESULT.setLine(T1left); :}
          ;
-
-FactorList ::= FactorList:F1 Mulop:M2 Factor:F3 {: RESULT=new FactorListDerived1(F1, M2, F3); RESULT.setLine(F1left); :}
-               | {: RESULT=new FactorListDerived2(); :}
-               /* epsilon */
-               ;
 
 Factor ::= Designator:D1 FactorOptional:F2 {: RESULT=new FactorDerived1(D1, F2); RESULT.setLine(D1left); :}
            |
-           ConstDeclListValue:C1 {: RESULT=new FactorDerived2(C1); RESULT.setLine(C1left); :}
+           (FactorConstDeclListValue) ConstDeclListValue:C1 {: RESULT=new FactorConstDeclListValue(C1); RESULT.setLine(C1left); :}
            |
-           NEW Type:T1 FactorChoice:F2 {: RESULT=new FactorDerived3(T1, F2); RESULT.setLine(T1left); :}
+           NEW Type:T1 FactorChoice:F2 {: RESULT=new FactorDerived2(T1, F2); RESULT.setLine(T1left); :}
            |
-           LPAREN Expr:E1 RPAREN {: RESULT=new FactorDerived4(E1); RESULT.setLine(E1left); :}
+           LPAREN Expr:E1 RPAREN {: RESULT=new FactorDerived3(E1); RESULT.setLine(E1left); :}
            ;
 
 FactorChoice ::= LBRACKET Expr:E1 RBRACKET {: RESULT=new FactorChoiceDerived1(E1); RESULT.setLine(E1left); :}

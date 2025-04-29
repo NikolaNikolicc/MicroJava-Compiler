@@ -229,6 +229,21 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     }
 
     @Override
+    public void visit(FactorConstDeclListValue node){
+        node.struct = node.getConstDeclListValue().obj.getType();
+    }
+
+//    @Override
+//    public void visit(FactorConstDeclListValue node){
+//        node.struct = node.getConstDeclListValue().obj.getType();
+//    }
+//
+//    @Override
+//    public void visit(FactorConstDeclListValue node){
+//        node.struct = node.getConstDeclListValue().obj.getType();
+//    }
+
+    @Override
     public void visit(MethodSignatureStartFormPars methodSignatureStartFormPars){
         parsingFormPars = true;
     }

@@ -1,36 +1,25 @@
 // generated with ast extension for cup
 // version 0.8
-// 29/3/2025 15:35:18
+// 30/3/2025 0:10:35
 
 
 package rs.ac.bg.etf.pp1.ast;
 
 public class FactorDerived3 extends Factor {
 
-    private Type Type;
-    private FactorChoice FactorChoice;
+    private Expr Expr;
 
-    public FactorDerived3 (Type Type, FactorChoice FactorChoice) {
-        this.Type=Type;
-        if(Type!=null) Type.setParent(this);
-        this.FactorChoice=FactorChoice;
-        if(FactorChoice!=null) FactorChoice.setParent(this);
+    public FactorDerived3 (Expr Expr) {
+        this.Expr=Expr;
+        if(Expr!=null) Expr.setParent(this);
     }
 
-    public Type getType() {
-        return Type;
+    public Expr getExpr() {
+        return Expr;
     }
 
-    public void setType(Type Type) {
-        this.Type=Type;
-    }
-
-    public FactorChoice getFactorChoice() {
-        return FactorChoice;
-    }
-
-    public void setFactorChoice(FactorChoice FactorChoice) {
-        this.FactorChoice=FactorChoice;
+    public void setExpr(Expr Expr) {
+        this.Expr=Expr;
     }
 
     public void accept(Visitor visitor) {
@@ -38,19 +27,16 @@ public class FactorDerived3 extends Factor {
     }
 
     public void childrenAccept(Visitor visitor) {
-        if(Type!=null) Type.accept(visitor);
-        if(FactorChoice!=null) FactorChoice.accept(visitor);
+        if(Expr!=null) Expr.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
-        if(Type!=null) Type.traverseTopDown(visitor);
-        if(FactorChoice!=null) FactorChoice.traverseTopDown(visitor);
+        if(Expr!=null) Expr.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
-        if(Type!=null) Type.traverseBottomUp(visitor);
-        if(FactorChoice!=null) FactorChoice.traverseBottomUp(visitor);
+        if(Expr!=null) Expr.traverseBottomUp(visitor);
         accept(visitor);
     }
 
@@ -59,14 +45,8 @@ public class FactorDerived3 extends Factor {
         buffer.append(tab);
         buffer.append("FactorDerived3(\n");
 
-        if(Type!=null)
-            buffer.append(Type.toString("  "+tab));
-        else
-            buffer.append(tab+"  null");
-        buffer.append("\n");
-
-        if(FactorChoice!=null)
-            buffer.append(FactorChoice.toString("  "+tab));
+        if(Expr!=null)
+            buffer.append(Expr.toString("  "+tab));
         else
             buffer.append(tab+"  null");
         buffer.append("\n");

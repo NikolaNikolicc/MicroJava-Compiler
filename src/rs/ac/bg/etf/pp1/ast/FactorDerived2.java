@@ -1,25 +1,36 @@
 // generated with ast extension for cup
 // version 0.8
-// 29/3/2025 15:35:18
+// 30/3/2025 0:10:35
 
 
 package rs.ac.bg.etf.pp1.ast;
 
 public class FactorDerived2 extends Factor {
 
-    private ConstDeclListValue ConstDeclListValue;
+    private Type Type;
+    private FactorChoice FactorChoice;
 
-    public FactorDerived2 (ConstDeclListValue ConstDeclListValue) {
-        this.ConstDeclListValue=ConstDeclListValue;
-        if(ConstDeclListValue!=null) ConstDeclListValue.setParent(this);
+    public FactorDerived2 (Type Type, FactorChoice FactorChoice) {
+        this.Type=Type;
+        if(Type!=null) Type.setParent(this);
+        this.FactorChoice=FactorChoice;
+        if(FactorChoice!=null) FactorChoice.setParent(this);
     }
 
-    public ConstDeclListValue getConstDeclListValue() {
-        return ConstDeclListValue;
+    public Type getType() {
+        return Type;
     }
 
-    public void setConstDeclListValue(ConstDeclListValue ConstDeclListValue) {
-        this.ConstDeclListValue=ConstDeclListValue;
+    public void setType(Type Type) {
+        this.Type=Type;
+    }
+
+    public FactorChoice getFactorChoice() {
+        return FactorChoice;
+    }
+
+    public void setFactorChoice(FactorChoice FactorChoice) {
+        this.FactorChoice=FactorChoice;
     }
 
     public void accept(Visitor visitor) {
@@ -27,16 +38,19 @@ public class FactorDerived2 extends Factor {
     }
 
     public void childrenAccept(Visitor visitor) {
-        if(ConstDeclListValue!=null) ConstDeclListValue.accept(visitor);
+        if(Type!=null) Type.accept(visitor);
+        if(FactorChoice!=null) FactorChoice.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
-        if(ConstDeclListValue!=null) ConstDeclListValue.traverseTopDown(visitor);
+        if(Type!=null) Type.traverseTopDown(visitor);
+        if(FactorChoice!=null) FactorChoice.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
-        if(ConstDeclListValue!=null) ConstDeclListValue.traverseBottomUp(visitor);
+        if(Type!=null) Type.traverseBottomUp(visitor);
+        if(FactorChoice!=null) FactorChoice.traverseBottomUp(visitor);
         accept(visitor);
     }
 
@@ -45,8 +59,14 @@ public class FactorDerived2 extends Factor {
         buffer.append(tab);
         buffer.append("FactorDerived2(\n");
 
-        if(ConstDeclListValue!=null)
-            buffer.append(ConstDeclListValue.toString("  "+tab));
+        if(Type!=null)
+            buffer.append(Type.toString("  "+tab));
+        else
+            buffer.append(tab+"  null");
+        buffer.append("\n");
+
+        if(FactorChoice!=null)
+            buffer.append(FactorChoice.toString("  "+tab));
         else
             buffer.append(tab+"  null");
         buffer.append("\n");

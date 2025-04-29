@@ -1,24 +1,24 @@
 // generated with ast extension for cup
 // version 0.8
-// 28/3/2025 18:13:0
+// 29/3/2025 15:15:58
 
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class boolConst extends ConstDeclListValue {
+public class BoolConst extends ConstDeclListValue {
 
-    private Integer bool;
+    private Integer B1;
 
-    public boolConst (Integer bool) {
-        this.bool=bool;
+    public BoolConst (Integer B1) {
+        this.B1=B1;
     }
 
-    public Integer getBool() {
-        return bool;
+    public Integer getB1() {
+        return B1;
     }
 
-    public void setBool(Integer bool) {
-        this.bool=bool;
+    public void setB1(Integer B1) {
+        this.B1=B1;
     }
 
     public void accept(Visitor visitor) {
@@ -39,13 +39,13 @@ public class boolConst extends ConstDeclListValue {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("boolConst(\n");
+        buffer.append("BoolConst(\n");
 
-        buffer.append(" "+tab+bool);
+        buffer.append(" "+tab+B1);
         buffer.append("\n");
 
         buffer.append(tab);
-        buffer.append(") [boolConst]");
+        buffer.append(") [BoolConst]");
         return buffer.toString();
     }
 }

@@ -1,24 +1,24 @@
 // generated with ast extension for cup
 // version 0.8
-// 28/3/2025 18:13:0
+// 29/3/2025 15:15:58
 
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class numConst extends ConstDeclListValue {
+public class NumConst extends ConstDeclListValue {
 
-    private Integer number;
+    private Integer N1;
 
-    public numConst (Integer number) {
-        this.number=number;
+    public NumConst (Integer N1) {
+        this.N1=N1;
     }
 
-    public Integer getNumber() {
-        return number;
+    public Integer getN1() {
+        return N1;
     }
 
-    public void setNumber(Integer number) {
-        this.number=number;
+    public void setN1(Integer N1) {
+        this.N1=N1;
     }
 
     public void accept(Visitor visitor) {
@@ -39,13 +39,13 @@ public class numConst extends ConstDeclListValue {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("numConst(\n");
+        buffer.append("NumConst(\n");
 
-        buffer.append(" "+tab+number);
+        buffer.append(" "+tab+N1);
         buffer.append("\n");
 
         buffer.append(tab);
-        buffer.append(") [numConst]");
+        buffer.append(") [NumConst]");
         return buffer.toString();
     }
 }

@@ -59,11 +59,12 @@ terminal Integer NUMBER, BOOL ;
 terminal String IDENT ;
 terminal Character CHAR ;
 
-nonterminal Type, MethodSignatureEndFormPars, MethodSignatureStartFormPars, MethodName, ConstDeclAssign, Setop, Mulop, Addop, Relop, Assignop, Label, ProgramDeclList, ProgramDeclElem, ConstDecl, ConstDeclListValue, ConstDeclList, VarDecl, VarDeclFinal, VarDeclOptionalList, ClassDecl, VarDeclListOptional, MethodSignature, TypeChoice, FormParsOptional, FormPars, MethodDecl, VarDeclList, MethodDeclList, MathodDecl, StatementList, Statement, DesignatorStatement, Designator, DesignatorListElem, DesignatorList, Expr, Term, FactorList, Factor, AddTermList ;
+nonterminal Type, MethodSignatureEndFormPars, MethodSignatureStartFormPars, MethodName, ConstDeclAssign, Setop, Mulop, Addop, Relop, Assignop, Label, ProgramDeclList, ProgramDeclElem, ConstDecl, ConstDeclList, VarDecl, VarDeclFinal, VarDeclOptionalList, ClassDecl, VarDeclListOptional, MethodSignature, TypeChoice, FormParsOptional, FormPars, MethodDecl, VarDeclList, MethodDeclList, MathodDecl, StatementList, Statement, DesignatorStatement, Designator, DesignatorListElem, DesignatorList, Expr, Term, FactorList, AddTermList ;
 nonterminal ActPars, FactorOptional, FactorChoice, MapDesignator, DesignatorStatementChoice, CondFact, CondTerm, CondFactList, Condition, ConditionList ;
 nonterminal Program, InterfaceDeclOptionList, InterfaceDecl, VarDeclProgram, VarDeclErrorComma, VarDeclErrorSemi, DesignatorAssign, StatementCondition, VarDeclClass, ClassDeclErrorLBrace, DesignatorAssignWhile, DesignatorStatementWhile ;
 
-nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName;
+nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor;
+nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue;
 
 precedence left ELSE;
 
@@ -102,11 +103,11 @@ VarDeclErrorSemi ::= error SEMI:l
 
 ConstDecl ::= CONST Type ConstDeclList SEMI ;
 
-ConstDeclListValue ::= (numConst)NUMBER:number
+ConstDeclListValue ::= (NumConst)NUMBER
                        |
-                       (charConst)CHAR:char
+                       (CharConst)CHAR
                        |
-                       (boolConst)BOOL:bool
+                       (BoolConst)BOOL
                        ;
 
 ConstDeclList ::= ConstDeclList COMMA ConstDeclAssign

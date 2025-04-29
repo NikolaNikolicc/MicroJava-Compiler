@@ -73,7 +73,6 @@ nonterminal Label Label;
 nonterminal ProgramDeclList ProgramDeclList;
 nonterminal ProgramDeclElem ProgramDeclElem;
 nonterminal ConstDecl ConstDecl;
-nonterminal ConstDeclListValue ConstDeclListValue;
 nonterminal ConstDeclList ConstDeclList;
 nonterminal VarDecl VarDecl;
 nonterminal VarDeclFinal VarDeclFinal;
@@ -97,7 +96,6 @@ nonterminal DesignatorList DesignatorList;
 nonterminal Expr Expr;
 nonterminal Term Term;
 nonterminal FactorList FactorList;
-nonterminal Factor Factor;
 nonterminal AddTermList AddTermList ;
 nonterminal ActPars ActPars;
 nonterminal FactorOptional FactorOptional;
@@ -122,7 +120,8 @@ nonterminal ClassDeclErrorLBrace ClassDeclErrorLBrace;
 nonterminal DesignatorAssignWhile DesignatorAssignWhile;
 nonterminal DesignatorStatementWhile DesignatorStatementWhile ;
 
-nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName;
+nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor;
+nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue;
 
 precedence left ELSE;
 
@@ -161,11 +160,11 @@ VarDeclErrorSemi ::= error SEMI:l
 
 ConstDecl ::= CONST Type:T1 ConstDeclList:C2 SEMI {: RESULT=new ConstDeclDerived1(T1, C2); RESULT.setLine(T1left); :} ;
 
-ConstDeclListValue ::= (numConst)NUMBER:number {: RESULT=new numConst(number); RESULT.setLine(numberleft); :}
+ConstDeclListValue ::= (NumConst)NUMBER:N1 {: RESULT=new NumConst(N1); RESULT.setLine(N1left); :}
                        |
-                       (charConst)CHAR:char {: RESULT=new charConst(char); RESULT.setLine(charleft); :}
+                       (CharConst)CHAR:C1 {: RESULT=new CharConst(C1); RESULT.setLine(C1left); :}
                        |
-                       (boolConst)BOOL:bool {: RESULT=new boolConst(bool); RESULT.setLine(boolleft); :}
+                       (BoolConst)BOOL:B1 {: RESULT=new BoolConst(B1); RESULT.setLine(B1left); :}
                        ;
 
 ConstDeclList ::= ConstDeclList:C1 COMMA ConstDeclAssign:C2 {: RESULT=new ConstDeclListDerived1(C1, C2); RESULT.setLine(C1left); :}

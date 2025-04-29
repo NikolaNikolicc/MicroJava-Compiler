@@ -13,8 +13,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     private Obj currTypeVar = null;
     private Obj currTypeMeth = null;
     private Obj currMeth = null;
-//    private int constValue;
-//    private Struct constType = null;
     // because we want to allow initialization of variables that are named int char and bool we are saving pointers to this object nodes
     // this is used in TypeIdent visitor and in that case we are sure we are getting right object node, in other case Tab.find(name) function can return Object node which overrides those names
     private static Obj intObj = Tab.find("int");
@@ -123,22 +121,16 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     @Override
     public void visit(NumConst numConst){
         numConst.obj = new Obj(Obj.Con, "numConst", Tab.intType, numConst.getN1(), 0);
-//        constValue = numConst.getNumber();
-//        constType = Tab.intType;
     }
 
     @Override
     public void visit(CharConst charConst){
         charConst.obj = new Obj(Obj.Con, "charConst", Tab.charType, charConst.getC1(), 0);
-//        constValue = charConst.getChar();
-//        constType = Tab.charType;
     }
 
     @Override
     public void visit(BoolConst boolConst){
         boolConst.obj = new Obj(Obj.Con, "boolConst", boolType, boolConst.getB1(), 0);
-//        constValue = boolConst.getBool();
-//        constType = boolType;
     }
 
     @Override

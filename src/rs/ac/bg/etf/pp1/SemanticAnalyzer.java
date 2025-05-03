@@ -242,6 +242,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     public void visit(TermTermMulopFactor node){
         if(!node.getFactor().struct.equals(Tab.intType) || !node.getTerm().struct.equals(Tab.intType)){
             report_error("Mulop operator zahteva da oba operanda budu int vrednosti.", node);
+            node.struct = Tab.noType;
             return;
         }
         node.struct = node.getFactor().struct;
@@ -256,6 +257,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     public void visit(ExprMinusTerm node){
         if(!node.getTerm().struct.equals(Tab.intType)){
             report_error("Minus mozemo staviti samo ispred operanda koji je tipa int.", node);
+            node.struct = Tab.noType;
             return;
         }
         node.struct = node.getTerm().struct;
@@ -265,6 +267,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     public void visit(ExprAddopTerm node){
         if(!node.getTerm().struct.equals(Tab.intType) || !node.getExpr().struct.equals(Tab.intType)){
             report_error("Addop operator zahteva da oba operanda budu int vrednosti.", node);
+            node.struct = Tab.noType;
             return;
         }
         node.struct = node.getTerm().struct;

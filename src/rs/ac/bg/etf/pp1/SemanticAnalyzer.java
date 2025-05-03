@@ -263,7 +263,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(ExprAddopTerm node){
-        if(!node.getTerm().struct.equals(Tab.intType) || !node.getTerm().struct.equals(Tab.intType)){
+        if(!node.getTerm().struct.equals(Tab.intType) || !node.getExpr().struct.equals(Tab.intType)){
             report_error("Addop operator zahteva da oba operanda budu int vrednosti.", node);
             return;
         }

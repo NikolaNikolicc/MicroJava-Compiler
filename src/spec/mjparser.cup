@@ -349,7 +349,7 @@ Term ::= (TermFactor) Factor
          (TermTermMulopFactor) Term Mulop Factor
          ;
 
-Factor ::= Designator
+Factor ::= (FactorDesignator) Designator
            |
            Designator DesignatorFuncCall
            |

@@ -399,15 +399,15 @@ Term ::= (TermFactor) Factor:F1 {: RESULT=new TermFactor(F1); RESULT.setLine(F1l
          (TermTermMulopFactor) Term:T1 Mulop:M2 Factor:F3 {: RESULT=new TermTermMulopFactor(T1, M2, F3); RESULT.setLine(T1left); :}
          ;
 
-Factor ::= Designator:D1 {: RESULT=new FactorDerived1(D1); RESULT.setLine(D1left); :}
+Factor ::= (FactorDesignator) Designator:D1 {: RESULT=new FactorDesignator(D1); RESULT.setLine(D1left); :}
            |
-           Designator:D1 DesignatorFuncCall:D2 {: RESULT=new FactorDerived2(D1, D2); RESULT.setLine(D1left); :}
+           Designator:D1 DesignatorFuncCall:D2 {: RESULT=new FactorDerived1(D1, D2); RESULT.setLine(D1left); :}
            |
            (FactorConstDeclListValue) ConstDeclListValue:C1 {: RESULT=new FactorConstDeclListValue(C1); RESULT.setLine(C1left); :}
            |
-           NEW Type:T1 FactorChoice:F2 {: RESULT=new FactorDerived3(T1, F2); RESULT.setLine(T1left); :}
+           NEW Type:T1 FactorChoice:F2 {: RESULT=new FactorDerived2(T1, F2); RESULT.setLine(T1left); :}
            |
-           LPAREN Expr:E1 RPAREN {: RESULT=new FactorDerived4(E1); RESULT.setLine(E1left); :}
+           LPAREN Expr:E1 RPAREN {: RESULT=new FactorDerived3(E1); RESULT.setLine(E1left); :}
            ;
 
 FactorChoice ::= LBRACKET Expr:E1 RBRACKET {: RESULT=new FactorChoiceDerived1(E1); RESULT.setLine(E1left); :}

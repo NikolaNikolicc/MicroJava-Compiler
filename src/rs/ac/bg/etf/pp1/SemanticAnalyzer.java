@@ -296,6 +296,11 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     }
 
     @Override
+    public void visit(FactorDesignator node){
+        node.struct = node.getDesignator().obj.getType();
+    }
+
+    @Override
     public void visit(DesignatorVar node){
         Obj var = Tab.find(node.getI1());
         if (var == Tab.noObj){

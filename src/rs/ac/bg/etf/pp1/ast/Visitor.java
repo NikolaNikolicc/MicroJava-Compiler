@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 4/4/2025 21:38:24
+// 4/4/2025 21:42:30
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -79,11 +79,11 @@ public interface Visitor {
     public void visit(FactorChoiceDerived3 FactorChoiceDerived3);
     public void visit(FactorChoiceDerived2 FactorChoiceDerived2);
     public void visit(FactorChoiceDerived1 FactorChoiceDerived1);
-    public void visit(FactorDerived4 FactorDerived4);
     public void visit(FactorDerived3 FactorDerived3);
-    public void visit(FactorConstDeclListValue FactorConstDeclListValue);
     public void visit(FactorDerived2 FactorDerived2);
+    public void visit(FactorConstDeclListValue FactorConstDeclListValue);
     public void visit(FactorDerived1 FactorDerived1);
+    public void visit(FactorDesignator FactorDesignator);
     public void visit(TermTermMulopFactor TermTermMulopFactor);
     public void visit(TermFactor TermFactor);
     public void visit(MapDesignatorDerived1 MapDesignatorDerived1);

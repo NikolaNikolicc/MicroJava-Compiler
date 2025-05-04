@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 4/4/2025 21:38:23
+// 4/4/2025 21:42:30
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -8,10 +8,13 @@ package rs.ac.bg.etf.pp1.ast;
 public class FactorDerived1 extends Factor {
 
     private Designator Designator;
+    private DesignatorFuncCall DesignatorFuncCall;
 
-    public FactorDerived1 (Designator Designator) {
+    public FactorDerived1 (Designator Designator, DesignatorFuncCall DesignatorFuncCall) {
         this.Designator=Designator;
         if(Designator!=null) Designator.setParent(this);
+        this.DesignatorFuncCall=DesignatorFuncCall;
+        if(DesignatorFuncCall!=null) DesignatorFuncCall.setParent(this);
     }
 
     public Designator getDesignator() {
@@ -22,21 +25,32 @@ public class FactorDerived1 extends Factor {
         this.Designator=Designator;
     }
 
+    public DesignatorFuncCall getDesignatorFuncCall() {
+        return DesignatorFuncCall;
+    }
+
+    public void setDesignatorFuncCall(DesignatorFuncCall DesignatorFuncCall) {
+        this.DesignatorFuncCall=DesignatorFuncCall;
+    }
+
     public void accept(Visitor visitor) {
         visitor.visit(this);
     }
 
     public void childrenAccept(Visitor visitor) {
         if(Designator!=null) Designator.accept(visitor);
+        if(DesignatorFuncCall!=null) DesignatorFuncCall.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
         if(Designator!=null) Designator.traverseTopDown(visitor);
+        if(DesignatorFuncCall!=null) DesignatorFuncCall.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
         if(Designator!=null) Designator.traverseBottomUp(visitor);
+        if(DesignatorFuncCall!=null) DesignatorFuncCall.traverseBottomUp(visitor);
         accept(visitor);
     }
 
@@ -47,6 +61,12 @@ public class FactorDerived1 extends Factor {
 
         if(Designator!=null)
             buffer.append(Designator.toString("  "+tab));
+        else
+            buffer.append(tab+"  null");
+        buffer.append("\n");
+
+        if(DesignatorFuncCall!=null)
+            buffer.append(DesignatorFuncCall.toString("  "+tab));
         else
             buffer.append(tab+"  null");
         buffer.append("\n");

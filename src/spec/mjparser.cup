@@ -60,7 +60,7 @@ terminal String IDENT ;
 terminal Character CHAR ;
 
 nonterminal Type, MethodSignatureEndFormPars, MethodSignatureStartFormPars, MethodName, ConstDeclAssign, Setop, Mulop, Addop, Relop, Assignop, Label, ProgramDeclList, ProgramDeclElem, ConstDecl, ConstDeclList, VarDecl, VarDeclFinal, VarDeclOptionalList, ClassDecl, VarDeclListOptional, MethodSignature, TypeChoice, FormParsOptional, FormPars, MethodDecl, VarDeclList, MethodDeclList, MathodDecl, StatementList, Statement, DesignatorStatement;
-nonterminal ActPars, DesignatorFuncCall, FactorChoice, MapDesignator, DesignatorStatementChoice, CondFact, CondTerm, CondFactList, Condition, ConditionList;
+nonterminal ActPars, DesignatorFuncCall, MapDesignator, DesignatorStatementChoice, CondFact, CondTerm, CondFactList, Condition, ConditionList;
 nonterminal Program, InterfaceDeclOptionList, InterfaceDecl, VarDeclProgram, VarDeclErrorComma, VarDeclErrorSemi, DesignatorAssign, StatementCondition, VarDeclClass, ClassDeclErrorLBrace, DesignatorAssignWhile, DesignatorStatementWhile ;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr;
@@ -355,17 +355,12 @@ Factor ::= (FactorDesignator) Designator
            |
            (FactorConstDeclListValue) ConstDeclListValue
            |
-           NEW Type FactorChoice
+           NEW Type LBRACKET Expr RBRACKET
+           |
+           NEW Type DesignatorFuncCall
            |
            LPAREN Expr RPAREN
            ;
-
-FactorChoice ::= LBRACKET Expr RBRACKET
-                 |
-                 LPAREN ActPars RPAREN
-                 |
-                 LPAREN RPAREN
-                 ;
 
 DesignatorFuncCall ::= LPAREN RPAREN
                    |

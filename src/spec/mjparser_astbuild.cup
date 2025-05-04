@@ -92,7 +92,6 @@ nonterminal Statement Statement;
 nonterminal DesignatorStatement DesignatorStatement;
 nonterminal ActPars ActPars;
 nonterminal DesignatorFuncCall DesignatorFuncCall;
-nonterminal FactorChoice FactorChoice;
 nonterminal MapDesignator MapDesignator;
 nonterminal DesignatorStatementChoice DesignatorStatementChoice;
 nonterminal CondFact CondFact;
@@ -405,17 +404,12 @@ Factor ::= (FactorDesignator) Designator:D1 {: RESULT=new FactorDesignator(D1); 
            |
            (FactorConstDeclListValue) ConstDeclListValue:C1 {: RESULT=new FactorConstDeclListValue(C1); RESULT.setLine(C1left); :}
            |
-           NEW Type:T1 FactorChoice:F2 {: RESULT=new FactorDerived2(T1, F2); RESULT.setLine(T1left); :}
+           NEW Type:T1 LBRACKET Expr:E2 RBRACKET {: RESULT=new FactorDerived2(T1, E2); RESULT.setLine(T1left); :}
            |
-           LPAREN Expr:E1 RPAREN {: RESULT=new FactorDerived3(E1); RESULT.setLine(E1left); :}
+           NEW Type:T1 DesignatorFuncCall:D2 {: RESULT=new FactorDerived3(T1, D2); RESULT.setLine(T1left); :}
+           |
+           LPAREN Expr:E1 RPAREN {: RESULT=new FactorDerived4(E1); RESULT.setLine(E1left); :}
            ;
-
-FactorChoice ::= LBRACKET Expr:E1 RBRACKET {: RESULT=new FactorChoiceDerived1(E1); RESULT.setLine(E1left); :}
-                 |
-                 LPAREN ActPars:A1 RPAREN {: RESULT=new FactorChoiceDerived2(A1); RESULT.setLine(A1left); :}
-                 |
-                 LPAREN RPAREN {: RESULT=new FactorChoiceDerived3(); :}
-                 ;
 
 DesignatorFuncCall ::= LPAREN RPAREN {: RESULT=new DesignatorFuncCallDerived1(); :}
                    |

@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 4/4/2025 21:42:30
+// 4/4/2025 21:46:22
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -17,7 +17,6 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(Assignop Assignop) { }
     public void visit(ConditionList ConditionList) { }
     public void visit(ProgramDeclList ProgramDeclList) { }
-    public void visit(FactorChoice FactorChoice) { }
     public void visit(TypeChoice TypeChoice) { }
     public void visit(MethodSignature MethodSignature) { }
     public void visit(VarDeclErrorSemi VarDeclErrorSemi) { }
@@ -42,8 +41,8 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(DesignatorAssignWhile DesignatorAssignWhile) { }
     public void visit(ProgramDeclElem ProgramDeclElem) { }
     public void visit(VarDeclErrorComma VarDeclErrorComma) { }
-    public void visit(MapDesignator MapDesignator) { }
     public void visit(Label Label) { }
+    public void visit(MapDesignator MapDesignator) { }
     public void visit(VarDeclFinal VarDeclFinal) { }
     public void visit(VarDeclList VarDeclList) { }
     public void visit(Expr Expr) { }
@@ -76,9 +75,7 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(LabelDerived1 LabelDerived1) { visit(); }
     public void visit(DesignatorFuncCallDerived2 DesignatorFuncCallDerived2) { visit(); }
     public void visit(DesignatorFuncCallDerived1 DesignatorFuncCallDerived1) { visit(); }
-    public void visit(FactorChoiceDerived3 FactorChoiceDerived3) { visit(); }
-    public void visit(FactorChoiceDerived2 FactorChoiceDerived2) { visit(); }
-    public void visit(FactorChoiceDerived1 FactorChoiceDerived1) { visit(); }
+    public void visit(FactorDerived4 FactorDerived4) { visit(); }
     public void visit(FactorDerived3 FactorDerived3) { visit(); }
     public void visit(FactorDerived2 FactorDerived2) { visit(); }
     public void visit(FactorConstDeclListValue FactorConstDeclListValue) { visit(); }

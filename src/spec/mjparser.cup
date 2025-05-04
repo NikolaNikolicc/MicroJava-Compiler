@@ -355,11 +355,11 @@ Factor ::= (FactorDesignator) Designator
            |
            (FactorConstDeclListValue) ConstDeclListValue
            |
-           NEW Type LBRACKET Expr RBRACKET
+           (FactorCreateArray) NEW Type LBRACKET Expr RBRACKET
            |
            NEW Type DesignatorFuncCall
            |
-           LPAREN Expr RPAREN
+           (FactorExpr) LPAREN Expr RPAREN
            ;
 
 DesignatorFuncCall ::= LPAREN RPAREN

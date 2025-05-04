@@ -332,6 +332,20 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     }
 
     @Override
+    public void visit(FactorCreateArray node){
+        if (!node.getExpr().struct.equals(Tab.intType)){
+            report_error("Izraz prosledjen kao velicina niza mora biti int tipa.", node);
+            return;
+        }
+        node.struct = new Struct(Struct.Array, currTypeMeth.getType());
+    }
+
+    @Override
+    public void visit(FactorExpr node){
+        node.struct = node.getExpr().struct;
+    }
+
+    @Override
     public void visit(DesignatorArrayName node){
         Obj arr = Tab.find(node.getI1());
         if (arr == Tab.noObj){

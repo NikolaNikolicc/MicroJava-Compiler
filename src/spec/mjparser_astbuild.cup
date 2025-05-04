@@ -404,11 +404,11 @@ Factor ::= (FactorDesignator) Designator:D1 {: RESULT=new FactorDesignator(D1); 
            |
            (FactorConstDeclListValue) ConstDeclListValue:C1 {: RESULT=new FactorConstDeclListValue(C1); RESULT.setLine(C1left); :}
            |
-           NEW Type:T1 LBRACKET Expr:E2 RBRACKET {: RESULT=new FactorDerived2(T1, E2); RESULT.setLine(T1left); :}
+           (FactorCreateArray) NEW Type:T1 LBRACKET Expr:E2 RBRACKET {: RESULT=new FactorCreateArray(T1, E2); RESULT.setLine(T1left); :}
            |
-           NEW Type:T1 DesignatorFuncCall:D2 {: RESULT=new FactorDerived3(T1, D2); RESULT.setLine(T1left); :}
+           NEW Type:T1 DesignatorFuncCall:D2 {: RESULT=new FactorDerived2(T1, D2); RESULT.setLine(T1left); :}
            |
-           LPAREN Expr:E1 RPAREN {: RESULT=new FactorDerived4(E1); RESULT.setLine(E1left); :}
+           (FactorExpr) LPAREN Expr:E1 RPAREN {: RESULT=new FactorExpr(E1); RESULT.setLine(E1left); :}
            ;
 
 DesignatorFuncCall ::= LPAREN RPAREN {: RESULT=new DesignatorFuncCallDerived1(); :}

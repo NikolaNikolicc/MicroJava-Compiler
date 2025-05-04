@@ -274,6 +274,17 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     }
 
     @Override
+    public void visit(DesignatorVar node){
+        Obj var = Tab.find(node.getI1());
+        if (var == Tab.noObj){
+            report_error("Nije deklarisana promenljiva sa imenom" + node.getI1(), node);
+            node.obj = Tab.noObj;
+            return;
+        }
+        node.obj = var;
+    }
+
+    @Override
     public void visit(MethodSignatureStartFormPars methodSignatureStartFormPars){
         parsingFormPars = true;
     }

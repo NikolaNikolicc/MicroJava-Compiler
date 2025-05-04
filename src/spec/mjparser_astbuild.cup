@@ -90,7 +90,6 @@ nonterminal MathodDecl MathodDecl;
 nonterminal StatementList StatementList;
 nonterminal Statement Statement;
 nonterminal DesignatorStatement DesignatorStatement;
-nonterminal Designator Designator;
 nonterminal ActPars ActPars;
 nonterminal FactorOptional FactorOptional;
 nonterminal FactorChoice FactorChoice;
@@ -115,7 +114,7 @@ nonterminal DesignatorAssignWhile DesignatorAssignWhile;
 nonterminal DesignatorStatementWhile DesignatorStatementWhile ;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr;
-nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue;
+nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue, Designator;
 
 precedence left ELSE;
 
@@ -348,11 +347,11 @@ DesignatorStatementChoice ::= LPAREN ActPars:A1 RPAREN {: RESULT=new DesignatorS
                               DEC {: RESULT=new DesignatorStatementChoiceDerived4(); :}
                               ;
 
-Designator ::= IDENT:I1 {: RESULT=new DesignatorDerived1(I1); RESULT.setLine(I1left); :}
+Designator ::= (DesignatorVar) IDENT:I1 {: RESULT=new DesignatorVar(I1); RESULT.setLine(I1left); :}
                |
-               IDENT:I1 DOT IDENT:I2 {: RESULT=new DesignatorDerived2(I1, I2); RESULT.setLine(I1left); :}
+               IDENT:I1 DOT IDENT:I2 {: RESULT=new DesignatorDerived1(I1, I2); RESULT.setLine(I1left); :}
                |
-               IDENT:I1 LBRACKET Expr:E2 RBRACKET {: RESULT=new DesignatorDerived3(I1, E2); RESULT.setLine(I1left); :}
+               IDENT:I1 LBRACKET Expr:E2 RBRACKET {: RESULT=new DesignatorDerived2(I1, E2); RESULT.setLine(I1left); :}
                ;
 
 ActPars ::= Expr:E1 COMMA ActPars:A2 {: RESULT=new ActParsDerived1(E1, A2); RESULT.setLine(E1left); :}

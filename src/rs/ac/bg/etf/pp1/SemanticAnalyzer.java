@@ -22,6 +22,9 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     private Obj mainMeth = null;
     private boolean parsingFormPars = false;
 
+    private static final String[] objKindNames = { "Con", "Var", "Type", "Meth", "Fld", "Elem", "Prog" };
+    private static final String[] structKindNames = { "None", "Int", "Char", "Array", "Class", "Bool" };
+
     Logger log = Logger.getLogger(getClass());
 
     public void report_error(String message, SyntaxNode info) {
@@ -31,6 +34,25 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         if (line != 0)
             msg.append (" na liniji ").append(line);
         log.error(msg.toString());
+    }
+
+    private void logSymbol(String message, Obj sym, SyntaxNode node) {
+        StringBuilder builder = new StringBuilder(message);
+        if (node != null) {
+            builder.append(" (line " + node.getLine() + ")");
+        }
+        builder.append(": [");
+        builder.append(sym.getName());
+        builder.append(", ");
+        builder.append(objKindNames[sym.getKind()]);
+        builder.append(", ");
+        builder.append(structKindNames[sym.getType().getKind()]);
+        builder.append(", ");
+        builder.append(sym.getAdr());
+        builder.append(", ");
+        builder.append(sym.getLevel());
+        builder.append("]");
+        log.info(builder.toString());
     }
 
     public void report_info(String message, SyntaxNode info) {
@@ -281,7 +303,43 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             node.obj = Tab.noObj;
             return;
         }
+        else if (var.getKind() != Obj.Var && var.getKind() != Obj.Con){
+            report_error("Neadekvatna vrsta promenljive " + node.getI1() + ":", node);
+            node.obj = Tab.noObj;
+            return;
+        }
         node.obj = var;
+    }
+
+    @Override
+    public void visit(DesignatorElem node){
+        Obj arr = node.getDesignatorArrayName().obj;
+        if (arr == Tab.noObj){
+            node.obj = Tab.noObj;
+            return;
+        }
+        else if (!node.getExpr().struct.equals(Tab.intType)){
+            report_error("Indeks niza mora biti int vrednost", node);
+            node.obj = Tab.noObj;
+            return;
+        }
+        node.obj = new Obj(Obj.Elem, arr.getName() + "[$]", arr.getType().getElemType());
+    }
+
+    @Override
+    public void visit(DesignatorArrayName node){
+        Obj arr = Tab.find(node.getI1());
+        if (arr == Tab.noObj){
+            report_error("Nije deklarisana promenljiva niza sa imenom" + node.getI1(), node);
+            node.obj = Tab.noObj;
+            return;
+        }
+        else if (arr.getKind() != Obj.Var || arr.getType().getKind() != Struct.Array){
+            report_error("Neadekvatna vrsta promenljive niza " + node.getI1() + ":", node);
+            node.obj = Tab.noObj;
+            return;
+        }
+        node.obj = arr;
     }
 
     @Override

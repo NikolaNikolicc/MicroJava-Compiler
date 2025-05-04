@@ -1,15 +1,15 @@
 // generated with ast extension for cup
 // version 0.8
-// 4/4/2025 13:4:45
+// 4/4/2025 21:38:23
 
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class FactorOptionalDerived2 extends FactorOptional {
+public class DesignatorFuncCallDerived2 extends DesignatorFuncCall {
 
     private ActPars ActPars;
 
-    public FactorOptionalDerived2 (ActPars ActPars) {
+    public DesignatorFuncCallDerived2 (ActPars ActPars) {
         this.ActPars=ActPars;
         if(ActPars!=null) ActPars.setParent(this);
     }
@@ -43,7 +43,7 @@ public class FactorOptionalDerived2 extends FactorOptional {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("FactorOptionalDerived2(\n");
+        buffer.append("DesignatorFuncCallDerived2(\n");
 
         if(ActPars!=null)
             buffer.append(ActPars.toString("  "+tab));
@@ -52,7 +52,7 @@ public class FactorOptionalDerived2 extends FactorOptional {
         buffer.append("\n");
 
         buffer.append(tab);
-        buffer.append(") [FactorOptionalDerived2]");
+        buffer.append(") [DesignatorFuncCallDerived2]");
         return buffer.toString();
     }
 }

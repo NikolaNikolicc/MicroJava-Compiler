@@ -1,13 +1,13 @@
 // generated with ast extension for cup
 // version 0.8
-// 4/4/2025 13:4:45
+// 4/4/2025 21:38:23
 
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class FactorOptionalDerived3 extends FactorOptional {
+public class DesignatorFuncCallDerived1 extends DesignatorFuncCall {
 
-    public FactorOptionalDerived3 () {
+    public DesignatorFuncCallDerived1 () {
     }
 
     public void accept(Visitor visitor) {
@@ -28,10 +28,10 @@ public class FactorOptionalDerived3 extends FactorOptional {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("FactorOptionalDerived3(\n");
+        buffer.append("DesignatorFuncCallDerived1(\n");
 
         buffer.append(tab);
-        buffer.append(") [FactorOptionalDerived3]");
+        buffer.append(") [DesignatorFuncCallDerived1]");
         return buffer.toString();
     }
 }

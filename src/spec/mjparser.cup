@@ -60,11 +60,11 @@ terminal String IDENT ;
 terminal Character CHAR ;
 
 nonterminal Type, MethodSignatureEndFormPars, MethodSignatureStartFormPars, MethodName, ConstDeclAssign, Setop, Mulop, Addop, Relop, Assignop, Label, ProgramDeclList, ProgramDeclElem, ConstDecl, ConstDeclList, VarDecl, VarDeclFinal, VarDeclOptionalList, ClassDecl, VarDeclListOptional, MethodSignature, TypeChoice, FormParsOptional, FormPars, MethodDecl, VarDeclList, MethodDeclList, MathodDecl, StatementList, Statement, DesignatorStatement;
-nonterminal ActPars, FactorOptional, FactorChoice, MapDesignator, DesignatorStatementChoice, CondFact, CondTerm, CondFactList, Condition, ConditionList ;
+nonterminal ActPars, DesignatorFuncCall, FactorChoice, MapDesignator, DesignatorStatementChoice, CondFact, CondTerm, CondFactList, Condition, ConditionList;
 nonterminal Program, InterfaceDeclOptionList, InterfaceDecl, VarDeclProgram, VarDeclErrorComma, VarDeclErrorSemi, DesignatorAssign, StatementCondition, VarDeclClass, ClassDeclErrorLBrace, DesignatorAssignWhile, DesignatorStatementWhile ;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr;
-nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue, Designator;
+nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue, Designator, DesignatorArrayName;
 
 precedence left ELSE;
 
@@ -301,8 +301,10 @@ Designator ::= (DesignatorVar) IDENT
                |
                IDENT DOT IDENT
                |
-               IDENT LBRACKET Expr RBRACKET
+               (DesignatorElem) DesignatorArrayName LBRACKET Expr RBRACKET
                ;
+
+DesignatorArrayName ::= (DesignatorArrayName) IDENT;
 
 ActPars ::= Expr COMMA ActPars
             |
@@ -347,7 +349,9 @@ Term ::= (TermFactor) Factor
          (TermTermMulopFactor) Term Mulop Factor
          ;
 
-Factor ::= Designator FactorOptional
+Factor ::= Designator
+           |
+           Designator DesignatorFuncCall
            |
            (FactorConstDeclListValue) ConstDeclListValue
            |
@@ -363,11 +367,9 @@ FactorChoice ::= LBRACKET Expr RBRACKET
                  LPAREN RPAREN
                  ;
 
-FactorOptional ::= LPAREN RPAREN
+DesignatorFuncCall ::= LPAREN RPAREN
                    |
                    LPAREN ActPars RPAREN
-                   |
-                   /* epsilon */
                    ;
 
 Label ::= IDENT ;

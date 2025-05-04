@@ -5,13 +5,24 @@
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class StatementDerived7 extends Statement {
+public class DesignatorElem extends Designator {
 
+    private DesignatorArrayName DesignatorArrayName;
     private Expr Expr;
 
-    public StatementDerived7 (Expr Expr) {
+    public DesignatorElem (DesignatorArrayName DesignatorArrayName, Expr Expr) {
+        this.DesignatorArrayName=DesignatorArrayName;
+        if(DesignatorArrayName!=null) DesignatorArrayName.setParent(this);
         this.Expr=Expr;
         if(Expr!=null) Expr.setParent(this);
+    }
+
+    public DesignatorArrayName getDesignatorArrayName() {
+        return DesignatorArrayName;
+    }
+
+    public void setDesignatorArrayName(DesignatorArrayName DesignatorArrayName) {
+        this.DesignatorArrayName=DesignatorArrayName;
     }
 
     public Expr getExpr() {
@@ -27,15 +38,18 @@ public class StatementDerived7 extends Statement {
     }
 
     public void childrenAccept(Visitor visitor) {
+        if(DesignatorArrayName!=null) DesignatorArrayName.accept(visitor);
         if(Expr!=null) Expr.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
+        if(DesignatorArrayName!=null) DesignatorArrayName.traverseTopDown(visitor);
         if(Expr!=null) Expr.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
+        if(DesignatorArrayName!=null) DesignatorArrayName.traverseBottomUp(visitor);
         if(Expr!=null) Expr.traverseBottomUp(visitor);
         accept(visitor);
     }
@@ -43,7 +57,13 @@ public class StatementDerived7 extends Statement {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("StatementDerived7(\n");
+        buffer.append("DesignatorElem(\n");
+
+        if(DesignatorArrayName!=null)
+            buffer.append(DesignatorArrayName.toString("  "+tab));
+        else
+            buffer.append(tab+"  null");
+        buffer.append("\n");
 
         if(Expr!=null)
             buffer.append(Expr.toString("  "+tab));
@@ -52,7 +72,7 @@ public class StatementDerived7 extends Statement {
         buffer.append("\n");
 
         buffer.append(tab);
-        buffer.append(") [StatementDerived7]");
+        buffer.append(") [DesignatorElem]");
         return buffer.toString();
     }
 }

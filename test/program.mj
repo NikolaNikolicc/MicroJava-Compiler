@@ -14,7 +14,7 @@ program MJProgram
 
 {
 	void main() int int, b[]; int x[], y; {
-        return true*15;
+        print(x('a'));
 	}
 
     bool m1(int param1, int param2) int m, b[]; int x[], y; {

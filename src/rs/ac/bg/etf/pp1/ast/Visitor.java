@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 4/4/2025 13:4:45
+// 4/4/2025 21:38:24
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -21,11 +21,11 @@ public interface Visitor {
     public void visit(TypeChoice TypeChoice);
     public void visit(MethodSignature MethodSignature);
     public void visit(VarDeclErrorSemi VarDeclErrorSemi);
+    public void visit(DesignatorFuncCall DesignatorFuncCall);
     public void visit(VarDeclClass VarDeclClass);
     public void visit(StatementList StatementList);
     public void visit(Addop Addop);
     public void visit(DesignatorStatementChoice DesignatorStatementChoice);
-    public void visit(FactorOptional FactorOptional);
     public void visit(MathodDecl MathodDecl);
     public void visit(Factor Factor);
     public void visit(CondTerm CondTerm);
@@ -74,15 +74,15 @@ public interface Visitor {
     public void visit(RelopDerived1 RelopDerived1);
     public void visit(AssignopDerived1 AssignopDerived1);
     public void visit(LabelDerived1 LabelDerived1);
-    public void visit(FactorOptionalDerived3 FactorOptionalDerived3);
-    public void visit(FactorOptionalDerived2 FactorOptionalDerived2);
-    public void visit(FactorOptionalDerived1 FactorOptionalDerived1);
+    public void visit(DesignatorFuncCallDerived2 DesignatorFuncCallDerived2);
+    public void visit(DesignatorFuncCallDerived1 DesignatorFuncCallDerived1);
     public void visit(FactorChoiceDerived3 FactorChoiceDerived3);
     public void visit(FactorChoiceDerived2 FactorChoiceDerived2);
     public void visit(FactorChoiceDerived1 FactorChoiceDerived1);
+    public void visit(FactorDerived4 FactorDerived4);
     public void visit(FactorDerived3 FactorDerived3);
-    public void visit(FactorDerived2 FactorDerived2);
     public void visit(FactorConstDeclListValue FactorConstDeclListValue);
+    public void visit(FactorDerived2 FactorDerived2);
     public void visit(FactorDerived1 FactorDerived1);
     public void visit(TermTermMulopFactor TermTermMulopFactor);
     public void visit(TermFactor TermFactor);
@@ -101,7 +101,8 @@ public interface Visitor {
     public void visit(ConditionDerived1 ConditionDerived1);
     public void visit(ActParsDerived2 ActParsDerived2);
     public void visit(ActParsDerived1 ActParsDerived1);
-    public void visit(DesignatorDerived2 DesignatorDerived2);
+    public void visit(DesignatorArrayName DesignatorArrayName);
+    public void visit(DesignatorElem DesignatorElem);
     public void visit(DesignatorDerived1 DesignatorDerived1);
     public void visit(DesignatorVar DesignatorVar);
     public void visit(DesignatorStatementChoiceDerived4 DesignatorStatementChoiceDerived4);

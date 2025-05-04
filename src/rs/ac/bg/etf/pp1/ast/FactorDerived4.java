@@ -5,21 +5,21 @@
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class TermFactor extends Term {
+public class FactorDerived4 extends Factor {
 
-    private Factor Factor;
+    private Expr Expr;
 
-    public TermFactor (Factor Factor) {
-        this.Factor=Factor;
-        if(Factor!=null) Factor.setParent(this);
+    public FactorDerived4 (Expr Expr) {
+        this.Expr=Expr;
+        if(Expr!=null) Expr.setParent(this);
     }
 
-    public Factor getFactor() {
-        return Factor;
+    public Expr getExpr() {
+        return Expr;
     }
 
-    public void setFactor(Factor Factor) {
-        this.Factor=Factor;
+    public void setExpr(Expr Expr) {
+        this.Expr=Expr;
     }
 
     public void accept(Visitor visitor) {
@@ -27,32 +27,32 @@ public class TermFactor extends Term {
     }
 
     public void childrenAccept(Visitor visitor) {
-        if(Factor!=null) Factor.accept(visitor);
+        if(Expr!=null) Expr.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
-        if(Factor!=null) Factor.traverseTopDown(visitor);
+        if(Expr!=null) Expr.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
-        if(Factor!=null) Factor.traverseBottomUp(visitor);
+        if(Expr!=null) Expr.traverseBottomUp(visitor);
         accept(visitor);
     }
 
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("TermFactor(\n");
+        buffer.append("FactorDerived4(\n");
 
-        if(Factor!=null)
-            buffer.append(Factor.toString("  "+tab));
+        if(Expr!=null)
+            buffer.append(Expr.toString("  "+tab));
         else
             buffer.append(tab+"  null");
         buffer.append("\n");
 
         buffer.append(tab);
-        buffer.append(") [TermFactor]");
+        buffer.append(") [FactorDerived4]");
         return buffer.toString();
     }
 }

@@ -91,7 +91,7 @@ nonterminal StatementList StatementList;
 nonterminal Statement Statement;
 nonterminal DesignatorStatement DesignatorStatement;
 nonterminal ActPars ActPars;
-nonterminal FactorOptional FactorOptional;
+nonterminal DesignatorFuncCall DesignatorFuncCall;
 nonterminal FactorChoice FactorChoice;
 nonterminal MapDesignator MapDesignator;
 nonterminal DesignatorStatementChoice DesignatorStatementChoice;
@@ -99,7 +99,7 @@ nonterminal CondFact CondFact;
 nonterminal CondTerm CondTerm;
 nonterminal CondFactList CondFactList;
 nonterminal Condition Condition;
-nonterminal ConditionList ConditionList ;
+nonterminal ConditionList ConditionList;
 nonterminal Program Program;
 nonterminal InterfaceDeclOptionList InterfaceDeclOptionList;
 nonterminal InterfaceDecl InterfaceDecl;
@@ -114,7 +114,7 @@ nonterminal DesignatorAssignWhile DesignatorAssignWhile;
 nonterminal DesignatorStatementWhile DesignatorStatementWhile ;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr;
-nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue, Designator;
+nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue, Designator, DesignatorArrayName;
 
 precedence left ELSE;
 
@@ -351,8 +351,10 @@ Designator ::= (DesignatorVar) IDENT:I1 {: RESULT=new DesignatorVar(I1); RESULT.
                |
                IDENT:I1 DOT IDENT:I2 {: RESULT=new DesignatorDerived1(I1, I2); RESULT.setLine(I1left); :}
                |
-               IDENT:I1 LBRACKET Expr:E2 RBRACKET {: RESULT=new DesignatorDerived2(I1, E2); RESULT.setLine(I1left); :}
+               (DesignatorElem) DesignatorArrayName:D1 LBRACKET Expr:E2 RBRACKET {: RESULT=new DesignatorElem(D1, E2); RESULT.setLine(D1left); :}
                ;
+
+DesignatorArrayName ::= (DesignatorArrayName) IDENT:I1 {: RESULT=new DesignatorArrayName(I1); RESULT.setLine(I1left); :};
 
 ActPars ::= Expr:E1 COMMA ActPars:A2 {: RESULT=new ActParsDerived1(E1, A2); RESULT.setLine(E1left); :}
             |
@@ -397,13 +399,15 @@ Term ::= (TermFactor) Factor:F1 {: RESULT=new TermFactor(F1); RESULT.setLine(F1l
          (TermTermMulopFactor) Term:T1 Mulop:M2 Factor:F3 {: RESULT=new TermTermMulopFactor(T1, M2, F3); RESULT.setLine(T1left); :}
          ;
 
-Factor ::= Designator:D1 FactorOptional:F2 {: RESULT=new FactorDerived1(D1, F2); RESULT.setLine(D1left); :}
+Factor ::= Designator:D1 {: RESULT=new FactorDerived1(D1); RESULT.setLine(D1left); :}
+           |
+           Designator:D1 DesignatorFuncCall:D2 {: RESULT=new FactorDerived2(D1, D2); RESULT.setLine(D1left); :}
            |
            (FactorConstDeclListValue) ConstDeclListValue:C1 {: RESULT=new FactorConstDeclListValue(C1); RESULT.setLine(C1left); :}
            |
-           NEW Type:T1 FactorChoice:F2 {: RESULT=new FactorDerived2(T1, F2); RESULT.setLine(T1left); :}
+           NEW Type:T1 FactorChoice:F2 {: RESULT=new FactorDerived3(T1, F2); RESULT.setLine(T1left); :}
            |
-           LPAREN Expr:E1 RPAREN {: RESULT=new FactorDerived3(E1); RESULT.setLine(E1left); :}
+           LPAREN Expr:E1 RPAREN {: RESULT=new FactorDerived4(E1); RESULT.setLine(E1left); :}
            ;
 
 FactorChoice ::= LBRACKET Expr:E1 RBRACKET {: RESULT=new FactorChoiceDerived1(E1); RESULT.setLine(E1left); :}
@@ -413,11 +417,9 @@ FactorChoice ::= LBRACKET Expr:E1 RBRACKET {: RESULT=new FactorChoiceDerived1(E1
                  LPAREN RPAREN {: RESULT=new FactorChoiceDerived3(); :}
                  ;
 
-FactorOptional ::= LPAREN RPAREN {: RESULT=new FactorOptionalDerived1(); :}
+DesignatorFuncCall ::= LPAREN RPAREN {: RESULT=new DesignatorFuncCallDerived1(); :}
                    |
-                   LPAREN ActPars:A1 RPAREN {: RESULT=new FactorOptionalDerived2(A1); RESULT.setLine(A1left); :}
-                   | {: RESULT=new FactorOptionalDerived3(); :}
-                   /* epsilon */
+                   LPAREN ActPars:A1 RPAREN {: RESULT=new DesignatorFuncCallDerived2(A1); RESULT.setLine(A1left); :}
                    ;
 
 Label ::= IDENT:I1 {: RESULT=new LabelDerived1(I1); RESULT.setLine(I1left); :} ;

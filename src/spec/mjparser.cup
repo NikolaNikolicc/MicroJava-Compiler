@@ -59,7 +59,7 @@ terminal Integer NUMBER, BOOL ;
 terminal String IDENT ;
 terminal Character CHAR ;
 
-nonterminal Type, MethodSignatureEndFormPars, MethodSignatureStartFormPars, MethodName, ConstDeclAssign, Setop, Mulop, Addop, Relop, Assignop, Label, ProgramDeclList, ProgramDeclElem, ConstDecl, ConstDeclList, VarDecl, VarDeclFinal, VarDeclOptionalList, ClassDecl, VarDeclListOptional, MethodSignature, TypeChoice, FormParsOptional, FormPars, MethodDecl, VarDeclList, MethodDeclList, MathodDecl, StatementList, Statement, DesignatorStatement, Designator, DesignatorListElem, DesignatorList;
+nonterminal Type, MethodSignatureEndFormPars, MethodSignatureStartFormPars, MethodName, ConstDeclAssign, Setop, Mulop, Addop, Relop, Assignop, Label, ProgramDeclList, ProgramDeclElem, ConstDecl, ConstDeclList, VarDecl, VarDeclFinal, VarDeclOptionalList, ClassDecl, VarDeclListOptional, MethodSignature, TypeChoice, FormParsOptional, FormPars, MethodDecl, VarDeclList, MethodDeclList, MathodDecl, StatementList, Statement, DesignatorStatement, Designator;
 nonterminal ActPars, FactorOptional, FactorChoice, MapDesignator, DesignatorStatementChoice, CondFact, CondTerm, CondFactList, Condition, ConditionList ;
 nonterminal Program, InterfaceDeclOptionList, InterfaceDecl, VarDeclProgram, VarDeclErrorComma, VarDeclErrorSemi, DesignatorAssign, StatementCondition, VarDeclClass, ClassDeclErrorLBrace, DesignatorAssignWhile, DesignatorStatementWhile ;
 
@@ -297,13 +297,12 @@ DesignatorStatementChoice ::= LPAREN ActPars RPAREN
                               DEC
                               ;
 
-Designator ::= IDENT DesignatorList
+Designator ::= IDENT
+               |
+               IDENT DOT IDENT
+               |
+               IDENT LBRACKET Expr RBRACKET
                ;
-
-DesignatorList ::= DesignatorList DesignatorListElem
-                   |
-                   /* epsilon */
-                   ;
 
 ActPars ::= Expr COMMA ActPars
             |
@@ -370,11 +369,6 @@ FactorOptional ::= LPAREN RPAREN
                    |
                    /* epsilon */
                    ;
-
-DesignatorListElem ::= DOT IDENT
-                       |
-                       LBRACKET Expr RBRACKET
-                       ;
 
 Label ::= IDENT ;
 

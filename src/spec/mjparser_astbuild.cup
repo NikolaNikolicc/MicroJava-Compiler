@@ -91,8 +91,6 @@ nonterminal StatementList StatementList;
 nonterminal Statement Statement;
 nonterminal DesignatorStatement DesignatorStatement;
 nonterminal Designator Designator;
-nonterminal DesignatorListElem DesignatorListElem;
-nonterminal DesignatorList DesignatorList;
 nonterminal ActPars ActPars;
 nonterminal FactorOptional FactorOptional;
 nonterminal FactorChoice FactorChoice;
@@ -350,13 +348,12 @@ DesignatorStatementChoice ::= LPAREN ActPars:A1 RPAREN {: RESULT=new DesignatorS
                               DEC {: RESULT=new DesignatorStatementChoiceDerived4(); :}
                               ;
 
-Designator ::= IDENT:I1 DesignatorList:D2 {: RESULT=new DesignatorDerived1(I1, D2); RESULT.setLine(I1left); :}
+Designator ::= IDENT:I1 {: RESULT=new DesignatorDerived1(I1); RESULT.setLine(I1left); :}
+               |
+               IDENT:I1 DOT IDENT:I2 {: RESULT=new DesignatorDerived2(I1, I2); RESULT.setLine(I1left); :}
+               |
+               IDENT:I1 LBRACKET Expr:E2 RBRACKET {: RESULT=new DesignatorDerived3(I1, E2); RESULT.setLine(I1left); :}
                ;
-
-DesignatorList ::= DesignatorList:D1 DesignatorListElem:D2 {: RESULT=new DesignatorListDerived1(D1, D2); RESULT.setLine(D1left); :}
-                   | {: RESULT=new DesignatorListDerived2(); :}
-                   /* epsilon */
-                   ;
 
 ActPars ::= Expr:E1 COMMA ActPars:A2 {: RESULT=new ActParsDerived1(E1, A2); RESULT.setLine(E1left); :}
             |
@@ -423,11 +420,6 @@ FactorOptional ::= LPAREN RPAREN {: RESULT=new FactorOptionalDerived1(); :}
                    | {: RESULT=new FactorOptionalDerived3(); :}
                    /* epsilon */
                    ;
-
-DesignatorListElem ::= DOT IDENT:I1 {: RESULT=new DesignatorListElemDerived1(I1); RESULT.setLine(I1left); :}
-                       |
-                       LBRACKET Expr:E1 RBRACKET {: RESULT=new DesignatorListElemDerived2(E1); RESULT.setLine(E1left); :}
-                       ;
 
 Label ::= IDENT:I1 {: RESULT=new LabelDerived1(I1); RESULT.setLine(I1left); :} ;
 

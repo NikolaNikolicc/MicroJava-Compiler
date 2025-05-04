@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 3/4/2025 18:54:9
+// 4/4/2025 13:0:56
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -34,7 +34,6 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(DesignatorStatementWhile DesignatorStatementWhile) { }
     public void visit(Designator Designator) { }
     public void visit(MethodName MethodName) { }
-    public void visit(DesignatorListElem DesignatorListElem) { }
     public void visit(Term Term) { }
     public void visit(Condition Condition) { }
     public void visit(FormParsOptional FormParsOptional) { }
@@ -49,7 +48,6 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(VarDeclList VarDeclList) { }
     public void visit(Expr Expr) { }
     public void visit(ActPars ActPars) { }
-    public void visit(DesignatorList DesignatorList) { }
     public void visit(DesignatorStatement DesignatorStatement) { }
     public void visit(VarDeclListOptional VarDeclListOptional) { }
     public void visit(Statement Statement) { }
@@ -76,8 +74,6 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(RelopDerived1 RelopDerived1) { visit(); }
     public void visit(AssignopDerived1 AssignopDerived1) { visit(); }
     public void visit(LabelDerived1 LabelDerived1) { visit(); }
-    public void visit(DesignatorListElemDerived2 DesignatorListElemDerived2) { visit(); }
-    public void visit(DesignatorListElemDerived1 DesignatorListElemDerived1) { visit(); }
     public void visit(FactorOptionalDerived3 FactorOptionalDerived3) { visit(); }
     public void visit(FactorOptionalDerived2 FactorOptionalDerived2) { visit(); }
     public void visit(FactorOptionalDerived1 FactorOptionalDerived1) { visit(); }
@@ -105,8 +101,8 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(ConditionDerived1 ConditionDerived1) { visit(); }
     public void visit(ActParsDerived2 ActParsDerived2) { visit(); }
     public void visit(ActParsDerived1 ActParsDerived1) { visit(); }
-    public void visit(DesignatorListDerived2 DesignatorListDerived2) { visit(); }
-    public void visit(DesignatorListDerived1 DesignatorListDerived1) { visit(); }
+    public void visit(DesignatorDerived3 DesignatorDerived3) { visit(); }
+    public void visit(DesignatorDerived2 DesignatorDerived2) { visit(); }
     public void visit(DesignatorDerived1 DesignatorDerived1) { visit(); }
     public void visit(DesignatorStatementChoiceDerived4 DesignatorStatementChoiceDerived4) { visit(); }
     public void visit(DesignatorStatementChoiceDerived3 DesignatorStatementChoiceDerived3) { visit(); }

@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 3/4/2025 18:54:8
+// 4/4/2025 13:0:56
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -8,12 +8,9 @@ package rs.ac.bg.etf.pp1.ast;
 public class DesignatorDerived1 extends Designator {
 
     private String I1;
-    private DesignatorList DesignatorList;
 
-    public DesignatorDerived1 (String I1, DesignatorList DesignatorList) {
+    public DesignatorDerived1 (String I1) {
         this.I1=I1;
-        this.DesignatorList=DesignatorList;
-        if(DesignatorList!=null) DesignatorList.setParent(this);
     }
 
     public String getI1() {
@@ -24,29 +21,18 @@ public class DesignatorDerived1 extends Designator {
         this.I1=I1;
     }
 
-    public DesignatorList getDesignatorList() {
-        return DesignatorList;
-    }
-
-    public void setDesignatorList(DesignatorList DesignatorList) {
-        this.DesignatorList=DesignatorList;
-    }
-
     public void accept(Visitor visitor) {
         visitor.visit(this);
     }
 
     public void childrenAccept(Visitor visitor) {
-        if(DesignatorList!=null) DesignatorList.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
-        if(DesignatorList!=null) DesignatorList.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
-        if(DesignatorList!=null) DesignatorList.traverseBottomUp(visitor);
         accept(visitor);
     }
 
@@ -56,12 +42,6 @@ public class DesignatorDerived1 extends Designator {
         buffer.append("DesignatorDerived1(\n");
 
         buffer.append(" "+tab+I1);
-        buffer.append("\n");
-
-        if(DesignatorList!=null)
-            buffer.append(DesignatorList.toString("  "+tab));
-        else
-            buffer.append(tab+"  null");
         buffer.append("\n");
 
         buffer.append(tab);

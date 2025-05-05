@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 5/4/2025 20:59:6
+// 5/4/2025 22:40:59
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -117,15 +117,15 @@ public interface Visitor {
     public void visit(DesignatorStatementWhileDerived2 DesignatorStatementWhileDerived2);
     public void visit(DesignatorStatementUnarySemiWhile DesignatorStatementUnarySemiWhile);
     public void visit(DesignatorStatementWhileDerived1 DesignatorStatementWhileDerived1);
-    public void visit(StatementDerived11 StatementDerived11);
-    public void visit(StatementDerived10 StatementDerived10);
     public void visit(StatementDerived9 StatementDerived9);
     public void visit(StatementDerived8 StatementDerived8);
+    public void visit(StatementDerived7 StatementDerived7);
+    public void visit(StatementDerived6 StatementDerived6);
     public void visit(StatementPrintNumber StatementPrintNumber);
     public void visit(StatementPrint StatementPrint);
     public void visit(StatementRead StatementRead);
-    public void visit(StatementDerived7 StatementDerived7);
-    public void visit(StatementDerived6 StatementDerived6);
+    public void visit(StatementReturnExpr StatementReturnExpr);
+    public void visit(StatementReturn StatementReturn);
     public void visit(StatementDerived5 StatementDerived5);
     public void visit(StatementDerived4 StatementDerived4);
     public void visit(StatementDerived3 StatementDerived3);

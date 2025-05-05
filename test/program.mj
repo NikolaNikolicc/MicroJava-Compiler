@@ -55,12 +55,12 @@ program MJProgram
         // print(x[2], 4); // ok
 	}
 
-    // bool m1(int param1, int param2) int m, b[]; int x[], y; {
+    bool m1(int param1, int param2) int m, b[]; int x[], y; {
+        return true;
+    }
 
-    // }
+    char m2() int m, b[]; int x[], y; {
 
-    // char m2() int m, b[]; int x[], y; {
-
-    // }
+    }
 
 }

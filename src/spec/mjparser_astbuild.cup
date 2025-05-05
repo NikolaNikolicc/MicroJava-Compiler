@@ -288,9 +288,9 @@ Statement ::=   DesignatorStatement:D1 {: RESULT=new StatementDerived1(D1); RESU
               |
               CONTINUE SEMI {: RESULT=new StatementDerived5(); :}
               |
-              RETURN SEMI {: RESULT=new StatementDerived6(); :}
+              (StatementReturn) RETURN SEMI {: RESULT=new StatementReturn(); :}
               |
-              RETURN Expr:E1 SEMI {: RESULT=new StatementDerived7(E1); RESULT.setLine(E1left); :}
+              (StatementReturnExpr) RETURN Expr:E1 SEMI {: RESULT=new StatementReturnExpr(E1); RESULT.setLine(E1left); :}
               |
               (StatementRead) READ LPAREN Designator:D1 RPAREN SEMI {: RESULT=new StatementRead(D1); RESULT.setLine(D1left); :}
               |
@@ -298,13 +298,13 @@ Statement ::=   DesignatorStatement:D1 {: RESULT=new StatementDerived1(D1); RESU
               |
               (StatementPrintNumber) PRINT LPAREN Expr:E1 COMMA NUMBER:N2 RPAREN SEMI {: RESULT=new StatementPrintNumber(E1, N2); RESULT.setLine(E1left); :}
               |
-              DO Statement:S1 WHILE LPAREN RPAREN SEMI {: RESULT=new StatementDerived8(S1); RESULT.setLine(S1left); :}
+              DO Statement:S1 WHILE LPAREN RPAREN SEMI {: RESULT=new StatementDerived6(S1); RESULT.setLine(S1left); :}
               |
-              DO Statement:S1 WHILE LPAREN Condition:C2 RPAREN SEMI {: RESULT=new StatementDerived9(S1, C2); RESULT.setLine(S1left); :}
+              DO Statement:S1 WHILE LPAREN Condition:C2 RPAREN SEMI {: RESULT=new StatementDerived7(S1, C2); RESULT.setLine(S1left); :}
               |
-              DO Statement:S1 WHILE LPAREN Condition:C2 COMMA DesignatorStatementWhile:D3 RPAREN SEMI {: RESULT=new StatementDerived10(S1, C2, D3); RESULT.setLine(S1left); :}
+              DO Statement:S1 WHILE LPAREN Condition:C2 COMMA DesignatorStatementWhile:D3 RPAREN SEMI {: RESULT=new StatementDerived8(S1, C2, D3); RESULT.setLine(S1left); :}
               |
-              LBRACE StatementList:S1 RBRACE {: RESULT=new StatementDerived11(S1); RESULT.setLine(S1left); :}
+              LBRACE StatementList:S1 RBRACE {: RESULT=new StatementDerived9(S1); RESULT.setLine(S1left); :}
               ;
 
 DesignatorStatementWhile ::= Designator:D1 DesignatorFuncCall:D2 {: RESULT=new DesignatorStatementWhileDerived1(D1, D2); RESULT.setLine(D1left); :}

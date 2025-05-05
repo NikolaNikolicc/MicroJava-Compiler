@@ -5,11 +5,11 @@
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class StatementPrint extends Statement {
+public class StatementReturnExpr extends Statement {
 
     private Expr Expr;
 
-    public StatementPrint (Expr Expr) {
+    public StatementReturnExpr (Expr Expr) {
         this.Expr=Expr;
         if(Expr!=null) Expr.setParent(this);
     }
@@ -43,7 +43,7 @@ public class StatementPrint extends Statement {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("StatementPrint(\n");
+        buffer.append("StatementReturnExpr(\n");
 
         if(Expr!=null)
             buffer.append(Expr.toString("  "+tab));
@@ -52,7 +52,7 @@ public class StatementPrint extends Statement {
         buffer.append("\n");
 
         buffer.append(tab);
-        buffer.append(") [StatementPrint]");
+        buffer.append(") [StatementReturnExpr]");
         return buffer.toString();
     }
 }

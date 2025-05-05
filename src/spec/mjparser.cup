@@ -239,9 +239,9 @@ Statement ::=   DesignatorStatement
               |
               CONTINUE SEMI
               |
-              RETURN SEMI
+              (StatementReturn) RETURN SEMI
               |
-              RETURN Expr SEMI
+              (StatementReturnExpr) RETURN Expr SEMI
               |
               (StatementRead) READ LPAREN Designator RPAREN SEMI
               |

@@ -1,25 +1,36 @@
 // generated with ast extension for cup
 // version 0.8
-// 5/4/2025 20:59:6
+// 5/4/2025 22:40:59
 
 
 package rs.ac.bg.etf.pp1.ast;
 
 public class StatementDerived7 extends Statement {
 
-    private Expr Expr;
+    private Statement Statement;
+    private Condition Condition;
 
-    public StatementDerived7 (Expr Expr) {
-        this.Expr=Expr;
-        if(Expr!=null) Expr.setParent(this);
+    public StatementDerived7 (Statement Statement, Condition Condition) {
+        this.Statement=Statement;
+        if(Statement!=null) Statement.setParent(this);
+        this.Condition=Condition;
+        if(Condition!=null) Condition.setParent(this);
     }
 
-    public Expr getExpr() {
-        return Expr;
+    public Statement getStatement() {
+        return Statement;
     }
 
-    public void setExpr(Expr Expr) {
-        this.Expr=Expr;
+    public void setStatement(Statement Statement) {
+        this.Statement=Statement;
+    }
+
+    public Condition getCondition() {
+        return Condition;
+    }
+
+    public void setCondition(Condition Condition) {
+        this.Condition=Condition;
     }
 
     public void accept(Visitor visitor) {
@@ -27,16 +38,19 @@ public class StatementDerived7 extends Statement {
     }
 
     public void childrenAccept(Visitor visitor) {
-        if(Expr!=null) Expr.accept(visitor);
+        if(Statement!=null) Statement.accept(visitor);
+        if(Condition!=null) Condition.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
-        if(Expr!=null) Expr.traverseTopDown(visitor);
+        if(Statement!=null) Statement.traverseTopDown(visitor);
+        if(Condition!=null) Condition.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
-        if(Expr!=null) Expr.traverseBottomUp(visitor);
+        if(Statement!=null) Statement.traverseBottomUp(visitor);
+        if(Condition!=null) Condition.traverseBottomUp(visitor);
         accept(visitor);
     }
 
@@ -45,8 +59,14 @@ public class StatementDerived7 extends Statement {
         buffer.append(tab);
         buffer.append("StatementDerived7(\n");
 
-        if(Expr!=null)
-            buffer.append(Expr.toString("  "+tab));
+        if(Statement!=null)
+            buffer.append(Statement.toString("  "+tab));
+        else
+            buffer.append(tab+"  null");
+        buffer.append("\n");
+
+        if(Condition!=null)
+            buffer.append(Condition.toString("  "+tab));
         else
             buffer.append(tab+"  null");
         buffer.append("\n");

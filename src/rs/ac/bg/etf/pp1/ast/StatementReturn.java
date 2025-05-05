@@ -5,9 +5,9 @@
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class VoidMethod extends TypeChoice {
+public class StatementReturn extends Statement {
 
-    public VoidMethod () {
+    public StatementReturn () {
     }
 
     public void accept(Visitor visitor) {
@@ -28,10 +28,10 @@ public class VoidMethod extends TypeChoice {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("VoidMethod(\n");
+        buffer.append("StatementReturn(\n");
 
         buffer.append(tab);
-        buffer.append(") [VoidMethod]");
+        buffer.append(") [StatementReturn]");
         return buffer.toString();
     }
 }

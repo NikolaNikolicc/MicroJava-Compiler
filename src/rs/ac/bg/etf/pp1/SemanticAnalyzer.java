@@ -9,18 +9,22 @@ import rs.etf.pp1.symboltable.concepts.*;
 public class SemanticAnalyzer extends VisitorAdaptor{
 
     public boolean errorDetected = false;
-    private int nVars = 0;
     private Obj currTypeVar = null;
     private Obj currTypeMeth = null;
     private Obj currMeth = null;
+    // null - return didn't happen at all, returnNode.getType() == null - return happened (void), returnNode.getType() != null - return happened (non void)
+    private Obj returnNode = null;
+
     // because we want to allow initialization of variables that are named int char and bool we are saving pointers to this object nodes
     // this is used in TypeIdent visitor and in that case we are sure we are getting right object node, in other case Tab.find(name) function can return Object node which overrides those names
     private static Obj intObj = Tab.find("int");
     private static Obj charObj = Tab.find("char");
     private static Obj boolObj = Tab.find("bool");
     public static Struct boolType = boolObj.getType();
+
     private Obj mainMeth = null;
     private boolean parsingFormPars = false;
+
 
     private static final String[] objKindNames = { "Con", "Var", "Type", "Meth", "Fld", "Elem", "Prog" };
     private static final String[] structKindNames = { "None", "Int", "Char", "Array", "Class", "Bool" };
@@ -75,7 +79,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(Program program){
-        nVars = Tab.currentScope.getnVars();
         Tab.chainLocalSymbols(program.getProgName().obj);
         Tab.closeScope();
 
@@ -244,10 +247,21 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     }
 
     @Override
-    public void visit(MethodDecl methodDecl){
+    public void visit(MethodDecl node){
         Tab.chainLocalSymbols(currMeth);
         Tab.closeScope();
+
+        if (currTypeMeth != null){
+            if (returnNode == null){
+                report_error("U metodu povratnog tipa koji nije void se mora pojaviti barem jedna return naredba", node);
+            }
+            if (returnNode != null && (returnNode.getType() == null || !returnNode.getType().equals(currMeth.getType()))){
+                report_error("Povratni tip metoda i tip koji vraca return naredba nisu kompatibilni", node);
+            }
+        }
+
         currMeth = null;
+        returnNode = null;
     }
 
     @Override
@@ -363,6 +377,16 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     }
 
     // Statement
+    @Override
+    public void visit(StatementReturn node){
+        returnNode = new Obj(Obj.NO_VALUE, "return", null);
+    }
+
+    @Override
+    public void visit(StatementReturnExpr node){
+        returnNode = new Obj(Obj.NO_VALUE, "return", node.getExpr().struct);
+    }
+
     @Override
     public void visit(StatementRead node){
         int kind = node.getDesignator().obj.getKind();

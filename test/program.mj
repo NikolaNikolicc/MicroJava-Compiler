@@ -37,6 +37,22 @@ program MJProgram
         // read(eol); // ok
         // read(x); // error
         // read(x[2]); // ok
+
+        // print(1); // ok
+        // print(a); // ok
+        // print(eol); // ok
+        // print(false); // ok
+
+        // print(1, 4); // ok
+        // print(a, 4); // ok
+        // print(eol, 4); // ok
+        // print(false, 4); // ok
+
+        // print(x); // error
+        // print(x[2]); // ok
+
+        // print(x, 4); // error
+        // print(x[2], 4); // ok
 	}
 
     // bool m1(int param1, int param2) int m, b[]; int x[], y; {

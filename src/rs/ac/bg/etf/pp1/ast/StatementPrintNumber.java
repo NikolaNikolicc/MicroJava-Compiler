@@ -5,24 +5,15 @@
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class DesignatorElem extends Designator {
+public class StatementPrintNumber extends Statement {
 
-    private DesignatorArrayName DesignatorArrayName;
     private Expr Expr;
+    private Integer N2;
 
-    public DesignatorElem (DesignatorArrayName DesignatorArrayName, Expr Expr) {
-        this.DesignatorArrayName=DesignatorArrayName;
-        if(DesignatorArrayName!=null) DesignatorArrayName.setParent(this);
+    public StatementPrintNumber (Expr Expr, Integer N2) {
         this.Expr=Expr;
         if(Expr!=null) Expr.setParent(this);
-    }
-
-    public DesignatorArrayName getDesignatorArrayName() {
-        return DesignatorArrayName;
-    }
-
-    public void setDesignatorArrayName(DesignatorArrayName DesignatorArrayName) {
-        this.DesignatorArrayName=DesignatorArrayName;
+        this.N2=N2;
     }
 
     public Expr getExpr() {
@@ -33,23 +24,28 @@ public class DesignatorElem extends Designator {
         this.Expr=Expr;
     }
 
+    public Integer getN2() {
+        return N2;
+    }
+
+    public void setN2(Integer N2) {
+        this.N2=N2;
+    }
+
     public void accept(Visitor visitor) {
         visitor.visit(this);
     }
 
     public void childrenAccept(Visitor visitor) {
-        if(DesignatorArrayName!=null) DesignatorArrayName.accept(visitor);
         if(Expr!=null) Expr.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
-        if(DesignatorArrayName!=null) DesignatorArrayName.traverseTopDown(visitor);
         if(Expr!=null) Expr.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
-        if(DesignatorArrayName!=null) DesignatorArrayName.traverseBottomUp(visitor);
         if(Expr!=null) Expr.traverseBottomUp(visitor);
         accept(visitor);
     }
@@ -57,13 +53,7 @@ public class DesignatorElem extends Designator {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("DesignatorElem(\n");
-
-        if(DesignatorArrayName!=null)
-            buffer.append(DesignatorArrayName.toString("  "+tab));
-        else
-            buffer.append(tab+"  null");
-        buffer.append("\n");
+        buffer.append("StatementPrintNumber(\n");
 
         if(Expr!=null)
             buffer.append(Expr.toString("  "+tab));
@@ -71,8 +61,11 @@ public class DesignatorElem extends Designator {
             buffer.append(tab+"  null");
         buffer.append("\n");
 
+        buffer.append(" "+tab+N2);
+        buffer.append("\n");
+
         buffer.append(tab);
-        buffer.append(") [DesignatorElem]");
+        buffer.append(") [StatementPrintNumber]");
         return buffer.toString();
     }
 }

@@ -245,9 +245,9 @@ Statement ::=   DesignatorStatement
               |
               (StatementRead) READ LPAREN Designator RPAREN SEMI
               |
-              PRINT LPAREN Expr RPAREN SEMI
+              (StatementPrint) PRINT LPAREN Expr RPAREN SEMI
               |
-              PRINT LPAREN Expr COMMA NUMBER RPAREN SEMI
+              (StatementPrintNumber) PRINT LPAREN Expr COMMA NUMBER RPAREN SEMI
               |
               DO Statement WHILE LPAREN RPAREN SEMI
               |

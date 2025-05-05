@@ -378,6 +378,24 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         }
     }
 
+    @Override
+    public void visit(StatementPrint node){
+        Struct type = node.getExpr().struct;
+        if(!type.equals(Tab.intType) && !type.equals(boolType) && !type.equals(Tab.charType)){
+            report_error("Print operacija nad izrazom koji nije tipa int, char ili bool", node);
+            return;
+        }
+    }
+
+    @Override
+    public void visit(StatementPrintNumber node){
+        Struct type = node.getExpr().struct;
+        if(!type.equals(Tab.intType) && !type.equals(boolType) && !type.equals(Tab.charType)){
+            report_error("Print operacija nad izrazom koji nije tipa int, char ili bool", node);
+            return;
+        }
+    }
+
     // Designator
     @Override
     public void visit(DesignatorAssignExpr node){

@@ -93,7 +93,7 @@ nonterminal DesignatorStatement DesignatorStatement;
 nonterminal ActPars ActPars;
 nonterminal DesignatorFuncCall DesignatorFuncCall;
 nonterminal MapDesignator MapDesignator;
-nonterminal DesignatorStatementChoice DesignatorStatementChoice;
+nonterminal DesignatorStatementUnary DesignatorStatementUnary;
 nonterminal CondFact CondFact;
 nonterminal CondTerm CondTerm;
 nonterminal CondFactList CondFactList;
@@ -309,9 +309,9 @@ Statement ::=   DesignatorStatement:D1 {: RESULT=new StatementDerived1(D1); RESU
 
 DesignatorStatementWhile ::= Designator:D1 DesignatorFuncCall:D2 {: RESULT=new DesignatorStatementWhileDerived1(D1, D2); RESULT.setLine(D1left); :}
                              |
-                             Designator:D1 DesignatorStatementChoice:D2 {: RESULT=new DesignatorStatementWhileDerived2(D1, D2); RESULT.setLine(D1left); :}
+                             (DesignatorStatementUnarySemiWhile) Designator:D1 DesignatorStatementUnary:D2 {: RESULT=new DesignatorStatementUnarySemiWhile(D1, D2); RESULT.setLine(D1left); :}
                              |
-                             DesignatorAssignWhile:D1 {: RESULT=new DesignatorStatementWhileDerived3(D1); RESULT.setLine(D1left); :}
+                             DesignatorAssignWhile:D1 {: RESULT=new DesignatorStatementWhileDerived2(D1); RESULT.setLine(D1left); :}
                              ;
 
 DesignatorAssignWhile ::= (DesignatorAssignExprWhile) Designator:D1 Assignop:A2 Expr:E3 {: RESULT=new DesignatorAssignExprWhile(D1, A2, E3); RESULT.setLine(D1left); :}
@@ -326,11 +326,11 @@ StatementCondition ::= Condition:C1 RPAREN {: RESULT=new StatementConditionDeriv
                        ;
 
 
-DesignatorStatement ::= Designator:D1 DesignatorStatementChoice:D2 SEMI {: RESULT=new DesignatorStatementDerived1(D1, D2); RESULT.setLine(D1left); :}
+DesignatorStatement ::= (DesignatorStatementUnarySemi) Designator:D1 DesignatorStatementUnary:D2 SEMI {: RESULT=new DesignatorStatementUnarySemi(D1, D2); RESULT.setLine(D1left); :}
                         |
-                        Designator:D1 DesignatorFuncCall:D2 SEMI {: RESULT=new DesignatorStatementDerived2(D1, D2); RESULT.setLine(D1left); :}
+                        Designator:D1 DesignatorFuncCall:D2 SEMI {: RESULT=new DesignatorStatementDerived1(D1, D2); RESULT.setLine(D1left); :}
                         |
-                        DesignatorAssign:D1 {: RESULT=new DesignatorStatementDerived3(D1); RESULT.setLine(D1left); :}
+                        DesignatorAssign:D1 {: RESULT=new DesignatorStatementDerived2(D1); RESULT.setLine(D1left); :}
                         ;
 
 DesignatorAssign ::= (DesignatorAssignExpr) Designator:D1 Assignop:A2 Expr:E3 SEMI {: RESULT=new DesignatorAssignExpr(D1, A2, E3); RESULT.setLine(D1left); :}
@@ -341,9 +341,9 @@ DesignatorAssign ::= (DesignatorAssignExpr) Designator:D1 Assignop:A2 Expr:E3 SE
                      {: parser.report_error("Izvrsen oporavak do ; u liniji " + lleft, null); :} {: RESULT=new DesignatorAssignDerived2(); :}
                      ;
 
-DesignatorStatementChoice ::= INC {: RESULT=new DesignatorStatementChoiceDerived1(); :}
+DesignatorStatementUnary ::= INC {: RESULT=new DesignatorStatementUnaryDerived1(); :}
                               |
-                              DEC {: RESULT=new DesignatorStatementChoiceDerived2(); :}
+                              DEC {: RESULT=new DesignatorStatementUnaryDerived2(); :}
                               ;
 
 Designator ::= (DesignatorVar) IDENT:I1 {: RESULT=new DesignatorVar(I1); RESULT.setLine(I1left); :}

@@ -26,6 +26,12 @@ program MJProgram
         // x = a; // ok
         // x[3]  = x[4]; // ok
         // x = null; // ok
+
+        // x++; // error
+        // x[2]--; // ok
+        // g--; // error
+        // a++; // ok
+        // eol++; // error
 	}
 
     // bool m1(int param1, int param2) int m, b[]; int x[], y; {

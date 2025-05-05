@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 5/4/2025 20:13:10
+// 5/4/2025 20:27:35
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -17,6 +17,7 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(Assignop Assignop) { }
     public void visit(ConditionList ConditionList) { }
     public void visit(ProgramDeclList ProgramDeclList) { }
+    public void visit(DesignatorStatementUnary DesignatorStatementUnary) { }
     public void visit(TypeChoice TypeChoice) { }
     public void visit(MethodSignature MethodSignature) { }
     public void visit(VarDeclErrorSemi VarDeclErrorSemi) { }
@@ -24,7 +25,6 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(VarDeclClass VarDeclClass) { }
     public void visit(StatementList StatementList) { }
     public void visit(Addop Addop) { }
-    public void visit(DesignatorStatementChoice DesignatorStatementChoice) { }
     public void visit(MathodDecl MathodDecl) { }
     public void visit(Factor Factor) { }
     public void visit(CondTerm CondTerm) { }
@@ -102,20 +102,20 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(DesignatorElem DesignatorElem) { visit(); }
     public void visit(DesignatorDerived1 DesignatorDerived1) { visit(); }
     public void visit(DesignatorVar DesignatorVar) { visit(); }
-    public void visit(DesignatorStatementChoiceDerived2 DesignatorStatementChoiceDerived2) { visit(); }
-    public void visit(DesignatorStatementChoiceDerived1 DesignatorStatementChoiceDerived1) { visit(); }
+    public void visit(DesignatorStatementUnaryDerived2 DesignatorStatementUnaryDerived2) { visit(); }
+    public void visit(DesignatorStatementUnaryDerived1 DesignatorStatementUnaryDerived1) { visit(); }
     public void visit(DesignatorAssignDerived2 DesignatorAssignDerived2) { visit(); }
     public void visit(DesignatorAssignDerived1 DesignatorAssignDerived1) { visit(); }
     public void visit(DesignatorAssignExpr DesignatorAssignExpr) { visit(); }
-    public void visit(DesignatorStatementDerived3 DesignatorStatementDerived3) { visit(); }
     public void visit(DesignatorStatementDerived2 DesignatorStatementDerived2) { visit(); }
     public void visit(DesignatorStatementDerived1 DesignatorStatementDerived1) { visit(); }
+    public void visit(DesignatorStatementUnarySemi DesignatorStatementUnarySemi) { visit(); }
     public void visit(StatementConditionDerived2 StatementConditionDerived2) { visit(); }
     public void visit(StatementConditionDerived1 StatementConditionDerived1) { visit(); }
     public void visit(DesignatorAssignWhileDerived1 DesignatorAssignWhileDerived1) { visit(); }
     public void visit(DesignatorAssignExprWhile DesignatorAssignExprWhile) { visit(); }
-    public void visit(DesignatorStatementWhileDerived3 DesignatorStatementWhileDerived3) { visit(); }
     public void visit(DesignatorStatementWhileDerived2 DesignatorStatementWhileDerived2) { visit(); }
+    public void visit(DesignatorStatementUnarySemiWhile DesignatorStatementUnarySemiWhile) { visit(); }
     public void visit(DesignatorStatementWhileDerived1 DesignatorStatementWhileDerived1) { visit(); }
     public void visit(StatementDerived14 StatementDerived14) { visit(); }
     public void visit(StatementDerived13 StatementDerived13) { visit(); }

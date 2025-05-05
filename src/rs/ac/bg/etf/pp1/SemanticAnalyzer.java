@@ -395,6 +395,37 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     }
 
     @Override
+    public void visit(DesignatorStatementUnarySemi node){
+        int kind = node.getDesignator().obj.getKind();
+        String name = node.getDesignator().obj.getName();
+        if (kind != Obj.Var && kind != Obj.Elem){
+
+            report_error("Unarna operacija (-- ili ++) nad neadekvatnom promenljivom(" + name + ")", node);
+            return;
+        }
+        else if(!node.getDesignator().obj.getType().equals(Tab.intType)){
+            report_error("Unarna operacija (-- ili ++) nad promenljivom("+ name + ") koja nije tipa int", node);
+            return;
+        }
+    }
+
+
+    @Override
+    public void visit(DesignatorStatementUnarySemiWhile node){
+        int kind = node.getDesignator().obj.getKind();
+        String name = node.getDesignator().obj.getName();
+        if (kind != Obj.Var && kind != Obj.Elem){
+
+            report_error("Unarna operacija (-- ili ++) nad neadekvatnom promenljivom(" + name + ")", node);
+            return;
+        }
+        else if(!node.getDesignator().obj.getType().equals(Tab.intType)){
+            report_error("Unarna operacija (-- ili ++) nad promenljivom("+ name + ") koja nije tipa int", node);
+            return;
+        }
+    }
+
+    @Override
     public void visit(MethodSignatureStartFormPars methodSignatureStartFormPars){
         parsingFormPars = true;
     }

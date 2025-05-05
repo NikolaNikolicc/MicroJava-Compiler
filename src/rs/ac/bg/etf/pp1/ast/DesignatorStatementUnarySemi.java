@@ -5,16 +5,16 @@
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class FactorDerived1 extends Factor {
+public class DesignatorStatementUnarySemi extends DesignatorStatement {
 
     private Designator Designator;
-    private DesignatorFuncCall DesignatorFuncCall;
+    private DesignatorStatementUnary DesignatorStatementUnary;
 
-    public FactorDerived1 (Designator Designator, DesignatorFuncCall DesignatorFuncCall) {
+    public DesignatorStatementUnarySemi (Designator Designator, DesignatorStatementUnary DesignatorStatementUnary) {
         this.Designator=Designator;
         if(Designator!=null) Designator.setParent(this);
-        this.DesignatorFuncCall=DesignatorFuncCall;
-        if(DesignatorFuncCall!=null) DesignatorFuncCall.setParent(this);
+        this.DesignatorStatementUnary=DesignatorStatementUnary;
+        if(DesignatorStatementUnary!=null) DesignatorStatementUnary.setParent(this);
     }
 
     public Designator getDesignator() {
@@ -25,12 +25,12 @@ public class FactorDerived1 extends Factor {
         this.Designator=Designator;
     }
 
-    public DesignatorFuncCall getDesignatorFuncCall() {
-        return DesignatorFuncCall;
+    public DesignatorStatementUnary getDesignatorStatementUnary() {
+        return DesignatorStatementUnary;
     }
 
-    public void setDesignatorFuncCall(DesignatorFuncCall DesignatorFuncCall) {
-        this.DesignatorFuncCall=DesignatorFuncCall;
+    public void setDesignatorStatementUnary(DesignatorStatementUnary DesignatorStatementUnary) {
+        this.DesignatorStatementUnary=DesignatorStatementUnary;
     }
 
     public void accept(Visitor visitor) {
@@ -39,25 +39,25 @@ public class FactorDerived1 extends Factor {
 
     public void childrenAccept(Visitor visitor) {
         if(Designator!=null) Designator.accept(visitor);
-        if(DesignatorFuncCall!=null) DesignatorFuncCall.accept(visitor);
+        if(DesignatorStatementUnary!=null) DesignatorStatementUnary.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
         if(Designator!=null) Designator.traverseTopDown(visitor);
-        if(DesignatorFuncCall!=null) DesignatorFuncCall.traverseTopDown(visitor);
+        if(DesignatorStatementUnary!=null) DesignatorStatementUnary.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
         if(Designator!=null) Designator.traverseBottomUp(visitor);
-        if(DesignatorFuncCall!=null) DesignatorFuncCall.traverseBottomUp(visitor);
+        if(DesignatorStatementUnary!=null) DesignatorStatementUnary.traverseBottomUp(visitor);
         accept(visitor);
     }
 
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("FactorDerived1(\n");
+        buffer.append("DesignatorStatementUnarySemi(\n");
 
         if(Designator!=null)
             buffer.append(Designator.toString("  "+tab));
@@ -65,14 +65,14 @@ public class FactorDerived1 extends Factor {
             buffer.append(tab+"  null");
         buffer.append("\n");
 
-        if(DesignatorFuncCall!=null)
-            buffer.append(DesignatorFuncCall.toString("  "+tab));
+        if(DesignatorStatementUnary!=null)
+            buffer.append(DesignatorStatementUnary.toString("  "+tab));
         else
             buffer.append(tab+"  null");
         buffer.append("\n");
 
         buffer.append(tab);
-        buffer.append(") [FactorDerived1]");
+        buffer.append(") [DesignatorStatementUnarySemi]");
         return buffer.toString();
     }
 }

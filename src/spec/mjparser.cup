@@ -60,7 +60,7 @@ terminal String IDENT ;
 terminal Character CHAR ;
 
 nonterminal Type, MethodSignatureEndFormPars, MethodSignatureStartFormPars, MethodName, ConstDeclAssign, Setop, Mulop, Addop, Relop, Assignop, Label, ProgramDeclList, ProgramDeclElem, ConstDecl, ConstDeclList, VarDecl, VarDeclFinal, VarDeclOptionalList, ClassDecl, VarDeclListOptional, MethodSignature, TypeChoice, FormParsOptional, FormPars, MethodDecl, VarDeclList, MethodDeclList, MathodDecl, StatementList, Statement, DesignatorStatement;
-nonterminal ActPars, DesignatorFuncCall, MapDesignator, DesignatorStatementChoice, CondFact, CondTerm, CondFactList, Condition, ConditionList;
+nonterminal ActPars, DesignatorFuncCall, MapDesignator, DesignatorStatementUnary, CondFact, CondTerm, CondFactList, Condition, ConditionList;
 nonterminal Program, InterfaceDeclOptionList, InterfaceDecl, VarDeclProgram, VarDeclErrorComma, VarDeclErrorSemi, DesignatorAssign, StatementCondition, VarDeclClass, ClassDeclErrorLBrace, DesignatorAssignWhile, DesignatorStatementWhile ;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr;
@@ -260,7 +260,7 @@ Statement ::=   DesignatorStatement
 
 DesignatorStatementWhile ::= Designator DesignatorFuncCall
                              |
-                             Designator DesignatorStatementChoice
+                             (DesignatorStatementUnarySemiWhile) Designator DesignatorStatementUnary
                              |
                              DesignatorAssignWhile
                              ;
@@ -277,7 +277,7 @@ StatementCondition ::= Condition RPAREN
                        ;
 
 
-DesignatorStatement ::= Designator DesignatorStatementChoice SEMI
+DesignatorStatement ::= (DesignatorStatementUnarySemi) Designator DesignatorStatementUnary SEMI
                         |
                         Designator DesignatorFuncCall SEMI
                         |
@@ -292,7 +292,7 @@ DesignatorAssign ::= (DesignatorAssignExpr) Designator Assignop Expr SEMI
                      {: parser.report_error("Izvrsen oporavak do ; u liniji " + lleft, null); :}
                      ;
 
-DesignatorStatementChoice ::= INC
+DesignatorStatementUnary ::= INC
                               |
                               DEC
                               ;

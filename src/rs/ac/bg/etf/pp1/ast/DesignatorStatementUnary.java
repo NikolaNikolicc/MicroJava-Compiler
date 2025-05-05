@@ -1,11 +1,11 @@
 // generated with ast extension for cup
 // version 0.8
-// 5/4/2025 20:13:10
+// 5/4/2025 20:27:35
 
 
 package rs.ac.bg.etf.pp1.ast;
 
-public abstract class DesignatorStatementChoice implements SyntaxNode {
+public abstract class DesignatorStatementUnary implements SyntaxNode {
 
     private SyntaxNode parent;
 

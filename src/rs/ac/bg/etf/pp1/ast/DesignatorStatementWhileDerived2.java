@@ -1,36 +1,25 @@
 // generated with ast extension for cup
 // version 0.8
-// 5/4/2025 20:13:10
+// 5/4/2025 20:27:35
 
 
 package rs.ac.bg.etf.pp1.ast;
 
 public class DesignatorStatementWhileDerived2 extends DesignatorStatementWhile {
 
-    private Designator Designator;
-    private DesignatorStatementChoice DesignatorStatementChoice;
+    private DesignatorAssignWhile DesignatorAssignWhile;
 
-    public DesignatorStatementWhileDerived2 (Designator Designator, DesignatorStatementChoice DesignatorStatementChoice) {
-        this.Designator=Designator;
-        if(Designator!=null) Designator.setParent(this);
-        this.DesignatorStatementChoice=DesignatorStatementChoice;
-        if(DesignatorStatementChoice!=null) DesignatorStatementChoice.setParent(this);
+    public DesignatorStatementWhileDerived2 (DesignatorAssignWhile DesignatorAssignWhile) {
+        this.DesignatorAssignWhile=DesignatorAssignWhile;
+        if(DesignatorAssignWhile!=null) DesignatorAssignWhile.setParent(this);
     }
 
-    public Designator getDesignator() {
-        return Designator;
+    public DesignatorAssignWhile getDesignatorAssignWhile() {
+        return DesignatorAssignWhile;
     }
 
-    public void setDesignator(Designator Designator) {
-        this.Designator=Designator;
-    }
-
-    public DesignatorStatementChoice getDesignatorStatementChoice() {
-        return DesignatorStatementChoice;
-    }
-
-    public void setDesignatorStatementChoice(DesignatorStatementChoice DesignatorStatementChoice) {
-        this.DesignatorStatementChoice=DesignatorStatementChoice;
+    public void setDesignatorAssignWhile(DesignatorAssignWhile DesignatorAssignWhile) {
+        this.DesignatorAssignWhile=DesignatorAssignWhile;
     }
 
     public void accept(Visitor visitor) {
@@ -38,19 +27,16 @@ public class DesignatorStatementWhileDerived2 extends DesignatorStatementWhile {
     }
 
     public void childrenAccept(Visitor visitor) {
-        if(Designator!=null) Designator.accept(visitor);
-        if(DesignatorStatementChoice!=null) DesignatorStatementChoice.accept(visitor);
+        if(DesignatorAssignWhile!=null) DesignatorAssignWhile.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
-        if(Designator!=null) Designator.traverseTopDown(visitor);
-        if(DesignatorStatementChoice!=null) DesignatorStatementChoice.traverseTopDown(visitor);
+        if(DesignatorAssignWhile!=null) DesignatorAssignWhile.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
-        if(Designator!=null) Designator.traverseBottomUp(visitor);
-        if(DesignatorStatementChoice!=null) DesignatorStatementChoice.traverseBottomUp(visitor);
+        if(DesignatorAssignWhile!=null) DesignatorAssignWhile.traverseBottomUp(visitor);
         accept(visitor);
     }
 
@@ -59,14 +45,8 @@ public class DesignatorStatementWhileDerived2 extends DesignatorStatementWhile {
         buffer.append(tab);
         buffer.append("DesignatorStatementWhileDerived2(\n");
 
-        if(Designator!=null)
-            buffer.append(Designator.toString("  "+tab));
-        else
-            buffer.append(tab+"  null");
-        buffer.append("\n");
-
-        if(DesignatorStatementChoice!=null)
-            buffer.append(DesignatorStatementChoice.toString("  "+tab));
+        if(DesignatorAssignWhile!=null)
+            buffer.append(DesignatorAssignWhile.toString("  "+tab));
         else
             buffer.append(tab+"  null");
         buffer.append("\n");

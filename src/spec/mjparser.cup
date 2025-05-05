@@ -258,12 +258,14 @@ Statement ::=   DesignatorStatement
               LBRACE StatementList RBRACE
               ;
 
-DesignatorStatementWhile ::= Designator DesignatorStatementChoice
-                        |
-                        DesignatorAssignWhile
-                        ;
+DesignatorStatementWhile ::= Designator DesignatorFuncCall
+                             |
+                             Designator DesignatorStatementChoice
+                             |
+                             DesignatorAssignWhile
+                             ;
 
-DesignatorAssignWhile ::= Designator Assignop Expr
+DesignatorAssignWhile ::= (DesignatorAssignExprWhile) Designator Assignop Expr
                           |
                           Designator Assignop Designator Setop Designator
                           ;
@@ -277,6 +279,8 @@ StatementCondition ::= Condition RPAREN
 
 DesignatorStatement ::= Designator DesignatorStatementChoice SEMI
                         |
+                        Designator DesignatorFuncCall SEMI
+                        |
                         DesignatorAssign
                         ;
 
@@ -288,11 +292,7 @@ DesignatorAssign ::= (DesignatorAssignExpr) Designator Assignop Expr SEMI
                      {: parser.report_error("Izvrsen oporavak do ; u liniji " + lleft, null); :}
                      ;
 
-DesignatorStatementChoice ::= LPAREN ActPars RPAREN
-                              |
-                              LPAREN RPAREN
-                              |
-                              INC
+DesignatorStatementChoice ::= INC
                               |
                               DEC
                               ;

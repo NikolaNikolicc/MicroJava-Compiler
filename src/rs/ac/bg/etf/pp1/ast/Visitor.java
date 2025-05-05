@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 5/4/2025 18:9:20
+// 5/4/2025 20:13:10
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -102,19 +102,19 @@ public interface Visitor {
     public void visit(DesignatorElem DesignatorElem);
     public void visit(DesignatorDerived1 DesignatorDerived1);
     public void visit(DesignatorVar DesignatorVar);
-    public void visit(DesignatorStatementChoiceDerived4 DesignatorStatementChoiceDerived4);
-    public void visit(DesignatorStatementChoiceDerived3 DesignatorStatementChoiceDerived3);
     public void visit(DesignatorStatementChoiceDerived2 DesignatorStatementChoiceDerived2);
     public void visit(DesignatorStatementChoiceDerived1 DesignatorStatementChoiceDerived1);
     public void visit(DesignatorAssignDerived2 DesignatorAssignDerived2);
     public void visit(DesignatorAssignDerived1 DesignatorAssignDerived1);
     public void visit(DesignatorAssignExpr DesignatorAssignExpr);
+    public void visit(DesignatorStatementDerived3 DesignatorStatementDerived3);
     public void visit(DesignatorStatementDerived2 DesignatorStatementDerived2);
     public void visit(DesignatorStatementDerived1 DesignatorStatementDerived1);
     public void visit(StatementConditionDerived2 StatementConditionDerived2);
     public void visit(StatementConditionDerived1 StatementConditionDerived1);
-    public void visit(DesignatorAssignWhileDerived2 DesignatorAssignWhileDerived2);
     public void visit(DesignatorAssignWhileDerived1 DesignatorAssignWhileDerived1);
+    public void visit(DesignatorAssignExprWhile DesignatorAssignExprWhile);
+    public void visit(DesignatorStatementWhileDerived3 DesignatorStatementWhileDerived3);
     public void visit(DesignatorStatementWhileDerived2 DesignatorStatementWhileDerived2);
     public void visit(DesignatorStatementWhileDerived1 DesignatorStatementWhileDerived1);
     public void visit(StatementDerived14 StatementDerived14);

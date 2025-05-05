@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 5/4/2025 18:9:20
+// 5/4/2025 20:13:10
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -102,19 +102,19 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(DesignatorElem DesignatorElem) { visit(); }
     public void visit(DesignatorDerived1 DesignatorDerived1) { visit(); }
     public void visit(DesignatorVar DesignatorVar) { visit(); }
-    public void visit(DesignatorStatementChoiceDerived4 DesignatorStatementChoiceDerived4) { visit(); }
-    public void visit(DesignatorStatementChoiceDerived3 DesignatorStatementChoiceDerived3) { visit(); }
     public void visit(DesignatorStatementChoiceDerived2 DesignatorStatementChoiceDerived2) { visit(); }
     public void visit(DesignatorStatementChoiceDerived1 DesignatorStatementChoiceDerived1) { visit(); }
     public void visit(DesignatorAssignDerived2 DesignatorAssignDerived2) { visit(); }
     public void visit(DesignatorAssignDerived1 DesignatorAssignDerived1) { visit(); }
     public void visit(DesignatorAssignExpr DesignatorAssignExpr) { visit(); }
+    public void visit(DesignatorStatementDerived3 DesignatorStatementDerived3) { visit(); }
     public void visit(DesignatorStatementDerived2 DesignatorStatementDerived2) { visit(); }
     public void visit(DesignatorStatementDerived1 DesignatorStatementDerived1) { visit(); }
     public void visit(StatementConditionDerived2 StatementConditionDerived2) { visit(); }
     public void visit(StatementConditionDerived1 StatementConditionDerived1) { visit(); }
-    public void visit(DesignatorAssignWhileDerived2 DesignatorAssignWhileDerived2) { visit(); }
     public void visit(DesignatorAssignWhileDerived1 DesignatorAssignWhileDerived1) { visit(); }
+    public void visit(DesignatorAssignExprWhile DesignatorAssignExprWhile) { visit(); }
+    public void visit(DesignatorStatementWhileDerived3 DesignatorStatementWhileDerived3) { visit(); }
     public void visit(DesignatorStatementWhileDerived2 DesignatorStatementWhileDerived2) { visit(); }
     public void visit(DesignatorStatementWhileDerived1 DesignatorStatementWhileDerived1) { visit(); }
     public void visit(StatementDerived14 StatementDerived14) { visit(); }

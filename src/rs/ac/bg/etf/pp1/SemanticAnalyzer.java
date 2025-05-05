@@ -378,6 +378,22 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     }
 
+    // we need to repeat this function because of error handling implementation
+    @Override
+    public void visit(DesignatorAssignExprWhile node){
+        int kind = node.getDesignator().obj.getKind();
+        if(kind != Obj.Var && kind != Obj.Elem){
+            report_error("Dodela u neadekvatnu promenljivu : " + node.getDesignator().obj.getName(), node);
+            return;
+        }
+        // it's important to use assignableTo because of assigning null propery
+        else if(!node.getExpr().struct.assignableTo(node.getDesignator().obj.getType())){
+            report_error("Tip Expr nije kompatibilan sa tipom neterminala Dedsignator : " + node.getDesignator().obj.getName(), node );
+            return;
+        }
+
+    }
+
     @Override
     public void visit(MethodSignatureStartFormPars methodSignatureStartFormPars){
         parsingFormPars = true;

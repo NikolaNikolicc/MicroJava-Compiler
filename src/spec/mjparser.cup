@@ -280,7 +280,7 @@ DesignatorStatement ::= Designator DesignatorStatementChoice SEMI
                         DesignatorAssign
                         ;
 
-DesignatorAssign ::= Designator Assignop Expr SEMI
+DesignatorAssign ::= (DesignatorAssignExpr) Designator Assignop Expr SEMI
                      |
                      Designator Assignop Designator Setop Designator SEMI
                      |

@@ -338,7 +338,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             node.struct = Tab.noType;
             return;
         }
-        node.struct = new Struct(Struct.Array, currTypeMeth.getType());
+        node.struct = new Struct(Struct.Array, currTypeVar.getType());
     }
 
     @Override
@@ -355,11 +355,26 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         else if (arr.getKind() != Obj.Var || arr.getType().getKind() != Struct.Array){
-            report_error("Neadekvatna vrsta promenljive niza " + node.getI1() + ":", node);
+            report_error("Neadekvatna vrsta promenljive niza : " + node.getI1(), node);
             node.obj = Tab.noObj;
             return;
         }
         node.obj = arr;
+    }
+
+    // Designator
+    @Override
+    public void visit(DesignatorAssignExpr node){
+        int kind = node.getDesignator().obj.getKind();
+        if(kind != Obj.Var && kind != Obj.Elem){
+            report_error("Dodela u neadekvatnu promenljivu : " + node.getDesignator().obj.getName(), node);
+            return;
+        }
+        else if(!node.getExpr().struct.assignableTo(node.getDesignator().obj.getType())){
+            report_error("Tip Expr nije kompatibilan sa tipom neterminala Dedsignator : " + node.getDesignator().obj.getName(), node );
+            return;
+        }
+
     }
 
     @Override

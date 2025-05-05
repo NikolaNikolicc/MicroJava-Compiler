@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 4/4/2025 22:9:6
+// 5/4/2025 18:9:20
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -9,15 +9,21 @@ public class DesignatorAssignDerived1 extends DesignatorAssign {
 
     private Designator Designator;
     private Assignop Assignop;
-    private Expr Expr;
+    private Designator Designator1;
+    private Setop Setop;
+    private Designator Designator2;
 
-    public DesignatorAssignDerived1 (Designator Designator, Assignop Assignop, Expr Expr) {
+    public DesignatorAssignDerived1 (Designator Designator, Assignop Assignop, Designator Designator1, Setop Setop, Designator Designator2) {
         this.Designator=Designator;
         if(Designator!=null) Designator.setParent(this);
         this.Assignop=Assignop;
         if(Assignop!=null) Assignop.setParent(this);
-        this.Expr=Expr;
-        if(Expr!=null) Expr.setParent(this);
+        this.Designator1=Designator1;
+        if(Designator1!=null) Designator1.setParent(this);
+        this.Setop=Setop;
+        if(Setop!=null) Setop.setParent(this);
+        this.Designator2=Designator2;
+        if(Designator2!=null) Designator2.setParent(this);
     }
 
     public Designator getDesignator() {
@@ -36,12 +42,28 @@ public class DesignatorAssignDerived1 extends DesignatorAssign {
         this.Assignop=Assignop;
     }
 
-    public Expr getExpr() {
-        return Expr;
+    public Designator getDesignator1() {
+        return Designator1;
     }
 
-    public void setExpr(Expr Expr) {
-        this.Expr=Expr;
+    public void setDesignator1(Designator Designator1) {
+        this.Designator1=Designator1;
+    }
+
+    public Setop getSetop() {
+        return Setop;
+    }
+
+    public void setSetop(Setop Setop) {
+        this.Setop=Setop;
+    }
+
+    public Designator getDesignator2() {
+        return Designator2;
+    }
+
+    public void setDesignator2(Designator Designator2) {
+        this.Designator2=Designator2;
     }
 
     public void accept(Visitor visitor) {
@@ -51,20 +73,26 @@ public class DesignatorAssignDerived1 extends DesignatorAssign {
     public void childrenAccept(Visitor visitor) {
         if(Designator!=null) Designator.accept(visitor);
         if(Assignop!=null) Assignop.accept(visitor);
-        if(Expr!=null) Expr.accept(visitor);
+        if(Designator1!=null) Designator1.accept(visitor);
+        if(Setop!=null) Setop.accept(visitor);
+        if(Designator2!=null) Designator2.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
         if(Designator!=null) Designator.traverseTopDown(visitor);
         if(Assignop!=null) Assignop.traverseTopDown(visitor);
-        if(Expr!=null) Expr.traverseTopDown(visitor);
+        if(Designator1!=null) Designator1.traverseTopDown(visitor);
+        if(Setop!=null) Setop.traverseTopDown(visitor);
+        if(Designator2!=null) Designator2.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
         if(Designator!=null) Designator.traverseBottomUp(visitor);
         if(Assignop!=null) Assignop.traverseBottomUp(visitor);
-        if(Expr!=null) Expr.traverseBottomUp(visitor);
+        if(Designator1!=null) Designator1.traverseBottomUp(visitor);
+        if(Setop!=null) Setop.traverseBottomUp(visitor);
+        if(Designator2!=null) Designator2.traverseBottomUp(visitor);
         accept(visitor);
     }
 
@@ -85,8 +113,20 @@ public class DesignatorAssignDerived1 extends DesignatorAssign {
             buffer.append(tab+"  null");
         buffer.append("\n");
 
-        if(Expr!=null)
-            buffer.append(Expr.toString("  "+tab));
+        if(Designator1!=null)
+            buffer.append(Designator1.toString("  "+tab));
+        else
+            buffer.append(tab+"  null");
+        buffer.append("\n");
+
+        if(Setop!=null)
+            buffer.append(Setop.toString("  "+tab));
+        else
+            buffer.append(tab+"  null");
+        buffer.append("\n");
+
+        if(Designator2!=null)
+            buffer.append(Designator2.toString("  "+tab));
         else
             buffer.append(tab+"  null");
         buffer.append("\n");

@@ -329,12 +329,12 @@ DesignatorStatement ::= Designator:D1 DesignatorStatementChoice:D2 SEMI {: RESUL
                         DesignatorAssign:D1 {: RESULT=new DesignatorStatementDerived2(D1); RESULT.setLine(D1left); :}
                         ;
 
-DesignatorAssign ::= Designator:D1 Assignop:A2 Expr:E3 SEMI {: RESULT=new DesignatorAssignDerived1(D1, A2, E3); RESULT.setLine(D1left); :}
+DesignatorAssign ::= (DesignatorAssignExpr) Designator:D1 Assignop:A2 Expr:E3 SEMI {: RESULT=new DesignatorAssignExpr(D1, A2, E3); RESULT.setLine(D1left); :}
                      |
-                     Designator:D1 Assignop:A2 Designator:D3 Setop:S4 Designator:D5 SEMI {: RESULT=new DesignatorAssignDerived2(D1, A2, D3, S4, D5); RESULT.setLine(D1left); :}
+                     Designator:D1 Assignop:A2 Designator:D3 Setop:S4 Designator:D5 SEMI {: RESULT=new DesignatorAssignDerived1(D1, A2, D3, S4, D5); RESULT.setLine(D1left); :}
                      |
                      error SEMI:l
-                     {: parser.report_error("Izvrsen oporavak do ; u liniji " + lleft, null); :} {: RESULT=new DesignatorAssignDerived3(); :}
+                     {: parser.report_error("Izvrsen oporavak do ; u liniji " + lleft, null); :} {: RESULT=new DesignatorAssignDerived2(); :}
                      ;
 
 DesignatorStatementChoice ::= LPAREN ActPars:A1 RPAREN {: RESULT=new DesignatorStatementChoiceDerived1(A1); RESULT.setLine(A1left); :}

@@ -5,16 +5,19 @@
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class FactorDerived1 extends Factor {
+public class DesignatorAssignExpr extends DesignatorAssign {
 
     private Designator Designator;
-    private DesignatorFuncCall DesignatorFuncCall;
+    private Assignop Assignop;
+    private Expr Expr;
 
-    public FactorDerived1 (Designator Designator, DesignatorFuncCall DesignatorFuncCall) {
+    public DesignatorAssignExpr (Designator Designator, Assignop Assignop, Expr Expr) {
         this.Designator=Designator;
         if(Designator!=null) Designator.setParent(this);
-        this.DesignatorFuncCall=DesignatorFuncCall;
-        if(DesignatorFuncCall!=null) DesignatorFuncCall.setParent(this);
+        this.Assignop=Assignop;
+        if(Assignop!=null) Assignop.setParent(this);
+        this.Expr=Expr;
+        if(Expr!=null) Expr.setParent(this);
     }
 
     public Designator getDesignator() {
@@ -25,12 +28,20 @@ public class FactorDerived1 extends Factor {
         this.Designator=Designator;
     }
 
-    public DesignatorFuncCall getDesignatorFuncCall() {
-        return DesignatorFuncCall;
+    public Assignop getAssignop() {
+        return Assignop;
     }
 
-    public void setDesignatorFuncCall(DesignatorFuncCall DesignatorFuncCall) {
-        this.DesignatorFuncCall=DesignatorFuncCall;
+    public void setAssignop(Assignop Assignop) {
+        this.Assignop=Assignop;
+    }
+
+    public Expr getExpr() {
+        return Expr;
+    }
+
+    public void setExpr(Expr Expr) {
+        this.Expr=Expr;
     }
 
     public void accept(Visitor visitor) {
@@ -39,25 +50,28 @@ public class FactorDerived1 extends Factor {
 
     public void childrenAccept(Visitor visitor) {
         if(Designator!=null) Designator.accept(visitor);
-        if(DesignatorFuncCall!=null) DesignatorFuncCall.accept(visitor);
+        if(Assignop!=null) Assignop.accept(visitor);
+        if(Expr!=null) Expr.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
         if(Designator!=null) Designator.traverseTopDown(visitor);
-        if(DesignatorFuncCall!=null) DesignatorFuncCall.traverseTopDown(visitor);
+        if(Assignop!=null) Assignop.traverseTopDown(visitor);
+        if(Expr!=null) Expr.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
         if(Designator!=null) Designator.traverseBottomUp(visitor);
-        if(DesignatorFuncCall!=null) DesignatorFuncCall.traverseBottomUp(visitor);
+        if(Assignop!=null) Assignop.traverseBottomUp(visitor);
+        if(Expr!=null) Expr.traverseBottomUp(visitor);
         accept(visitor);
     }
 
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("FactorDerived1(\n");
+        buffer.append("DesignatorAssignExpr(\n");
 
         if(Designator!=null)
             buffer.append(Designator.toString("  "+tab));
@@ -65,14 +79,20 @@ public class FactorDerived1 extends Factor {
             buffer.append(tab+"  null");
         buffer.append("\n");
 
-        if(DesignatorFuncCall!=null)
-            buffer.append(DesignatorFuncCall.toString("  "+tab));
+        if(Assignop!=null)
+            buffer.append(Assignop.toString("  "+tab));
+        else
+            buffer.append(tab+"  null");
+        buffer.append("\n");
+
+        if(Expr!=null)
+            buffer.append(Expr.toString("  "+tab));
         else
             buffer.append(tab+"  null");
         buffer.append("\n");
 
         buffer.append(tab);
-        buffer.append(") [FactorDerived1]");
+        buffer.append(") [DesignatorAssignExpr]");
         return buffer.toString();
     }
 }

@@ -56,11 +56,16 @@ program MJProgram
 	}
 
     bool m1(int param1, int param2) int m, b[]; int x[], y; {
+
+        // m2(); // error
         return true;
     }
 
-    char m2() int m, b[]; int x[], y; {
-
+    char m2() int m, b[]; int x[], y; bool z; {
+        // m1(); // ok
+        // m = m1(); // error
+        // z = m1(); // ok
+        return 'a';
     }
 
 }

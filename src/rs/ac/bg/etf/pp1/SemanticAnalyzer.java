@@ -309,8 +309,19 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         node.struct = node.getTerm().struct;
     }
 
+    // Factor
     @Override
     public void visit(FactorDesignator node){
+        node.struct = node.getDesignator().obj.getType();
+    }
+
+    @Override
+    public void visit(FactorFuncCall node){
+        if(node.getDesignator().obj.getKind() != Obj.Meth){
+            report_error("Poziv neadekvatne metode(" + node.getDesignator().obj.getName() + ")", node);
+            node.struct = Tab.noType;
+            return;
+        }
         node.struct = node.getDesignator().obj.getType();
     }
 
@@ -318,12 +329,12 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     public void visit(DesignatorVar node){
         Obj var = Tab.find(node.getI1());
         if (var == Tab.noObj){
-            report_error("Nije deklarisana promenljiva sa imenom" + node.getI1(), node);
+            report_error("Nije deklarisana promenljiva sa zadatim imenom(" + node.getI1() + ")", node);
             node.obj = Tab.noObj;
             return;
         }
-        else if (var.getKind() != Obj.Var && var.getKind() != Obj.Con){
-            report_error("Neadekvatna vrsta promenljive " + node.getI1() + ":", node);
+        else if (var.getKind() != Obj.Var && var.getKind() != Obj.Con && var.getKind() != Obj.Meth){
+            report_error("Neadekvatna vrsta promenljive " + node.getI1(), node);
             node.obj = Tab.noObj;
             return;
         }
@@ -438,7 +449,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         }
         // it's important to use assignableTo because of assigning null propery
         else if(!node.getExpr().struct.assignableTo(node.getDesignator().obj.getType())){
-            report_error("Tip Expr nije kompatibilan sa tipom neterminala Dedsignator : " + node.getDesignator().obj.getName(), node );
+            report_error("Tip Expr nije kompatibilan sa tipom neterminala Designator : " + node.getDesignator().obj.getName(), node );
             return;
         }
 
@@ -487,6 +498,22 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         }
         else if(!node.getDesignator().obj.getType().equals(Tab.intType)){
             report_error("Unarna operacija (-- ili ++) nad promenljivom("+ name + ") koja nije tipa int", node);
+            return;
+        }
+    }
+
+    @Override
+    public void visit(DesignatorStatementFuncCall node){
+        if(node.getDesignator().obj.getKind() != Obj.Meth){
+            report_error("Poziv neadekvatne metode(" + node.getDesignator().obj.getName() + ")", node);
+            return;
+        }
+    }
+
+    @Override
+    public void visit(DesignatorStatementFuncCallWhile node){
+        if(node.getDesignator().obj.getKind() != Obj.Meth){
+            report_error("Poziv neadekvatne metode(" + node.getDesignator().obj.getName() + ")", node);
             return;
         }
     }

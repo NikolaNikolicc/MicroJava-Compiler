@@ -1,28 +1,28 @@
 // generated with ast extension for cup
 // version 0.8
-// 5/4/2025 22:57:32
+// 5/4/2025 23:46:0
 
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class FactorDerived2 extends Factor {
+public class DesignatorStatementFuncCall extends DesignatorStatement {
 
-    private Type Type;
+    private Designator Designator;
     private DesignatorFuncCall DesignatorFuncCall;
 
-    public FactorDerived2 (Type Type, DesignatorFuncCall DesignatorFuncCall) {
-        this.Type=Type;
-        if(Type!=null) Type.setParent(this);
+    public DesignatorStatementFuncCall (Designator Designator, DesignatorFuncCall DesignatorFuncCall) {
+        this.Designator=Designator;
+        if(Designator!=null) Designator.setParent(this);
         this.DesignatorFuncCall=DesignatorFuncCall;
         if(DesignatorFuncCall!=null) DesignatorFuncCall.setParent(this);
     }
 
-    public Type getType() {
-        return Type;
+    public Designator getDesignator() {
+        return Designator;
     }
 
-    public void setType(Type Type) {
-        this.Type=Type;
+    public void setDesignator(Designator Designator) {
+        this.Designator=Designator;
     }
 
     public DesignatorFuncCall getDesignatorFuncCall() {
@@ -38,18 +38,18 @@ public class FactorDerived2 extends Factor {
     }
 
     public void childrenAccept(Visitor visitor) {
-        if(Type!=null) Type.accept(visitor);
+        if(Designator!=null) Designator.accept(visitor);
         if(DesignatorFuncCall!=null) DesignatorFuncCall.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
-        if(Type!=null) Type.traverseTopDown(visitor);
+        if(Designator!=null) Designator.traverseTopDown(visitor);
         if(DesignatorFuncCall!=null) DesignatorFuncCall.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
-        if(Type!=null) Type.traverseBottomUp(visitor);
+        if(Designator!=null) Designator.traverseBottomUp(visitor);
         if(DesignatorFuncCall!=null) DesignatorFuncCall.traverseBottomUp(visitor);
         accept(visitor);
     }
@@ -57,10 +57,10 @@ public class FactorDerived2 extends Factor {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("FactorDerived2(\n");
+        buffer.append("DesignatorStatementFuncCall(\n");
 
-        if(Type!=null)
-            buffer.append(Type.toString("  "+tab));
+        if(Designator!=null)
+            buffer.append(Designator.toString("  "+tab));
         else
             buffer.append(tab+"  null");
         buffer.append("\n");
@@ -72,7 +72,7 @@ public class FactorDerived2 extends Factor {
         buffer.append("\n");
 
         buffer.append(tab);
-        buffer.append(") [FactorDerived2]");
+        buffer.append(") [DesignatorStatementFuncCall]");
         return buffer.toString();
     }
 }

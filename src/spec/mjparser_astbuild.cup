@@ -307,11 +307,11 @@ Statement ::=   DesignatorStatement:D1 {: RESULT=new StatementDerived1(D1); RESU
               LBRACE StatementList:S1 RBRACE {: RESULT=new StatementDerived9(S1); RESULT.setLine(S1left); :}
               ;
 
-DesignatorStatementWhile ::= Designator:D1 DesignatorFuncCall:D2 {: RESULT=new DesignatorStatementWhileDerived1(D1, D2); RESULT.setLine(D1left); :}
+DesignatorStatementWhile ::= (DesignatorStatementFuncCallWhile)Designator:D1 DesignatorFuncCall:D2 {: RESULT=new DesignatorStatementFuncCallWhile(D1, D2); RESULT.setLine(D1left); :}
                              |
                              (DesignatorStatementUnarySemiWhile) Designator:D1 DesignatorStatementUnary:D2 {: RESULT=new DesignatorStatementUnarySemiWhile(D1, D2); RESULT.setLine(D1left); :}
                              |
-                             DesignatorAssignWhile:D1 {: RESULT=new DesignatorStatementWhileDerived2(D1); RESULT.setLine(D1left); :}
+                             DesignatorAssignWhile:D1 {: RESULT=new DesignatorStatementWhileDerived1(D1); RESULT.setLine(D1left); :}
                              ;
 
 DesignatorAssignWhile ::= (DesignatorAssignExprWhile) Designator:D1 Assignop:A2 Expr:E3 {: RESULT=new DesignatorAssignExprWhile(D1, A2, E3); RESULT.setLine(D1left); :}
@@ -328,9 +328,9 @@ StatementCondition ::= Condition:C1 RPAREN {: RESULT=new StatementConditionDeriv
 
 DesignatorStatement ::= (DesignatorStatementUnarySemi) Designator:D1 DesignatorStatementUnary:D2 SEMI {: RESULT=new DesignatorStatementUnarySemi(D1, D2); RESULT.setLine(D1left); :}
                         |
-                        Designator:D1 DesignatorFuncCall:D2 SEMI {: RESULT=new DesignatorStatementDerived1(D1, D2); RESULT.setLine(D1left); :}
+                        (DesignatorStatementFuncCall) Designator:D1 DesignatorFuncCall:D2 SEMI {: RESULT=new DesignatorStatementFuncCall(D1, D2); RESULT.setLine(D1left); :}
                         |
-                        DesignatorAssign:D1 {: RESULT=new DesignatorStatementDerived2(D1); RESULT.setLine(D1left); :}
+                        DesignatorAssign:D1 {: RESULT=new DesignatorStatementDerived1(D1); RESULT.setLine(D1left); :}
                         ;
 
 DesignatorAssign ::= (DesignatorAssignExpr) Designator:D1 Assignop:A2 Expr:E3 SEMI {: RESULT=new DesignatorAssignExpr(D1, A2, E3); RESULT.setLine(D1left); :}
@@ -400,13 +400,13 @@ Term ::= (TermFactor) Factor:F1 {: RESULT=new TermFactor(F1); RESULT.setLine(F1l
 
 Factor ::= (FactorDesignator) Designator:D1 {: RESULT=new FactorDesignator(D1); RESULT.setLine(D1left); :}
            |
-           Designator:D1 DesignatorFuncCall:D2 {: RESULT=new FactorDerived1(D1, D2); RESULT.setLine(D1left); :}
+           (FactorFuncCall)Designator:D1 DesignatorFuncCall:D2 {: RESULT=new FactorFuncCall(D1, D2); RESULT.setLine(D1left); :}
            |
            (FactorConstDeclListValue) ConstDeclListValue:C1 {: RESULT=new FactorConstDeclListValue(C1); RESULT.setLine(C1left); :}
            |
            (FactorCreateArray) NEW Type:T1 LBRACKET Expr:E2 RBRACKET {: RESULT=new FactorCreateArray(T1, E2); RESULT.setLine(T1left); :}
            |
-           NEW Type:T1 DesignatorFuncCall:D2 {: RESULT=new FactorDerived2(T1, D2); RESULT.setLine(T1left); :}
+           NEW Type:T1 DesignatorFuncCall:D2 {: RESULT=new FactorDerived1(T1, D2); RESULT.setLine(T1left); :}
            |
            (FactorExpr) LPAREN Expr:E1 RPAREN {: RESULT=new FactorExpr(E1); RESULT.setLine(E1left); :}
            ;

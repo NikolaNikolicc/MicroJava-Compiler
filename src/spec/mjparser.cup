@@ -258,7 +258,7 @@ Statement ::=   DesignatorStatement
               LBRACE StatementList RBRACE
               ;
 
-DesignatorStatementWhile ::= Designator DesignatorFuncCall
+DesignatorStatementWhile ::= (DesignatorStatementFuncCallWhile)Designator DesignatorFuncCall
                              |
                              (DesignatorStatementUnarySemiWhile) Designator DesignatorStatementUnary
                              |
@@ -279,7 +279,7 @@ StatementCondition ::= Condition RPAREN
 
 DesignatorStatement ::= (DesignatorStatementUnarySemi) Designator DesignatorStatementUnary SEMI
                         |
-                        Designator DesignatorFuncCall SEMI
+                        (DesignatorStatementFuncCall) Designator DesignatorFuncCall SEMI
                         |
                         DesignatorAssign
                         ;
@@ -351,7 +351,7 @@ Term ::= (TermFactor) Factor
 
 Factor ::= (FactorDesignator) Designator
            |
-           Designator DesignatorFuncCall
+           (FactorFuncCall)Designator DesignatorFuncCall
            |
            (FactorConstDeclListValue) ConstDeclListValue
            |

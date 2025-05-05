@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 5/4/2025 22:57:32
+// 5/4/2025 23:46:0
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -76,10 +76,10 @@ public interface Visitor {
     public void visit(DesignatorFuncCallDerived2 DesignatorFuncCallDerived2);
     public void visit(DesignatorFuncCallDerived1 DesignatorFuncCallDerived1);
     public void visit(FactorExpr FactorExpr);
-    public void visit(FactorDerived2 FactorDerived2);
+    public void visit(FactorDerived1 FactorDerived1);
     public void visit(FactorCreateArray FactorCreateArray);
     public void visit(FactorConstDeclListValue FactorConstDeclListValue);
-    public void visit(FactorDerived1 FactorDerived1);
+    public void visit(FactorFuncCall FactorFuncCall);
     public void visit(FactorDesignator FactorDesignator);
     public void visit(TermTermMulopFactor TermTermMulopFactor);
     public void visit(TermFactor TermFactor);
@@ -107,16 +107,16 @@ public interface Visitor {
     public void visit(DesignatorAssignDerived2 DesignatorAssignDerived2);
     public void visit(DesignatorAssignDerived1 DesignatorAssignDerived1);
     public void visit(DesignatorAssignExpr DesignatorAssignExpr);
-    public void visit(DesignatorStatementDerived2 DesignatorStatementDerived2);
     public void visit(DesignatorStatementDerived1 DesignatorStatementDerived1);
+    public void visit(DesignatorStatementFuncCall DesignatorStatementFuncCall);
     public void visit(DesignatorStatementUnarySemi DesignatorStatementUnarySemi);
     public void visit(StatementConditionDerived2 StatementConditionDerived2);
     public void visit(StatementConditionDerived1 StatementConditionDerived1);
     public void visit(DesignatorAssignWhileDerived1 DesignatorAssignWhileDerived1);
     public void visit(DesignatorAssignExprWhile DesignatorAssignExprWhile);
-    public void visit(DesignatorStatementWhileDerived2 DesignatorStatementWhileDerived2);
-    public void visit(DesignatorStatementUnarySemiWhile DesignatorStatementUnarySemiWhile);
     public void visit(DesignatorStatementWhileDerived1 DesignatorStatementWhileDerived1);
+    public void visit(DesignatorStatementUnarySemiWhile DesignatorStatementUnarySemiWhile);
+    public void visit(DesignatorStatementFuncCallWhile DesignatorStatementFuncCallWhile);
     public void visit(StatementDerived9 StatementDerived9);
     public void visit(StatementDerived8 StatementDerived8);
     public void visit(StatementDerived7 StatementDerived7);

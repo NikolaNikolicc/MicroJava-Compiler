@@ -379,11 +379,19 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     // Statement
     @Override
     public void visit(StatementReturn node){
+        if (currMeth == null){
+            report_error("Return naredba se moze pozivati samo unutar tela metode", node);
+            return;
+        }
         returnNode = new Obj(Obj.NO_VALUE, "return", null);
     }
 
     @Override
     public void visit(StatementReturnExpr node){
+        if (currMeth == null){
+            report_error("Return naredba se moze pozivati samo unutar tela metode", node);
+            return;
+        }
         returnNode = new Obj(Obj.NO_VALUE, "return", node.getExpr().struct);
     }
 
@@ -392,7 +400,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         int kind = node.getDesignator().obj.getKind();
         String name = node.getDesignator().obj.getName();
         Struct type = node.getDesignator().obj.getType();
-        if (kind != Obj.Var && kind != Obj.Elem){
+        if (kind != Obj.Var && kind != Obj.Elem && kind != Obj.Fld){
             report_error("Read operacija nad neadekvatnom promenljivom(" + name + ")", node);
             return;
         }
@@ -424,7 +432,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     @Override
     public void visit(DesignatorAssignExpr node){
         int kind = node.getDesignator().obj.getKind();
-        if(kind != Obj.Var && kind != Obj.Elem){
+        if(kind != Obj.Var && kind != Obj.Elem && kind != Obj.Fld){
             report_error("Dodela u neadekvatnu promenljivu : " + node.getDesignator().obj.getName(), node);
             return;
         }
@@ -440,7 +448,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     @Override
     public void visit(DesignatorAssignExprWhile node){
         int kind = node.getDesignator().obj.getKind();
-        if(kind != Obj.Var && kind != Obj.Elem){
+        if(kind != Obj.Var && kind != Obj.Elem && kind != Obj.Fld){
             report_error("Dodela u neadekvatnu promenljivu : " + node.getDesignator().obj.getName(), node);
             return;
         }
@@ -456,7 +464,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     public void visit(DesignatorStatementUnarySemi node){
         int kind = node.getDesignator().obj.getKind();
         String name = node.getDesignator().obj.getName();
-        if (kind != Obj.Var && kind != Obj.Elem){
+        if (kind != Obj.Var && kind != Obj.Elem && kind != Obj.Fld){
 
             report_error("Unarna operacija (-- ili ++) nad neadekvatnom promenljivom(" + name + ")", node);
             return;
@@ -472,7 +480,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     public void visit(DesignatorStatementUnarySemiWhile node){
         int kind = node.getDesignator().obj.getKind();
         String name = node.getDesignator().obj.getName();
-        if (kind != Obj.Var && kind != Obj.Elem){
+        if (kind != Obj.Var && kind != Obj.Elem && kind != Obj.Fld){
 
             report_error("Unarna operacija (-- ili ++) nad neadekvatnom promenljivom(" + name + ")", node);
             return;

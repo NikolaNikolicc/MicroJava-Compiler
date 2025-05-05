@@ -243,7 +243,7 @@ Statement ::=   DesignatorStatement
               |
               RETURN Expr SEMI
               |
-              READ LPAREN Designator RPAREN SEMI
+              (StatementRead) READ LPAREN Designator RPAREN SEMI
               |
               PRINT LPAREN Expr RPAREN SEMI
               |

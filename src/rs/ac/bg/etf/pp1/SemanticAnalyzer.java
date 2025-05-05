@@ -362,6 +362,22 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         node.obj = arr;
     }
 
+    // Statement
+    @Override
+    public void visit(StatementRead node){
+        int kind = node.getDesignator().obj.getKind();
+        String name = node.getDesignator().obj.getName();
+        Struct type = node.getDesignator().obj.getType();
+        if (kind != Obj.Var && kind != Obj.Elem){
+            report_error("Read operacija nad neadekvatnom promenljivom(" + name + ")", node);
+            return;
+        }
+        else if(!type.equals(Tab.intType) && !type.equals(boolType) && !type.equals(Tab.charType)){
+            report_error("Read operacija nad promenljivom("+ name + ") koja nije tipa int, char ili bool", node);
+            return;
+        }
+    }
+
     // Designator
     @Override
     public void visit(DesignatorAssignExpr node){

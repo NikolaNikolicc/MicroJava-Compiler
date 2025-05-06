@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 6/4/2025 7:9:35
+// 6/4/2025 7:41:15
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -15,7 +15,6 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(InterfaceDecl InterfaceDecl) { }
     public void visit(Relop Relop) { }
     public void visit(Assignop Assignop) { }
-    public void visit(ConditionList ConditionList) { }
     public void visit(ProgramDeclList ProgramDeclList) { }
     public void visit(DesignatorStatementUnary DesignatorStatementUnary) { }
     public void visit(TypeChoice TypeChoice) { }
@@ -29,7 +28,6 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(Factor Factor) { }
     public void visit(CondTerm CondTerm) { }
     public void visit(VarDeclProgram VarDeclProgram) { }
-    public void visit(CondFactList CondFactList) { }
     public void visit(DesignatorStatementWhile DesignatorStatementWhile) { }
     public void visit(Designator Designator) { }
     public void visit(MethodName MethodName) { }
@@ -90,11 +88,9 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(ExprTerm ExprTerm) { visit(); }
     public void visit(CondFactDerived2 CondFactDerived2) { visit(); }
     public void visit(CondFactDerived1 CondFactDerived1) { visit(); }
-    public void visit(CondFactListDerived2 CondFactListDerived2) { visit(); }
-    public void visit(CondFactListDerived1 CondFactListDerived1) { visit(); }
+    public void visit(CondTermDerived2 CondTermDerived2) { visit(); }
     public void visit(CondTermDerived1 CondTermDerived1) { visit(); }
-    public void visit(ConditionListDerived2 ConditionListDerived2) { visit(); }
-    public void visit(ConditionListDerived1 ConditionListDerived1) { visit(); }
+    public void visit(ConditionDerived2 ConditionDerived2) { visit(); }
     public void visit(ConditionDerived1 ConditionDerived1) { visit(); }
     public void visit(ActParsDerived2 ActParsDerived2) { visit(); }
     public void visit(ActParsDerived1 ActParsDerived1) { visit(); }

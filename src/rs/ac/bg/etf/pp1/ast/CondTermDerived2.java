@@ -1,28 +1,17 @@
 // generated with ast extension for cup
 // version 0.8
-// 6/4/2025 7:9:34
+// 6/4/2025 7:41:15
 
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class CondFactListDerived1 extends CondFactList {
+public class CondTermDerived2 extends CondTerm {
 
-    private CondFactList CondFactList;
     private CondFact CondFact;
 
-    public CondFactListDerived1 (CondFactList CondFactList, CondFact CondFact) {
-        this.CondFactList=CondFactList;
-        if(CondFactList!=null) CondFactList.setParent(this);
+    public CondTermDerived2 (CondFact CondFact) {
         this.CondFact=CondFact;
         if(CondFact!=null) CondFact.setParent(this);
-    }
-
-    public CondFactList getCondFactList() {
-        return CondFactList;
-    }
-
-    public void setCondFactList(CondFactList CondFactList) {
-        this.CondFactList=CondFactList;
     }
 
     public CondFact getCondFact() {
@@ -38,18 +27,15 @@ public class CondFactListDerived1 extends CondFactList {
     }
 
     public void childrenAccept(Visitor visitor) {
-        if(CondFactList!=null) CondFactList.accept(visitor);
         if(CondFact!=null) CondFact.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
-        if(CondFactList!=null) CondFactList.traverseTopDown(visitor);
         if(CondFact!=null) CondFact.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
-        if(CondFactList!=null) CondFactList.traverseBottomUp(visitor);
         if(CondFact!=null) CondFact.traverseBottomUp(visitor);
         accept(visitor);
     }
@@ -57,13 +43,7 @@ public class CondFactListDerived1 extends CondFactList {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("CondFactListDerived1(\n");
-
-        if(CondFactList!=null)
-            buffer.append(CondFactList.toString("  "+tab));
-        else
-            buffer.append(tab+"  null");
-        buffer.append("\n");
+        buffer.append("CondTermDerived2(\n");
 
         if(CondFact!=null)
             buffer.append(CondFact.toString("  "+tab));
@@ -72,7 +52,7 @@ public class CondFactListDerived1 extends CondFactList {
         buffer.append("\n");
 
         buffer.append(tab);
-        buffer.append(") [CondFactListDerived1]");
+        buffer.append(") [CondTermDerived2]");
         return buffer.toString();
     }
 }

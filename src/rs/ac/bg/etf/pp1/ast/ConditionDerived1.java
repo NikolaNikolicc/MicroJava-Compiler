@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 6/4/2025 7:9:34
+// 6/4/2025 7:41:15
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -8,13 +8,13 @@ package rs.ac.bg.etf.pp1.ast;
 public class ConditionDerived1 extends Condition {
 
     private CondTerm CondTerm;
-    private ConditionList ConditionList;
+    private Condition Condition;
 
-    public ConditionDerived1 (CondTerm CondTerm, ConditionList ConditionList) {
+    public ConditionDerived1 (CondTerm CondTerm, Condition Condition) {
         this.CondTerm=CondTerm;
         if(CondTerm!=null) CondTerm.setParent(this);
-        this.ConditionList=ConditionList;
-        if(ConditionList!=null) ConditionList.setParent(this);
+        this.Condition=Condition;
+        if(Condition!=null) Condition.setParent(this);
     }
 
     public CondTerm getCondTerm() {
@@ -25,12 +25,12 @@ public class ConditionDerived1 extends Condition {
         this.CondTerm=CondTerm;
     }
 
-    public ConditionList getConditionList() {
-        return ConditionList;
+    public Condition getCondition() {
+        return Condition;
     }
 
-    public void setConditionList(ConditionList ConditionList) {
-        this.ConditionList=ConditionList;
+    public void setCondition(Condition Condition) {
+        this.Condition=Condition;
     }
 
     public void accept(Visitor visitor) {
@@ -39,18 +39,18 @@ public class ConditionDerived1 extends Condition {
 
     public void childrenAccept(Visitor visitor) {
         if(CondTerm!=null) CondTerm.accept(visitor);
-        if(ConditionList!=null) ConditionList.accept(visitor);
+        if(Condition!=null) Condition.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
         if(CondTerm!=null) CondTerm.traverseTopDown(visitor);
-        if(ConditionList!=null) ConditionList.traverseTopDown(visitor);
+        if(Condition!=null) Condition.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
         if(CondTerm!=null) CondTerm.traverseBottomUp(visitor);
-        if(ConditionList!=null) ConditionList.traverseBottomUp(visitor);
+        if(Condition!=null) Condition.traverseBottomUp(visitor);
         accept(visitor);
     }
 
@@ -65,8 +65,8 @@ public class ConditionDerived1 extends Condition {
             buffer.append(tab+"  null");
         buffer.append("\n");
 
-        if(ConditionList!=null)
-            buffer.append(ConditionList.toString("  "+tab));
+        if(Condition!=null)
+            buffer.append(Condition.toString("  "+tab));
         else
             buffer.append(tab+"  null");
         buffer.append("\n");

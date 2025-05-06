@@ -60,7 +60,7 @@ terminal String IDENT ;
 terminal Character CHAR ;
 
 nonterminal Type, MethodSignatureEndFormPars, MethodSignatureStartFormPars, MethodName, ConstDeclAssign, Setop, Mulop, Addop, Relop, Assignop, Label, ProgramDeclList, ProgramDeclElem, ConstDecl, ConstDeclList, VarDecl, VarDeclFinal, VarDeclOptionalList, ClassDecl, VarDeclListOptional, MethodSignature, TypeChoice, FormParsOptional, FormPars, MethodDecl, VarDeclList, MethodDeclList, MathodDecl, StatementList, Statement, DesignatorStatement;
-nonterminal ActPars, DesignatorFuncCall, MapDesignator, DesignatorStatementUnary, CondFact, CondTerm, CondFactList, Condition, ConditionList;
+nonterminal ActPars, DesignatorFuncCall, MapDesignator, DesignatorStatementUnary, CondFact, CondTerm, Condition;
 nonterminal Program, InterfaceDeclOptionList, InterfaceDecl, VarDeclProgram, VarDeclErrorComma, VarDeclErrorSemi, DesignatorAssign, StatementCondition, VarDeclClass, ClassDeclErrorLBrace, DesignatorAssignWhile, DesignatorStatementWhile, DoStatement ;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr;
@@ -313,23 +313,17 @@ ActPars ::= Expr COMMA ActPars
             Expr
             ;
 
-Condition ::= CondTerm ConditionList
+Condition ::= CondTerm OR Condition
+              |
+              CondTerm
               ;
 
-ConditionList ::= ConditionList OR CondTerm
-                  |
-                  /* epsilon */
-                  ;
-
-CondTerm ::= CondFact CondFactList
+CondTerm ::= CondFact AND CondTerm
+             |
+             CondFact
              ;
 
-CondFactList ::= CondFactList AND CondFact
-                 |
-                 /* epsilon */
-                 ;
-
-CondFact ::= Expr Relop Expr
+CondFact ::= Expr Relop CondFact
              |
              Expr
              ;

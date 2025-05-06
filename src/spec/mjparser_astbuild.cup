@@ -96,9 +96,7 @@ nonterminal MapDesignator MapDesignator;
 nonterminal DesignatorStatementUnary DesignatorStatementUnary;
 nonterminal CondFact CondFact;
 nonterminal CondTerm CondTerm;
-nonterminal CondFactList CondFactList;
 nonterminal Condition Condition;
-nonterminal ConditionList ConditionList;
 nonterminal Program Program;
 nonterminal InterfaceDeclOptionList InterfaceDeclOptionList;
 nonterminal InterfaceDecl InterfaceDecl;
@@ -363,23 +361,17 @@ ActPars ::= Expr:E1 COMMA ActPars:A2 {: RESULT=new ActParsDerived1(E1, A2); RESU
             Expr:E1 {: RESULT=new ActParsDerived2(E1); RESULT.setLine(E1left); :}
             ;
 
-Condition ::= CondTerm:C1 ConditionList:C2 {: RESULT=new ConditionDerived1(C1, C2); RESULT.setLine(C1left); :}
+Condition ::= CondTerm:C1 OR Condition:C2 {: RESULT=new ConditionDerived1(C1, C2); RESULT.setLine(C1left); :}
+              |
+              CondTerm:C1 {: RESULT=new ConditionDerived2(C1); RESULT.setLine(C1left); :}
               ;
 
-ConditionList ::= ConditionList:C1 OR CondTerm:C2 {: RESULT=new ConditionListDerived1(C1, C2); RESULT.setLine(C1left); :}
-                  | {: RESULT=new ConditionListDerived2(); :}
-                  /* epsilon */
-                  ;
-
-CondTerm ::= CondFact:C1 CondFactList:C2 {: RESULT=new CondTermDerived1(C1, C2); RESULT.setLine(C1left); :}
+CondTerm ::= CondFact:C1 AND CondTerm:C2 {: RESULT=new CondTermDerived1(C1, C2); RESULT.setLine(C1left); :}
+             |
+             CondFact:C1 {: RESULT=new CondTermDerived2(C1); RESULT.setLine(C1left); :}
              ;
 
-CondFactList ::= CondFactList:C1 AND CondFact:C2 {: RESULT=new CondFactListDerived1(C1, C2); RESULT.setLine(C1left); :}
-                 | {: RESULT=new CondFactListDerived2(); :}
-                 /* epsilon */
-                 ;
-
-CondFact ::= Expr:E1 Relop:R2 Expr:E3 {: RESULT=new CondFactDerived1(E1, R2, E3); RESULT.setLine(E1left); :}
+CondFact ::= Expr:E1 Relop:R2 CondFact:C3 {: RESULT=new CondFactDerived1(E1, R2, C3); RESULT.setLine(E1left); :}
              |
              Expr:E1 {: RESULT=new CondFactDerived2(E1); RESULT.setLine(E1left); :}
              ;

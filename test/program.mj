@@ -53,6 +53,9 @@ program MJProgram
 
         // print(x, 4); // error
         // print(x[2], 4); // ok
+
+        // if (b != null)a++; // ok
+        // if (b >= null) a++; // error
 	}
 
     bool m1(int param1, int param2) int m, b[]; int x[], y; {

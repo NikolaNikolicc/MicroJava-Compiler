@@ -12,8 +12,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     private Obj currTypeVar = null;
     private Obj currTypeMeth = null;
     private Obj currMeth = null;
-    // null - return didn't happen at all, returnNode.getType() == null - return happened (void), returnNode.getType() != null - return happened (non void)
-    private Obj returnNode = null;
+
+    private boolean returnNode = false;
 
     // because we want to allow initialization of variables that are named int char and bool we are saving pointers to this object nodes
     // this is used in TypeIdent visitor and in that case we are sure we are getting right object node, in other case Tab.find(name) function can return Object node which overrides those names
@@ -252,17 +252,12 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         Tab.chainLocalSymbols(currMeth);
         Tab.closeScope();
 
-        if (currTypeMeth != null){
-            if (returnNode == null){
-                report_error("[MethodDecl] U metodu povratnog tipa koji nije void se mora pojaviti barem jedna return naredba", node);
-            }
-            if (returnNode != null && (returnNode.getType() == null || !returnNode.getType().equals(currMeth.getType()))){
-                report_error("[MethodDecl] Povratni tip metoda i tip koji vraca return naredba nisu kompatibilni", node);
-            }
+        if (!currMeth.getType().equals(Tab.noType) && !returnNode){
+            report_error("[MethodDecl] U metodu povratnog tipa koji nije void se mora pojaviti barem jedna return naredba", node);
         }
 
         currMeth = null;
-        returnNode = null;
+        returnNode = false;
     }
 
     @Override
@@ -484,7 +479,10 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             report_error("[StatementReturn] Return naredba se moze pozivati samo unutar tela metode", node);
             return;
         }
-        returnNode = new Obj(Obj.NO_VALUE, "return", null);
+        if (!currMeth.getType().equals(Tab.noType)){
+            report_error("[StatementReturn] U metodu povratnog tipa koji nije void svaka return naredba mora da vraca taj tip", node);
+        }
+        returnNode = true;
     }
 
     @Override
@@ -493,7 +491,10 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             report_error("[StatementReturnExpr] Return naredba se moze pozivati samo unutar tela metode", node);
             return;
         }
-        returnNode = new Obj(Obj.NO_VALUE, "return", node.getExpr().struct);
+        if (!currMeth.getType().equals(node.getExpr().struct)){
+            report_error("[StatementReturnExpr] Povratni tip metoda i tip koji vraca return naredba nisu kompatibilni", node);
+        }
+        returnNode = true;
     }
 
     @Override

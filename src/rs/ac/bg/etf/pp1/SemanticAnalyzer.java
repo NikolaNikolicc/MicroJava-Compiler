@@ -73,14 +73,14 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     }
 
     @Override
-    public void visit(ProgName progName){
-        progName.obj = Tab.insert(Obj.Prog, progName.getProgName(), Tab.noType);
+    public void visit(ProgName node){
+        node.obj = Tab.insert(Obj.Prog, node.getProgName(), Tab.noType);
         Tab.openScope();
     }
 
     @Override
-    public void visit(Program program){
-        Tab.chainLocalSymbols(program.getProgName().obj);
+    public void visit(Program node){
+        Tab.chainLocalSymbols(node.getProgName().obj);
         Tab.closeScope();
 
         if(mainMeth == null){
@@ -92,8 +92,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     }
 
     @Override
-    public void visit(TypeIdent type){
-        String name = type.getI1();
+    public void visit(TypeIdent node){
+        String name = node.getI1();
         Obj typeNode;
 
         switch(name){
@@ -111,12 +111,12 @@ public class SemanticAnalyzer extends VisitorAdaptor{
                 break;
         }
         if(typeNode == Tab.noObj){
-            report_error("[TypeIdent] Nije pronadjen tip " + type.getI1() + " u tabeli simbola! ", null);
+            report_error("[TypeIdent] Nije pronadjen tip " + node.getI1() + " u tabeli simbola! ", null);
             currTypeVar = null;
             return;
         }
         if(Obj.Type != typeNode.getKind()){
-            report_error("[TypeIdent] Ime " + type.getI1() + " ne predstavlja tip!", type);
+            report_error("[TypeIdent] Ime " + node.getI1() + " ne predstavlja tip!", node);
             currTypeVar = null;
             return;
         }
@@ -124,15 +124,15 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     }
 
     @Override
-    public void visit(NoVoidMethod type){
-        Obj typeNode = Tab.find(type.getI1());
+    public void visit(NoVoidMethod node){
+        Obj typeNode = Tab.find(node.getI1());
         if(typeNode == Tab.noObj){
-            report_error("[NoVoidMethod] Nije pronadjen tip " + type.getI1() + " u tabeli simbola! ", null);
+            report_error("[NoVoidMethod] Nije pronadjen tip " + node.getI1() + " u tabeli simbola! ", null);
             currTypeVar = null;
             return;
         }
         if(Obj.Type != typeNode.getKind()){
-            report_error("[NoVoidMethod] Ime " + type.getI1() + " ne predstavlja tip!", type);
+            report_error("[NoVoidMethod] Ime " + node.getI1() + " ne predstavlja tip!", node);
             currTypeVar = null;
             return;
         }
@@ -140,13 +140,13 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     }
 
     @Override
-    public void visit(VoidMethod type){
+    public void visit(VoidMethod node){
         currTypeMeth = null;
     }
 
     @Override
-    public void visit(NumConst numConst){
-        numConst.obj = new Obj(Obj.Con, "numConst", Tab.intType, numConst.getN1(), 0);
+    public void visit(NumConst node){
+        node.obj = new Obj(Obj.Con, "numConst", Tab.intType, node.getN1(), 0);
     }
 
     @Override
@@ -155,25 +155,25 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     }
 
     @Override
-    public void visit(BoolConst boolConst){
-        boolConst.obj = new Obj(Obj.Con, "boolConst", boolType, boolConst.getB1(), 0);
+    public void visit(BoolConst node){
+        node.obj = new Obj(Obj.Con, "boolConst", boolType, node.getB1(), 0);
     }
 
     @Override
-    public void visit(ConstDeclAssign constDeclAssign){
-        if(checkIsObjNodeDeclared(constDeclAssign.getI1())){
-            report_error("[ConstDeclAssign] Vec je deklarisana konstanta sa imenom " + constDeclAssign.getI1(), constDeclAssign);
+    public void visit(ConstDeclAssign node){
+        if(checkIsObjNodeDeclared(node.getI1())){
+            report_error("[ConstDeclAssign] Vec je deklarisana konstanta sa imenom " + node.getI1(), node);
             return;
         }
         // assignableTo mora da stoji, a ne equals jer onda u slucaju lose procitanih tokena (noType) opet ubacujemo vrednost
         // u tabelu simbola i onda mozemo tu informaciju koristiti za dalju sintaksnu analizu
-        Obj node = constDeclAssign.getConstDeclListValue().obj;
-        if(!node.getType().assignableTo(currTypeVar.getType())){
-            report_error("[ConstDeclAssign] Deklariani tip konstante i vrednost koja se dodeljuje nisu kompatibilni!", constDeclAssign);
+        Obj constObj = node.getConstDeclListValue().obj;
+        if(!constObj.getType().assignableTo(currTypeVar.getType())){
+            report_error("[ConstDeclAssign] Deklariani tip konstante i vrednost koja se dodeljuje nisu kompatibilni!", node);
             return;
         }
-        Obj constNode = Tab.insert(Obj.Con, constDeclAssign.getI1(), currTypeVar.getType());
-        constNode.setAdr(node.getAdr());
+        Obj constNode = Tab.insert(Obj.Con, node.getI1(), currTypeVar.getType());
+        constNode.setAdr(constObj.getAdr());
     }
 
     private boolean checkIsObjNodeDeclared(String name){
@@ -193,33 +193,33 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 //        return node != Tab.noObj;
     }
 
-    private void formParsSetLevelAndFpPos(Obj varNode){
+    private void formParsSetLevelAndFpPos(Obj node){
         if(parsingFormPars){
-            varNode.setFpPos(1);
+            node.setFpPos(1);
             currMeth.setLevel(currMeth.getLevel() + 1);
         }
     }
 
     @Override
-    public void visit(VarDeclFinalVar varDeclFinalVar){
-        if(checkIsObjNodeDeclared(varDeclFinalVar.getI1())){
-            report_error("[VarDeclFinalVar] Vec je deklarisana promenljiva sa imenom: " + varDeclFinalVar.getI1(), varDeclFinalVar);
+    public void visit(VarDeclFinalVar node){
+        if(checkIsObjNodeDeclared(node.getI1())){
+            report_error("[VarDeclFinalVar] Vec je deklarisana promenljiva sa imenom: " + node.getI1(), node);
             return;
         }
 
-        Obj varNode = Tab.insert(Obj.Var, varDeclFinalVar.getI1(), currTypeVar.getType());
+        Obj varNode = Tab.insert(Obj.Var, node.getI1(), currTypeVar.getType());
         formParsSetLevelAndFpPos(varNode);
     }
 
     @Override
-    public void visit(VarDeclFinalArray varDeclFinalArray){
-        if(checkIsObjNodeDeclared(varDeclFinalArray.getI1())){
-            report_error("[VarDeclFinalArray] Vec je deklarisana promenljiva sa imenom " + varDeclFinalArray.getI1(), varDeclFinalArray);
+    public void visit(VarDeclFinalArray node){
+        if(checkIsObjNodeDeclared(node.getI1())){
+            report_error("[VarDeclFinalArray] Vec je deklarisana promenljiva sa imenom " + node.getI1(), node);
             return;
         }
 
         Struct array = new Struct(Struct.Array, currTypeVar.getType());
-        Obj varNode = Tab.insert(Obj.Var, varDeclFinalArray.getI1(), array);
+        Obj varNode = Tab.insert(Obj.Var, node.getI1(), array);
         formParsSetLevelAndFpPos(varNode);
     }
 
@@ -230,18 +230,18 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     }
 
     @Override
-    public void visit(RegularMethod regularMethod){
-        createMethodObjNode(regularMethod.getI1());
+    public void visit(RegularMethod node){
+        createMethodObjNode(node.getI1());
     }
 
     @Override
-    public void visit(MainMethod mainMethod){
+    public void visit(MainMethod node){
         if(mainMeth != null){
-            report_error("[RegularMethod] Vec je definisan main metod!", null);
+            report_error("[RegularMethod] Vec je definisan main metod!", node);
             return;
         }
         if(currTypeMeth != null){
-            report_error("[RegularMethod] Main metoda mora biti povratnog tipa void!", null);
+            report_error("[RegularMethod] Main metoda mora biti povratnog tipa void!", node);
         }
         createMethodObjNode("main");
         mainMeth = currMeth;
@@ -627,12 +627,12 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     }
 
     @Override
-    public void visit(MethodSignatureStartFormPars methodSignatureStartFormPars){
+    public void visit(MethodSignatureStartFormPars node){
         parsingFormPars = true;
     }
 
     @Override
-    public void visit(MethodSignatureEndFormPars methodSignatureEndFormPars){
+    public void visit(MethodSignatureEndFormPars node){
         parsingFormPars = false;
     }
 

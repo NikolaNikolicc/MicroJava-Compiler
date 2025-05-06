@@ -5,9 +5,9 @@
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class ProgramDeclListDerived2 extends ProgramDeclList {
+public class StatementContinue extends Statement {
 
-    public ProgramDeclListDerived2 () {
+    public StatementContinue () {
     }
 
     public void accept(Visitor visitor) {
@@ -28,10 +28,10 @@ public class ProgramDeclListDerived2 extends ProgramDeclList {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("ProgramDeclListDerived2(\n");
+        buffer.append("StatementContinue(\n");
 
         buffer.append(tab);
-        buffer.append(") [ProgramDeclListDerived2]");
+        buffer.append(") [StatementContinue]");
         return buffer.toString();
     }
 }

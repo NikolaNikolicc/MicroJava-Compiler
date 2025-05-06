@@ -1,20 +1,31 @@
 // generated with ast extension for cup
 // version 0.8
-// 5/4/2025 23:46:0
+// 6/4/2025 7:9:34
 
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class StatementDerived7 extends Statement {
+public class StatementLoopCondition extends Statement {
 
+    private DoStatement DoStatement;
     private Statement Statement;
     private Condition Condition;
 
-    public StatementDerived7 (Statement Statement, Condition Condition) {
+    public StatementLoopCondition (DoStatement DoStatement, Statement Statement, Condition Condition) {
+        this.DoStatement=DoStatement;
+        if(DoStatement!=null) DoStatement.setParent(this);
         this.Statement=Statement;
         if(Statement!=null) Statement.setParent(this);
         this.Condition=Condition;
         if(Condition!=null) Condition.setParent(this);
+    }
+
+    public DoStatement getDoStatement() {
+        return DoStatement;
+    }
+
+    public void setDoStatement(DoStatement DoStatement) {
+        this.DoStatement=DoStatement;
     }
 
     public Statement getStatement() {
@@ -38,17 +49,20 @@ public class StatementDerived7 extends Statement {
     }
 
     public void childrenAccept(Visitor visitor) {
+        if(DoStatement!=null) DoStatement.accept(visitor);
         if(Statement!=null) Statement.accept(visitor);
         if(Condition!=null) Condition.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
+        if(DoStatement!=null) DoStatement.traverseTopDown(visitor);
         if(Statement!=null) Statement.traverseTopDown(visitor);
         if(Condition!=null) Condition.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
+        if(DoStatement!=null) DoStatement.traverseBottomUp(visitor);
         if(Statement!=null) Statement.traverseBottomUp(visitor);
         if(Condition!=null) Condition.traverseBottomUp(visitor);
         accept(visitor);
@@ -57,7 +71,13 @@ public class StatementDerived7 extends Statement {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("StatementDerived7(\n");
+        buffer.append("StatementLoopCondition(\n");
+
+        if(DoStatement!=null)
+            buffer.append(DoStatement.toString("  "+tab));
+        else
+            buffer.append(tab+"  null");
+        buffer.append("\n");
 
         if(Statement!=null)
             buffer.append(Statement.toString("  "+tab));
@@ -72,7 +92,7 @@ public class StatementDerived7 extends Statement {
         buffer.append("\n");
 
         buffer.append(tab);
-        buffer.append(") [StatementDerived7]");
+        buffer.append(") [StatementLoopCondition]");
         return buffer.toString();
     }
 }

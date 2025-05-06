@@ -65,6 +65,20 @@ program MJProgram
         // m1(); // ok
         // m = m1(); // error
         // z = m1(); // ok
+
+        // break; // error
+        // continue; // error
+        do{
+            // continue; // ok
+            // break; // error
+            // continue; // error (loopCounter == 0)
+            do{
+                // break; // ok
+            }while(true);
+        }while(true);
+        // break; // error
+        // continue; // error
+
         return 'a';
     }
 

@@ -1,13 +1,31 @@
 // generated with ast extension for cup
 // version 0.8
-// 5/4/2025 23:46:0
+// 6/4/2025 7:9:34
 
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class StatementDerived5 extends Statement {
+public class DoStatement implements SyntaxNode {
 
-    public StatementDerived5 () {
+    private SyntaxNode parent;
+    private int line;
+    public DoStatement () {
+    }
+
+    public SyntaxNode getParent() {
+        return parent;
+    }
+
+    public void setParent(SyntaxNode parent) {
+        this.parent=parent;
+    }
+
+    public int getLine() {
+        return line;
+    }
+
+    public void setLine(int line) {
+        this.line=line;
     }
 
     public void accept(Visitor visitor) {
@@ -28,10 +46,10 @@ public class StatementDerived5 extends Statement {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("StatementDerived5(\n");
+        buffer.append("DoStatement(\n");
 
         buffer.append(tab);
-        buffer.append(") [StatementDerived5]");
+        buffer.append(") [DoStatement]");
         return buffer.toString();
     }
 }

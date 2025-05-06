@@ -25,6 +25,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     private Obj mainMeth = null;
     private boolean parsingFormPars = false;
 
+    private int loopCounter = 0;
 
     private static final String[] objKindNames = { "Con", "Var", "Type", "Meth", "Fld", "Elem", "Prog" };
     private static final String[] structKindNames = { "None", "Int", "Char", "Array", "Class", "Bool" };
@@ -388,6 +389,24 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     }
 
     // Statement
+
+    @Override
+    public void visit(StatementBreak node){
+        if(loopCounter == 0){
+            report_error("Break naredba se ne moze pozivati van while petlje", node);
+            return;
+        }
+        loopCounter--;
+    }
+
+    @Override
+    public void visit(StatementContinue node){
+        if(loopCounter == 0){
+            report_error("Continue naredba se ne moze pozivati van while petlje", node);
+            return;
+        }
+    }
+
     @Override
     public void visit(StatementReturn node){
         if (currMeth == null){
@@ -437,6 +456,26 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             report_error("Print operacija nad izrazom koji nije tipa int, char ili bool", node);
             return;
         }
+    }
+
+    @Override
+    public void visit(StatementLoopSimple node){
+        loopCounter--;
+    }
+
+    @Override
+    public void visit(StatementLoopCondition node){
+        loopCounter--;
+    }
+
+    @Override
+    public void visit(StatementLoopComplex node){
+        loopCounter--;
+    }
+
+    @Override
+    public void visit(DoStatement node){
+       loopCounter++;
     }
 
     // Designator

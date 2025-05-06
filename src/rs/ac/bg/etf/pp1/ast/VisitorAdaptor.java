@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 5/4/2025 23:46:0
+// 6/4/2025 7:9:35
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -117,17 +117,18 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(DesignatorStatementWhileDerived1 DesignatorStatementWhileDerived1) { visit(); }
     public void visit(DesignatorStatementUnarySemiWhile DesignatorStatementUnarySemiWhile) { visit(); }
     public void visit(DesignatorStatementFuncCallWhile DesignatorStatementFuncCallWhile) { visit(); }
-    public void visit(StatementDerived9 StatementDerived9) { visit(); }
-    public void visit(StatementDerived8 StatementDerived8) { visit(); }
-    public void visit(StatementDerived7 StatementDerived7) { visit(); }
-    public void visit(StatementDerived6 StatementDerived6) { visit(); }
+    public void visit(DoStatement DoStatement) { visit(); }
+    public void visit(StatementDerived4 StatementDerived4) { visit(); }
+    public void visit(StatementLoopComplex StatementLoopComplex) { visit(); }
+    public void visit(StatementLoopCondition StatementLoopCondition) { visit(); }
+    public void visit(StatementLoopSimple StatementLoopSimple) { visit(); }
     public void visit(StatementPrintNumber StatementPrintNumber) { visit(); }
     public void visit(StatementPrint StatementPrint) { visit(); }
     public void visit(StatementRead StatementRead) { visit(); }
     public void visit(StatementReturnExpr StatementReturnExpr) { visit(); }
     public void visit(StatementReturn StatementReturn) { visit(); }
-    public void visit(StatementDerived5 StatementDerived5) { visit(); }
-    public void visit(StatementDerived4 StatementDerived4) { visit(); }
+    public void visit(StatementContinue StatementContinue) { visit(); }
+    public void visit(StatementBreak StatementBreak) { visit(); }
     public void visit(StatementDerived3 StatementDerived3) { visit(); }
     public void visit(StatementDerived2 StatementDerived2) { visit(); }
     public void visit(StatementDerived1 StatementDerived1) { visit(); }

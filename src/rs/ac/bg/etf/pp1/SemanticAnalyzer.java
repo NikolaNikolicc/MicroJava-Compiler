@@ -368,6 +368,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         if (left.isRefType() || right.isRefType()){
             if (!(node.getRelop() instanceof EqEq) && !(node.getRelop() instanceof NotEq)){
                 report_error("[CondFactRelop] Uz promenljive tipa klase ili niza, od relacionih operatora, mogu se koristiti samo != i ==", node);
+                node.struct = Tab.noType;
+                return;
             }
         }
 

@@ -94,9 +94,6 @@ nonterminal ActPars ActPars;
 nonterminal DesignatorFuncCall DesignatorFuncCall;
 nonterminal MapDesignator MapDesignator;
 nonterminal DesignatorStatementUnary DesignatorStatementUnary;
-nonterminal CondFact CondFact;
-nonterminal CondTerm CondTerm;
-nonterminal Condition Condition;
 nonterminal Program Program;
 nonterminal InterfaceDeclOptionList InterfaceDeclOptionList;
 nonterminal InterfaceDecl InterfaceDecl;
@@ -104,14 +101,13 @@ nonterminal VarDeclProgram VarDeclProgram;
 nonterminal VarDeclErrorComma VarDeclErrorComma;
 nonterminal VarDeclErrorSemi VarDeclErrorSemi;
 nonterminal DesignatorAssign DesignatorAssign;
-nonterminal StatementCondition StatementCondition;
 nonterminal VarDeclClass VarDeclClass;
 nonterminal ClassDeclErrorLBrace ClassDeclErrorLBrace;
 nonterminal DesignatorAssignWhile DesignatorAssignWhile;
 nonterminal DesignatorStatementWhile DesignatorStatementWhile;
 nonterminal DoStatement DoStatement ;
 
-nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr;
+nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr, CondFact, CondTerm, Condition, StatementCondition;
 nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue, Designator, DesignatorArrayName;
 
 precedence left ELSE;
@@ -320,10 +316,10 @@ DesignatorAssignWhile ::= (DesignatorAssignExprWhile) Designator:D1 Assignop:A2 
                           Designator:D1 Assignop:A2 Designator:D3 Setop:S4 Designator:D5 {: RESULT=new DesignatorAssignWhileDerived1(D1, A2, D3, S4, D5); RESULT.setLine(D1left); :}
                           ;
 
-StatementCondition ::= Condition:C1 RPAREN {: RESULT=new StatementConditionDerived1(C1); RESULT.setLine(C1left); :}
+StatementCondition ::= (StatementConditionCondition) Condition:C1 RPAREN {: RESULT=new StatementConditionCondition(C1); RESULT.setLine(C1left); :}
                        |
                        error RPAREN:l
-                       {: parser.report_error("Izvrsen oporavak do ) u liniji " + lleft, null); :} {: RESULT=new StatementConditionDerived2(); :}
+                       {: parser.report_error("Izvrsen oporavak do ) u liniji " + lleft, null); :} {: RESULT=new StatementConditionDerived1(); :}
                        ;
 
 
@@ -361,19 +357,19 @@ ActPars ::= Expr:E1 COMMA ActPars:A2 {: RESULT=new ActParsDerived1(E1, A2); RESU
             Expr:E1 {: RESULT=new ActParsDerived2(E1); RESULT.setLine(E1left); :}
             ;
 
-Condition ::= CondTerm:C1 OR Condition:C2 {: RESULT=new ConditionDerived1(C1, C2); RESULT.setLine(C1left); :}
+Condition ::= (ConditionOr) CondTerm:C1 OR Condition:C2 {: RESULT=new ConditionOr(C1, C2); RESULT.setLine(C1left); :}
               |
-              CondTerm:C1 {: RESULT=new ConditionDerived2(C1); RESULT.setLine(C1left); :}
+              (ConditionCondTerm) CondTerm:C1 {: RESULT=new ConditionCondTerm(C1); RESULT.setLine(C1left); :}
               ;
 
-CondTerm ::= CondFact:C1 AND CondTerm:C2 {: RESULT=new CondTermDerived1(C1, C2); RESULT.setLine(C1left); :}
+CondTerm ::= (CondTermAnd) CondFact:C1 AND CondTerm:C2 {: RESULT=new CondTermAnd(C1, C2); RESULT.setLine(C1left); :}
              |
-             CondFact:C1 {: RESULT=new CondTermDerived2(C1); RESULT.setLine(C1left); :}
+             (CondTermCondFact) CondFact:C1 {: RESULT=new CondTermCondFact(C1); RESULT.setLine(C1left); :}
              ;
 
-CondFact ::= Expr:E1 Relop:R2 CondFact:C3 {: RESULT=new CondFactDerived1(E1, R2, C3); RESULT.setLine(E1left); :}
+CondFact ::= (CondFactRelop) Expr:E1 Relop:R2 CondFact:C3 {: RESULT=new CondFactRelop(E1, R2, C3); RESULT.setLine(E1left); :}
              |
-             Expr:E1 {: RESULT=new CondFactDerived2(E1); RESULT.setLine(E1left); :}
+             (CondFactExpr) Expr:E1 {: RESULT=new CondFactExpr(E1); RESULT.setLine(E1left); :}
              ;
 
 Expr ::= (ExprTerm) Term:T1 {: RESULT=new ExprTerm(T1); RESULT.setLine(T1left); :}
@@ -415,7 +411,7 @@ Label ::= IDENT:I1 {: RESULT=new LabelDerived1(I1); RESULT.setLine(I1left); :} ;
 
 Assignop ::= EQ {: RESULT=new AssignopDerived1(); :} ;
 
-Relop ::= EQEQ {: RESULT=new RelopDerived1(); :} | NOTEQ {: RESULT=new RelopDerived2(); :} | GR {: RESULT=new RelopDerived3(); :} | GREQ {: RESULT=new RelopDerived4(); :} | LE {: RESULT=new RelopDerived5(); :} | LEQ {: RESULT=new RelopDerived6(); :} ;
+Relop ::= (EqEq) EQEQ {: RESULT=new EqEq(); :} | (NotEq) NOTEQ {: RESULT=new NotEq(); :} | (Gr) GR {: RESULT=new Gr(); :} | (GrEq) GREQ {: RESULT=new GrEq(); :} | (Le) LE {: RESULT=new Le(); :} | (Leq) LEQ {: RESULT=new Leq(); :} ;
 
 Addop ::= PLUS {: RESULT=new AddopDerived1(); :} | MINUS {: RESULT=new AddopDerived2(); :} ;
 

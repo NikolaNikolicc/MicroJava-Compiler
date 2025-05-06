@@ -60,10 +60,10 @@ terminal String IDENT ;
 terminal Character CHAR ;
 
 nonterminal Type, MethodSignatureEndFormPars, MethodSignatureStartFormPars, MethodName, ConstDeclAssign, Setop, Mulop, Addop, Relop, Assignop, Label, ProgramDeclList, ProgramDeclElem, ConstDecl, ConstDeclList, VarDecl, VarDeclFinal, VarDeclOptionalList, ClassDecl, VarDeclListOptional, MethodSignature, TypeChoice, FormParsOptional, FormPars, MethodDecl, VarDeclList, MethodDeclList, MathodDecl, StatementList, Statement, DesignatorStatement;
-nonterminal ActPars, DesignatorFuncCall, MapDesignator, DesignatorStatementUnary, CondFact, CondTerm, Condition;
-nonterminal Program, InterfaceDeclOptionList, InterfaceDecl, VarDeclProgram, VarDeclErrorComma, VarDeclErrorSemi, DesignatorAssign, StatementCondition, VarDeclClass, ClassDeclErrorLBrace, DesignatorAssignWhile, DesignatorStatementWhile, DoStatement ;
+nonterminal ActPars, DesignatorFuncCall, MapDesignator, DesignatorStatementUnary;
+nonterminal Program, InterfaceDeclOptionList, InterfaceDecl, VarDeclProgram, VarDeclErrorComma, VarDeclErrorSemi, DesignatorAssign, VarDeclClass, ClassDeclErrorLBrace, DesignatorAssignWhile, DesignatorStatementWhile, DoStatement ;
 
-nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr;
+nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr, CondFact, CondTerm, Condition, StatementCondition;
 nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue, Designator, DesignatorArrayName;
 
 precedence left ELSE;
@@ -272,7 +272,7 @@ DesignatorAssignWhile ::= (DesignatorAssignExprWhile) Designator Assignop Expr
                           Designator Assignop Designator Setop Designator
                           ;
 
-StatementCondition ::= Condition RPAREN
+StatementCondition ::= (StatementConditionCondition) Condition RPAREN
                        |
                        error RPAREN:l
                        {: parser.report_error("Izvrsen oporavak do ) u liniji " + lleft, null); :}
@@ -313,19 +313,19 @@ ActPars ::= Expr COMMA ActPars
             Expr
             ;
 
-Condition ::= CondTerm OR Condition
+Condition ::= (ConditionOr) CondTerm OR Condition
               |
-              CondTerm
+              (ConditionCondTerm) CondTerm
               ;
 
-CondTerm ::= CondFact AND CondTerm
+CondTerm ::= (CondTermAnd) CondFact AND CondTerm
              |
-             CondFact
+             (CondTermCondFact) CondFact
              ;
 
-CondFact ::= Expr Relop CondFact
+CondFact ::= (CondFactRelop) Expr Relop CondFact
              |
-             Expr
+             (CondFactExpr) Expr
              ;
 
 Expr ::= (ExprTerm) Term
@@ -367,7 +367,7 @@ Label ::= IDENT ;
 
 Assignop ::= EQ ;
 
-Relop ::= EQEQ | NOTEQ | GR | GREQ | LE | LEQ ;
+Relop ::= (EqEq) EQEQ | (NotEq) NOTEQ | (Gr) GR | (GrEq) GREQ | (Le) LE | (Leq) LEQ ;
 
 Addop ::= PLUS | MINUS ;
 

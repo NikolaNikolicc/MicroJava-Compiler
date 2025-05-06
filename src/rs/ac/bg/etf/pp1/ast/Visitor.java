@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 6/4/2025 7:41:15
+// 6/4/2025 13:21:24
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -8,8 +8,8 @@ package rs.ac.bg.etf.pp1.ast;
 public interface Visitor { 
 
     public void visit(DesignatorAssign DesignatorAssign);
-    public void visit(ClassDeclErrorLBrace ClassDeclErrorLBrace);
     public void visit(StatementCondition StatementCondition);
+    public void visit(ClassDeclErrorLBrace ClassDeclErrorLBrace);
     public void visit(Mulop Mulop);
     public void visit(VarDeclOptionalList VarDeclOptionalList);
     public void visit(InterfaceDecl InterfaceDecl);
@@ -63,12 +63,12 @@ public interface Visitor {
     public void visit(MulopDerived1 MulopDerived1);
     public void visit(AddopDerived2 AddopDerived2);
     public void visit(AddopDerived1 AddopDerived1);
-    public void visit(RelopDerived6 RelopDerived6);
-    public void visit(RelopDerived5 RelopDerived5);
-    public void visit(RelopDerived4 RelopDerived4);
-    public void visit(RelopDerived3 RelopDerived3);
-    public void visit(RelopDerived2 RelopDerived2);
-    public void visit(RelopDerived1 RelopDerived1);
+    public void visit(Leq Leq);
+    public void visit(Le Le);
+    public void visit(GrEq GrEq);
+    public void visit(Gr Gr);
+    public void visit(NotEq NotEq);
+    public void visit(EqEq EqEq);
     public void visit(AssignopDerived1 AssignopDerived1);
     public void visit(LabelDerived1 LabelDerived1);
     public void visit(DesignatorFuncCallDerived2 DesignatorFuncCallDerived2);
@@ -86,12 +86,12 @@ public interface Visitor {
     public void visit(ExprAddopTerm ExprAddopTerm);
     public void visit(ExprMinusTerm ExprMinusTerm);
     public void visit(ExprTerm ExprTerm);
-    public void visit(CondFactDerived2 CondFactDerived2);
-    public void visit(CondFactDerived1 CondFactDerived1);
-    public void visit(CondTermDerived2 CondTermDerived2);
-    public void visit(CondTermDerived1 CondTermDerived1);
-    public void visit(ConditionDerived2 ConditionDerived2);
-    public void visit(ConditionDerived1 ConditionDerived1);
+    public void visit(CondFactExpr CondFactExpr);
+    public void visit(CondFactRelop CondFactRelop);
+    public void visit(CondTermCondFact CondTermCondFact);
+    public void visit(CondTermAnd CondTermAnd);
+    public void visit(ConditionCondTerm ConditionCondTerm);
+    public void visit(ConditionOr ConditionOr);
     public void visit(ActParsDerived2 ActParsDerived2);
     public void visit(ActParsDerived1 ActParsDerived1);
     public void visit(DesignatorArrayName DesignatorArrayName);
@@ -106,8 +106,8 @@ public interface Visitor {
     public void visit(DesignatorStatementDerived1 DesignatorStatementDerived1);
     public void visit(DesignatorStatementFuncCall DesignatorStatementFuncCall);
     public void visit(DesignatorStatementUnarySemi DesignatorStatementUnarySemi);
-    public void visit(StatementConditionDerived2 StatementConditionDerived2);
     public void visit(StatementConditionDerived1 StatementConditionDerived1);
+    public void visit(StatementConditionCondition StatementConditionCondition);
     public void visit(DesignatorAssignWhileDerived1 DesignatorAssignWhileDerived1);
     public void visit(DesignatorAssignExprWhile DesignatorAssignExprWhile);
     public void visit(DesignatorStatementWhileDerived1 DesignatorStatementWhileDerived1);

@@ -1,25 +1,13 @@
 // generated with ast extension for cup
 // version 0.8
-// 6/4/2025 7:41:15
+// 6/4/2025 13:21:24
 
 
 package rs.ac.bg.etf.pp1.ast;
 
 public class StatementConditionDerived1 extends StatementCondition {
 
-    private Condition Condition;
-
-    public StatementConditionDerived1 (Condition Condition) {
-        this.Condition=Condition;
-        if(Condition!=null) Condition.setParent(this);
-    }
-
-    public Condition getCondition() {
-        return Condition;
-    }
-
-    public void setCondition(Condition Condition) {
-        this.Condition=Condition;
+    public StatementConditionDerived1 () {
     }
 
     public void accept(Visitor visitor) {
@@ -27,16 +15,13 @@ public class StatementConditionDerived1 extends StatementCondition {
     }
 
     public void childrenAccept(Visitor visitor) {
-        if(Condition!=null) Condition.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
-        if(Condition!=null) Condition.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
-        if(Condition!=null) Condition.traverseBottomUp(visitor);
         accept(visitor);
     }
 
@@ -44,12 +29,6 @@ public class StatementConditionDerived1 extends StatementCondition {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
         buffer.append("StatementConditionDerived1(\n");
-
-        if(Condition!=null)
-            buffer.append(Condition.toString("  "+tab));
-        else
-            buffer.append(tab+"  null");
-        buffer.append("\n");
 
         buffer.append(tab);
         buffer.append(") [StatementConditionDerived1]");

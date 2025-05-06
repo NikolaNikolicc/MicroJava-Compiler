@@ -1,15 +1,15 @@
 // generated with ast extension for cup
 // version 0.8
-// 6/4/2025 7:41:15
+// 6/4/2025 13:21:24
 
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class CondTermDerived2 extends CondTerm {
+public class CondTermCondFact extends CondTerm {
 
     private CondFact CondFact;
 
-    public CondTermDerived2 (CondFact CondFact) {
+    public CondTermCondFact (CondFact CondFact) {
         this.CondFact=CondFact;
         if(CondFact!=null) CondFact.setParent(this);
     }
@@ -43,7 +43,7 @@ public class CondTermDerived2 extends CondTerm {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("CondTermDerived2(\n");
+        buffer.append("CondTermCondFact(\n");
 
         if(CondFact!=null)
             buffer.append(CondFact.toString("  "+tab));
@@ -52,7 +52,7 @@ public class CondTermDerived2 extends CondTerm {
         buffer.append("\n");
 
         buffer.append(tab);
-        buffer.append(") [CondTermDerived2]");
+        buffer.append(") [CondTermCondFact]");
         return buffer.toString();
     }
 }

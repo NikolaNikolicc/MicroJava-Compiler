@@ -79,6 +79,9 @@ program MJProgram
         // break; // error
         // continue; // error
 
+        // if (true && m < 2)m++; // ok
+        // if (true && m == 2 || z && m < 2)m++; // ok
+
         return 'a';
     }
 

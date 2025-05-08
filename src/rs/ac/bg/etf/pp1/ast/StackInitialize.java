@@ -5,9 +5,27 @@
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class VarDeclClassDerived2 extends VarDeclClass {
+public class StackInitialize implements SyntaxNode {
 
-    public VarDeclClassDerived2 () {
+    private SyntaxNode parent;
+    private int line;
+    public StackInitialize () {
+    }
+
+    public SyntaxNode getParent() {
+        return parent;
+    }
+
+    public void setParent(SyntaxNode parent) {
+        this.parent=parent;
+    }
+
+    public int getLine() {
+        return line;
+    }
+
+    public void setLine(int line) {
+        this.line=line;
     }
 
     public void accept(Visitor visitor) {
@@ -28,10 +46,10 @@ public class VarDeclClassDerived2 extends VarDeclClass {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("VarDeclClassDerived2(\n");
+        buffer.append("StackInitialize(\n");
 
         buffer.append(tab);
-        buffer.append(") [VarDeclClassDerived2]");
+        buffer.append(") [StackInitialize]");
         return buffer.toString();
     }
 }

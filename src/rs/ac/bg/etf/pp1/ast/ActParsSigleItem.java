@@ -1,15 +1,15 @@
 // generated with ast extension for cup
 // version 0.8
-// 6/4/2025 23:4:23
+// 8/4/2025 9:47:48
 
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class ActParsDerived2 extends ActPars {
+public class ActParsSigleItem extends ActPars {
 
     private Expr Expr;
 
-    public ActParsDerived2 (Expr Expr) {
+    public ActParsSigleItem (Expr Expr) {
         this.Expr=Expr;
         if(Expr!=null) Expr.setParent(this);
     }
@@ -43,7 +43,7 @@ public class ActParsDerived2 extends ActPars {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("ActParsDerived2(\n");
+        buffer.append("ActParsSigleItem(\n");
 
         if(Expr!=null)
             buffer.append(Expr.toString("  "+tab));
@@ -52,7 +52,7 @@ public class ActParsDerived2 extends ActPars {
         buffer.append("\n");
 
         buffer.append(tab);
-        buffer.append(") [ActParsDerived2]");
+        buffer.append(") [ActParsSigleItem]");
         return buffer.toString();
     }
 }

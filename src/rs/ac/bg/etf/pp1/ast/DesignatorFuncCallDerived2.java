@@ -1,17 +1,28 @@
 // generated with ast extension for cup
 // version 0.8
-// 6/4/2025 23:4:23
+// 8/4/2025 9:47:48
 
 
 package rs.ac.bg.etf.pp1.ast;
 
 public class DesignatorFuncCallDerived2 extends DesignatorFuncCall {
 
+    private StackInitialize StackInitialize;
     private ActPars ActPars;
 
-    public DesignatorFuncCallDerived2 (ActPars ActPars) {
+    public DesignatorFuncCallDerived2 (StackInitialize StackInitialize, ActPars ActPars) {
+        this.StackInitialize=StackInitialize;
+        if(StackInitialize!=null) StackInitialize.setParent(this);
         this.ActPars=ActPars;
         if(ActPars!=null) ActPars.setParent(this);
+    }
+
+    public StackInitialize getStackInitialize() {
+        return StackInitialize;
+    }
+
+    public void setStackInitialize(StackInitialize StackInitialize) {
+        this.StackInitialize=StackInitialize;
     }
 
     public ActPars getActPars() {
@@ -27,15 +38,18 @@ public class DesignatorFuncCallDerived2 extends DesignatorFuncCall {
     }
 
     public void childrenAccept(Visitor visitor) {
+        if(StackInitialize!=null) StackInitialize.accept(visitor);
         if(ActPars!=null) ActPars.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
+        if(StackInitialize!=null) StackInitialize.traverseTopDown(visitor);
         if(ActPars!=null) ActPars.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
+        if(StackInitialize!=null) StackInitialize.traverseBottomUp(visitor);
         if(ActPars!=null) ActPars.traverseBottomUp(visitor);
         accept(visitor);
     }
@@ -44,6 +58,12 @@ public class DesignatorFuncCallDerived2 extends DesignatorFuncCall {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
         buffer.append("DesignatorFuncCallDerived2(\n");
+
+        if(StackInitialize!=null)
+            buffer.append(StackInitialize.toString("  "+tab));
+        else
+            buffer.append(tab+"  null");
+        buffer.append("\n");
 
         if(ActPars!=null)
             buffer.append(ActPars.toString("  "+tab));

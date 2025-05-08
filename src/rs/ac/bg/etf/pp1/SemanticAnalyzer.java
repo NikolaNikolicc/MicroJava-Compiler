@@ -6,6 +6,10 @@ import rs.ac.bg.etf.pp1.ast.*;
 import rs.etf.pp1.symboltable.*;
 import rs.etf.pp1.symboltable.concepts.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
+
 public class SemanticAnalyzer extends VisitorAdaptor{
 
     public boolean errorDetected = false;
@@ -29,6 +33,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     private static final String[] objKindNames = { "Con", "Var", "Type", "Meth", "Fld", "Elem", "Prog" };
     private static final String[] structKindNames = { "None", "Int", "Char", "Array", "Class", "Bool" };
+
+    private Stack<Struct> fpStack = new Stack<>();
 
     Logger log = Logger.getLogger(getClass());
 
@@ -76,6 +82,68 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     public void visit(ProgName node){
         node.obj = Tab.insert(Obj.Prog, node.getProgName(), Tab.noType);
         Tab.openScope();
+    }
+
+    // helpers
+    private boolean checkIsObjNodeDeclared(String name){
+        Obj node = Tab.currentScope().findSymbol(name);
+        return node != null;
+//        Obj node;
+//        if(currMeth != null){
+//            node = Tab.currentScope().findSymbol(name);
+//        }else{
+//            node = Tab.find(name);
+//        }
+//
+//        // we can't write this as one condition with OR because everything that is not null will pass and we don't want behaviour like that
+//        if(node == null){
+//            return false;
+//        }
+//        return node != Tab.noObj;
+    }
+
+    private void formParsSetLevelAndFpPos(Obj node){
+        if(parsingFormPars){
+            node.setFpPos(1);
+            currMeth.setLevel(currMeth.getLevel() + 1);
+        }
+    }
+
+    private List<Struct> getFormalParameters(Obj funcNode, SyntaxNode node){
+        List<Struct> fpList = new ArrayList<>();
+        for (Obj localSym: funcNode.getLocalSymbols()){
+            if (localSym.getKind() == Obj.Var && localSym.getFpPos() == 1 && localSym.getLevel() == 1){
+                fpList.add(localSym.getType());
+            }
+        }
+        report_info("Metoda koja se poziva(" + funcNode.getName() + ") ima sledeci broj formalnih parametara: " + fpList.size(), node);
+        return fpList;
+    }
+
+    private boolean checkArePassedParametersAndFormalParameterListCompatible(List<Struct> fpList, String methName,  SyntaxNode node){
+
+        report_info("Metoda koja se poziva(" + methName + ") ima sledeci broj prosledjenih parametara: " + fpStack.size(), node);
+        if (fpList.size() != fpStack.size()){
+            report_error("[FactorFuncCall][DesignatorStatementFuncCall] Lista prosledjenih parametara se ne poklapa se parametrima koji su prosledjeni prilikom poziva metode " + methName + " po broju prosledjenih parametara, ova metoda prima: " + fpList.size() + " parametara", node);
+            fpStack = new Stack<>();
+            return false;
+        }
+
+        boolean errorHappened = false;
+        for (int i = 0; i < fpList.size(); i++){
+            Struct fpListElem = fpList.get(i);
+            Struct fpStackElem = fpStack.pop();
+            if(!fpStackElem.assignableTo(fpListElem)){
+                report_error("[FactorFuncCall][DesignatorStatementFuncCall] Prosledjeni parametar pod brojem: " + (i + 1) + "(indeksirano od 1) nije kompatibilan sa odgovarajucim formalnim parametrom metode " + methName + " po tipu", node);
+
+                errorHappened = true;
+            }
+        }
+        if (errorHappened){
+            fpStack = new Stack<>();
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -174,30 +242,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         }
         Obj constNode = Tab.insert(Obj.Con, node.getI1(), currTypeVar.getType());
         constNode.setAdr(constObj.getAdr());
-    }
-
-    private boolean checkIsObjNodeDeclared(String name){
-        Obj node = Tab.currentScope().findSymbol(name);
-        return node != null;
-//        Obj node;
-//        if(currMeth != null){
-//            node = Tab.currentScope().findSymbol(name);
-//        }else{
-//            node = Tab.find(name);
-//        }
-//
-//        // we can't write this as one condition with OR because everything that is not null will pass and we don't want behaviour like that
-//        if(node == null){
-//            return false;
-//        }
-//        return node != Tab.noObj;
-    }
-
-    private void formParsSetLevelAndFpPos(Obj node){
-        if(parsingFormPars){
-            node.setFpPos(1);
-            currMeth.setLevel(currMeth.getLevel() + 1);
-        }
     }
 
     @Override
@@ -390,6 +434,27 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         node.struct = node.getDesignator().obj.getType();
+        List<Struct> fpList = getFormalParameters(node.getDesignator().obj, node);
+
+        if (!checkArePassedParametersAndFormalParameterListCompatible(fpList, node.getDesignator().obj.getName(), node)){
+
+        }
+    }
+
+    // function call parameters
+    @Override
+    public void visit(StackInitialize node){
+        fpStack = new Stack<>();
+    }
+
+    @Override
+    public void visit(ActParsMultipleItems node){
+        fpStack.push(node.getExpr().struct);
+    }
+
+    @Override
+    public void visit(ActParsSigleItem node){
+        fpStack.push(node.getExpr().struct);
     }
 
     @Override
@@ -619,6 +684,13 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             report_error("[DesignatorStatementFuncCall] Poziv neadekvatne metode(" + node.getDesignator().obj.getName() + ")", node);
             return;
         }
+
+        List<Struct> fpList = getFormalParameters(node.getDesignator().obj, node);
+        if (!checkArePassedParametersAndFormalParameterListCompatible(fpList, node.getDesignator().obj.getName(), node)){
+
+        }
+
+
     }
 
     @Override

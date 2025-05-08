@@ -1,16 +1,16 @@
 // generated with ast extension for cup
 // version 0.8
-// 6/4/2025 23:4:23
+// 8/4/2025 9:47:48
 
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class ActParsDerived1 extends ActPars {
+public class ActParsMultipleItems extends ActPars {
 
     private Expr Expr;
     private ActPars ActPars;
 
-    public ActParsDerived1 (Expr Expr, ActPars ActPars) {
+    public ActParsMultipleItems (Expr Expr, ActPars ActPars) {
         this.Expr=Expr;
         if(Expr!=null) Expr.setParent(this);
         this.ActPars=ActPars;
@@ -57,7 +57,7 @@ public class ActParsDerived1 extends ActPars {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("ActParsDerived1(\n");
+        buffer.append("ActParsMultipleItems(\n");
 
         if(Expr!=null)
             buffer.append(Expr.toString("  "+tab));
@@ -72,7 +72,7 @@ public class ActParsDerived1 extends ActPars {
         buffer.append("\n");
 
         buffer.append(tab);
-        buffer.append(") [ActParsDerived1]");
+        buffer.append(") [ActParsMultipleItems]");
         return buffer.toString();
     }
 }

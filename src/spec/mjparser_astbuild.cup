@@ -94,6 +94,7 @@ nonterminal ActPars ActPars;
 nonterminal DesignatorFuncCall DesignatorFuncCall;
 nonterminal MapDesignator MapDesignator;
 nonterminal DesignatorStatementUnary DesignatorStatementUnary;
+nonterminal StackInitialize StackInitialize;
 nonterminal Program Program;
 nonterminal InterfaceDeclOptionList InterfaceDeclOptionList;
 nonterminal InterfaceDecl InterfaceDecl;
@@ -352,9 +353,9 @@ Designator ::= (DesignatorVar) IDENT:I1 {: RESULT=new DesignatorVar(I1); RESULT.
 
 DesignatorArrayName ::= (DesignatorArrayName) IDENT:I1 {: RESULT=new DesignatorArrayName(I1); RESULT.setLine(I1left); :};
 
-ActPars ::= Expr:E1 COMMA ActPars:A2 {: RESULT=new ActParsDerived1(E1, A2); RESULT.setLine(E1left); :}
+ActPars ::= (ActParsMultipleItems) Expr:E1 COMMA ActPars:A2 {: RESULT=new ActParsMultipleItems(E1, A2); RESULT.setLine(E1left); :}
             |
-            Expr:E1 {: RESULT=new ActParsDerived2(E1); RESULT.setLine(E1left); :}
+            (ActParsSigleItem) Expr:E1 {: RESULT=new ActParsSigleItem(E1); RESULT.setLine(E1left); :}
             ;
 
 Condition ::= (ConditionOr) CondTerm:C1 OR Condition:C2 {: RESULT=new ConditionOr(C1, C2); RESULT.setLine(C1left); :}
@@ -402,10 +403,12 @@ Factor ::= (FactorDesignator) Designator:D1 {: RESULT=new FactorDesignator(D1); 
            (FactorExpr) LPAREN Expr:E1 RPAREN {: RESULT=new FactorExpr(E1); RESULT.setLine(E1left); :}
            ;
 
-DesignatorFuncCall ::= LPAREN RPAREN {: RESULT=new DesignatorFuncCallDerived1(); :}
+DesignatorFuncCall ::= LPAREN StackInitialize:S1 RPAREN {: RESULT=new DesignatorFuncCallDerived1(S1); RESULT.setLine(S1left); :}
                    |
-                   LPAREN ActPars:A1 RPAREN {: RESULT=new DesignatorFuncCallDerived2(A1); RESULT.setLine(A1left); :}
+                   LPAREN StackInitialize:S1 ActPars:A2 RPAREN {: RESULT=new DesignatorFuncCallDerived2(S1, A2); RESULT.setLine(S1left); :}
                    ;
+
+StackInitialize ::= (StackInitialize) {: RESULT=new StackInitialize(); :} /* epsilon */;
 
 Label ::= IDENT:I1 {: RESULT=new LabelDerived1(I1); RESULT.setLine(I1left); :} ;
 

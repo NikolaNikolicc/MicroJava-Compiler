@@ -56,7 +56,7 @@ program MJProgram
 
         // if (b != null)a++; // ok
         // if (b >= null) a++; // error
-        
+
 	}
 
     bool m1(int param1, int param2) int m, b[]; int x[], y; {
@@ -87,6 +87,17 @@ program MJProgram
         // if (true && m == 2 || z && m < 2)m++; // ok
 
         return 'a';
+    }
+
+    int f1(int x) {return 1;}
+    bool boolfunc(int x){return false;}
+    int f2(int x, bool b, int g) int a; {return f1(x) + a + 1;}
+
+    int f3(){
+
+        f2(f2(1, false, 2), true, f2(1, false, 6)); // ok
+
+        return 1;
     }
 
 }

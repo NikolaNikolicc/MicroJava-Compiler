@@ -68,12 +68,6 @@ public class Compiler {
             boolObj.setAdr(-1);
             boolObj.setLevel(-1);
 
-            Struct setStruct = new Struct(Struct.Enum);
-            setStruct.setElementType(Tab.intType);
-            Obj setObj = Tab.insert(Obj.Type, "set", setStruct);
-            setObj.setAdr(-1);
-            setObj.setLevel(-1);
-
             log.info(prog.toString(""));
             log.info("===================================");
 

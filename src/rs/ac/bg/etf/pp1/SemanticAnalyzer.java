@@ -104,8 +104,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     private void formParsSetLevelAndFpPos(Obj node){
         if(parsingFormPars){
-            node.setFpPos(1);
             currMeth.setLevel(currMeth.getLevel() + 1);
+            node.setFpPos(1);
         }
     }
 

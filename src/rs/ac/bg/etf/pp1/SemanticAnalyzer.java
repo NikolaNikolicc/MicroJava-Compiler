@@ -158,7 +158,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         List<Struct> fpList = getFormalParameters(meth, node);
 
         if (!checkArePassedParametersAndFormalParameterListCompatible(fpList, meth.getName(), node)){
-
+            // nothing to do here but to remember that function above returns true if parameters are compatible
         }
 
         return meth.getType();

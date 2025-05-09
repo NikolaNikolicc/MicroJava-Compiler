@@ -60,7 +60,7 @@ terminal String IDENT ;
 terminal Character CHAR ;
 
 nonterminal Type, MethodSignatureEndFormPars, MethodSignatureStartFormPars, MethodName, ConstDeclAssign, Setop, Mulop, Addop, Relop, Assignop, Label, ProgramDeclList, ProgramDeclElem, ConstDecl, ConstDeclList, VarDecl, VarDeclFinal, VarDeclOptionalList, ClassDecl, VarDeclListOptional, MethodSignature, TypeChoice, FormParsOptional, FormPars, MethodDecl, VarDeclList, MethodDeclList, MathodDecl, StatementList, Statement, DesignatorStatement;
-nonterminal ActPars, DesignatorFuncCall, MapDesignator, DesignatorStatementUnary, StackInitialize;
+nonterminal ActPars, DesignatorFuncCall, DesignatorStatementUnary, StackInitialize, MapDesignator;
 nonterminal Program, InterfaceDeclOptionList, InterfaceDecl, VarDeclProgram, VarDeclErrorComma, VarDeclErrorSemi, DesignatorAssign, VarDeclClass, ClassDeclErrorLBrace, DesignatorAssignWhile, DesignatorStatementWhile, DoStatement ;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr, CondFact, CondTerm, Condition, StatementCondition;
@@ -334,10 +334,10 @@ Expr ::= (ExprTerm) Term
          |
          (ExprAddopTerm) Expr Addop Term
          |
-         Designator MapDesignator
+         (ExprDesignatorMap) Designator MapDesignator
          ;
 
-MapDesignator ::= MAP Designator
+MapDesignator ::= (MapDesignator) MAP Designator
                   ;
 
 Term ::= (TermFactor) Factor

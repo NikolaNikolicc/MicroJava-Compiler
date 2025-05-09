@@ -53,15 +53,15 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             builder.append(" (line " + node.getLine() + ")");
         }
         builder.append(": [");
-        builder.append(sym.getName());
+        builder.append(sym.getName()); // name
         builder.append(", ");
-        builder.append(objKindNames[sym.getKind()]);
+        builder.append(objKindNames[sym.getKind()]); // kind
         builder.append(", ");
-        builder.append(structKindNames[sym.getType().getKind()]);
+        builder.append(structKindNames[sym.getType().getKind()]); // type
         builder.append(", ");
-        builder.append(sym.getAdr());
+        builder.append(sym.getAdr()); // adr
         builder.append(", ");
-        builder.append(sym.getLevel());
+        builder.append(sym.getLevel()); // level
         builder.append("]");
         log.info(builder.toString());
     }
@@ -116,13 +116,13 @@ public class SemanticAnalyzer extends VisitorAdaptor{
                 fpList.add(localSym.getType());
             }
         }
-        report_info("Metoda koja se poziva(" + funcNode.getName() + ") ima sledeci broj formalnih parametara: " + fpList.size(), node);
+        // report_info("Metoda koja se poziva(" + funcNode.getName() + ") ima sledeci broj formalnih parametara: " + fpList.size(), node);
         return fpList;
     }
 
     private boolean checkArePassedParametersAndFormalParameterListCompatible(List<Struct> fpList, String methName,  SyntaxNode node){
 
-        report_info("Metoda koja se poziva(" + methName + ") ima sledeci broj prosledjenih parametara: " + fpStack.size(), node);
+        // report_info("Metoda koja se poziva(" + methName + ") ima sledeci broj prosledjenih parametara: " + fpStack.size(), node);
         if (fpList.size() != fpStack.size()){
             report_error("[FactorFuncCall][DesignatorStatementFuncCall] Lista prosledjenih parametara se ne poklapa se parametrima koji su prosledjeni prilikom poziva metode " + methName + " po broju prosledjenih parametara, ova metoda prima: " + fpList.size() + " parametara", node);
             fpStack = new Stack<>();
@@ -337,6 +337,53 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         node.struct = node.getTerm().struct;
+    }
+
+    @Override
+    public void visit(ExprDesignatorMap node){
+        if (node.getMapDesignator().getDesignator().obj == Tab.noObj || node.getDesignator().obj == Tab.noObj){
+            return;
+        }
+        String name = node.getDesignator().obj.getName();
+        Obj meth = Tab.find(name);
+
+        if(meth.getKind() != Obj.Meth){
+            report_error("Designator(" + name + ") sa leve strane MAP operanda mora biti metoda", node);
+            node.struct = Tab.noType;
+            return;
+        }
+        List<Struct> fpList = getFormalParameters(meth, node);
+        if (fpList.size() != 1){
+            report_error("Metoda sa leve strane MAP operanda mora imati tacno jedan parametar", node);
+            node.struct = Tab.noType;
+            return;
+        }
+        if(!fpList.get(0).equals(Tab.intType)){
+            report_error("Parametar metoda sa leve strane MAP operanda mora biti tipa int", node);
+            node.struct = Tab.noType;
+            return;
+        }
+        if(!meth.getType().equals(Tab.intType)){
+            report_error("Povratna vrednost metoda sa leve strana MAP operanda mora biti tipa int", node);
+            node.struct = Tab.noType;
+            return;
+        }
+        node.struct = Tab.intType;
+
+    }
+
+    @Override
+    public void visit(MapDesignator node){
+        if (node.getDesignator().obj == Tab.noObj){
+            return;
+        }
+
+        String name = node.getDesignator().obj.getName();
+        Obj arr = Tab.find(name);
+        // logSymbol("Pronadjen simbol arr: ", arr, node);
+        if (arr.getType().getKind() != Struct.Array || !arr.getType().getElemType().equals(Tab.intType)){
+            report_error("[MapDesignator] Designator(" + name + ") sa desne strane operanda MAP mora predstavljati niz celobrojnih vrednosti", node);
+        }
     }
 
     @Override

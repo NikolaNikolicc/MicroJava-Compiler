@@ -92,9 +92,9 @@ nonterminal Statement Statement;
 nonterminal DesignatorStatement DesignatorStatement;
 nonterminal ActPars ActPars;
 nonterminal DesignatorFuncCall DesignatorFuncCall;
-nonterminal MapDesignator MapDesignator;
 nonterminal DesignatorStatementUnary DesignatorStatementUnary;
 nonterminal StackInitialize StackInitialize;
+nonterminal MapDesignator MapDesignator;
 nonterminal Program Program;
 nonterminal InterfaceDeclOptionList InterfaceDeclOptionList;
 nonterminal InterfaceDecl InterfaceDecl;
@@ -379,10 +379,10 @@ Expr ::= (ExprTerm) Term:T1 {: RESULT=new ExprTerm(T1); RESULT.setLine(T1left); 
          |
          (ExprAddopTerm) Expr:E1 Addop:A2 Term:T3 {: RESULT=new ExprAddopTerm(E1, A2, T3); RESULT.setLine(E1left); :}
          |
-         Designator:D1 MapDesignator:M2 {: RESULT=new ExprDerived1(D1, M2); RESULT.setLine(D1left); :}
+         (ExprDesignatorMap) Designator:D1 MapDesignator:M2 {: RESULT=new ExprDesignatorMap(D1, M2); RESULT.setLine(D1left); :}
          ;
 
-MapDesignator ::= MAP Designator:D1 {: RESULT=new MapDesignatorDerived1(D1); RESULT.setLine(D1left); :}
+MapDesignator ::= (MapDesignator) MAP Designator:D1 {: RESULT=new MapDesignator(D1); RESULT.setLine(D1left); :}
                   ;
 
 Term ::= (TermFactor) Factor:F1 {: RESULT=new TermFactor(F1); RESULT.setLine(F1left); :}

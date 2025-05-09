@@ -1,16 +1,16 @@
 // generated with ast extension for cup
 // version 0.8
-// 8/4/2025 9:47:48
+// 9/4/2025 10:24:29
 
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class ExprDerived1 extends Expr {
+public class ExprDesignatorMap extends Expr {
 
     private Designator Designator;
     private MapDesignator MapDesignator;
 
-    public ExprDerived1 (Designator Designator, MapDesignator MapDesignator) {
+    public ExprDesignatorMap (Designator Designator, MapDesignator MapDesignator) {
         this.Designator=Designator;
         if(Designator!=null) Designator.setParent(this);
         this.MapDesignator=MapDesignator;
@@ -57,7 +57,7 @@ public class ExprDerived1 extends Expr {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("ExprDerived1(\n");
+        buffer.append("ExprDesignatorMap(\n");
 
         if(Designator!=null)
             buffer.append(Designator.toString("  "+tab));
@@ -72,7 +72,7 @@ public class ExprDerived1 extends Expr {
         buffer.append("\n");
 
         buffer.append(tab);
-        buffer.append(") [ExprDerived1]");
+        buffer.append(") [ExprDesignatorMap]");
         return buffer.toString();
     }
 }

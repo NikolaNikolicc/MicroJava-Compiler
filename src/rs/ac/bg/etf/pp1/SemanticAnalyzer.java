@@ -348,23 +348,23 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         Obj meth = Tab.find(name);
 
         if(meth.getKind() != Obj.Meth){
-            report_error("Designator(" + name + ") sa leve strane MAP operanda mora biti metoda", node);
+            report_error("[ExprDesignatorMap] Designator(" + name + ") sa leve strane MAP operanda mora biti metoda", node);
             node.struct = Tab.noType;
             return;
         }
         List<Struct> fpList = getFormalParameters(meth, node);
         if (fpList.size() != 1){
-            report_error("Metoda sa leve strane MAP operanda mora imati tacno jedan parametar", node);
+            report_error("[ExprDesignatorMap] Metoda sa leve strane MAP operanda mora imati tacno jedan parametar", node);
             node.struct = Tab.noType;
             return;
         }
         if(!fpList.get(0).equals(Tab.intType)){
-            report_error("Parametar metoda sa leve strane MAP operanda mora biti tipa int", node);
+            report_error("[ExprDesignatorMap] Parametar metoda sa leve strane MAP operanda mora biti tipa int", node);
             node.struct = Tab.noType;
             return;
         }
         if(!meth.getType().equals(Tab.intType)){
-            report_error("Povratna vrednost metoda sa leve strana MAP operanda mora biti tipa int", node);
+            report_error("[ExprDesignatorMap] Povratna vrednost metoda sa leve strana MAP operanda mora biti tipa int", node);
             node.struct = Tab.noType;
             return;
         }

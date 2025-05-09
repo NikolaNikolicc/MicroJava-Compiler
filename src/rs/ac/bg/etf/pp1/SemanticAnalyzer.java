@@ -381,7 +381,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         String name = node.getDesignator().obj.getName();
         Obj arr = Tab.find(name);
         // logSymbol("Pronadjen simbol arr: ", arr, node);
-        if (arr.getType().getKind() != Struct.Array || !arr.getType().getElemType().equals(Tab.intType)){
+        if (arr.getKind() != Obj.Var || arr.getType().getKind() != Struct.Array || !arr.getType().getElemType().equals(Tab.intType)){
             report_error("[MapDesignator] Designator(" + name + ") sa desne strane operanda MAP mora predstavljati niz celobrojnih vrednosti", node);
         }
     }

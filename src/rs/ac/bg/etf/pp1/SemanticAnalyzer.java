@@ -146,6 +146,24 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         return true;
     }
 
+    private Struct funccall(Obj meth, SyntaxNode node){
+        if (meth == Tab.noObj){
+            return Tab.noType;
+        }
+        else if (meth.getKind() != Obj.Meth){
+            report_error("[FactorFuncCall][DesignatorStatementFuncCall] Neadekvatna vrsta promenljive (" + meth.getName() + " mora biti metoda)", node);
+            return Tab.noType;
+        }
+
+        List<Struct> fpList = getFormalParameters(meth, node);
+
+        if (!checkArePassedParametersAndFormalParameterListCompatible(fpList, meth.getName(), node)){
+
+        }
+
+        return meth.getType();
+    }
+
     @Override
     public void visit(Program node){
         Tab.chainLocalSymbols(node.getProgName().obj);
@@ -475,17 +493,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(FactorFuncCall node){
-        if(node.getDesignator().obj.getKind() != Obj.Meth){
-            report_error("[FactorFuncCall] Poziv neadekvatne metode(" + node.getDesignator().obj.getName() + ")", node);
-            node.struct = Tab.noType;
-            return;
-        }
-        node.struct = node.getDesignator().obj.getType();
-        List<Struct> fpList = getFormalParameters(node.getDesignator().obj, node);
-
-        if (!checkArePassedParametersAndFormalParameterListCompatible(fpList, node.getDesignator().obj.getName(), node)){
-
-        }
+        Obj meth = node.getDesignator().obj;
+        node.struct = funccall(meth, node);
     }
 
     // function call parameters
@@ -727,16 +736,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(DesignatorStatementFuncCall node){
-        if(node.getDesignator().obj.getKind() != Obj.Meth){
-            report_error("[DesignatorStatementFuncCall] Poziv neadekvatne metode(" + node.getDesignator().obj.getName() + ")", node);
-            return;
-        }
-
-        List<Struct> fpList = getFormalParameters(node.getDesignator().obj, node);
-        if (!checkArePassedParametersAndFormalParameterListCompatible(fpList, node.getDesignator().obj.getName(), node)){
-
-        }
-
+        Obj meth = node.getDesignator().obj;
+        funccall(meth, node);
 
     }
 

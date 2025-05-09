@@ -96,7 +96,11 @@ program MJProgram
 
     int f3() int a, x, b[]; bool c[]; {
 
-        f2(f2(1, false, 2), true, f2(1, false, 6)); // ok
+        // f2(f2(1, false, 2), true, f2(1, false, 6)); // ok
+        // f2(f2(1, false), true, f2(1, false, 6)); // error
+        // f2(f2(1, false), 'z', f2(1, false, 6)); // error
+        // a(1, 2, 3); // error
+
         // a = f1 map b; // ok
         // a = f1 map c; // error
         // a = x map b; // error

@@ -189,19 +189,19 @@ ClassDecl ::= CLASS IDENT:I1 LBRACE VarDeclListOptional:V2 RBRACE {: RESULT=new 
               |
               CLASS IDENT:I1 EXTENDS Type:T2 LBRACE VarDeclListOptional:V3 RBRACE {: RESULT=new ClassDeclDerived2(I1, T2, V3); RESULT.setLine(I1left); :}
               |
-              CLASS IDENT:I1 EXTENDS ClassDeclErrorLBrace:C2 VarDeclListOptional:V3 RBRACE {: RESULT=new ClassDeclDerived3(I1, C2, V3); RESULT.setLine(I1left); :}
+              CLASS IDENT:I1 EXTENDS ClassDeclErrorLBrace:C2 VarDeclListOptional:V3 RBRACE {: RESULT=new ClassDeclDerived3(I1, C2, V3); RESULT.setLine(I1left); :} /* error */
               |
               CLASS IDENT:I1 LBRACE VarDeclListOptional:V2 LBRACE MethodDeclList:M3 RBRACE RBRACE {: RESULT=new ClassDeclDerived4(I1, V2, M3); RESULT.setLine(I1left); :}
               |
               CLASS IDENT:I1 EXTENDS Type:T2 LBRACE VarDeclListOptional:V3 LBRACE MethodDeclList:M4 RBRACE RBRACE {: RESULT=new ClassDeclDerived5(I1, T2, V3, M4); RESULT.setLine(I1left); :}
               |
-              CLASS IDENT:I1 EXTENDS ClassDeclErrorLBrace:C2 VarDeclListOptional:V3 LBRACE MethodDeclList:M4 RBRACE RBRACE {: RESULT=new ClassDeclDerived6(I1, C2, V3, M4); RESULT.setLine(I1left); :}
+              CLASS IDENT:I1 EXTENDS ClassDeclErrorLBrace:C2 VarDeclListOptional:V3 LBRACE MethodDeclList:M4 RBRACE RBRACE {: RESULT=new ClassDeclDerived6(I1, C2, V3, M4); RESULT.setLine(I1left); :} /* error */
               |
-              CLASS IDENT:I1 LBRACE VarDeclListOptional:V2 ClassDeclErrorLBrace:C3 MethodDeclList:M4 RBRACE RBRACE {: RESULT=new ClassDeclDerived7(I1, V2, C3, M4); RESULT.setLine(I1left); :}
+              CLASS IDENT:I1 LBRACE VarDeclListOptional:V2 ClassDeclErrorLBrace:C3 MethodDeclList:M4 RBRACE RBRACE {: RESULT=new ClassDeclDerived7(I1, V2, C3, M4); RESULT.setLine(I1left); :} /* error */
               |
-              CLASS IDENT:I1 EXTENDS Type:T2 LBRACE VarDeclListOptional:V3 ClassDeclErrorLBrace:C4 MethodDeclList:M5 RBRACE RBRACE {: RESULT=new ClassDeclDerived8(I1, T2, V3, C4, M5); RESULT.setLine(I1left); :}
+              CLASS IDENT:I1 EXTENDS Type:T2 LBRACE VarDeclListOptional:V3 ClassDeclErrorLBrace:C4 MethodDeclList:M5 RBRACE RBRACE {: RESULT=new ClassDeclDerived8(I1, T2, V3, C4, M5); RESULT.setLine(I1left); :} /* error */
               |
-              CLASS IDENT:I1 EXTENDS ClassDeclErrorLBrace:C2 VarDeclListOptional:V3 ClassDeclErrorLBrace:C4 MethodDeclList:M5 RBRACE RBRACE {: RESULT=new ClassDeclDerived9(I1, C2, V3, C4, M5); RESULT.setLine(I1left); :}
+              CLASS IDENT:I1 EXTENDS ClassDeclErrorLBrace:C2 VarDeclListOptional:V3 ClassDeclErrorLBrace:C4 MethodDeclList:M5 RBRACE RBRACE {: RESULT=new ClassDeclDerived9(I1, C2, V3, C4, M5); RESULT.setLine(I1left); :} /* error */
               ;
 
 VarDeclListOptional ::= VarDeclListOptional:V1 VarDeclClass:V2 {: RESULT=new VarDeclListOptionalDerived1(V1, V2); RESULT.setLine(V1left); :}

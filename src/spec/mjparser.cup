@@ -144,19 +144,19 @@ ClassDecl ::= CLASS IDENT LBRACE VarDeclListOptional RBRACE
               |
               CLASS IDENT EXTENDS Type LBRACE VarDeclListOptional RBRACE
               |
-              CLASS IDENT EXTENDS ClassDeclErrorLBrace VarDeclListOptional RBRACE
+              CLASS IDENT EXTENDS ClassDeclErrorLBrace VarDeclListOptional RBRACE /* error */
               |
               CLASS IDENT LBRACE VarDeclListOptional LBRACE MethodDeclList RBRACE RBRACE
               |
               CLASS IDENT EXTENDS Type LBRACE VarDeclListOptional LBRACE MethodDeclList RBRACE RBRACE
               |
-              CLASS IDENT EXTENDS ClassDeclErrorLBrace VarDeclListOptional LBRACE MethodDeclList RBRACE RBRACE
+              CLASS IDENT EXTENDS ClassDeclErrorLBrace VarDeclListOptional LBRACE MethodDeclList RBRACE RBRACE /* error */
               |
-              CLASS IDENT LBRACE VarDeclListOptional ClassDeclErrorLBrace MethodDeclList RBRACE RBRACE
+              CLASS IDENT LBRACE VarDeclListOptional ClassDeclErrorLBrace MethodDeclList RBRACE RBRACE /* error */
               |
-              CLASS IDENT EXTENDS Type LBRACE VarDeclListOptional ClassDeclErrorLBrace MethodDeclList RBRACE RBRACE
+              CLASS IDENT EXTENDS Type LBRACE VarDeclListOptional ClassDeclErrorLBrace MethodDeclList RBRACE RBRACE /* error */
               |
-              CLASS IDENT EXTENDS ClassDeclErrorLBrace VarDeclListOptional ClassDeclErrorLBrace MethodDeclList RBRACE RBRACE
+              CLASS IDENT EXTENDS ClassDeclErrorLBrace VarDeclListOptional ClassDeclErrorLBrace MethodDeclList RBRACE RBRACE /* error */
               ;
 
 VarDeclListOptional ::= VarDeclListOptional VarDeclClass

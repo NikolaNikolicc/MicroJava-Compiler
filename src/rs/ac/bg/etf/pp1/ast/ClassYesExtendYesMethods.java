@@ -1,41 +1,42 @@
 // generated with ast extension for cup
 // version 0.8
-// 9/4/2025 22:33:10
+// 12/4/2025 14:2:9
 
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class ClassDeclDerived6 extends ClassDecl {
+public class ClassYesExtendYesMethods extends ClassDecl {
 
-    private String I1;
-    private ClassDeclErrorLBrace ClassDeclErrorLBrace;
+    private ClassDeclName ClassDeclName;
+    private Type Type;
     private VarDeclListOptional VarDeclListOptional;
     private MethodDeclList MethodDeclList;
 
-    public ClassDeclDerived6 (String I1, ClassDeclErrorLBrace ClassDeclErrorLBrace, VarDeclListOptional VarDeclListOptional, MethodDeclList MethodDeclList) {
-        this.I1=I1;
-        this.ClassDeclErrorLBrace=ClassDeclErrorLBrace;
-        if(ClassDeclErrorLBrace!=null) ClassDeclErrorLBrace.setParent(this);
+    public ClassYesExtendYesMethods (ClassDeclName ClassDeclName, Type Type, VarDeclListOptional VarDeclListOptional, MethodDeclList MethodDeclList) {
+        this.ClassDeclName=ClassDeclName;
+        if(ClassDeclName!=null) ClassDeclName.setParent(this);
+        this.Type=Type;
+        if(Type!=null) Type.setParent(this);
         this.VarDeclListOptional=VarDeclListOptional;
         if(VarDeclListOptional!=null) VarDeclListOptional.setParent(this);
         this.MethodDeclList=MethodDeclList;
         if(MethodDeclList!=null) MethodDeclList.setParent(this);
     }
 
-    public String getI1() {
-        return I1;
+    public ClassDeclName getClassDeclName() {
+        return ClassDeclName;
     }
 
-    public void setI1(String I1) {
-        this.I1=I1;
+    public void setClassDeclName(ClassDeclName ClassDeclName) {
+        this.ClassDeclName=ClassDeclName;
     }
 
-    public ClassDeclErrorLBrace getClassDeclErrorLBrace() {
-        return ClassDeclErrorLBrace;
+    public Type getType() {
+        return Type;
     }
 
-    public void setClassDeclErrorLBrace(ClassDeclErrorLBrace ClassDeclErrorLBrace) {
-        this.ClassDeclErrorLBrace=ClassDeclErrorLBrace;
+    public void setType(Type Type) {
+        this.Type=Type;
     }
 
     public VarDeclListOptional getVarDeclListOptional() {
@@ -59,20 +60,23 @@ public class ClassDeclDerived6 extends ClassDecl {
     }
 
     public void childrenAccept(Visitor visitor) {
-        if(ClassDeclErrorLBrace!=null) ClassDeclErrorLBrace.accept(visitor);
+        if(ClassDeclName!=null) ClassDeclName.accept(visitor);
+        if(Type!=null) Type.accept(visitor);
         if(VarDeclListOptional!=null) VarDeclListOptional.accept(visitor);
         if(MethodDeclList!=null) MethodDeclList.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
-        if(ClassDeclErrorLBrace!=null) ClassDeclErrorLBrace.traverseTopDown(visitor);
+        if(ClassDeclName!=null) ClassDeclName.traverseTopDown(visitor);
+        if(Type!=null) Type.traverseTopDown(visitor);
         if(VarDeclListOptional!=null) VarDeclListOptional.traverseTopDown(visitor);
         if(MethodDeclList!=null) MethodDeclList.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
-        if(ClassDeclErrorLBrace!=null) ClassDeclErrorLBrace.traverseBottomUp(visitor);
+        if(ClassDeclName!=null) ClassDeclName.traverseBottomUp(visitor);
+        if(Type!=null) Type.traverseBottomUp(visitor);
         if(VarDeclListOptional!=null) VarDeclListOptional.traverseBottomUp(visitor);
         if(MethodDeclList!=null) MethodDeclList.traverseBottomUp(visitor);
         accept(visitor);
@@ -81,13 +85,16 @@ public class ClassDeclDerived6 extends ClassDecl {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("ClassDeclDerived6(\n");
+        buffer.append("ClassYesExtendYesMethods(\n");
 
-        buffer.append(" "+tab+I1);
+        if(ClassDeclName!=null)
+            buffer.append(ClassDeclName.toString("  "+tab));
+        else
+            buffer.append(tab+"  null");
         buffer.append("\n");
 
-        if(ClassDeclErrorLBrace!=null)
-            buffer.append(ClassDeclErrorLBrace.toString("  "+tab));
+        if(Type!=null)
+            buffer.append(Type.toString("  "+tab));
         else
             buffer.append(tab+"  null");
         buffer.append("\n");
@@ -105,7 +112,7 @@ public class ClassDeclDerived6 extends ClassDecl {
         buffer.append("\n");
 
         buffer.append(tab);
-        buffer.append(") [ClassDeclDerived6]");
+        buffer.append(") [ClassYesExtendYesMethods]");
         return buffer.toString();
     }
 }

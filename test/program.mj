@@ -1,17 +1,11 @@
 program MJProgram
-    // ime ne postoji u tabeli simbola
-    // inat x;
-    // ime ne postoji u tabeli simbola, ali ime nije tip
-	// MJProgram x;
-	// const int x = 'a';
-	// const int y = true;
-	// const int z = 3;
-	// const int xx = 'a', yy = 'b', zz = 3;
-	// const char a = false, b = 2, c = 'c';
+
 	const char ch = 'c';
 	char x, y[];
 	const bool m = false;
 	const int g = 11;
+
+	class Klasa { int xx, yy[]; }
 
 {
 	void main() int a, b[]; int x[], y; char eol; {

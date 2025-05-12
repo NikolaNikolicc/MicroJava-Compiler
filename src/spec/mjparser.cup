@@ -60,7 +60,7 @@ terminal String IDENT ;
 terminal Character CHAR ;
 
 nonterminal Type, MethodSignatureEndFormPars, MethodSignatureStartFormPars, MethodName, ConstDeclAssign, Setop, Mulop, Addop, Relop, Assignop, Label, ProgramDeclList, ProgramDeclElem, ConstDecl, ConstDeclList, VarDecl, VarDeclFinal, VarDeclOptionalList, ClassDecl, VarDeclListOptional, MethodSignature, TypeChoice, FormParsOptional, FormPars, MethodDecl, VarDeclList, MethodDeclList, MathodDecl, StatementList, Statement, DesignatorStatement;
-nonterminal ActPars, DesignatorFuncCall, DesignatorStatementUnary, StackInitialize, MapDesignator;
+nonterminal ActPars, DesignatorFuncCall, DesignatorStatementUnary, StackInitialize, MapDesignator, ClassDeclName;
 nonterminal Program, InterfaceDeclOptionList, InterfaceDecl, VarDeclProgram, VarDeclErrorComma, VarDeclErrorSemi, DesignatorAssign, VarDeclClass, ClassDeclErrorLBrace, DesignatorAssignWhile, DesignatorStatementWhile, DoStatement ;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr, CondFact, CondTerm, Condition, StatementCondition;
@@ -140,24 +140,26 @@ InterfaceDeclOptionList ::= InterfaceDeclOptionList MethodDecl
                             /* epsilon */
                             ;
 
-ClassDecl ::= CLASS IDENT LBRACE VarDeclListOptional RBRACE
+ClassDecl ::= (ClassNoExtend) CLASS ClassDeclName LBRACE VarDeclListOptional RBRACE
               |
-              CLASS IDENT EXTENDS Type LBRACE VarDeclListOptional RBRACE
+              (ClassYesExtend) CLASS ClassDeclName EXTENDS Type LBRACE VarDeclListOptional RBRACE
               |
-              CLASS IDENT EXTENDS ClassDeclErrorLBrace VarDeclListOptional RBRACE /* error */
+              CLASS ClassDeclName EXTENDS ClassDeclErrorLBrace VarDeclListOptional RBRACE /* error */
               |
-              CLASS IDENT LBRACE VarDeclListOptional LBRACE MethodDeclList RBRACE RBRACE
+              (ClassNoExtendYesMethods) CLASS ClassDeclName LBRACE VarDeclListOptional LBRACE MethodDeclList RBRACE RBRACE
               |
-              CLASS IDENT EXTENDS Type LBRACE VarDeclListOptional LBRACE MethodDeclList RBRACE RBRACE
+              (ClassYesExtendYesMethods) CLASS ClassDeclName EXTENDS Type LBRACE VarDeclListOptional LBRACE MethodDeclList RBRACE RBRACE
               |
-              CLASS IDENT EXTENDS ClassDeclErrorLBrace VarDeclListOptional LBRACE MethodDeclList RBRACE RBRACE /* error */
+              CLASS ClassDeclName EXTENDS ClassDeclErrorLBrace VarDeclListOptional LBRACE MethodDeclList RBRACE RBRACE /* error */
               |
-              CLASS IDENT LBRACE VarDeclListOptional ClassDeclErrorLBrace MethodDeclList RBRACE RBRACE /* error */
+              CLASS ClassDeclName LBRACE VarDeclListOptional ClassDeclErrorLBrace MethodDeclList RBRACE RBRACE /* error */
               |
-              CLASS IDENT EXTENDS Type LBRACE VarDeclListOptional ClassDeclErrorLBrace MethodDeclList RBRACE RBRACE /* error */
+              CLASS ClassDeclName EXTENDS Type LBRACE VarDeclListOptional ClassDeclErrorLBrace MethodDeclList RBRACE RBRACE /* error */
               |
-              CLASS IDENT EXTENDS ClassDeclErrorLBrace VarDeclListOptional ClassDeclErrorLBrace MethodDeclList RBRACE RBRACE /* error */
+              CLASS ClassDeclName EXTENDS ClassDeclErrorLBrace VarDeclListOptional ClassDeclErrorLBrace MethodDeclList RBRACE RBRACE /* error */
               ;
+
+ClassDeclName ::= (ClassDeclName) IDENT;
 
 VarDeclListOptional ::= VarDeclListOptional VarDeclClass
                         |
@@ -168,7 +170,7 @@ ClassDeclErrorLBrace ::= error LBRACE:l
                          {: parser.report_error("Izvrsen oporavak do { u liniji " + lleft, null); :}
                          ;
 
-VarDeclClass ::= Type IDENT VarDeclFinal VarDeclOptionalList SEMI
+VarDeclClass ::= VarDecl
                  |
                  error SEMI:l
                  {: parser.report_error("Izvrsen oporavak do ; u liniji " + lleft, null); :}

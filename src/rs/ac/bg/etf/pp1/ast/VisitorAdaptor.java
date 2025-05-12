@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 9/4/2025 22:33:11
+// 12/4/2025 14:2:10
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -155,15 +155,16 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(ClassDeclErrorLBraceDerived1 ClassDeclErrorLBraceDerived1) { visit(); }
     public void visit(VarDeclListOptionalDerived2 VarDeclListOptionalDerived2) { visit(); }
     public void visit(VarDeclListOptionalDerived1 VarDeclListOptionalDerived1) { visit(); }
-    public void visit(ClassDeclDerived9 ClassDeclDerived9) { visit(); }
-    public void visit(ClassDeclDerived8 ClassDeclDerived8) { visit(); }
-    public void visit(ClassDeclDerived7 ClassDeclDerived7) { visit(); }
-    public void visit(ClassDeclDerived6 ClassDeclDerived6) { visit(); }
+    public void visit(ClassDeclName ClassDeclName) { visit(); }
     public void visit(ClassDeclDerived5 ClassDeclDerived5) { visit(); }
     public void visit(ClassDeclDerived4 ClassDeclDerived4) { visit(); }
     public void visit(ClassDeclDerived3 ClassDeclDerived3) { visit(); }
     public void visit(ClassDeclDerived2 ClassDeclDerived2) { visit(); }
+    public void visit(ClassYesExtendYesMethods ClassYesExtendYesMethods) { visit(); }
+    public void visit(ClassNoExtendYesMethods ClassNoExtendYesMethods) { visit(); }
     public void visit(ClassDeclDerived1 ClassDeclDerived1) { visit(); }
+    public void visit(ClassYesExtend ClassYesExtend) { visit(); }
+    public void visit(ClassNoExtend ClassNoExtend) { visit(); }
     public void visit(InterfaceDeclOptionListDerived3 InterfaceDeclOptionListDerived3) { visit(); }
     public void visit(InterfaceDeclOptionListDerived2 InterfaceDeclOptionListDerived2) { visit(); }
     public void visit(InterfaceDeclOptionListDerived1 InterfaceDeclOptionListDerived1) { visit(); }

@@ -16,6 +16,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     private Obj currTypeVar = null;
     private Obj currTypeMeth = null;
     private Obj currMeth = null;
+    private Struct currClass = null;
 
     private boolean returnNode = false;
 
@@ -100,6 +101,12 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 //            return false;
 //        }
 //        return node != Tab.noObj;
+    }
+
+    private void closeClass(){
+        Tab.chainLocalSymbols(currClass);
+        Tab.closeScope();
+        currClass = null;
     }
 
     private void formParsSetLevelAndFpPos(Obj node){
@@ -268,8 +275,13 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             report_error("[VarDeclFinalVar] Vec je deklarisana promenljiva sa imenom: " + node.getI1(), node);
             return;
         }
-
-        Obj varNode = Tab.insert(Obj.Var, node.getI1(), currTypeVar.getType());
+        Obj varNode;
+        if (currClass == null){
+            varNode = Tab.insert(Obj.Var, node.getI1(), currTypeVar.getType());
+        } else {
+            varNode = Tab.insert(Obj.Fld, node.getI1(), currTypeVar.getType());
+            varNode.setLevel(2);
+        }
         formParsSetLevelAndFpPos(varNode);
     }
 
@@ -281,7 +293,13 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         }
 
         Struct array = new Struct(Struct.Array, currTypeVar.getType());
-        Obj varNode = Tab.insert(Obj.Var, node.getI1(), array);
+        Obj varNode;
+        if (currClass == null){
+            varNode = Tab.insert(Obj.Var, node.getI1(), array);
+        } else {
+            varNode = Tab.insert(Obj.Fld, node.getI1(), array);
+            varNode.setLevel(2);
+        }
         formParsSetLevelAndFpPos(varNode);
     }
 
@@ -573,6 +591,39 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         node.obj = arr;
+    }
+
+    // Class
+
+    @Override
+    public void visit(ClassNoExtend node){
+        closeClass();
+    }
+
+    @Override
+    public void visit(ClassYesExtend node){
+        closeClass();
+    }
+
+    @Override
+    public void visit(ClassNoExtendYesMethods node){
+        closeClass();
+    }
+
+    @Override
+    public void visit(ClassYesExtendYesMethods node){
+        closeClass();
+    }
+
+    @Override
+    public void visit(ClassDeclName node){
+        if(checkIsObjNodeDeclared(node.getI1())){
+            report_error("[ClassDeclName] Vec je deklarisana promenljiva sa imenom: " + node.getI1(), node);
+            return;
+        }
+        currClass = new Struct(Struct.Class);
+        Obj classObj = Tab.insert(Obj.Type, node.getI1(), currClass);
+        Tab.openScope();
     }
 
     // Statement

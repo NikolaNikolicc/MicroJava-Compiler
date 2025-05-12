@@ -1,57 +1,25 @@
 // generated with ast extension for cup
 // version 0.8
-// 9/4/2025 22:33:10
+// 12/4/2025 14:2:9
 
 
 package rs.ac.bg.etf.pp1.ast;
 
 public class VarDeclClassDerived1 extends VarDeclClass {
 
-    private Type Type;
-    private String I2;
-    private VarDeclFinal VarDeclFinal;
-    private VarDeclOptionalList VarDeclOptionalList;
+    private VarDecl VarDecl;
 
-    public VarDeclClassDerived1 (Type Type, String I2, VarDeclFinal VarDeclFinal, VarDeclOptionalList VarDeclOptionalList) {
-        this.Type=Type;
-        if(Type!=null) Type.setParent(this);
-        this.I2=I2;
-        this.VarDeclFinal=VarDeclFinal;
-        if(VarDeclFinal!=null) VarDeclFinal.setParent(this);
-        this.VarDeclOptionalList=VarDeclOptionalList;
-        if(VarDeclOptionalList!=null) VarDeclOptionalList.setParent(this);
+    public VarDeclClassDerived1 (VarDecl VarDecl) {
+        this.VarDecl=VarDecl;
+        if(VarDecl!=null) VarDecl.setParent(this);
     }
 
-    public Type getType() {
-        return Type;
+    public VarDecl getVarDecl() {
+        return VarDecl;
     }
 
-    public void setType(Type Type) {
-        this.Type=Type;
-    }
-
-    public String getI2() {
-        return I2;
-    }
-
-    public void setI2(String I2) {
-        this.I2=I2;
-    }
-
-    public VarDeclFinal getVarDeclFinal() {
-        return VarDeclFinal;
-    }
-
-    public void setVarDeclFinal(VarDeclFinal VarDeclFinal) {
-        this.VarDeclFinal=VarDeclFinal;
-    }
-
-    public VarDeclOptionalList getVarDeclOptionalList() {
-        return VarDeclOptionalList;
-    }
-
-    public void setVarDeclOptionalList(VarDeclOptionalList VarDeclOptionalList) {
-        this.VarDeclOptionalList=VarDeclOptionalList;
+    public void setVarDecl(VarDecl VarDecl) {
+        this.VarDecl=VarDecl;
     }
 
     public void accept(Visitor visitor) {
@@ -59,22 +27,16 @@ public class VarDeclClassDerived1 extends VarDeclClass {
     }
 
     public void childrenAccept(Visitor visitor) {
-        if(Type!=null) Type.accept(visitor);
-        if(VarDeclFinal!=null) VarDeclFinal.accept(visitor);
-        if(VarDeclOptionalList!=null) VarDeclOptionalList.accept(visitor);
+        if(VarDecl!=null) VarDecl.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
-        if(Type!=null) Type.traverseTopDown(visitor);
-        if(VarDeclFinal!=null) VarDeclFinal.traverseTopDown(visitor);
-        if(VarDeclOptionalList!=null) VarDeclOptionalList.traverseTopDown(visitor);
+        if(VarDecl!=null) VarDecl.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
-        if(Type!=null) Type.traverseBottomUp(visitor);
-        if(VarDeclFinal!=null) VarDeclFinal.traverseBottomUp(visitor);
-        if(VarDeclOptionalList!=null) VarDeclOptionalList.traverseBottomUp(visitor);
+        if(VarDecl!=null) VarDecl.traverseBottomUp(visitor);
         accept(visitor);
     }
 
@@ -83,23 +45,8 @@ public class VarDeclClassDerived1 extends VarDeclClass {
         buffer.append(tab);
         buffer.append("VarDeclClassDerived1(\n");
 
-        if(Type!=null)
-            buffer.append(Type.toString("  "+tab));
-        else
-            buffer.append(tab+"  null");
-        buffer.append("\n");
-
-        buffer.append(" "+tab+I2);
-        buffer.append("\n");
-
-        if(VarDeclFinal!=null)
-            buffer.append(VarDeclFinal.toString("  "+tab));
-        else
-            buffer.append(tab+"  null");
-        buffer.append("\n");
-
-        if(VarDeclOptionalList!=null)
-            buffer.append(VarDeclOptionalList.toString("  "+tab));
+        if(VarDecl!=null)
+            buffer.append(VarDecl.toString("  "+tab));
         else
             buffer.append(tab+"  null");
         buffer.append("\n");

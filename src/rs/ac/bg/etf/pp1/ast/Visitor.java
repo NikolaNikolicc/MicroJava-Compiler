@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 9/4/2025 22:33:11
+// 12/4/2025 14:2:10
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -155,15 +155,16 @@ public interface Visitor {
     public void visit(ClassDeclErrorLBraceDerived1 ClassDeclErrorLBraceDerived1);
     public void visit(VarDeclListOptionalDerived2 VarDeclListOptionalDerived2);
     public void visit(VarDeclListOptionalDerived1 VarDeclListOptionalDerived1);
-    public void visit(ClassDeclDerived9 ClassDeclDerived9);
-    public void visit(ClassDeclDerived8 ClassDeclDerived8);
-    public void visit(ClassDeclDerived7 ClassDeclDerived7);
-    public void visit(ClassDeclDerived6 ClassDeclDerived6);
+    public void visit(ClassDeclName ClassDeclName);
     public void visit(ClassDeclDerived5 ClassDeclDerived5);
     public void visit(ClassDeclDerived4 ClassDeclDerived4);
     public void visit(ClassDeclDerived3 ClassDeclDerived3);
     public void visit(ClassDeclDerived2 ClassDeclDerived2);
+    public void visit(ClassYesExtendYesMethods ClassYesExtendYesMethods);
+    public void visit(ClassNoExtendYesMethods ClassNoExtendYesMethods);
     public void visit(ClassDeclDerived1 ClassDeclDerived1);
+    public void visit(ClassYesExtend ClassYesExtend);
+    public void visit(ClassNoExtend ClassNoExtend);
     public void visit(InterfaceDeclOptionListDerived3 InterfaceDeclOptionListDerived3);
     public void visit(InterfaceDeclOptionListDerived2 InterfaceDeclOptionListDerived2);
     public void visit(InterfaceDeclOptionListDerived1 InterfaceDeclOptionListDerived1);

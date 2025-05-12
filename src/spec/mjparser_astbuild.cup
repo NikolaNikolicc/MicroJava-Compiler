@@ -95,6 +95,7 @@ nonterminal DesignatorFuncCall DesignatorFuncCall;
 nonterminal DesignatorStatementUnary DesignatorStatementUnary;
 nonterminal StackInitialize StackInitialize;
 nonterminal MapDesignator MapDesignator;
+nonterminal ClassDeclName ClassDeclName;
 nonterminal Program Program;
 nonterminal InterfaceDeclOptionList InterfaceDeclOptionList;
 nonterminal InterfaceDecl InterfaceDecl;
@@ -185,24 +186,26 @@ InterfaceDeclOptionList ::= InterfaceDeclOptionList:I1 MethodDecl:M2 {: RESULT=n
                             /* epsilon */
                             ;
 
-ClassDecl ::= CLASS IDENT:I1 LBRACE VarDeclListOptional:V2 RBRACE {: RESULT=new ClassDeclDerived1(I1, V2); RESULT.setLine(I1left); :}
+ClassDecl ::= (ClassNoExtend) CLASS ClassDeclName:C1 LBRACE VarDeclListOptional:V2 RBRACE {: RESULT=new ClassNoExtend(C1, V2); RESULT.setLine(C1left); :}
               |
-              CLASS IDENT:I1 EXTENDS Type:T2 LBRACE VarDeclListOptional:V3 RBRACE {: RESULT=new ClassDeclDerived2(I1, T2, V3); RESULT.setLine(I1left); :}
+              (ClassYesExtend) CLASS ClassDeclName:C1 EXTENDS Type:T2 LBRACE VarDeclListOptional:V3 RBRACE {: RESULT=new ClassYesExtend(C1, T2, V3); RESULT.setLine(C1left); :}
               |
-              CLASS IDENT:I1 EXTENDS ClassDeclErrorLBrace:C2 VarDeclListOptional:V3 RBRACE {: RESULT=new ClassDeclDerived3(I1, C2, V3); RESULT.setLine(I1left); :} /* error */
+              CLASS ClassDeclName:C1 EXTENDS ClassDeclErrorLBrace:C2 VarDeclListOptional:V3 RBRACE {: RESULT=new ClassDeclDerived1(C1, C2, V3); RESULT.setLine(C1left); :} /* error */
               |
-              CLASS IDENT:I1 LBRACE VarDeclListOptional:V2 LBRACE MethodDeclList:M3 RBRACE RBRACE {: RESULT=new ClassDeclDerived4(I1, V2, M3); RESULT.setLine(I1left); :}
+              (ClassNoExtendYesMethods) CLASS ClassDeclName:C1 LBRACE VarDeclListOptional:V2 LBRACE MethodDeclList:M3 RBRACE RBRACE {: RESULT=new ClassNoExtendYesMethods(C1, V2, M3); RESULT.setLine(C1left); :}
               |
-              CLASS IDENT:I1 EXTENDS Type:T2 LBRACE VarDeclListOptional:V3 LBRACE MethodDeclList:M4 RBRACE RBRACE {: RESULT=new ClassDeclDerived5(I1, T2, V3, M4); RESULT.setLine(I1left); :}
+              (ClassYesExtendYesMethods) CLASS ClassDeclName:C1 EXTENDS Type:T2 LBRACE VarDeclListOptional:V3 LBRACE MethodDeclList:M4 RBRACE RBRACE {: RESULT=new ClassYesExtendYesMethods(C1, T2, V3, M4); RESULT.setLine(C1left); :}
               |
-              CLASS IDENT:I1 EXTENDS ClassDeclErrorLBrace:C2 VarDeclListOptional:V3 LBRACE MethodDeclList:M4 RBRACE RBRACE {: RESULT=new ClassDeclDerived6(I1, C2, V3, M4); RESULT.setLine(I1left); :} /* error */
+              CLASS ClassDeclName:C1 EXTENDS ClassDeclErrorLBrace:C2 VarDeclListOptional:V3 LBRACE MethodDeclList:M4 RBRACE RBRACE {: RESULT=new ClassDeclDerived2(C1, C2, V3, M4); RESULT.setLine(C1left); :} /* error */
               |
-              CLASS IDENT:I1 LBRACE VarDeclListOptional:V2 ClassDeclErrorLBrace:C3 MethodDeclList:M4 RBRACE RBRACE {: RESULT=new ClassDeclDerived7(I1, V2, C3, M4); RESULT.setLine(I1left); :} /* error */
+              CLASS ClassDeclName:C1 LBRACE VarDeclListOptional:V2 ClassDeclErrorLBrace:C3 MethodDeclList:M4 RBRACE RBRACE {: RESULT=new ClassDeclDerived3(C1, V2, C3, M4); RESULT.setLine(C1left); :} /* error */
               |
-              CLASS IDENT:I1 EXTENDS Type:T2 LBRACE VarDeclListOptional:V3 ClassDeclErrorLBrace:C4 MethodDeclList:M5 RBRACE RBRACE {: RESULT=new ClassDeclDerived8(I1, T2, V3, C4, M5); RESULT.setLine(I1left); :} /* error */
+              CLASS ClassDeclName:C1 EXTENDS Type:T2 LBRACE VarDeclListOptional:V3 ClassDeclErrorLBrace:C4 MethodDeclList:M5 RBRACE RBRACE {: RESULT=new ClassDeclDerived4(C1, T2, V3, C4, M5); RESULT.setLine(C1left); :} /* error */
               |
-              CLASS IDENT:I1 EXTENDS ClassDeclErrorLBrace:C2 VarDeclListOptional:V3 ClassDeclErrorLBrace:C4 MethodDeclList:M5 RBRACE RBRACE {: RESULT=new ClassDeclDerived9(I1, C2, V3, C4, M5); RESULT.setLine(I1left); :} /* error */
+              CLASS ClassDeclName:C1 EXTENDS ClassDeclErrorLBrace:C2 VarDeclListOptional:V3 ClassDeclErrorLBrace:C4 MethodDeclList:M5 RBRACE RBRACE {: RESULT=new ClassDeclDerived5(C1, C2, V3, C4, M5); RESULT.setLine(C1left); :} /* error */
               ;
+
+ClassDeclName ::= (ClassDeclName) IDENT:I1 {: RESULT=new ClassDeclName(I1); RESULT.setLine(I1left); :};
 
 VarDeclListOptional ::= VarDeclListOptional:V1 VarDeclClass:V2 {: RESULT=new VarDeclListOptionalDerived1(V1, V2); RESULT.setLine(V1left); :}
                         | {: RESULT=new VarDeclListOptionalDerived2(); :}
@@ -213,7 +216,7 @@ ClassDeclErrorLBrace ::= error LBRACE:l
                          {: parser.report_error("Izvrsen oporavak do { u liniji " + lleft, null); :} {: RESULT=new ClassDeclErrorLBraceDerived1(); :}
                          ;
 
-VarDeclClass ::= Type:T1 IDENT:I2 VarDeclFinal:V3 VarDeclOptionalList:V4 SEMI {: RESULT=new VarDeclClassDerived1(T1, I2, V3, V4); RESULT.setLine(T1left); :}
+VarDeclClass ::= VarDecl:V1 {: RESULT=new VarDeclClassDerived1(V1); RESULT.setLine(V1left); :}
                  |
                  error SEMI:l
                  {: parser.report_error("Izvrsen oporavak do ; u liniji " + lleft, null); :} {: RESULT=new VarDeclClassDerived2(); :}

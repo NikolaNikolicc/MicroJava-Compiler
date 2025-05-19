@@ -416,7 +416,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
         String name = node.getDesignator().obj.getName();
         Obj arr = Tab.find(name);
-        // logSymbol("Pronadjen simbol arr: ", arr, node);
         if (arr.getKind() != Obj.Var || arr.getType().getKind() != Struct.Array || !arr.getType().getElemType().equals(Tab.intType)){
             report_error("[MapDesignator] Designator(" + name + ") sa desne strane operanda MAP mora predstavljati niz celobrojnih vrednosti", node);
         }
@@ -815,7 +814,9 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         }
         String field = node.getI1();
         for (Obj member: classStruct.getMembers()){
-            if(member.getKind() == Obj.Var && member.getName().equals(field)){
+            // logSymbol("pristup polju: ", member, node);
+            // report_info("pristup polju:" + member.getName(), node);
+            if((member.getKind() == Obj.Fld || member.getType().getKind() == Struct.Array) && member.getName().equals(field)){
                 node.obj = member;
                 currClass = null;
                 return;
@@ -833,7 +834,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             node.obj = Tab.noObj;
             return;
         }
-        if (node.getExpr().struct.equals(Tab.intType)){
+        if (!node.getExpr().struct.equals(Tab.intType)){
             report_error("[DesignatorClassMoreFinalElem] Indeks niza mora biti tipa int", node);
             node.obj = Tab.noObj;
             return;
@@ -860,7 +861,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         }
         String field = node.getI2();
         for (Obj member: classStruct.getMembers()){
-            if(member.getKind() == Obj.Var && member.getName().equals(field)){
+            if((member.getKind() == Obj.Fld || member.getType().getKind() == Struct.Array) && member.getName().equals(field)){
                 node.obj = member;
                 // currClass = null;
                 return;
@@ -877,7 +878,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             node.obj = Tab.noObj;
             return;
         }
-        if (node.getExpr().struct.equals(Tab.intType)){
+        if (!node.getExpr().struct.equals(Tab.intType)){
             report_error("[DesignatorClassMoreFinalElem] Indeks niza mora biti tipa int", node);
             node.obj = Tab.noObj;
             return;

@@ -110,7 +110,7 @@ nonterminal DesignatorStatementWhile DesignatorStatementWhile;
 nonterminal DoStatement DoStatement ;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr, CondFact, CondTerm, Condition, StatementCondition;
-nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue, Designator, DesignatorArrayName;
+nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue, Designator, DesignatorArrayName, DesignatorClassMore, DesignatorClassArrayName, DesignatorClassName, DesignatorClassElem;
 
 precedence left ELSE;
 
@@ -349,11 +349,25 @@ DesignatorStatementUnary ::= INC {: RESULT=new DesignatorStatementUnaryDerived1(
 
 Designator ::= (DesignatorVar) IDENT:I1 {: RESULT=new DesignatorVar(I1); RESULT.setLine(I1left); :}
                |
-               IDENT:I1 DOT IDENT:I2 {: RESULT=new DesignatorDerived1(I1, I2); RESULT.setLine(I1left); :}
+               (DesignatorPropertyAccess) DesignatorClassName:D1 DesignatorClassMore:D2 {: RESULT=new DesignatorPropertyAccess(D1, D2); RESULT.setLine(D1left); :}
                |
                (DesignatorElem) DesignatorArrayName:D1 LBRACKET Expr:E2 RBRACKET {: RESULT=new DesignatorElem(D1, E2); RESULT.setLine(D1left); :}
+               |
+               (DesignatorElemPropertyAccess) DesignatorClassElem:D1 DesignatorClassMore:D2 {: RESULT=new DesignatorElemPropertyAccess(D1, D2); RESULT.setLine(D1left); :}
                ;
 
+DesignatorClassMore ::= (DesignatorClassMoreFinal) DOT IDENT:I1 {: RESULT=new DesignatorClassMoreFinal(I1); RESULT.setLine(I1left); :}
+                        |
+                        (DesignatorClassMoreFinalElem) DOT DesignatorClassArrayName:D1 LBRACKET Expr:E2 RBRACKET {: RESULT=new DesignatorClassMoreFinalElem(D1, E2); RESULT.setLine(D1left); :}
+                        |
+                        (DesignatorClassMoreNotFinal) DesignatorClassMore:D1 DOT IDENT:I2 {: RESULT=new DesignatorClassMoreNotFinal(D1, I2); RESULT.setLine(D1left); :}
+                        |
+                        (DesignatorClassMoreNotFinalElem) DesignatorClassMore:D1 DOT DesignatorClassArrayName:D2 LBRACKET Expr:E3 RBRACKET {: RESULT=new DesignatorClassMoreNotFinalElem(D1, D2, E3); RESULT.setLine(D1left); :}
+                        ;
+
+DesignatorClassElem ::= (DesignatorClassElem) DesignatorArrayName:D1 LBRACKET Expr:E2 RBRACKET {: RESULT=new DesignatorClassElem(D1, E2); RESULT.setLine(D1left); :} ;
+DesignatorClassName ::= (DesignatorClassName) IDENT:I1 {: RESULT=new DesignatorClassName(I1); RESULT.setLine(I1left); :};
+DesignatorClassArrayName ::= (DesignatorClassArrayName) IDENT:I1 {: RESULT=new DesignatorClassArrayName(I1); RESULT.setLine(I1left); :};
 DesignatorArrayName ::= (DesignatorArrayName) IDENT:I1 {: RESULT=new DesignatorArrayName(I1); RESULT.setLine(I1left); :};
 
 ActPars ::= (ActParsMultipleItems) Expr:E1 COMMA ActPars:A2 {: RESULT=new ActParsMultipleItems(E1, A2); RESULT.setLine(E1left); :}
@@ -401,7 +415,7 @@ Factor ::= (FactorDesignator) Designator:D1 {: RESULT=new FactorDesignator(D1); 
            |
            (FactorCreateArray) NEW Type:T1 LBRACKET Expr:E2 RBRACKET {: RESULT=new FactorCreateArray(T1, E2); RESULT.setLine(T1left); :}
            |
-           NEW Type:T1 DesignatorFuncCall:D2 {: RESULT=new FactorDerived1(T1, D2); RESULT.setLine(T1left); :}
+           (FactorCreateObject) NEW Type:T1 DesignatorFuncCall:D2 {: RESULT=new FactorCreateObject(T1, D2); RESULT.setLine(T1left); :}
            |
            (FactorExpr) LPAREN Expr:E1 RPAREN {: RESULT=new FactorExpr(E1); RESULT.setLine(E1left); :}
            ;

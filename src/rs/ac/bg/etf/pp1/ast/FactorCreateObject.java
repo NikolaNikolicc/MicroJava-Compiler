@@ -1,16 +1,16 @@
 // generated with ast extension for cup
 // version 0.8
-// 12/4/2025 14:2:9
+// 19/4/2025 17:13:34
 
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class FactorDerived1 extends Factor {
+public class FactorCreateObject extends Factor {
 
     private Type Type;
     private DesignatorFuncCall DesignatorFuncCall;
 
-    public FactorDerived1 (Type Type, DesignatorFuncCall DesignatorFuncCall) {
+    public FactorCreateObject (Type Type, DesignatorFuncCall DesignatorFuncCall) {
         this.Type=Type;
         if(Type!=null) Type.setParent(this);
         this.DesignatorFuncCall=DesignatorFuncCall;
@@ -57,7 +57,7 @@ public class FactorDerived1 extends Factor {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("FactorDerived1(\n");
+        buffer.append("FactorCreateObject(\n");
 
         if(Type!=null)
             buffer.append(Type.toString("  "+tab));
@@ -72,7 +72,7 @@ public class FactorDerived1 extends Factor {
         buffer.append("\n");
 
         buffer.append(tab);
-        buffer.append(") [FactorDerived1]");
+        buffer.append(") [FactorCreateObject]");
         return buffer.toString();
     }
 }

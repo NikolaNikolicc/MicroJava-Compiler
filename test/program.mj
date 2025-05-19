@@ -5,7 +5,7 @@ program MJProgram
 	const bool m = false;
 	const int g = 11;
 
-	class Klasa { int xx, yy[]; }
+	class Klasa { int x, y[]; }
 
 {
 	void main() int a, b[]; int x[], y; char eol; {
@@ -88,7 +88,7 @@ program MJProgram
     int f2(int x, bool b, int g) int a; {return f1(x) + a + 1;}
     int func1(bool x){return 1;}
 
-    int f3() int a, x, b[]; bool c[]; {
+    int f3() int a, x, b[]; bool c[]; Klasa k; {
 
         // f2(f2(1, false, 2), true, f2(1, false, 6)); // ok
         // f2(f2(1, false), true, f2(1, false, 6)); // error
@@ -101,6 +101,8 @@ program MJProgram
         // a = f2 map b; // error
         // a = func1 map b; // error
         // a = boolfunc map b; // error
+
+        k = new Klasa();
 
         return 1;
     }

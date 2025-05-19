@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 12/4/2025 14:2:10
+// 19/4/2025 17:13:34
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -34,6 +34,7 @@ public interface Visitor {
     public void visit(Term Term);
     public void visit(Condition Condition);
     public void visit(FormParsOptional FormParsOptional);
+    public void visit(DesignatorClassMore DesignatorClassMore);
     public void visit(ConstDeclList ConstDeclList);
     public void visit(ConstDeclListValue ConstDeclListValue);
     public void visit(DesignatorAssignWhile DesignatorAssignWhile);
@@ -74,7 +75,7 @@ public interface Visitor {
     public void visit(DesignatorFuncCallDerived2 DesignatorFuncCallDerived2);
     public void visit(DesignatorFuncCallDerived1 DesignatorFuncCallDerived1);
     public void visit(FactorExpr FactorExpr);
-    public void visit(FactorDerived1 FactorDerived1);
+    public void visit(FactorCreateObject FactorCreateObject);
     public void visit(FactorCreateArray FactorCreateArray);
     public void visit(FactorConstDeclListValue FactorConstDeclListValue);
     public void visit(FactorFuncCall FactorFuncCall);
@@ -95,8 +96,16 @@ public interface Visitor {
     public void visit(ActParsSigleItem ActParsSigleItem);
     public void visit(ActParsMultipleItems ActParsMultipleItems);
     public void visit(DesignatorArrayName DesignatorArrayName);
+    public void visit(DesignatorClassArrayName DesignatorClassArrayName);
+    public void visit(DesignatorClassName DesignatorClassName);
+    public void visit(DesignatorClassElem DesignatorClassElem);
+    public void visit(DesignatorClassMoreNotFinalElem DesignatorClassMoreNotFinalElem);
+    public void visit(DesignatorClassMoreNotFinal DesignatorClassMoreNotFinal);
+    public void visit(DesignatorClassMoreFinalElem DesignatorClassMoreFinalElem);
+    public void visit(DesignatorClassMoreFinal DesignatorClassMoreFinal);
+    public void visit(DesignatorElemPropertyAccess DesignatorElemPropertyAccess);
     public void visit(DesignatorElem DesignatorElem);
-    public void visit(DesignatorDerived1 DesignatorDerived1);
+    public void visit(DesignatorPropertyAccess DesignatorPropertyAccess);
     public void visit(DesignatorVar DesignatorVar);
     public void visit(DesignatorStatementUnaryDerived2 DesignatorStatementUnaryDerived2);
     public void visit(DesignatorStatementUnaryDerived1 DesignatorStatementUnaryDerived1);

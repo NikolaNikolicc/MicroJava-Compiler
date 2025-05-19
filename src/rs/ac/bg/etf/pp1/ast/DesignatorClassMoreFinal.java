@@ -1,18 +1,16 @@
 // generated with ast extension for cup
 // version 0.8
-// 12/4/2025 14:2:9
+// 19/4/2025 17:13:34
 
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class DesignatorDerived1 extends Designator {
+public class DesignatorClassMoreFinal extends DesignatorClassMore {
 
     private String I1;
-    private String I2;
 
-    public DesignatorDerived1 (String I1, String I2) {
+    public DesignatorClassMoreFinal (String I1) {
         this.I1=I1;
-        this.I2=I2;
     }
 
     public String getI1() {
@@ -21,14 +19,6 @@ public class DesignatorDerived1 extends Designator {
 
     public void setI1(String I1) {
         this.I1=I1;
-    }
-
-    public String getI2() {
-        return I2;
-    }
-
-    public void setI2(String I2) {
-        this.I2=I2;
     }
 
     public void accept(Visitor visitor) {
@@ -49,16 +39,13 @@ public class DesignatorDerived1 extends Designator {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("DesignatorDerived1(\n");
+        buffer.append("DesignatorClassMoreFinal(\n");
 
         buffer.append(" "+tab+I1);
         buffer.append("\n");
 
-        buffer.append(" "+tab+I2);
-        buffer.append("\n");
-
         buffer.append(tab);
-        buffer.append(") [DesignatorDerived1]");
+        buffer.append(") [DesignatorClassMoreFinal]");
         return buffer.toString();
     }
 }

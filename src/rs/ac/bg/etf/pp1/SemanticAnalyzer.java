@@ -573,6 +573,11 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     }
 
     @Override
+    public void visit(FactorCreateObject node){
+        node.struct = new Struct(Struct.Class, currTypeVar.getType().getMembersTable());
+    }
+
+    @Override
     public void visit(FactorExpr node){
         node.struct = node.getExpr().struct;
     }
@@ -798,6 +803,156 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             report_error("[DesignatorStatementFuncCallWhile] Poziv neadekvatne metode(" + node.getDesignator().obj.getName() + ")", node);
             return;
         }
+    }
+
+    // Designator class more
+    @Override
+    public void visit(DesignatorClassMoreFinal node){
+        Struct classStruct = currClass;
+        if (classStruct == Tab.noType){
+            node.obj = Tab.noObj;
+            return;
+        }
+        String field = node.getI1();
+        for (Obj member: classStruct.getMembers()){
+            if(member.getKind() == Obj.Var && member.getName().equals(field)){
+                node.obj = member;
+                currClass = null;
+                return;
+            }
+        }
+        report_error("[DesignatorClassMoreFinal] Ovo polje("+ field +") ne postoji kao polje klase", node);
+        node.obj = Tab.noObj;
+        currClass = null;
+    }
+
+    @Override
+    public void visit(DesignatorClassMoreFinalElem node){
+        Struct classStruct = currClass;
+        if (classStruct == Tab.noType){
+            node.obj = Tab.noObj;
+            return;
+        }
+        if (node.getExpr().struct.equals(Tab.intType)){
+            report_error("[DesignatorClassMoreFinalElem] Indeks niza mora biti tipa int", node);
+            node.obj = Tab.noObj;
+            return;
+        }
+        String field = node.getDesignatorClassArrayName().getI1();
+        for (Obj member: classStruct.getMembers()){
+            if(member.getType().getKind() == Struct.Array && member.getName().equals(field)){
+                node.obj = new Obj(Obj.Elem, member.getName() + "[$]", member.getType().getElemType());
+                currClass = null;
+                return;
+            }
+        }
+        report_error("[DesignatorClassMoreFinalElem] Ovo polje("+ field +") ne postoji kao polje klase", node);
+        node.obj = Tab.noObj;
+        currClass = null;
+    }
+
+    @Override
+    public void visit(DesignatorClassMoreNotFinal node){
+        Struct classStruct = node.getDesignatorClassMore().obj.getType();
+        if (classStruct == Tab.noType){
+            node.obj = Tab.noObj;
+            return;
+        }
+        String field = node.getI2();
+        for (Obj member: classStruct.getMembers()){
+            if(member.getKind() == Obj.Var && member.getName().equals(field)){
+                node.obj = member;
+                // currClass = null;
+                return;
+            }
+        }
+        report_error("[DesignatorClassMoreNotFinal] Ovo polje("+ field +") ne postoji kao polje klase", node);
+        node.obj = Tab.noObj;
+    }
+
+    @Override
+    public void visit(DesignatorClassMoreNotFinalElem node){
+        Struct classStruct = node.getDesignatorClassMore().obj.getType();
+        if (classStruct == Tab.noType){
+            node.obj = Tab.noObj;
+            return;
+        }
+        if (node.getExpr().struct.equals(Tab.intType)){
+            report_error("[DesignatorClassMoreFinalElem] Indeks niza mora biti tipa int", node);
+            node.obj = Tab.noObj;
+            return;
+        }
+        String field = node.getDesignatorClassArrayName().getI1();
+        for (Obj member: classStruct.getMembers()){
+            if(member.getType().getKind() == Struct.Array && member.getName().equals(field)){
+                node.obj = new Obj(Obj.Elem, member.getName() + "[$]", member.getType().getElemType());
+                // currClass = null;
+                return;
+            }
+        }
+        report_error("[DesignatorClassMoreNotFinalElem] Ovo polje("+ field +") ne postoji kao polje klase", node);
+        node.obj = Tab.noObj;
+    }
+
+    // Designator property access
+    @Override
+    public void visit(DesignatorPropertyAccess node){
+        node.obj = node.getDesignatorClassMore().obj;
+    }
+
+    @Override
+    public void visit(DesignatorElemPropertyAccess node){
+        node.obj = node.getDesignatorClassMore().obj;
+    }
+
+    @Override
+    public void visit(DesignatorClassElem node){
+        Obj arr = node.getDesignatorArrayName().obj;
+        if (arr == Tab.noObj){
+            node.obj = Tab.noObj;
+            currClass = Tab.noType;
+            return;
+        }
+        else if (!node.getExpr().struct.equals(Tab.intType)){
+            report_error("[DesignatorClassElem] Indeks niza mora biti int vrednost", node);
+            node.obj = Tab.noObj;
+            currClass = Tab.noType;
+            return;
+        }
+        Obj var = new Obj(Obj.Elem, arr.getName() + "[$]", arr.getType().getElemType());
+        if (var.getType().getKind() != Struct.Class){
+            report_error("[DesignatorClassElem] Tip elementa niza("+ node.getDesignatorArrayName().obj.getName() +") kojem se pristupa mora biti klasa", node);
+            node.obj = Tab.noObj;
+            currClass = Tab.noType;
+            return;
+        }
+        node.obj = var;
+        currClass = node.obj.getType();
+    }
+
+    @Override
+    public void visit(DesignatorClassName node){
+        String name = node.getI1();
+        Obj var = Tab.find(name);
+        if (var == Tab.noObj){
+            report_error("[DesignatorClassName] Pristup nedeklarisanoj promenljivoj klase: " + name, node);
+            node.obj = Tab.noObj;
+            currClass = Tab.noType;
+            return;
+        }
+        if(var.getKind() != Obj.Var || var.getType().getKind() != Struct.Class){
+            report_error("[DesignatorClassName] Pristup neadekvatnoj promenljivoj klase: " + name, node);
+            node.obj = Tab.noObj;
+            currClass = Tab.noType;
+            return;
+        }
+        node.obj = var;
+        currClass = var.getType();
+    }
+
+    @Override
+    public void visit(DesignatorClassArrayName node){
+
     }
 
     @Override

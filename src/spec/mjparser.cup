@@ -64,7 +64,7 @@ nonterminal ActPars, DesignatorFuncCall, DesignatorStatementUnary, StackInitiali
 nonterminal Program, InterfaceDeclOptionList, InterfaceDecl, VarDeclProgram, VarDeclErrorComma, VarDeclErrorSemi, DesignatorAssign, VarDeclClass, ClassDeclErrorLBrace, DesignatorAssignWhile, DesignatorStatementWhile, DoStatement ;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr, CondFact, CondTerm, Condition, StatementCondition;
-nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue, Designator, DesignatorArrayName;
+nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue, Designator, DesignatorArrayName, DesignatorClassMore, DesignatorClassArrayName, DesignatorClassName, DesignatorClassElem;
 
 precedence left ELSE;
 
@@ -303,11 +303,25 @@ DesignatorStatementUnary ::= INC
 
 Designator ::= (DesignatorVar) IDENT
                |
-               IDENT DOT IDENT
+               (DesignatorPropertyAccess) DesignatorClassName DesignatorClassMore
                |
                (DesignatorElem) DesignatorArrayName LBRACKET Expr RBRACKET
+               |
+               (DesignatorElemPropertyAccess) DesignatorClassElem DesignatorClassMore
                ;
 
+DesignatorClassMore ::= (DesignatorClassMoreFinal) DOT IDENT
+                        |
+                        (DesignatorClassMoreFinalElem) DOT DesignatorClassArrayName LBRACKET Expr RBRACKET
+                        |
+                        (DesignatorClassMoreNotFinal) DesignatorClassMore DOT IDENT
+                        |
+                        (DesignatorClassMoreNotFinalElem) DesignatorClassMore DOT DesignatorClassArrayName LBRACKET Expr RBRACKET
+                        ;
+
+DesignatorClassElem ::= (DesignatorClassElem) DesignatorArrayName LBRACKET Expr RBRACKET ;
+DesignatorClassName ::= (DesignatorClassName) IDENT;
+DesignatorClassArrayName ::= (DesignatorClassArrayName) IDENT;
 DesignatorArrayName ::= (DesignatorArrayName) IDENT;
 
 ActPars ::= (ActParsMultipleItems) Expr COMMA ActPars
@@ -355,7 +369,7 @@ Factor ::= (FactorDesignator) Designator
            |
            (FactorCreateArray) NEW Type LBRACKET Expr RBRACKET
            |
-           NEW Type DesignatorFuncCall
+           (FactorCreateObject) NEW Type DesignatorFuncCall
            |
            (FactorExpr) LPAREN Expr RPAREN
            ;

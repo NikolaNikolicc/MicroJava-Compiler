@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 19/4/2025 19:3:44
+// 20/4/2025 10:45:31
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -10,15 +10,18 @@ public class ClassYesExtendYesMethods extends ClassDecl {
     private ClassDeclName ClassDeclName;
     private Type Type;
     private VarDeclListOptional VarDeclListOptional;
+    private ClassMethodDeclListStart ClassMethodDeclListStart;
     private MethodDeclList MethodDeclList;
 
-    public ClassYesExtendYesMethods (ClassDeclName ClassDeclName, Type Type, VarDeclListOptional VarDeclListOptional, MethodDeclList MethodDeclList) {
+    public ClassYesExtendYesMethods (ClassDeclName ClassDeclName, Type Type, VarDeclListOptional VarDeclListOptional, ClassMethodDeclListStart ClassMethodDeclListStart, MethodDeclList MethodDeclList) {
         this.ClassDeclName=ClassDeclName;
         if(ClassDeclName!=null) ClassDeclName.setParent(this);
         this.Type=Type;
         if(Type!=null) Type.setParent(this);
         this.VarDeclListOptional=VarDeclListOptional;
         if(VarDeclListOptional!=null) VarDeclListOptional.setParent(this);
+        this.ClassMethodDeclListStart=ClassMethodDeclListStart;
+        if(ClassMethodDeclListStart!=null) ClassMethodDeclListStart.setParent(this);
         this.MethodDeclList=MethodDeclList;
         if(MethodDeclList!=null) MethodDeclList.setParent(this);
     }
@@ -47,6 +50,14 @@ public class ClassYesExtendYesMethods extends ClassDecl {
         this.VarDeclListOptional=VarDeclListOptional;
     }
 
+    public ClassMethodDeclListStart getClassMethodDeclListStart() {
+        return ClassMethodDeclListStart;
+    }
+
+    public void setClassMethodDeclListStart(ClassMethodDeclListStart ClassMethodDeclListStart) {
+        this.ClassMethodDeclListStart=ClassMethodDeclListStart;
+    }
+
     public MethodDeclList getMethodDeclList() {
         return MethodDeclList;
     }
@@ -63,6 +74,7 @@ public class ClassYesExtendYesMethods extends ClassDecl {
         if(ClassDeclName!=null) ClassDeclName.accept(visitor);
         if(Type!=null) Type.accept(visitor);
         if(VarDeclListOptional!=null) VarDeclListOptional.accept(visitor);
+        if(ClassMethodDeclListStart!=null) ClassMethodDeclListStart.accept(visitor);
         if(MethodDeclList!=null) MethodDeclList.accept(visitor);
     }
 
@@ -71,6 +83,7 @@ public class ClassYesExtendYesMethods extends ClassDecl {
         if(ClassDeclName!=null) ClassDeclName.traverseTopDown(visitor);
         if(Type!=null) Type.traverseTopDown(visitor);
         if(VarDeclListOptional!=null) VarDeclListOptional.traverseTopDown(visitor);
+        if(ClassMethodDeclListStart!=null) ClassMethodDeclListStart.traverseTopDown(visitor);
         if(MethodDeclList!=null) MethodDeclList.traverseTopDown(visitor);
     }
 
@@ -78,6 +91,7 @@ public class ClassYesExtendYesMethods extends ClassDecl {
         if(ClassDeclName!=null) ClassDeclName.traverseBottomUp(visitor);
         if(Type!=null) Type.traverseBottomUp(visitor);
         if(VarDeclListOptional!=null) VarDeclListOptional.traverseBottomUp(visitor);
+        if(ClassMethodDeclListStart!=null) ClassMethodDeclListStart.traverseBottomUp(visitor);
         if(MethodDeclList!=null) MethodDeclList.traverseBottomUp(visitor);
         accept(visitor);
     }
@@ -101,6 +115,12 @@ public class ClassYesExtendYesMethods extends ClassDecl {
 
         if(VarDeclListOptional!=null)
             buffer.append(VarDeclListOptional.toString("  "+tab));
+        else
+            buffer.append(tab+"  null");
+        buffer.append("\n");
+
+        if(ClassMethodDeclListStart!=null)
+            buffer.append(ClassMethodDeclListStart.toString("  "+tab));
         else
             buffer.append(tab+"  null");
         buffer.append("\n");

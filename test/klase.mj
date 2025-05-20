@@ -1,5 +1,13 @@
 program Test
-class c1 { int x[]; int y;}
+class c1 { int x[]; int y;{
+		int m1() int h;{
+			h = 4;
+			return h;
+		}
+		int m2(){
+		    return y;
+		}
+}}
 class c2 { c1 obj[];}
 class c3 { c2 obj[];}
 {

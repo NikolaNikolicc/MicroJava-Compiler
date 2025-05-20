@@ -5,20 +5,27 @@
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class BoolConst extends ConstDeclListValue {
+public class ClassMethodDeclListStart implements SyntaxNode {
 
-    private Integer B1;
-
-    public BoolConst (Integer B1) {
-        this.B1=B1;
+    private SyntaxNode parent;
+    private int line;
+    public ClassMethodDeclListStart () {
     }
 
-    public Integer getB1() {
-        return B1;
+    public SyntaxNode getParent() {
+        return parent;
     }
 
-    public void setB1(Integer B1) {
-        this.B1=B1;
+    public void setParent(SyntaxNode parent) {
+        this.parent=parent;
+    }
+
+    public int getLine() {
+        return line;
+    }
+
+    public void setLine(int line) {
+        this.line=line;
     }
 
     public void accept(Visitor visitor) {
@@ -39,13 +46,10 @@ public class BoolConst extends ConstDeclListValue {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("BoolConst(\n");
-
-        buffer.append(" "+tab+B1);
-        buffer.append("\n");
+        buffer.append("ClassMethodDeclListStart(\n");
 
         buffer.append(tab);
-        buffer.append(") [BoolConst]");
+        buffer.append(") [ClassMethodDeclListStart]");
         return buffer.toString();
     }
 }

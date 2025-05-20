@@ -13,6 +13,7 @@ import java.util.Stack;
 public class SemanticAnalyzer extends VisitorAdaptor{
 
     public boolean errorDetected = false;
+    private boolean classMethodDecl = false;
     private Obj currTypeVar = null;
     private Obj currTypeMeth = null;
     private Obj currMeth = null;
@@ -107,6 +108,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         Tab.chainLocalSymbols(currClass);
         Tab.closeScope();
         currClass = null;
+        classMethodDecl = false;
     }
 
     private void formParsSetLevelAndFpPos(Obj node){
@@ -276,8 +278,11 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         Obj varNode;
-        if (currClass == null){
+        if (currClass == null || classMethodDecl){
             varNode = Tab.insert(Obj.Var, node.getI1(), currTypeVar.getType());
+            if(classMethodDecl){
+                varNode.setLevel(3);
+            }
         } else {
             varNode = Tab.insert(Obj.Fld, node.getI1(), currTypeVar.getType());
             varNode.setLevel(2);
@@ -538,7 +543,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             node.obj = Tab.noObj;
             return;
         }
-        else if (var.getKind() != Obj.Var && var.getKind() != Obj.Con && var.getKind() != Obj.Meth){
+        else if (var.getKind() != Obj.Fld && var.getKind() != Obj.Var && var.getKind() != Obj.Con && var.getKind() != Obj.Meth){
             report_error("[DesignatorVar] Neadekvatna vrsta promenljive " + node.getI1(), node);
             node.obj = Tab.noObj;
             return;
@@ -628,6 +633,15 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         currClass = new Struct(Struct.Class);
         Obj classObj = Tab.insert(Obj.Type, node.getI1(), currClass);
         Tab.openScope();
+    }
+
+    /*
+    this node is used to set currClass to zero, because in method decl inside class we want
+    to set variables kind to Obj.Var, not Obj.Fld (see DesignatorVar visitor)
+    * */
+    @Override
+    public void visit(ClassMethodDeclListStart node){
+        classMethodDecl = true;
     }
 
     // Statement

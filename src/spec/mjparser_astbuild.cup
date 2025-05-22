@@ -59,7 +59,6 @@ terminal Integer NUMBER, BOOL ;
 terminal String IDENT ;
 terminal Character CHAR ;
 
-nonterminal Type Type;
 nonterminal MethodSignatureEndFormPars MethodSignatureEndFormPars;
 nonterminal MethodSignatureStartFormPars MethodSignatureStartFormPars;
 nonterminal MethodName MethodName;
@@ -110,7 +109,7 @@ nonterminal DesignatorAssignWhile DesignatorAssignWhile;
 nonterminal DesignatorStatementWhile DesignatorStatementWhile;
 nonterminal DoStatement DoStatement ;
 
-nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr, CondFact, CondTerm, Condition, StatementCondition;
+nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr, CondFact, CondTerm, Condition, StatementCondition, Type;
 nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue, Designator, DesignatorArrayName, DesignatorClassMore, DesignatorClassArrayName, DesignatorClassName, DesignatorClassElem;
 
 precedence left ELSE;

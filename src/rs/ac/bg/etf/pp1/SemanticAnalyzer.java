@@ -208,13 +208,16 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         if(typeNode == Tab.noObj){
             report_error("[TypeIdent] Nije pronadjen tip " + node.getI1() + " u tabeli simbola! ", null);
             currTypeVar = null;
+            node.struct = Tab.noType;
             return;
         }
         if(Obj.Type != typeNode.getKind()){
             report_error("[TypeIdent] Ime " + node.getI1() + " ne predstavlja tip!", node);
             currTypeVar = null;
+            node.struct = Tab.noType;
             return;
         }
+        node.struct = typeNode.getType();
         currTypeVar = typeNode;
     }
 
@@ -578,6 +581,14 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(FactorCreateObject node){
+        if (node.getType().struct == Tab.noType){
+            return;
+        }
+        if(node.getType().struct.getKind() != Struct.Class){
+            report_error("[FactorCreateObject] Neterminal Type mora da oznacava klasu (korisnicki definisan tip)", node);
+            node.struct = Tab.noType;
+            return;
+        }
         node.struct = new Struct(Struct.Class, currTypeVar.getType().getMembersTable());
     }
 

@@ -80,5 +80,7 @@ class c3 { c2 obj[];}
 		o1.m3(false); // ok
 		// o1.m3(1); // error
 		// o1.m2(o2); // error
+
+		// o1 = new int(); // error
 	}
 }

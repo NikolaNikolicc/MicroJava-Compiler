@@ -121,7 +121,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     private List<Struct> getFormalParameters(Obj funcNode, SyntaxNode node){
         List<Struct> fpList = new ArrayList<>();
         for (Obj localSym: funcNode.getLocalSymbols()){
-            if (localSym.getKind() == Obj.Var && localSym.getFpPos() == 1 && localSym.getLevel() == 1){
+            if (localSym.getKind() == Obj.Var && localSym.getFpPos() == 1 && localSym.getLevel() >= 1){
                 fpList.add(localSym.getType());
             }
         }
@@ -830,7 +830,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         for (Obj member: classStruct.getMembers()){
             // logSymbol("pristup polju: ", member, node);
             // report_info("pristup polju:" + member.getName(), node);
-            if((member.getKind() == Obj.Fld || member.getType().getKind() == Struct.Array) && member.getName().equals(field)){
+            if((member.getKind() == Obj.Meth || member.getKind() == Obj.Fld || member.getType().getKind() == Struct.Array) && member.getName().equals(field)){
                 node.obj = member;
                 currClass = null;
                 return;
@@ -875,7 +875,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         }
         String field = node.getI2();
         for (Obj member: classStruct.getMembers()){
-            if((member.getKind() == Obj.Fld || member.getType().getKind() == Struct.Array) && member.getName().equals(field)){
+            if((member.getKind() == Obj.Meth || member.getKind() == Obj.Fld || member.getType().getKind() == Struct.Array) && member.getName().equals(field)){
                 node.obj = member;
                 // currClass = null;
                 return;

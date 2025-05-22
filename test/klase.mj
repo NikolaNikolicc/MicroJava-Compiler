@@ -7,6 +7,10 @@ class c1 { int x[]; int y;{
 		int m2(){
 		    return y;
 		}
+
+		bool m3(bool a){
+		    return a;
+		}
 }}
 class c2 { c1 obj[];}
 class c3 { c2 obj[];}
@@ -71,5 +75,10 @@ class c3 { c2 obj[];}
 		o3arr[0].obj[0].obj[0].x[0]++;
 		print(o3arr[0].obj[0].obj[0].x[0]);
 		print(eol);
+
+		o1.m2(); // ok
+		o1.m3(false); // ok
+		// o1.m3(1); // error
+		// o1.m2(o2); // error
 	}
 }

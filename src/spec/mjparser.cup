@@ -62,6 +62,7 @@ terminal Character CHAR ;
 nonterminal MethodSignatureEndFormPars, MethodSignatureStartFormPars, MethodName, ConstDeclAssign, Setop, Mulop, Addop, Relop, Assignop, Label, ProgramDeclList, ProgramDeclElem, ConstDecl, ConstDeclList, VarDecl, VarDeclFinal, VarDeclOptionalList, ClassDecl, VarDeclListOptional, MethodSignature, TypeChoice, FormParsOptional, FormPars, MethodDecl, VarDeclList, MethodDeclList, MathodDecl, StatementList, Statement, DesignatorStatement;
 nonterminal ActPars, DesignatorFuncCall, DesignatorStatementUnary, StackInitialize, MapDesignator, ClassDeclName, ClassMethodDeclListStart;
 nonterminal Program, InterfaceDeclOptionList, InterfaceDecl, VarDeclProgram, VarDeclErrorComma, VarDeclErrorSemi, DesignatorAssign, VarDeclClass, ClassDeclErrorLBrace, DesignatorAssignWhile, DesignatorStatementWhile, DoStatement ;
+nonterminal ExtendsClass, CopyParentMethods;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr, CondFact, CondTerm, Condition, StatementCondition, Type;
 nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue, Designator, DesignatorArrayName, DesignatorClassMore, DesignatorClassArrayName, DesignatorClassName, DesignatorClassElem;
@@ -142,22 +143,26 @@ InterfaceDeclOptionList ::= InterfaceDeclOptionList MethodDecl
 
 ClassDecl ::= (ClassNoExtend) CLASS ClassDeclName LBRACE VarDeclListOptional RBRACE
               |
-              (ClassYesExtend) CLASS ClassDeclName EXTENDS Type LBRACE VarDeclListOptional RBRACE
+              (ClassYesExtend) CLASS ClassDeclName ExtendsClass LBRACE VarDeclListOptional RBRACE CopyParentMethods
               |
               CLASS ClassDeclName EXTENDS ClassDeclErrorLBrace VarDeclListOptional RBRACE /* error */
               |
               (ClassNoExtendYesMethods) CLASS ClassDeclName LBRACE VarDeclListOptional LBRACE ClassMethodDeclListStart MethodDeclList RBRACE RBRACE
               |
-              (ClassYesExtendYesMethods) CLASS ClassDeclName EXTENDS Type LBRACE VarDeclListOptional LBRACE ClassMethodDeclListStart MethodDeclList RBRACE RBRACE
+              (ClassYesExtendYesMethods) CLASS ClassDeclName ExtendsClass LBRACE VarDeclListOptional CopyParentMethods LBRACE ClassMethodDeclListStart MethodDeclList RBRACE RBRACE
               |
               CLASS ClassDeclName EXTENDS ClassDeclErrorLBrace VarDeclListOptional LBRACE ClassMethodDeclListStart MethodDeclList RBRACE RBRACE /* error */
               |
               CLASS ClassDeclName LBRACE VarDeclListOptional ClassDeclErrorLBrace ClassMethodDeclListStart MethodDeclList RBRACE RBRACE /* error */
               |
-              CLASS ClassDeclName EXTENDS Type LBRACE VarDeclListOptional ClassDeclErrorLBrace ClassMethodDeclListStart MethodDeclList RBRACE RBRACE /* error */
+              CLASS ClassDeclName ExtendsClass LBRACE VarDeclListOptional ClassDeclErrorLBrace CopyParentMethods ClassMethodDeclListStart MethodDeclList RBRACE RBRACE /* error */
               |
               CLASS ClassDeclName EXTENDS ClassDeclErrorLBrace VarDeclListOptional ClassDeclErrorLBrace ClassMethodDeclListStart MethodDeclList RBRACE RBRACE /* error */
               ;
+
+CopyParentMethods ::= (CopyParentMethods) /* epsilon */ ;
+
+ExtendsClass ::= (ExtendsClass) EXTENDS Type ;
 
 ClassMethodDeclListStart ::= (ClassMethodDeclListStart) /* epsilon */ ;
 

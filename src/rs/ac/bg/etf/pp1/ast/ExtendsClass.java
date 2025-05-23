@@ -5,16 +5,15 @@
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class FactorCreateObject extends Factor {
+public class ExtendsClass implements SyntaxNode {
 
+    private SyntaxNode parent;
+    private int line;
     private Type Type;
-    private DesignatorFuncCall DesignatorFuncCall;
 
-    public FactorCreateObject (Type Type, DesignatorFuncCall DesignatorFuncCall) {
+    public ExtendsClass (Type Type) {
         this.Type=Type;
         if(Type!=null) Type.setParent(this);
-        this.DesignatorFuncCall=DesignatorFuncCall;
-        if(DesignatorFuncCall!=null) DesignatorFuncCall.setParent(this);
     }
 
     public Type getType() {
@@ -25,12 +24,20 @@ public class FactorCreateObject extends Factor {
         this.Type=Type;
     }
 
-    public DesignatorFuncCall getDesignatorFuncCall() {
-        return DesignatorFuncCall;
+    public SyntaxNode getParent() {
+        return parent;
     }
 
-    public void setDesignatorFuncCall(DesignatorFuncCall DesignatorFuncCall) {
-        this.DesignatorFuncCall=DesignatorFuncCall;
+    public void setParent(SyntaxNode parent) {
+        this.parent=parent;
+    }
+
+    public int getLine() {
+        return line;
+    }
+
+    public void setLine(int line) {
+        this.line=line;
     }
 
     public void accept(Visitor visitor) {
@@ -39,25 +46,22 @@ public class FactorCreateObject extends Factor {
 
     public void childrenAccept(Visitor visitor) {
         if(Type!=null) Type.accept(visitor);
-        if(DesignatorFuncCall!=null) DesignatorFuncCall.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
         if(Type!=null) Type.traverseTopDown(visitor);
-        if(DesignatorFuncCall!=null) DesignatorFuncCall.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
         if(Type!=null) Type.traverseBottomUp(visitor);
-        if(DesignatorFuncCall!=null) DesignatorFuncCall.traverseBottomUp(visitor);
         accept(visitor);
     }
 
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("FactorCreateObject(\n");
+        buffer.append("ExtendsClass(\n");
 
         if(Type!=null)
             buffer.append(Type.toString("  "+tab));
@@ -65,14 +69,8 @@ public class FactorCreateObject extends Factor {
             buffer.append(tab+"  null");
         buffer.append("\n");
 
-        if(DesignatorFuncCall!=null)
-            buffer.append(DesignatorFuncCall.toString("  "+tab));
-        else
-            buffer.append(tab+"  null");
-        buffer.append("\n");
-
         buffer.append(tab);
-        buffer.append(") [FactorCreateObject]");
+        buffer.append(") [ExtendsClass]");
         return buffer.toString();
     }
 }

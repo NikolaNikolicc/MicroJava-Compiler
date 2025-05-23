@@ -5,9 +5,27 @@
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class VarDeclListDerived2 extends VarDeclList {
+public class CopyParentMethods implements SyntaxNode {
 
-    public VarDeclListDerived2 () {
+    private SyntaxNode parent;
+    private int line;
+    public CopyParentMethods () {
+    }
+
+    public SyntaxNode getParent() {
+        return parent;
+    }
+
+    public void setParent(SyntaxNode parent) {
+        this.parent=parent;
+    }
+
+    public int getLine() {
+        return line;
+    }
+
+    public void setLine(int line) {
+        this.line=line;
     }
 
     public void accept(Visitor visitor) {
@@ -28,10 +46,10 @@ public class VarDeclListDerived2 extends VarDeclList {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("VarDeclListDerived2(\n");
+        buffer.append("CopyParentMethods(\n");
 
         buffer.append(tab);
-        buffer.append(") [VarDeclListDerived2]");
+        buffer.append(") [CopyParentMethods]");
         return buffer.toString();
     }
 }

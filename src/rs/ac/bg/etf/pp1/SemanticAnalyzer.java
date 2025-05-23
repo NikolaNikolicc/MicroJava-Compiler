@@ -7,6 +7,7 @@ import rs.etf.pp1.symboltable.*;
 import rs.etf.pp1.symboltable.concepts.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Stack;
 
@@ -18,6 +19,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     private Obj currTypeMeth = null;
     private Obj currMeth = null;
     private Struct currClass = null;
+    private Struct parentClass = Tab.noType;
 
     private boolean returnNode = false;
 
@@ -37,6 +39,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     private static final String[] structKindNames = { "None", "Int", "Char", "Array", "Class", "Bool" };
 
     private Stack<Struct> fpStack = new Stack<>();
+    private Collection<String> scopeNodes = new ArrayList<>();
 
     Logger log = Logger.getLogger(getClass());
 
@@ -83,13 +86,14 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     @Override
     public void visit(ProgName node){
         node.obj = Tab.insert(Obj.Prog, node.getProgName(), Tab.noType);
+        node.obj.setFpPos(0);
         Tab.openScope();
     }
 
     // helpers
     private boolean checkIsObjNodeDeclared(String name){
         Obj node = Tab.currentScope().findSymbol(name);
-        return node != null;
+        return node != null && node.getFpPos() == 0;
 //        Obj node;
 //        if(currMeth != null){
 //            node = Tab.currentScope().findSymbol(name);
@@ -109,6 +113,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         Tab.closeScope();
         currClass = null;
         classMethodDecl = false;
+        parentClass = Tab.noType;
+        scopeNodes.clear();
     }
 
     private void formParsSetLevelAndFpPos(Obj node){
@@ -271,12 +277,13 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         Obj constNode = Tab.insert(Obj.Con, node.getI1(), currTypeVar.getType());
+        constNode.setFpPos(0);
         constNode.setAdr(constObj.getAdr());
     }
 
     @Override
     public void visit(VarDeclFinalVar node){
-        if(checkIsObjNodeDeclared(node.getI1())){
+        if(checkIsObjNodeDeclared(node.getI1()) || scopeNodes.contains(node.getI1())){
             report_error("[VarDeclFinalVar] Vec je deklarisana promenljiva sa imenom: " + node.getI1(), node);
             return;
         }
@@ -284,12 +291,13 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         if (currClass == null || classMethodDecl){
             varNode = Tab.insert(Obj.Var, node.getI1(), currTypeVar.getType());
             if(classMethodDecl){
-                varNode.setLevel(3);
+                varNode.setLevel(2);
             }
         } else {
             varNode = Tab.insert(Obj.Fld, node.getI1(), currTypeVar.getType());
-            varNode.setLevel(2);
+            varNode.setLevel(1);
         }
+        scopeNodes.add(node.getI1());
         formParsSetLevelAndFpPos(varNode);
     }
 
@@ -306,7 +314,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             varNode = Tab.insert(Obj.Var, node.getI1(), array);
         } else {
             varNode = Tab.insert(Obj.Fld, node.getI1(), array);
-            varNode.setLevel(2);
+            varNode.setLevel(1);
         }
         formParsSetLevelAndFpPos(varNode);
     }
@@ -314,12 +322,19 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     private void createMethodObjNode(String name){
         currMeth = Tab.insert(Obj.Meth, name, (currTypeMeth == null)? Tab.noType : currTypeMeth.getType());
         currMeth.setLevel(0);
+        currMeth.setFpPos(0);
         Tab.openScope();
     }
 
     @Override
     public void visit(RegularMethod node){
         createMethodObjNode(node.getI1());
+        if (currClass != null && currClass != Tab.noType){
+            report_info("ovde treba dodati this za metod: " + node.getI1(), node);
+            Obj n = Tab.insert(Obj.Var, "this", currClass);
+            n.setLevel(2);
+            n.setFpPos(0);
+        }
     }
 
     @Override
@@ -643,8 +658,48 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         }
         currClass = new Struct(Struct.Class);
         Obj classObj = Tab.insert(Obj.Type, node.getI1(), currClass);
+        classObj.setFpPos(0);
         Tab.openScope();
     }
+
+    @Override
+    public void visit(CopyParentMethods node){
+        // we need this guard in case we have bas Type
+        if(parentClass == Tab.noType){
+            return;
+        }
+        for (Obj member: parentClass.getMembers()){
+            if(member.getKind() == Obj.Meth){
+                Obj n = Tab.insert(Obj.Meth, member.getName(), member.getType());
+                n.setFpPos(2);
+            }
+        }
+    }
+
+    @Override
+    public void visit(ExtendsClass node){
+        if (node.getType().struct.getKind() != Struct.Class){
+            report_error("[ExtendsClass] Neterminal Type mora da oznacava klasu (korisnicki definisan tip)", node);
+            parentClass = Tab.noType;
+            return;
+        }
+
+        currClass.setElementType(node.getType().struct);
+        currClass.addImplementedInterface(node.getType().struct);
+
+        parentClass = node.getType().struct;
+        for (Obj member: parentClass.getMembers()){
+            if(member.getKind() == Obj.Fld){
+                // insert only parent class fields
+                Obj n = Tab.insert(Obj.Fld, member.getName(), member.getType());
+                // we are setting fpPos so we know that is inherited name and we can "override" it in our children class
+                // but in case we declared that variable in children class twice (fppos != 2) we throw error
+                n.setFpPos(2);
+            }
+        }
+
+    }
+
 
     /*
     this node is used to set currClass to zero, because in method decl inside class we want

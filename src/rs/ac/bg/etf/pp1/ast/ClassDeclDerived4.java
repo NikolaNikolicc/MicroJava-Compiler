@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 22/4/2025 21:24:29
+// 23/4/2025 11:45:36
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -8,21 +8,24 @@ package rs.ac.bg.etf.pp1.ast;
 public class ClassDeclDerived4 extends ClassDecl {
 
     private ClassDeclName ClassDeclName;
-    private Type Type;
+    private ExtendsClass ExtendsClass;
     private VarDeclListOptional VarDeclListOptional;
     private ClassDeclErrorLBrace ClassDeclErrorLBrace;
+    private CopyParentMethods CopyParentMethods;
     private ClassMethodDeclListStart ClassMethodDeclListStart;
     private MethodDeclList MethodDeclList;
 
-    public ClassDeclDerived4 (ClassDeclName ClassDeclName, Type Type, VarDeclListOptional VarDeclListOptional, ClassDeclErrorLBrace ClassDeclErrorLBrace, ClassMethodDeclListStart ClassMethodDeclListStart, MethodDeclList MethodDeclList) {
+    public ClassDeclDerived4 (ClassDeclName ClassDeclName, ExtendsClass ExtendsClass, VarDeclListOptional VarDeclListOptional, ClassDeclErrorLBrace ClassDeclErrorLBrace, CopyParentMethods CopyParentMethods, ClassMethodDeclListStart ClassMethodDeclListStart, MethodDeclList MethodDeclList) {
         this.ClassDeclName=ClassDeclName;
         if(ClassDeclName!=null) ClassDeclName.setParent(this);
-        this.Type=Type;
-        if(Type!=null) Type.setParent(this);
+        this.ExtendsClass=ExtendsClass;
+        if(ExtendsClass!=null) ExtendsClass.setParent(this);
         this.VarDeclListOptional=VarDeclListOptional;
         if(VarDeclListOptional!=null) VarDeclListOptional.setParent(this);
         this.ClassDeclErrorLBrace=ClassDeclErrorLBrace;
         if(ClassDeclErrorLBrace!=null) ClassDeclErrorLBrace.setParent(this);
+        this.CopyParentMethods=CopyParentMethods;
+        if(CopyParentMethods!=null) CopyParentMethods.setParent(this);
         this.ClassMethodDeclListStart=ClassMethodDeclListStart;
         if(ClassMethodDeclListStart!=null) ClassMethodDeclListStart.setParent(this);
         this.MethodDeclList=MethodDeclList;
@@ -37,12 +40,12 @@ public class ClassDeclDerived4 extends ClassDecl {
         this.ClassDeclName=ClassDeclName;
     }
 
-    public Type getType() {
-        return Type;
+    public ExtendsClass getExtendsClass() {
+        return ExtendsClass;
     }
 
-    public void setType(Type Type) {
-        this.Type=Type;
+    public void setExtendsClass(ExtendsClass ExtendsClass) {
+        this.ExtendsClass=ExtendsClass;
     }
 
     public VarDeclListOptional getVarDeclListOptional() {
@@ -59,6 +62,14 @@ public class ClassDeclDerived4 extends ClassDecl {
 
     public void setClassDeclErrorLBrace(ClassDeclErrorLBrace ClassDeclErrorLBrace) {
         this.ClassDeclErrorLBrace=ClassDeclErrorLBrace;
+    }
+
+    public CopyParentMethods getCopyParentMethods() {
+        return CopyParentMethods;
+    }
+
+    public void setCopyParentMethods(CopyParentMethods CopyParentMethods) {
+        this.CopyParentMethods=CopyParentMethods;
     }
 
     public ClassMethodDeclListStart getClassMethodDeclListStart() {
@@ -83,9 +94,10 @@ public class ClassDeclDerived4 extends ClassDecl {
 
     public void childrenAccept(Visitor visitor) {
         if(ClassDeclName!=null) ClassDeclName.accept(visitor);
-        if(Type!=null) Type.accept(visitor);
+        if(ExtendsClass!=null) ExtendsClass.accept(visitor);
         if(VarDeclListOptional!=null) VarDeclListOptional.accept(visitor);
         if(ClassDeclErrorLBrace!=null) ClassDeclErrorLBrace.accept(visitor);
+        if(CopyParentMethods!=null) CopyParentMethods.accept(visitor);
         if(ClassMethodDeclListStart!=null) ClassMethodDeclListStart.accept(visitor);
         if(MethodDeclList!=null) MethodDeclList.accept(visitor);
     }
@@ -93,18 +105,20 @@ public class ClassDeclDerived4 extends ClassDecl {
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
         if(ClassDeclName!=null) ClassDeclName.traverseTopDown(visitor);
-        if(Type!=null) Type.traverseTopDown(visitor);
+        if(ExtendsClass!=null) ExtendsClass.traverseTopDown(visitor);
         if(VarDeclListOptional!=null) VarDeclListOptional.traverseTopDown(visitor);
         if(ClassDeclErrorLBrace!=null) ClassDeclErrorLBrace.traverseTopDown(visitor);
+        if(CopyParentMethods!=null) CopyParentMethods.traverseTopDown(visitor);
         if(ClassMethodDeclListStart!=null) ClassMethodDeclListStart.traverseTopDown(visitor);
         if(MethodDeclList!=null) MethodDeclList.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
         if(ClassDeclName!=null) ClassDeclName.traverseBottomUp(visitor);
-        if(Type!=null) Type.traverseBottomUp(visitor);
+        if(ExtendsClass!=null) ExtendsClass.traverseBottomUp(visitor);
         if(VarDeclListOptional!=null) VarDeclListOptional.traverseBottomUp(visitor);
         if(ClassDeclErrorLBrace!=null) ClassDeclErrorLBrace.traverseBottomUp(visitor);
+        if(CopyParentMethods!=null) CopyParentMethods.traverseBottomUp(visitor);
         if(ClassMethodDeclListStart!=null) ClassMethodDeclListStart.traverseBottomUp(visitor);
         if(MethodDeclList!=null) MethodDeclList.traverseBottomUp(visitor);
         accept(visitor);
@@ -121,8 +135,8 @@ public class ClassDeclDerived4 extends ClassDecl {
             buffer.append(tab+"  null");
         buffer.append("\n");
 
-        if(Type!=null)
-            buffer.append(Type.toString("  "+tab));
+        if(ExtendsClass!=null)
+            buffer.append(ExtendsClass.toString("  "+tab));
         else
             buffer.append(tab+"  null");
         buffer.append("\n");
@@ -135,6 +149,12 @@ public class ClassDeclDerived4 extends ClassDecl {
 
         if(ClassDeclErrorLBrace!=null)
             buffer.append(ClassDeclErrorLBrace.toString("  "+tab));
+        else
+            buffer.append(tab+"  null");
+        buffer.append("\n");
+
+        if(CopyParentMethods!=null)
+            buffer.append(CopyParentMethods.toString("  "+tab));
         else
             buffer.append(tab+"  null");
         buffer.append("\n");

@@ -62,7 +62,7 @@ terminal Character CHAR ;
 nonterminal MethodSignatureEndFormPars, MethodSignatureStartFormPars, MethodName, ConstDeclAssign, Setop, Mulop, Addop, Relop, Assignop, Label, ProgramDeclList, ProgramDeclElem, ConstDecl, ConstDeclList, VarDecl, VarDeclFinal, VarDeclOptionalList, ClassDecl, VarDeclListOptional, MethodSignature, TypeChoice, FormParsOptional, FormPars, MethodDecl, VarDeclList, MethodDeclList, MathodDecl, StatementList, Statement, DesignatorStatement;
 nonterminal ActPars, DesignatorFuncCall, DesignatorStatementUnary, StackInitialize, MapDesignator, ClassDeclName, ClassMethodDeclListStart;
 nonterminal Program, InterfaceDeclOptionList, InterfaceDecl, VarDeclProgram, VarDeclErrorComma, VarDeclErrorSemi, DesignatorAssign, VarDeclClass, ClassDeclErrorLBrace, DesignatorAssignWhile, DesignatorStatementWhile, DoStatement ;
-nonterminal ExtendsClass, CopyParentMethods;
+nonterminal ExtendsClass, CopyParentMethods, CloseMethodScope, InterfaceDeclName;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr, CondFact, CondTerm, Condition, StatementCondition, Type;
 nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue, Designator, DesignatorArrayName, DesignatorClassMore, DesignatorClassArrayName, DesignatorClassName, DesignatorClassElem;
@@ -131,15 +131,19 @@ VarDeclOptionalList ::= VarDeclOptionalList COMMA VarDeclFinal
                         /* epsilon */
                         ;
 
-InterfaceDecl ::= INTERFACE IDENT LBRACE InterfaceDeclOptionList RBRACE
+InterfaceDecl ::= (InterfaceDecl) INTERFACE InterfaceDeclName LBRACE InterfaceDeclOptionList RBRACE
                   ;
+
+InterfaceDeclName ::= (InterfaceDeclName) IDENT ;
 
 InterfaceDeclOptionList ::= InterfaceDeclOptionList MethodDecl
                             |
-                            InterfaceDeclOptionList MethodSignature SEMI
+                            InterfaceDeclOptionList MethodSignature CloseMethodScope SEMI
                             |
                             /* epsilon */
                             ;
+
+CloseMethodScope ::= (CloseMethodScope) /* epsilon */ ;
 
 ClassDecl ::= (ClassNoExtend) CLASS ClassDeclName LBRACE VarDeclListOptional RBRACE
               |

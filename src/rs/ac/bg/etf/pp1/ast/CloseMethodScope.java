@@ -5,11 +5,11 @@
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class ClassMethodDeclListStart implements SyntaxNode {
+public class CloseMethodScope implements SyntaxNode {
 
     private SyntaxNode parent;
     private int line;
-    public ClassMethodDeclListStart () {
+    public CloseMethodScope () {
     }
 
     public SyntaxNode getParent() {
@@ -46,10 +46,10 @@ public class ClassMethodDeclListStart implements SyntaxNode {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("ClassMethodDeclListStart(\n");
+        buffer.append("CloseMethodScope(\n");
 
         buffer.append(tab);
-        buffer.append(") [ClassMethodDeclListStart]");
+        buffer.append(") [CloseMethodScope]");
         return buffer.toString();
     }
 }

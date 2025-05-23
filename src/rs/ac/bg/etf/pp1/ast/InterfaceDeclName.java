@@ -5,11 +5,22 @@
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class ClassMethodDeclListStart implements SyntaxNode {
+public class InterfaceDeclName implements SyntaxNode {
 
     private SyntaxNode parent;
     private int line;
-    public ClassMethodDeclListStart () {
+    private String I1;
+
+    public InterfaceDeclName (String I1) {
+        this.I1=I1;
+    }
+
+    public String getI1() {
+        return I1;
+    }
+
+    public void setI1(String I1) {
+        this.I1=I1;
     }
 
     public SyntaxNode getParent() {
@@ -46,10 +57,13 @@ public class ClassMethodDeclListStart implements SyntaxNode {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("ClassMethodDeclListStart(\n");
+        buffer.append("InterfaceDeclName(\n");
+
+        buffer.append(" "+tab+I1);
+        buffer.append("\n");
 
         buffer.append(tab);
-        buffer.append(") [ClassMethodDeclListStart]");
+        buffer.append(") [InterfaceDeclName]");
         return buffer.toString();
     }
 }

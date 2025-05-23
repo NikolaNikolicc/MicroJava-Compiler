@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 23/4/2025 11:45:36
+// 23/4/2025 18:54:6
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -12,7 +12,6 @@ public interface Visitor {
     public void visit(ClassDeclErrorLBrace ClassDeclErrorLBrace);
     public void visit(Mulop Mulop);
     public void visit(VarDeclOptionalList VarDeclOptionalList);
-    public void visit(InterfaceDecl InterfaceDecl);
     public void visit(Relop Relop);
     public void visit(Assignop Assignop);
     public void visit(ProgramDeclList ProgramDeclList);
@@ -177,10 +176,12 @@ public interface Visitor {
     public void visit(ClassDeclDerived1 ClassDeclDerived1);
     public void visit(ClassYesExtend ClassYesExtend);
     public void visit(ClassNoExtend ClassNoExtend);
+    public void visit(CloseMethodScope CloseMethodScope);
     public void visit(InterfaceDeclOptionListDerived3 InterfaceDeclOptionListDerived3);
     public void visit(InterfaceDeclOptionListDerived2 InterfaceDeclOptionListDerived2);
     public void visit(InterfaceDeclOptionListDerived1 InterfaceDeclOptionListDerived1);
-    public void visit(InterfaceDeclDerived1 InterfaceDeclDerived1);
+    public void visit(InterfaceDeclName InterfaceDeclName);
+    public void visit(InterfaceDecl InterfaceDecl);
     public void visit(VarDeclOptionalListDerived2 VarDeclOptionalListDerived2);
     public void visit(VarDeclOptionalListDerived1 VarDeclOptionalListDerived1);
     public void visit(VarDeclFinalVar VarDeclFinalVar);

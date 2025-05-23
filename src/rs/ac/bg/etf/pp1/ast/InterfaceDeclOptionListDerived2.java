@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 23/4/2025 11:45:36
+// 23/4/2025 18:54:6
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -9,12 +9,15 @@ public class InterfaceDeclOptionListDerived2 extends InterfaceDeclOptionList {
 
     private InterfaceDeclOptionList InterfaceDeclOptionList;
     private MethodSignature MethodSignature;
+    private CloseMethodScope CloseMethodScope;
 
-    public InterfaceDeclOptionListDerived2 (InterfaceDeclOptionList InterfaceDeclOptionList, MethodSignature MethodSignature) {
+    public InterfaceDeclOptionListDerived2 (InterfaceDeclOptionList InterfaceDeclOptionList, MethodSignature MethodSignature, CloseMethodScope CloseMethodScope) {
         this.InterfaceDeclOptionList=InterfaceDeclOptionList;
         if(InterfaceDeclOptionList!=null) InterfaceDeclOptionList.setParent(this);
         this.MethodSignature=MethodSignature;
         if(MethodSignature!=null) MethodSignature.setParent(this);
+        this.CloseMethodScope=CloseMethodScope;
+        if(CloseMethodScope!=null) CloseMethodScope.setParent(this);
     }
 
     public InterfaceDeclOptionList getInterfaceDeclOptionList() {
@@ -33,6 +36,14 @@ public class InterfaceDeclOptionListDerived2 extends InterfaceDeclOptionList {
         this.MethodSignature=MethodSignature;
     }
 
+    public CloseMethodScope getCloseMethodScope() {
+        return CloseMethodScope;
+    }
+
+    public void setCloseMethodScope(CloseMethodScope CloseMethodScope) {
+        this.CloseMethodScope=CloseMethodScope;
+    }
+
     public void accept(Visitor visitor) {
         visitor.visit(this);
     }
@@ -40,17 +51,20 @@ public class InterfaceDeclOptionListDerived2 extends InterfaceDeclOptionList {
     public void childrenAccept(Visitor visitor) {
         if(InterfaceDeclOptionList!=null) InterfaceDeclOptionList.accept(visitor);
         if(MethodSignature!=null) MethodSignature.accept(visitor);
+        if(CloseMethodScope!=null) CloseMethodScope.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
         if(InterfaceDeclOptionList!=null) InterfaceDeclOptionList.traverseTopDown(visitor);
         if(MethodSignature!=null) MethodSignature.traverseTopDown(visitor);
+        if(CloseMethodScope!=null) CloseMethodScope.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
         if(InterfaceDeclOptionList!=null) InterfaceDeclOptionList.traverseBottomUp(visitor);
         if(MethodSignature!=null) MethodSignature.traverseBottomUp(visitor);
+        if(CloseMethodScope!=null) CloseMethodScope.traverseBottomUp(visitor);
         accept(visitor);
     }
 
@@ -67,6 +81,12 @@ public class InterfaceDeclOptionListDerived2 extends InterfaceDeclOptionList {
 
         if(MethodSignature!=null)
             buffer.append(MethodSignature.toString("  "+tab));
+        else
+            buffer.append(tab+"  null");
+        buffer.append("\n");
+
+        if(CloseMethodScope!=null)
+            buffer.append(CloseMethodScope.toString("  "+tab));
         else
             buffer.append(tab+"  null");
         buffer.append("\n");

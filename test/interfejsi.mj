@@ -1,0 +1,28 @@
+program Test
+
+interface i1{
+    int im1(int a){
+        return 0;
+    }
+
+    char deklaracija1();
+}
+
+class c0 extends i1{
+    int y;
+    {
+        int metoda1(){
+                return 0;
+        }
+        char deklaracija1(){
+            return 'a';
+        }
+
+    }
+}
+
+{
+	void main() {
+
+	}
+}

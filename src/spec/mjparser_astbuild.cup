@@ -110,6 +110,8 @@ nonterminal DesignatorStatementWhile DesignatorStatementWhile;
 nonterminal DoStatement DoStatement ;
 nonterminal ExtendsClass ExtendsClass;
 nonterminal CopyParentMethods CopyParentMethods;
+nonterminal CloseMethodScope CloseMethodScope;
+nonterminal InterfaceDeclName InterfaceDeclName;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr, CondFact, CondTerm, Condition, StatementCondition, Type;
 nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue, Designator, DesignatorArrayName, DesignatorClassMore, DesignatorClassArrayName, DesignatorClassName, DesignatorClassElem;
@@ -178,15 +180,19 @@ VarDeclOptionalList ::= VarDeclOptionalList:V1 COMMA VarDeclFinal:V2 {: RESULT=n
                         /* epsilon */
                         ;
 
-InterfaceDecl ::= INTERFACE IDENT:I1 LBRACE InterfaceDeclOptionList:I2 RBRACE {: RESULT=new InterfaceDeclDerived1(I1, I2); RESULT.setLine(I1left); :}
+InterfaceDecl ::= (InterfaceDecl) INTERFACE InterfaceDeclName:I1 LBRACE InterfaceDeclOptionList:I2 RBRACE {: RESULT=new InterfaceDecl(I1, I2); RESULT.setLine(I1left); :}
                   ;
+
+InterfaceDeclName ::= (InterfaceDeclName) IDENT:I1 {: RESULT=new InterfaceDeclName(I1); RESULT.setLine(I1left); :} ;
 
 InterfaceDeclOptionList ::= InterfaceDeclOptionList:I1 MethodDecl:M2 {: RESULT=new InterfaceDeclOptionListDerived1(I1, M2); RESULT.setLine(I1left); :}
                             |
-                            InterfaceDeclOptionList:I1 MethodSignature:M2 SEMI {: RESULT=new InterfaceDeclOptionListDerived2(I1, M2); RESULT.setLine(I1left); :}
+                            InterfaceDeclOptionList:I1 MethodSignature:M2 CloseMethodScope:C3 SEMI {: RESULT=new InterfaceDeclOptionListDerived2(I1, M2, C3); RESULT.setLine(I1left); :}
                             | {: RESULT=new InterfaceDeclOptionListDerived3(); :}
                             /* epsilon */
                             ;
+
+CloseMethodScope ::= (CloseMethodScope) {: RESULT=new CloseMethodScope(); :} /* epsilon */ ;
 
 ClassDecl ::= (ClassNoExtend) CLASS ClassDeclName:C1 LBRACE VarDeclListOptional:V2 RBRACE {: RESULT=new ClassNoExtend(C1, V2); RESULT.setLine(C1left); :}
               |

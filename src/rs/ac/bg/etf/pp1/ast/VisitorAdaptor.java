@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 23/4/2025 11:45:36
+// 23/4/2025 18:54:6
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -12,7 +12,6 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(ClassDeclErrorLBrace ClassDeclErrorLBrace) { }
     public void visit(Mulop Mulop) { }
     public void visit(VarDeclOptionalList VarDeclOptionalList) { }
-    public void visit(InterfaceDecl InterfaceDecl) { }
     public void visit(Relop Relop) { }
     public void visit(Assignop Assignop) { }
     public void visit(ProgramDeclList ProgramDeclList) { }
@@ -177,10 +176,12 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(ClassDeclDerived1 ClassDeclDerived1) { visit(); }
     public void visit(ClassYesExtend ClassYesExtend) { visit(); }
     public void visit(ClassNoExtend ClassNoExtend) { visit(); }
+    public void visit(CloseMethodScope CloseMethodScope) { visit(); }
     public void visit(InterfaceDeclOptionListDerived3 InterfaceDeclOptionListDerived3) { visit(); }
     public void visit(InterfaceDeclOptionListDerived2 InterfaceDeclOptionListDerived2) { visit(); }
     public void visit(InterfaceDeclOptionListDerived1 InterfaceDeclOptionListDerived1) { visit(); }
-    public void visit(InterfaceDeclDerived1 InterfaceDeclDerived1) { visit(); }
+    public void visit(InterfaceDeclName InterfaceDeclName) { visit(); }
+    public void visit(InterfaceDecl InterfaceDecl) { visit(); }
     public void visit(VarDeclOptionalListDerived2 VarDeclOptionalListDerived2) { visit(); }
     public void visit(VarDeclOptionalListDerived1 VarDeclOptionalListDerived1) { visit(); }
     public void visit(VarDeclFinalVar VarDeclFinalVar) { visit(); }

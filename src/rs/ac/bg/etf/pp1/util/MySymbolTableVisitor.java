@@ -117,10 +117,20 @@ public class MySymbolTableVisitor extends SymbolTableVisitor {
                     case Struct.Class:
                         output.append("Class");
                         break;
+                    case Struct.Interface:
+                        output.append("Interface");
+                        break;
                 }
                 break;
             case Struct.Class:
-                output.append("Class [");
+                output.append("Class [\n");
+                for (Obj obj : structToVisit.getMembers()) {
+                    obj.accept(this);
+                }
+                output.append("]");
+                break;
+            case Struct.Interface:
+                output.append("Interface [\n");
                 for (Obj obj : structToVisit.getMembers()) {
                     obj.accept(this);
                 }

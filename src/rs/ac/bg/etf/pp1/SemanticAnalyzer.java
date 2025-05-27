@@ -202,6 +202,18 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         return meth.getType();
     }
 
+    private boolean checkAssignCompatibility(Struct left, Struct right){
+        if (right.assignableTo(left)){
+            return true;
+        }
+        for (Struct implementedInterface: right.getImplementedInterfaces()){
+            if (implementedInterface.assignableTo(left)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void visit(Program node){
         Tab.chainLocalSymbols(node.getProgName().obj);
@@ -733,8 +745,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
                 }
             }
         }
-
-        printScope(node);
     }
 
     @Override
@@ -877,7 +887,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         // it's important to use assignableTo because of assigning null propery
-        else if(!node.getExpr().struct.assignableTo(node.getDesignator().obj.getType())){
+        else if(!checkAssignCompatibility(node.getDesignator().obj.getType(), node.getExpr().struct)){
             report_error("[DesignatorAssignExpr] Tip Expr nije kompatibilan sa tipom neterminala Designator : " + node.getDesignator().obj.getName(), node );
             return;
         }

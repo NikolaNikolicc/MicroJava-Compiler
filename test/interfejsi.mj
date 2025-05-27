@@ -21,8 +21,22 @@ class c0 extends i1{
     }
 }
 
-{
-	void main() {
+class c1 extends c0{
 
+}
+
+class c2{
+
+}
+
+{
+	void main() c0 o0; c1 o1; c2 o2; int a;{
+        a = 2;
+        o1 = new c1();
+        o2 = new c2();
+        o0 = o1; // ok
+        // o0 = a; // error
+        // o0 = c2; // error
+        // c2 = o0; // error
 	}
 }

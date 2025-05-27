@@ -903,7 +903,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         // it's important to use assignableTo because of assigning null propery
-        else if(!node.getExpr().struct.assignableTo(node.getDesignator().obj.getType())){
+        else if(!checkAssignCompatibility(node.getDesignator().obj.getType(), node.getExpr().struct)){
             report_error("[DesignatorAssignExprWhile] Tip Expr nije kompatibilan sa tipom neterminala Dedsignator : " + node.getDesignator().obj.getName(), node );
             return;
         }

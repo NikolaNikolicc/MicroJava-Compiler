@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 27/4/2025 11:11:34
+// 28/4/2025 15:24:8
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -108,15 +108,15 @@ public interface Visitor {
     public void visit(DesignatorVar DesignatorVar);
     public void visit(DesignatorStatementUnaryDerived2 DesignatorStatementUnaryDerived2);
     public void visit(DesignatorStatementUnaryDerived1 DesignatorStatementUnaryDerived1);
-    public void visit(DesignatorAssignDerived2 DesignatorAssignDerived2);
     public void visit(DesignatorAssignDerived1 DesignatorAssignDerived1);
+    public void visit(DesignatorAssignSetop DesignatorAssignSetop);
     public void visit(DesignatorAssignExpr DesignatorAssignExpr);
     public void visit(DesignatorStatementDerived1 DesignatorStatementDerived1);
     public void visit(DesignatorStatementFuncCall DesignatorStatementFuncCall);
     public void visit(DesignatorStatementUnarySemi DesignatorStatementUnarySemi);
     public void visit(StatementConditionDerived1 StatementConditionDerived1);
     public void visit(StatementConditionCondition StatementConditionCondition);
-    public void visit(DesignatorAssignWhileDerived1 DesignatorAssignWhileDerived1);
+    public void visit(DesignatorAssignSetopWhile DesignatorAssignSetopWhile);
     public void visit(DesignatorAssignExprWhile DesignatorAssignExprWhile);
     public void visit(DesignatorStatementWhileDerived1 DesignatorStatementWhileDerived1);
     public void visit(DesignatorStatementUnarySemiWhile DesignatorStatementUnarySemiWhile);
@@ -138,7 +138,6 @@ public interface Visitor {
     public void visit(StatementDerived1 StatementDerived1);
     public void visit(StatementListDerived2 StatementListDerived2);
     public void visit(StatementListDerived1 StatementListDerived1);
-    public void visit(TypeSet TypeSet);
     public void visit(TypeIdent TypeIdent);
     public void visit(FormParsDerived4 FormParsDerived4);
     public void visit(FormParsDerived3 FormParsDerived3);

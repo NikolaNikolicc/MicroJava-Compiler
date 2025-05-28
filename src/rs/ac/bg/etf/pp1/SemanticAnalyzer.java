@@ -29,7 +29,9 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     private static Obj intObj = Tab.find("int");
     private static Obj charObj = Tab.find("char");
     private static Obj boolObj = Tab.find("bool");
+    private static Obj setObj = Tab.find("set");
     public static Struct boolType = boolObj.getType();
+    public static Struct setType = setObj.getType();
 
     private Obj mainMeth = null;
     private boolean parsingFormPars = false;
@@ -162,7 +164,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     private boolean checkArePassedParametersAndFormalParameterListCompatible(List<Struct> fpList, String methName,  SyntaxNode node){
         if (fpList.size() != fpStack.size()){
-            report_error("[FactorFuncCall][DesignatorStatementFuncCall] Lista prosledjenih parametara se ne poklapa se parametrima koji su prosledjeni prilikom poziva metode " + methName + " po broju prosledjenih parametara, ova metoda prima: " + fpList.size() + " parametara", node);
+            report_error("[FactorFuncCall][DesignatorStatementFuncCall] Lista prosledjenih parametara se ne poklapa se parametrima koji su prosledjeni prilikom poziva metode " + methName + " po broju prosledjenih parametara("+ fpStack.size() +"), ova metoda prima: " + fpList.size() + " parametara", node);
+
             fpStack = new Stack<>();
             return false;
         }
@@ -203,9 +206,13 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     }
 
     private boolean checkAssignCompatibility(Struct left, Struct right){
+        // provera za setove
+        if (left.getKind() == Struct.Enum) return right.getKind() == Struct.Enum;
+
         if (right.assignableTo(left)){
             return true;
         }
+
         for (Struct implementedInterface: right.getImplementedInterfaces()){
             if (implementedInterface.assignableTo(left)){
                 return true;
@@ -241,6 +248,9 @@ public class SemanticAnalyzer extends VisitorAdaptor{
                 break;
             case "bool":
                 typeNode = boolObj;
+                break;
+            case "set":
+                typeNode = setObj;
                 break;
             default:
                 typeNode = Tab.find(name);
@@ -630,7 +640,14 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             node.struct = Tab.noType;
             return;
         }
-        node.struct = new Struct(Struct.Array, currTypeVar.getType());
+        if (node.getType().struct.equals(setType)){
+//            report_info("kreiran enum", node);
+            node.struct = new Struct(Struct.Enum, Tab.intType);
+        }else{
+//            report_info("kreiran niz", node);
+            node.struct = new Struct(Struct.Array, currTypeVar.getType());
+        }
+
     }
 
     @Override
@@ -843,7 +860,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     @Override
     public void visit(StatementPrint node){
         Struct type = node.getExpr().struct;
-        if(!type.equals(Tab.intType) && !type.equals(boolType) && !type.equals(Tab.charType)){
+        if(!type.equals(Tab.intType) && !type.equals(boolType) && !type.equals(Tab.charType) && !type.equals(setType)){
             report_error("[StatementPrint] Print operacija nad izrazom koji nije tipa int, char ili bool", node);
             return;
         }
@@ -852,7 +869,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     @Override
     public void visit(StatementPrintNumber node){
         Struct type = node.getExpr().struct;
-        if(!type.equals(Tab.intType) && !type.equals(boolType) && !type.equals(Tab.charType)){
+        if(!type.equals(Tab.intType) && !type.equals(boolType) && !type.equals(Tab.charType) && !type.equals(setType)){
             report_error("[StatementPrintNumber] Print operacija nad izrazom koji nije tipa int, char ili bool", node);
             return;
         }
@@ -908,6 +925,28 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
 
+    }
+
+    @Override
+    public void visit(DesignatorAssignSetop node){
+        Struct left = node.getDesignator().obj.getType();
+        Struct middle = node.getDesignator1().obj.getType();
+        Struct right = node.getDesignator2().obj.getType();
+        if (!left.equals(setType) || !middle.equals(setType) || !right.equals(setType)){
+            report_error("[DesignatorAssignSetop] Svi Designator neterminali moraju biti tipa set", node);
+            return;
+        }
+    }
+
+    @Override
+    public void visit(DesignatorAssignSetopWhile node){
+        Struct left = node.getDesignator().obj.getType();
+        Struct middle = node.getDesignator1().obj.getType();
+        Struct right = node.getDesignator2().obj.getType();
+        if (!left.equals(setType) || !middle.equals(setType) || !right.equals(setType)){
+            report_error("[DesignatorAssignSetopWhile] Svi Designator neterminali moraju biti tipa set", node);
+            return;
+        }
     }
 
     @Override

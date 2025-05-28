@@ -1,11 +1,11 @@
 // generated with ast extension for cup
 // version 0.8
-// 27/4/2025 11:11:34
+// 28/4/2025 15:24:7
 
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class DesignatorAssignWhileDerived1 extends DesignatorAssignWhile {
+public class DesignatorAssignSetop extends DesignatorAssign {
 
     private Designator Designator;
     private Assignop Assignop;
@@ -13,7 +13,7 @@ public class DesignatorAssignWhileDerived1 extends DesignatorAssignWhile {
     private Setop Setop;
     private Designator Designator2;
 
-    public DesignatorAssignWhileDerived1 (Designator Designator, Assignop Assignop, Designator Designator1, Setop Setop, Designator Designator2) {
+    public DesignatorAssignSetop (Designator Designator, Assignop Assignop, Designator Designator1, Setop Setop, Designator Designator2) {
         this.Designator=Designator;
         if(Designator!=null) Designator.setParent(this);
         this.Assignop=Assignop;
@@ -99,7 +99,7 @@ public class DesignatorAssignWhileDerived1 extends DesignatorAssignWhile {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("DesignatorAssignWhileDerived1(\n");
+        buffer.append("DesignatorAssignSetop(\n");
 
         if(Designator!=null)
             buffer.append(Designator.toString("  "+tab));
@@ -132,7 +132,7 @@ public class DesignatorAssignWhileDerived1 extends DesignatorAssignWhile {
         buffer.append("\n");
 
         buffer.append(tab);
-        buffer.append(") [DesignatorAssignWhileDerived1]");
+        buffer.append(") [DesignatorAssignSetop]");
         return buffer.toString();
     }
 }

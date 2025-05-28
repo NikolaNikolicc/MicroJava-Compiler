@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 27/4/2025 11:11:34
+// 28/4/2025 15:24:8
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -108,15 +108,15 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(DesignatorVar DesignatorVar) { visit(); }
     public void visit(DesignatorStatementUnaryDerived2 DesignatorStatementUnaryDerived2) { visit(); }
     public void visit(DesignatorStatementUnaryDerived1 DesignatorStatementUnaryDerived1) { visit(); }
-    public void visit(DesignatorAssignDerived2 DesignatorAssignDerived2) { visit(); }
     public void visit(DesignatorAssignDerived1 DesignatorAssignDerived1) { visit(); }
+    public void visit(DesignatorAssignSetop DesignatorAssignSetop) { visit(); }
     public void visit(DesignatorAssignExpr DesignatorAssignExpr) { visit(); }
     public void visit(DesignatorStatementDerived1 DesignatorStatementDerived1) { visit(); }
     public void visit(DesignatorStatementFuncCall DesignatorStatementFuncCall) { visit(); }
     public void visit(DesignatorStatementUnarySemi DesignatorStatementUnarySemi) { visit(); }
     public void visit(StatementConditionDerived1 StatementConditionDerived1) { visit(); }
     public void visit(StatementConditionCondition StatementConditionCondition) { visit(); }
-    public void visit(DesignatorAssignWhileDerived1 DesignatorAssignWhileDerived1) { visit(); }
+    public void visit(DesignatorAssignSetopWhile DesignatorAssignSetopWhile) { visit(); }
     public void visit(DesignatorAssignExprWhile DesignatorAssignExprWhile) { visit(); }
     public void visit(DesignatorStatementWhileDerived1 DesignatorStatementWhileDerived1) { visit(); }
     public void visit(DesignatorStatementUnarySemiWhile DesignatorStatementUnarySemiWhile) { visit(); }
@@ -138,7 +138,6 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(StatementDerived1 StatementDerived1) { visit(); }
     public void visit(StatementListDerived2 StatementListDerived2) { visit(); }
     public void visit(StatementListDerived1 StatementListDerived1) { visit(); }
-    public void visit(TypeSet TypeSet) { visit(); }
     public void visit(TypeIdent TypeIdent) { visit(); }
     public void visit(FormParsDerived4 FormParsDerived4) { visit(); }
     public void visit(FormParsDerived3 FormParsDerived3) { visit(); }

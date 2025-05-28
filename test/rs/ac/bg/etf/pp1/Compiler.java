@@ -49,8 +49,8 @@ public class Compiler {
 
         Reader br = null;
         try {
-            // File sourceCode = new File("test/program.mj");
-            File sourceCode = new File("test/interfejsi.mj");
+             File sourceCode = new File("test/GenerisanjeKoda-TestPrimeri_24_25_jan_feb/test301.mj");
+//            File sourceCode = new File("test/interfejsi.mj");
             log.info("Compiling source file: " + sourceCode.getAbsolutePath());
 
             br = new BufferedReader(new FileReader(sourceCode));
@@ -64,10 +64,62 @@ public class Compiler {
 
             // inicijalizacija tabele simbola
             Tab.init();
+
             Struct boolStruct = new Struct(Struct.Bool);
             Obj boolObj = Tab.insert(Obj.Type, "bool", boolStruct);
             boolObj.setAdr(-1);
             boolObj.setLevel(-1);
+
+            Struct setStruct = new Struct(Struct.Enum);
+            Obj setObj = Tab.insert(Obj.Type, "set", setStruct);
+            setObj.setAdr(-1);
+            setObj.setLevel(-1);
+
+            // podesiti fp pos na 1 za sve parametre metoda
+            for (Obj node: Tab.currentScope().getLocals().symbols()){
+                if (node.getKind() == Obj.Meth){
+                    for (Obj local: node.getLocalSymbols()){
+                        local.setFpPos(1);
+                    }
+                }
+            }
+
+            Obj addObj;
+            Tab.currentScope().addToLocals(addObj = new Obj(Obj.Meth, "add", Tab.noType, 0, 1));
+            {
+                Tab.openScope();
+                Obj a = new Obj(Obj.Var, "a", setObj.getType(), 0, 2);
+                Obj b = new Obj(Obj.Var, "b", Tab.intType, 0, 1);
+
+                a.setFpPos(1);
+                b.setFpPos(1);
+
+                Tab.currentScope().addToLocals(a);
+                Tab.currentScope().addToLocals(b);
+
+                addObj.setLocals(Tab.currentScope.getLocals());
+                Tab.closeScope();
+            }
+
+            Obj addAllObj;
+            Tab.currentScope().addToLocals(addAllObj = new Obj(Obj.Meth, "addAll", Tab.noType, 0, 2));
+            {
+                Tab.openScope();
+
+                Struct intArr = new Struct(Struct.Array, Tab.intType);
+
+                Obj a = new Obj(Obj.Var, "a", setObj.getType(), 0, 1);
+                Obj b = new Obj(Obj.Var, "b", intArr, 0, 1);
+
+                a.setFpPos(1);
+                b.setFpPos(1);
+
+                Tab.currentScope().addToLocals(a);
+                Tab.currentScope().addToLocals(b);
+
+                addAllObj.setLocals(Tab.currentScope.getLocals());
+                Tab.closeScope();
+            }
 
             log.info(prog.toString(""));
             log.info("===================================");

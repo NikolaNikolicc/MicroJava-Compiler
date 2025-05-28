@@ -54,7 +54,7 @@ scan with {:
 :}
 
 
-terminal PROG, BREAK, CLASS, ELSE, CONST, IF, NEW, PRINT, READ, RETURN, VOID, EXTENDS, CONTINUE, SET, UNION, DO, WHILE, MAP, INTERFACE, PLUS, MINUS, MUL, DIV, MOD, EQEQ, NOTEQ, GR, GREQ, LE, LEQ, AND, OR, EQ, INC, DEC, SEMI, COLON, COMMA, DOT, LPAREN, RPAREN, LBRACKET, RBRACKET, LBRACE, RBRACE, MAIN ;
+terminal PROG, BREAK, CLASS, ELSE, CONST, IF, NEW, PRINT, READ, RETURN, VOID, EXTENDS, CONTINUE, UNION, DO, WHILE, MAP, INTERFACE, PLUS, MINUS, MUL, DIV, MOD, EQEQ, NOTEQ, GR, GREQ, LE, LEQ, AND, OR, EQ, INC, DEC, SEMI, COLON, COMMA, DOT, LPAREN, RPAREN, LBRACKET, RBRACKET, LBRACE, RBRACE, MAIN ;
 terminal Integer NUMBER, BOOL ;
 terminal String IDENT ;
 terminal Character CHAR ;
@@ -233,8 +233,6 @@ FormPars ::= Type VarDeclFinal MethodSignatureEndFormPars
              ;
 
 Type ::= (TypeIdent) IDENT
-         |
-         (TypeSet) SET
          ;
 
 StatementList ::= StatementList Statement
@@ -282,7 +280,7 @@ DesignatorStatementWhile ::= (DesignatorStatementFuncCallWhile)Designator Design
 
 DesignatorAssignWhile ::= (DesignatorAssignExprWhile) Designator Assignop Expr
                           |
-                          Designator Assignop Designator Setop Designator
+                          (DesignatorAssignSetopWhile) Designator Assignop Designator Setop Designator
                           ;
 
 StatementCondition ::= (StatementConditionCondition) Condition RPAREN
@@ -301,7 +299,7 @@ DesignatorStatement ::= (DesignatorStatementUnarySemi) Designator DesignatorStat
 
 DesignatorAssign ::= (DesignatorAssignExpr) Designator Assignop Expr SEMI
                      |
-                     Designator Assignop Designator Setop Designator SEMI
+                     (DesignatorAssignSetop) Designator Assignop Designator Setop Designator SEMI
                      |
                      error SEMI:l
                      {: parser.report_error("Izvrsen oporavak do ; u liniji " + lleft, null); :}

@@ -244,6 +244,13 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         toMeth.setLocals(copy);
     }
 
+    private void copyClassExtends(Struct to, Struct from, SyntaxNode node){
+        to.setElementType(from.getElemType());
+        for (Struct implementedInterface: from.getImplementedInterfaces()){
+            to.addImplementedInterface(implementedInterface);
+        }
+    }
+
     @Override
     public void visit(Program node){
         Tab.chainLocalSymbols(node.getProgName().obj);
@@ -689,6 +696,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         node.struct = new Struct(Struct.Class, currTypeVar.getType().getMembersTable());
+        copyClassExtends(node.struct, currTypeVar.getType(), node);
     }
 
     @Override
@@ -1228,7 +1236,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             accessClass = Tab.noType;
             return;
         }
-        if(var.getKind() != Obj.Var || var.getType().getKind() != Struct.Class){
+        if(var.getKind() != Obj.Var || (var.getType().getKind() != Struct.Class && var.getType().getKind() != Struct.Interface)){
             report_error("[DesignatorClassName] Pristup neadekvatnoj promenljivoj klase: " + name, node);
             node.obj = Tab.noObj;
             accessClass = Tab.noType;

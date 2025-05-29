@@ -328,6 +328,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(VarDeclFinalVar node){
+        // since we are not chained symbols to class node we are storing them in scope nodes as we visit them
+        // we can't override name of class field with funcion variable name with this logic
         if(checkIsObjNodeDeclared(node.getI1()) || scopeNodes.contains(node.getI1())){
             report_error("[VarDeclFinalVar] Vec je deklarisana promenljiva sa imenom: " + node.getI1(), node);
             return;
@@ -342,7 +344,9 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             varNode = Tab.insert(Obj.Fld, node.getI1(), currTypeVar.getType());
             varNode.setLevel(1);
         }
-        scopeNodes.add(node.getI1());
+        if (currClass != null){
+            scopeNodes.add(node.getI1());
+        }
         formParsSetLevelAndFpPos(varNode);
     }
 

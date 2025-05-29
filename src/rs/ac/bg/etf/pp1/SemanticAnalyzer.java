@@ -15,10 +15,12 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     public boolean errorDetected = false;
     private boolean classMethodDecl = false;
+    private boolean thisDetected = false;
     private Obj currTypeVar = null;
     private Obj currTypeMeth = null;
     private Obj currMeth = null;
     private Struct currClass = null;
+    private Struct accessClass = null;
     private Struct currInterface = null;
     private Struct parentClass = Tab.noType;
 
@@ -42,7 +44,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     private static final String[] structKindNames = { "None", "Int", "Char", "Array", "Class", "Bool" };
 
     private Stack<Struct> fpStack = new Stack<>();
-    private Collection<String> scopeNodes = new ArrayList<>();
+//    private Collection<String> scopeNodes = new ArrayList<>();
 
     Logger log = Logger.getLogger(getClass());
 
@@ -142,7 +144,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         currClass = null;
         classMethodDecl = false;
         parentClass = Tab.noType;
-        scopeNodes.clear();
+//        scopeNodes.clear();
     }
 
     private void formParsSetLevelAndFpPos(Obj node){
@@ -330,7 +332,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     public void visit(VarDeclFinalVar node){
         // since we are not chained symbols to class node we are storing them in scope nodes as we visit them
         // we can't override name of class field with funcion variable name with this logic
-        if(checkIsObjNodeDeclared(node.getI1()) || scopeNodes.contains(node.getI1())){
+//        if(checkIsObjNodeDeclared(node.getI1()) || scopeNodes.contains(node.getI1())){
+        if(checkIsObjNodeDeclared(node.getI1())){
             report_error("[VarDeclFinalVar] Vec je deklarisana promenljiva sa imenom: " + node.getI1(), node);
             return;
         }
@@ -344,9 +347,9 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             varNode = Tab.insert(Obj.Fld, node.getI1(), currTypeVar.getType());
             varNode.setLevel(1);
         }
-        if (currClass != null){
-            scopeNodes.add(node.getI1());
-        }
+//        if (currClass != null){
+//            scopeNodes.add(node.getI1());
+//        }
         formParsSetLevelAndFpPos(varNode);
     }
 
@@ -1002,47 +1005,82 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     // Designator class more
     @Override
     public void visit(DesignatorClassMoreFinal node){
-        Struct classStruct = currClass;
+        Struct classStruct = accessClass;
         if (classStruct == Tab.noType){
             node.obj = Tab.noObj;
+            thisDetected = false;
             return;
         }
         String field = node.getI1();
-        for (Obj member: classStruct.getMembers()){
-            if((member.getKind() == Obj.Meth || member.getKind() == Obj.Fld || member.getType().getKind() == Struct.Array) && member.getName().equals(field)){
-                node.obj = member;
-                currClass = null;
-                return;
+        // if we have this.field we only want to search within class scope (not methods scope) but only for first search
+        if (!thisDetected){
+            for (Obj member: classStruct.getMembers()){
+                if((member.getKind() == Obj.Meth || member.getKind() == Obj.Fld || member.getType().getKind() == Struct.Array) && member.getName().equals(field)){
+                    node.obj = member;
+                    accessClass = null;
+                    return;
+                }
             }
         }
+
+        if (classMethodDecl){
+            for (Obj member: Tab.currentScope().getOuter().getLocals().symbols()){
+                if((member.getKind() == Obj.Meth || member.getKind() == Obj.Fld || member.getType().getKind() == Struct.Array) && member.getName().equals(field)){
+                    node.obj = member;
+                    accessClass = null;
+                    thisDetected = false;
+                    return;
+                }
+            }
+        }
+
         report_error("[DesignatorClassMoreFinal] Ovo polje("+ field +") ne postoji kao polje klase", node);
         node.obj = Tab.noObj;
-        currClass = null;
+        accessClass = null;
+        thisDetected = false;
     }
 
     @Override
     public void visit(DesignatorClassMoreFinalElem node){
-        Struct classStruct = currClass;
+        Struct classStruct = accessClass;
         if (classStruct == Tab.noType){
             node.obj = Tab.noObj;
+            thisDetected = false;
             return;
         }
         if (!node.getExpr().struct.equals(Tab.intType)){
             report_error("[DesignatorClassMoreFinalElem] Indeks niza mora biti tipa int", node);
             node.obj = Tab.noObj;
+            thisDetected = false;
             return;
         }
         String field = node.getDesignatorClassArrayName().getI1();
-        for (Obj member: classStruct.getMembers()){
-            if(member.getType().getKind() == Struct.Array && member.getName().equals(field)){
-                node.obj = new Obj(Obj.Elem, member.getName() + "[$]", member.getType().getElemType());
-                currClass = null;
-                return;
+        // if we have this.field we only want to search within class scope (not methods scope) but only for first search
+        if (!thisDetected){
+            for (Obj member: classStruct.getMembers()){
+                if(member.getType().getKind() == Struct.Array && member.getName().equals(field)){
+                    node.obj = new Obj(Obj.Elem, member.getName() + "[$]", member.getType().getElemType());
+                    accessClass = null;
+                    return;
+                }
             }
         }
+
+        if (classMethodDecl){
+            for (Obj member: Tab.currentScope().getOuter().getLocals().symbols()){
+                if(member.getType().getKind() == Struct.Array && member.getName().equals(field)){
+                    node.obj = new Obj(Obj.Elem, member.getName() + "[$]", member.getType().getElemType());
+                    accessClass = null;
+                    thisDetected = false;
+                    return;
+                }
+            }
+        }
+
         report_error("[DesignatorClassMoreFinalElem] Ovo polje("+ field +") ne postoji kao polje klase", node);
         node.obj = Tab.noObj;
-        currClass = null;
+        accessClass = null;
+        thisDetected = false;
     }
 
     @Override
@@ -1050,18 +1088,34 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         Struct classStruct = node.getDesignatorClassMore().obj.getType();
         if (classStruct == Tab.noType){
             node.obj = Tab.noObj;
+            thisDetected = false;
             return;
         }
         String field = node.getI2();
-        for (Obj member: classStruct.getMembers()){
-            if((member.getKind() == Obj.Meth || member.getKind() == Obj.Fld || member.getType().getKind() == Struct.Array) && member.getName().equals(field)){
-                node.obj = member;
-                // currClass = null;
-                return;
+        // if we have this.field we only want to search within class scope (not methods scope) but only for first search
+        if (!thisDetected){
+            for (Obj member: classStruct.getMembers()){
+                if((member.getKind() == Obj.Meth || member.getKind() == Obj.Fld || member.getType().getKind() == Struct.Array) && member.getName().equals(field)){
+                    node.obj = member;
+                    // accessClass = null;
+                    return;
+                }
             }
         }
+
+        if (classMethodDecl){
+            for (Obj member: Tab.currentScope().getOuter().getLocals().symbols()){
+                if((member.getKind() == Obj.Meth || member.getKind() == Obj.Fld || member.getType().getKind() == Struct.Array) && member.getName().equals(field)){
+                    node.obj = member;
+                    thisDetected = false;
+                    return;
+                }
+            }
+        }
+
         report_error("[DesignatorClassMoreNotFinal] Ovo polje("+ field +") ne postoji kao polje klase", node);
         node.obj = Tab.noObj;
+        thisDetected = false;
     }
 
     @Override
@@ -1069,23 +1123,41 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         Struct classStruct = node.getDesignatorClassMore().obj.getType();
         if (classStruct == Tab.noType){
             node.obj = Tab.noObj;
+            thisDetected = false;
             return;
         }
         if (!node.getExpr().struct.equals(Tab.intType)){
             report_error("[DesignatorClassMoreFinalElem] Indeks niza mora biti tipa int", node);
             node.obj = Tab.noObj;
+            thisDetected = false;
             return;
         }
         String field = node.getDesignatorClassArrayName().getI1();
-        for (Obj member: classStruct.getMembers()){
-            if(member.getType().getKind() == Struct.Array && member.getName().equals(field)){
-                node.obj = new Obj(Obj.Elem, member.getName() + "[$]", member.getType().getElemType());
-                // currClass = null;
-                return;
+        // if we have this.field we only want to search within class scope (not methods scope) but only for first search
+        if (!thisDetected){
+            for (Obj member: classStruct.getMembers()){
+                if(member.getType().getKind() == Struct.Array && member.getName().equals(field)){
+                    node.obj = new Obj(Obj.Elem, member.getName() + "[$]", member.getType().getElemType());
+                    // accessClass = null;
+                    return;
+                }
             }
         }
+
+        if (classMethodDecl){
+            for (Obj member: Tab.currentScope().getOuter().getLocals().symbols()){
+                if(member.getType().getKind() == Struct.Array && member.getName().equals(field)){
+                    node.obj = new Obj(Obj.Elem, member.getName() + "[$]", member.getType().getElemType());
+                    // accessClass = null;
+                    thisDetected = false;
+                    return;
+                }
+            }
+        }
+
         report_error("[DesignatorClassMoreNotFinalElem] Ovo polje("+ field +") ne postoji kao polje klase", node);
         node.obj = Tab.noObj;
+        thisDetected = false;
     }
 
     // Designator property access
@@ -1104,24 +1176,24 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         Obj arr = node.getDesignatorArrayName().obj;
         if (arr == Tab.noObj){
             node.obj = Tab.noObj;
-            currClass = Tab.noType;
+            accessClass = Tab.noType;
             return;
         }
         else if (!node.getExpr().struct.equals(Tab.intType)){
             report_error("[DesignatorClassElem] Indeks niza mora biti int vrednost", node);
             node.obj = Tab.noObj;
-            currClass = Tab.noType;
+            accessClass = Tab.noType;
             return;
         }
         Obj var = new Obj(Obj.Elem, arr.getName() + "[$]", arr.getType().getElemType());
         if (var.getType().getKind() != Struct.Class){
             report_error("[DesignatorClassElem] Tip elementa niza("+ node.getDesignatorArrayName().obj.getName() +") kojem se pristupa mora biti klasa", node);
             node.obj = Tab.noObj;
-            currClass = Tab.noType;
+            accessClass = Tab.noType;
             return;
         }
         node.obj = var;
-        currClass = node.obj.getType();
+        accessClass = node.obj.getType();
     }
 
     @Override
@@ -1131,17 +1203,20 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         if (var == Tab.noObj){
             report_error("[DesignatorClassName] Pristup nedeklarisanoj promenljivoj klase: " + name, node);
             node.obj = Tab.noObj;
-            currClass = Tab.noType;
+            accessClass = Tab.noType;
             return;
         }
         if(var.getKind() != Obj.Var || var.getType().getKind() != Struct.Class){
             report_error("[DesignatorClassName] Pristup neadekvatnoj promenljivoj klase: " + name, node);
             node.obj = Tab.noObj;
-            currClass = Tab.noType;
+            accessClass = Tab.noType;
             return;
         }
+        if(node.getI1().equals("this")){
+            thisDetected = true;
+        }
         node.obj = var;
-        currClass = var.getType();
+        accessClass = var.getType();
     }
 
     @Override

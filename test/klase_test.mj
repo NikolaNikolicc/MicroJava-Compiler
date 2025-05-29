@@ -1,0 +1,119 @@
+program test303
+
+const int cinilac = 4, delilac = 3;
+
+class Predmet
+{
+	 int tezina;
+	 char vrsta;
+	{
+		 void postaviTezinu(int tezina) {
+            this.tezina = tezina;
+		 }
+		 void ucitajTezinu() { read(tezina); }
+         int zapremina() { return 0;}
+         int Q() {return zapremina() * tezina;}
+         void postaviVrstu(char vrsta) {this.vrsta = vrsta;}
+         char dohvVrstu() { return vrsta; }
+         int dohvTezinu() { return tezina; }
+         void ispisi() {
+            print(vrsta);
+            print(Q());
+         }
+	}
+}
+
+class Sfera extends Predmet
+{
+	int r;
+	{
+
+		 void postaviPoluprecnik(int r) {this.r = r; }
+
+		 int zapremina()
+			int z;
+		{
+			z = cinilac;
+			return z *((r*r*r)/delilac);
+		}
+
+	}
+}
+
+
+class Kvadar extends Predmet
+{
+	 int a, b, c;
+	{
+
+		 void postaviStranice(int a, int b, int c) {this.a = a; this.b = b; this.c = c;}
+		 int zapremina()
+			int z;
+		{
+			z = a * b * c;
+			return z;
+		}
+
+	}
+}
+
+
+interface Displayable{
+
+	void display(){
+		print('N'); print('O'); print('T'); print(' '); print('I'); print('M'); print('P'); print('L'); print('E'); print('M'); print('E'); print('N'); print('T'); print('E'); print('D'); print(eol);
+	}
+
+	int height();
+
+}
+
+
+class Dot extends Displayable{
+
+	int h;
+	{
+		void display(){
+			print(' '); print('O'); print('O'); print(' '); print(eol);
+			print('O'); print('O'); print('O'); print('O'); print(eol);
+			print('O'); print('O'); print('O'); print('O'); print(eol);
+			print(' '); print('O'); print('O'); print(' '); print(eol);
+		}
+
+		int height(){
+			return h;
+		}
+
+	}
+}
+
+class Dash extends Displayable{
+
+	int h;
+	{
+
+		int height(){
+			return h;
+		}
+
+	}
+}
+
+int zapreminaK, zapreminaS;
+int tezinaK, tezinaS;
+
+
+{
+
+	void ispis(Predmet p)
+	{
+		p.ispisi();
+		print(eol);
+		print(p.dohvTezinu());
+	}
+
+	void main()
+	{
+
+	}
+}

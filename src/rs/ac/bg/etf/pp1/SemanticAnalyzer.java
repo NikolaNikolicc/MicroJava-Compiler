@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import rs.ac.bg.etf.pp1.ast.*;
 import rs.etf.pp1.symboltable.*;
 import rs.etf.pp1.symboltable.concepts.*;
+import rs.etf.pp1.symboltable.structure.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -221,6 +222,26 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             }
         }
         return false;
+    }
+
+    private void copyLocalSymbols(Obj fromMeth, Obj toMeth){
+        HashTableDataStructure copy = new HashTableDataStructure();
+
+        for (Obj localSym: fromMeth.getLocalSymbols()){
+            Obj node;
+
+            if (localSym.getName().equals("this")){
+                node = new Obj(localSym.getKind(), localSym.getName(), currClass);
+            }else{
+                node = new Obj(localSym.getKind(), localSym.getName(), localSym.getType());
+            }
+            node.setFpPos(localSym.getFpPos());
+            node.setLevel(localSym.getLevel());
+            node.setAdr(localSym.getAdr());
+            copy.insertKey(node);
+        }
+
+        toMeth.setLocals(copy);
     }
 
     @Override
@@ -763,6 +784,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             if(member.getKind() == Obj.Meth){
                 Obj n = Tab.insert(Obj.Meth, member.getName(), member.getType());
                 n.setFpPos(member.getFpPos());
+                copyLocalSymbols(member, n);
                 // in case fp pos is 3 that mean it is unimplemented method signature from interface so we leave it
                 if (n.getFpPos() < 2){
                     n.setFpPos(2);

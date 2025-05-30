@@ -98,6 +98,9 @@ public class MySymbolTableVisitor extends SymbolTableVisitor {
             case Struct.Bool:
                 output.append("bool");
                 break;
+            case Struct.Enum:
+                output.append("set");
+                break;
             case Struct.Array:
                 output.append("Arr of ");
 
@@ -113,6 +116,9 @@ public class MySymbolTableVisitor extends SymbolTableVisitor {
                         break;
                     case Struct.Char:
                         output.append("char");
+                        break;
+                    case Struct.Enum:
+                        output.append("set");
                         break;
                     case Struct.Class:
                         output.append("Class");

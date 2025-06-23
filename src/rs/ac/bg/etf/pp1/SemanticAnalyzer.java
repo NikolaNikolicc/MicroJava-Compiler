@@ -17,6 +17,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     public boolean errorDetected = false;
     private boolean classMethodDecl = false;
     private boolean thisDetected = false;
+    private boolean mainDeclared = false;
     private Obj currTypeVar = null;
     private Obj currTypeMeth = null;
     private Obj currMeth = null;
@@ -149,7 +150,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     }
 
     private void formParsSetLevelAndFpPos(Obj node){
-        if(parsingFormPars){
+        if(parsingFormPars && !(mainMeth.equals(currMeth) && mainDeclared)){
             currMeth.setLevel(currMeth.getLevel() + 1);
             node.setFpPos(1);
         }
@@ -257,10 +258,11 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         Tab.closeScope();
 
         if(mainMeth == null){
-            report_error("[Program] Main metoda mora biti definisana", null);
+            report_error("[Program] Main metoda mora biti definisana", node);
         }
+
         if(mainMeth != null && mainMeth.getLevel() > 0){
-            report_error("[Program] Main metoda mora biti deklarisana bez argumenata!", null);
+            report_error("[Program] Main metoda mora biti deklarisana bez formalnih parametara", node);
         }
     }
 
@@ -287,13 +289,13 @@ public class SemanticAnalyzer extends VisitorAdaptor{
                 break;
         }
         if(typeNode == Tab.noObj){
-            report_error("[TypeIdent] Nije pronadjen tip " + node.getI1() + " u tabeli simbola! ", null);
+            report_error("[TypeIdent] Nije pronadjen tip " + node.getI1() + " u tabeli simbola! ", node);
             currTypeVar = null;
             node.struct = Tab.noType;
             return;
         }
         if(Obj.Type != typeNode.getKind()){
-            report_error("[TypeIdent] Ime " + node.getI1() + " ne predstavlja tip!", node);
+            report_error("[TypeIdent] Ime " + node.getI1() + " ne predstavlja tip", node);
             currTypeVar = null;
             node.struct = Tab.noType;
             return;
@@ -306,12 +308,12 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     public void visit(NoVoidMethod node){
         Obj typeNode = Tab.find(node.getI1());
         if(typeNode == Tab.noObj){
-            report_error("[NoVoidMethod] Nije pronadjen tip " + node.getI1() + " u tabeli simbola! ", null);
+            report_error("[NoVoidMethod] Nije pronadjen tip " + node.getI1() + " u tabeli simbola! ", node);
             currTypeVar = null;
             return;
         }
         if(Obj.Type != typeNode.getKind()){
-            report_error("[NoVoidMethod] Ime " + node.getI1() + " ne predstavlja tip!", node);
+            report_error("[NoVoidMethod] Ime " + node.getI1() + " ne predstavlja tip", node);
             currTypeVar = null;
             return;
         }
@@ -347,11 +349,14 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         // assignableTo mora da stoji, a ne equals jer onda u slucaju lose procitanih tokena (noType) opet ubacujemo vrednost
         // u tabelu simbola i onda mozemo tu informaciju koristiti za dalju sintaksnu analizu
         Obj constObj = node.getConstDeclListValue().obj;
-        if(!constObj.getType().assignableTo(currTypeVar.getType())){
-            report_error("[ConstDeclAssign] Deklariani tip konstante i vrednost koja se dodeljuje nisu kompatibilni!", node);
+        Struct type = (currTypeVar == null) ? Tab.noType : currTypeVar.getType();
+        Obj constNode = Tab.insert(Obj.Con, node.getI1(), type);
+
+        if(!constObj.getType().assignableTo(type)){
+            report_error("[ConstDeclAssign] Deklariani tip konstante i vrednost koja se dodeljuje nisu kompatibilni", node);
             return;
         }
-        Obj constNode = Tab.insert(Obj.Con, node.getI1(), currTypeVar.getType());
+
         constNode.setFpPos(0);
         constNode.setAdr(constObj.getAdr());
     }
@@ -366,18 +371,17 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         Obj varNode;
+        Struct type = (currTypeVar == null) ? Tab.noType : currTypeVar.getType();
         if (currClass == null || classMethodDecl){
-            varNode = Tab.insert(Obj.Var, node.getI1(), currTypeVar.getType());
+            varNode = Tab.insert(Obj.Var, node.getI1(), type);
             if(classMethodDecl){
                 varNode.setLevel(2);
             }
         } else {
-            varNode = Tab.insert(Obj.Fld, node.getI1(), currTypeVar.getType());
+            varNode = Tab.insert(Obj.Fld, node.getI1(), type);
             varNode.setLevel(1);
         }
-//        if (currClass != null){
-//            scopeNodes.add(node.getI1());
-//        }
+
         formParsSetLevelAndFpPos(varNode);
     }
 
@@ -388,7 +392,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
 
-        Struct array = new Struct(Struct.Array, currTypeVar.getType());
+        Struct type = (currTypeVar == null) ? Tab.noType : currTypeVar.getType();
+        Struct array = new Struct(Struct.Array, type);
         Obj varNode;
         if (currClass == null){
             varNode = Tab.insert(Obj.Var, node.getI1(), array);
@@ -419,11 +424,11 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     @Override
     public void visit(MainMethod node){
         if(mainMeth != null){
-            report_error("[RegularMethod] Vec je definisan main metod!", node);
-            return;
+            report_error("[MainMethod] Vec je definisan main metod", node);
+            mainDeclared = true;
         }
-        if(currTypeMeth != null){
-            report_error("[RegularMethod] Main metoda mora biti povratnog tipa void!", node);
+        else if(currTypeMeth != null){
+            report_error("[MainMethod] Main metoda mora biti povratnog tipa void", node);
         }
         createMethodObjNode("main");
         mainMeth = currMeth;
@@ -431,18 +436,24 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(MethodDecl node){
-        // this is when we are implementing method signatures from interfaces
+
+        // this is when we are implementing method signatures from interface
         if(currMeth.getFpPos() == 3){
             currMeth.setFpPos(2);
         }
 
-        Tab.chainLocalSymbols(currMeth);
+        // we don't want to chain syms to curr meth if (currMeth == mainMeth && mainDeclared)
+        // so because of that we use De Morgan rule for the condition above
+        // if (currMeth == mainMeth but we haven't declared main yet (mainDeclared == false) we wan't to chain syms to main meth
+
+        if(!currMeth.equals(mainMeth) || !mainDeclared) Tab.chainLocalSymbols(currMeth);
         Tab.closeScope();
 
         if (!currMeth.getType().equals(Tab.noType) && !returnNode){
             report_error("[MethodDecl] U metodu povratnog tipa koji nije void se mora pojaviti barem jedna return naredba", node);
         }
 
+        mainDeclared = false;
         currMeth = null;
         returnNode = false;
     }
@@ -680,7 +691,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             node.struct = new Struct(Struct.Enum, Tab.intType);
         }else{
 //            report_info("kreiran niz", node);
-            node.struct = new Struct(Struct.Array, currTypeVar.getType());
+            Struct type = (currTypeVar == null)? Tab.noType : currTypeVar.getType();
+            node.struct = new Struct(Struct.Array, type);
         }
 
     }
@@ -693,6 +705,10 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         if(node.getType().struct.getKind() != Struct.Class){
             report_error("[FactorCreateObject] Neterminal Type mora da oznacava klasu (korisnicki definisan tip)", node);
             node.struct = Tab.noType;
+            return;
+        }
+        if (currTypeVar == null){
+            report_error("[FactorCreateObject] Ne moze se kreirati objekat klase od nevalidnog tipa.", node);
             return;
         }
         node.struct = new Struct(Struct.Class, currTypeVar.getType().getMembersTable());
@@ -940,7 +956,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             report_error("[DesignatorAssignExpr] Dodela u neadekvatnu promenljivu : " + node.getDesignator().obj.getName(), node);
             return;
         }
-        // it's important to use assignableTo because of assigning null propery
+        // it's important to use assignableTo because of assigning null properly
         else if(!checkAssignCompatibility(node.getDesignator().obj.getType(), node.getExpr().struct)){
             report_error("[DesignatorAssignExpr] Tip Expr nije kompatibilan sa tipom neterminala Designator : " + node.getDesignator().obj.getName(), node );
             return;
@@ -1030,6 +1046,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             report_error("[DesignatorStatementFuncCallWhile] Poziv neadekvatne metode(" + node.getDesignator().obj.getName() + ")", node);
             return;
         }
+        Obj meth = node.getDesignator().obj;
+        funccall(meth, node);
     }
 
     // Designator class more

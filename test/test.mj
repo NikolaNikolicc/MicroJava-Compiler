@@ -1,0 +1,51 @@
+// [ProgramName] syntax node ERROR: Built-in keyword 'chr' is not a valid program name
+// [Program] syntax node ERROR: Built-in keyword 'chr' is not a valid program name
+program chr
+
+// [Type] syntax node ERROR: 'ord' is not a type
+// [ConstantAssignment] syntax node ERROR: Invalid type when defining constant 'constant1'
+// const ord constant1 = 1;
+
+// [Type] syntax node ERROR: Type 'intt' used before declaration
+// [ConstantAssignment] syntax node ERROR: Invalid type when defining constant 'constant2'
+// const intt constant2 = 2;
+
+// [ConstantAssignment] syntax node ERROR: Incompatible types when defining constant 'constant3'
+// const int constant3 = true;
+
+// [ConstantAssignment] syntax node ERROR: Global constant 'constant4' already defined
+// const int constant4 = 4, constant4 = 4;
+
+// [VariableSingle] syntax node ERROR: Variable 'var2' already defined in the current scope
+// char var1, var2, var2;
+
+// [VariableArray] syntax node ERROR: Variable 'var4' already defined in the current scope
+// bool var3[], var4[], var4[];
+
+// [Type] syntax node ERROR: Type 'invalidtype' used before declaration
+// [VariableSingle] syntax node ERROR: Invalid type when defining variable 'var5'
+// [VariableArray] syntax node ERROR: Invalid type when defining variable 'var6'
+// invalidtype var5, var6[];
+
+{
+    // [MethodSignature] syntax node ERROR: Invalid return type when defining method 'main'
+    // [MethodDecl] syntax node ERROR: Invalid definition of method 'main'
+    booool main()
+    {
+
+    }
+
+    // [MethodSignature] syntax node ERROR: Main method must have void as return type
+    // [MethodDecl] syntax node ERROR: Invalid definition of method 'main'
+    int main()
+    {
+
+    }
+
+    // [MethodSignature] syntax node ERROR: Main method must not have formal parameters
+    // [MethodDecl] syntax node ERROR: Invalid definition of method 'main'
+    void main(int parameter1)
+    {
+
+    }
+}

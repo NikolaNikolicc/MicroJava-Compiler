@@ -1,50 +1,73 @@
 // [ProgramName] syntax node ERROR: Built-in keyword 'chr' is not a valid program name
-// [Program] syntax node ERROR: Built-in keyword 'chr' is not a valid program name
 program chr
+
+const int int = 1, char = 2, eol = 3, null = 4, chr = 5;
+char ord, len, bool;
 
 // [Type] syntax node ERROR: 'ord' is not a type
 // [ConstantAssignment] syntax node ERROR: Invalid type when defining constant 'constant1'
-// const ord constant1 = 1;
+const ord constant1 = 1;
 
 // [Type] syntax node ERROR: Type 'intt' used before declaration
 // [ConstantAssignment] syntax node ERROR: Invalid type when defining constant 'constant2'
-// const intt constant2 = 2;
+// [ConstantAssignment] syntax node ERROR: Name 'constant2' already defined in the current scope
+const intt constant2 = 2, constant2 = 4;
 
 // [ConstantAssignment] syntax node ERROR: Incompatible types when defining constant 'constant3'
-// const int constant3 = true;
+const int constant3 = true;
 
-// [ConstantAssignment] syntax node ERROR: Global constant 'constant4' already defined
-// const int constant4 = 4, constant4 = 4;
+// [ConstantAssignment] syntax node ERROR: Name 'constant4' already defined in the current scope
+const int constant4 = 4, constant4 = 4;
 
-// [VariableSingle] syntax node ERROR: Variable 'var2' already defined in the current scope
-// char var1, var2, var2;
+// [ConstantAssignment] syntax node ERROR: Incompatible types when defining constant 'co8'
+// [ConstantAssignment] syntax node ERROR: Incompatible types when defining constant 'constant9'
+const char cons5 = 'a', const6 = 'd', constan7 = 'A', co8 = 65, constant9 = false;
 
-// [VariableArray] syntax node ERROR: Variable 'var4' already defined in the current scope
-// bool var3[], var4[], var4[];
+// [VariableSingle] syntax node ERROR: Name 'var2' already defined in the current scope
+char var1, var2, var2;
+
+// [VariableArray] syntax node ERROR: Name 'var4' already defined in the current scope
+bool var3[], var4[], var4[];
 
 // [Type] syntax node ERROR: Type 'invalidtype' used before declaration
 // [VariableSingle] syntax node ERROR: Invalid type when defining variable 'var5'
 // [VariableArray] syntax node ERROR: Invalid type when defining variable 'var6'
-// invalidtype var5, var6[];
+// [VariableSingle] syntax node ERROR: Name 'var5' already defined in the current scope
+invalidtype var5, var6[], var5;
 
 {
-    // [MethodSignature] syntax node ERROR: Invalid return type when defining method 'main'
-    // [MethodDecl] syntax node ERROR: Invalid definition of method 'main'
+    // [Type] syntax node ERROR: Type 'booool' used before declaration
     booool main()
     {
 
     }
 
-    // [MethodSignature] syntax node ERROR: Main method must have void as return type
-    // [MethodDecl] syntax node ERROR: Invalid definition of method 'main'
+    // [MethodName] syntax node ERROR: Name 'main' already defined in the current scope
+    // [FormalParameterSingle] syntax node ERROR: Invalid definition of the current method
+    // [MethodSignature] syntax node ERROR: Name 'main' already defined in the current scope
+    // [MethodDecl] syntax node ERROR: Name 'main' already defined in the current scope
+    char main(int parameter1)
+    {
+
+    }
+
+    // [MethodName] syntax node ERROR: Name 'main' already defined in the current scope
+    // [MethodSignature] syntax node ERROR: Name 'main' already defined in the current scope
+    // [MethodDecl] syntax node ERROR: Name 'main' already defined in the current scope
     int main()
     {
 
     }
 
-    // [MethodSignature] syntax node ERROR: Main method must not have formal parameters
-    // [MethodDecl] syntax node ERROR: Invalid definition of method 'main'
-    void main(int parameter1)
+    // [Type] syntax node ERROR: Type 'intttt' used before declaration
+    // [FormalParameterSingle] syntax node ERROR: Invalid type when defining variable 'parameter1'
+    // [Type] syntax node ERROR: Type 'charr' used before declaration
+    // [FormalParameterArray] syntax node ERROR: Invalid type when defining variable 'parameter5'
+    // [FormalParameterSingle] syntax node ERROR: Name 'parameter5' already defined in the current scope
+    // [FormalParameterArray] syntax node ERROR: Name 'parameter5' already defined in the current scope
+    int method1(intttt parameter1, int parameter2, char parameter4[], charr parameter5[])
+        intttt localVariable1, localvariable2;
+        char localVariable3, localVariable4[];
     {
 
     }

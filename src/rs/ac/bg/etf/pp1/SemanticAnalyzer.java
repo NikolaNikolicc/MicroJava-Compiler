@@ -43,7 +43,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     private int loopCounter = 0;
 
     private static final String[] objKindNames = { "Con", "Var", "Type", "Meth", "Fld", "Elem", "Prog" };
-    private static final String[] structKindNames = { "None", "Int", "Char", "Array", "Class", "Bool" };
+    private static final String[] structKindNames = { "None", "Int", "Char", "Array", "Class", "Bool", "Set", "Interface" };
 
     private Stack<Struct> fpStack = new Stack<>();
 //    private Collection<String> scopeNodes = new ArrayList<>();
@@ -62,19 +62,23 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     private void logSymbol(String message, Obj sym, SyntaxNode node) {
         StringBuilder builder = new StringBuilder(message);
         if (node != null) {
-            builder.append(" (line " + node.getLine() + ")");
+            builder.append(" (linija " + node.getLine() + ")");
         }
-        builder.append(": [");
+
+        builder.append(": [NAME: ");
         builder.append(sym.getName()); // name
-        builder.append(", ");
+        builder.append(", OBJ KIND: ");
         builder.append(objKindNames[sym.getKind()]); // kind
-        builder.append(", ");
+        builder.append(", TYPE: ");
         builder.append(structKindNames[sym.getType().getKind()]); // type
-        builder.append(", ");
+        builder.append(", ADR: ");
         builder.append(sym.getAdr()); // adr
-        builder.append(", ");
+        builder.append(", LEVEL: ");
         builder.append(sym.getLevel()); // level
+        builder.append(", FPPOS: ");
+        builder.append(sym.getFpPos()); // fppos
         builder.append("]");
+
         log.info(builder.toString());
     }
 
@@ -252,25 +256,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         }
     }
 
-    @Override
-    public void visit(Program node){
-        Tab.chainLocalSymbols(node.getProgName().obj);
-        Tab.closeScope();
-
-        if(mainMeth == null){
-            report_error("[Program] Main metoda mora biti definisana", node);
-        }
-
-        if(mainMeth != null && mainMeth.getLevel() > 0){
-            report_error("[Program] Main metoda mora biti deklarisana bez formalnih parametara", node);
-        }
-    }
-
-    @Override
-    public void visit(TypeIdent node){
-        String name = node.getI1();
+    private Obj searchType(String name){
         Obj typeNode;
-
         switch(name){
             case "int":
                 typeNode = intObj;
@@ -288,8 +275,30 @@ public class SemanticAnalyzer extends VisitorAdaptor{
                 typeNode = Tab.find(name);
                 break;
         }
+        return typeNode;
+    }
+
+    @Override
+    public void visit(Program node){
+        Tab.chainLocalSymbols(node.getProgName().obj);
+        Tab.closeScope();
+
+        if(mainMeth == null){
+            report_error("[Program] Main metoda mora biti definisana", node);
+        }
+
+        if(mainMeth != null && mainMeth.getLevel() > 0){
+            report_error("[Program] Main metoda mora biti deklarisana bez formalnih parametara", node);
+        }
+    }
+
+    @Override
+    public void visit(TypeIdent node){
+
+        Obj typeNode = searchType(node.getI1());
+
         if(typeNode == Tab.noObj){
-            report_error("[TypeIdent] Nije pronadjen tip " + node.getI1() + " u tabeli simbola! ", node);
+            report_error("[TypeIdent] Nije pronadjen tip " + node.getI1() + " u tabeli simbola", node);
             currTypeVar = null;
             node.struct = Tab.noType;
             return;
@@ -306,7 +315,9 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(NoVoidMethod node){
-        Obj typeNode = Tab.find(node.getI1());
+
+        Obj typeNode = searchType(node.getI1());
+
         if(typeNode == Tab.noObj){
             report_error("[NoVoidMethod] Nije pronadjen tip " + node.getI1() + " u tabeli simbola! ", node);
             currTypeVar = null;
@@ -354,11 +365,11 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
         if(!constObj.getType().assignableTo(type)){
             report_error("[ConstDeclAssign] Deklariani tip konstante i vrednost koja se dodeljuje nisu kompatibilni", node);
-            return;
         }
 
         constNode.setFpPos(0);
         constNode.setAdr(constObj.getAdr());
+        logSymbol("Detektovana simbolicka konstanta:", constNode, node);
     }
 
     @Override
@@ -372,17 +383,20 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         }
         Obj varNode;
         Struct type = (currTypeVar == null) ? Tab.noType : currTypeVar.getType();
+        String message;
         if (currClass == null || classMethodDecl){
             varNode = Tab.insert(Obj.Var, node.getI1(), type);
+            message = "Detektovana promenljiva";
             if(classMethodDecl){
                 varNode.setLevel(2);
             }
         } else {
             varNode = Tab.insert(Obj.Fld, node.getI1(), type);
+            message = "Detektovano polje klase";
             varNode.setLevel(1);
         }
-
         formParsSetLevelAndFpPos(varNode);
+        logSymbol(message, varNode, node);
     }
 
     @Override
@@ -395,13 +409,17 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         Struct type = (currTypeVar == null) ? Tab.noType : currTypeVar.getType();
         Struct array = new Struct(Struct.Array, type);
         Obj varNode;
+        String message;
         if (currClass == null){
             varNode = Tab.insert(Obj.Var, node.getI1(), array);
+            message = "Detektovana promenljiva (element niza)";
         } else {
             varNode = Tab.insert(Obj.Fld, node.getI1(), array);
+            message = "Detektovano polje (element niza)";
             varNode.setLevel(1);
         }
         formParsSetLevelAndFpPos(varNode);
+        logSymbol(message, varNode, node);
     }
 
     private void createMethodObjNode(String name){

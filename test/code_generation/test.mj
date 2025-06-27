@@ -1,6 +1,7 @@
 program Prog
 
 const int pi = 3;
+int x, y[];
 
 {
     void main(){

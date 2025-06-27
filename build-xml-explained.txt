@@ -1,0 +1,6 @@
+1) Kind of DesignatorVar in visit method (semantics)
+2) FactorCreateArray visitor behavior if we encounter set as a type
+
+disasm - ceo kod
+debugObj - samo instrukcije koje je izvrsio i koji je njen expression stack 
+runObj - ispisuje stvari koje su se isprintale na izlaz

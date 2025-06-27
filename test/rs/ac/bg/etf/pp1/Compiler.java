@@ -124,14 +124,14 @@ public class Compiler {
             log.info("===================================");
 
             // semanticka analiza
-            SemanticAnalyzer v = new SemanticAnalyzer();
-            prog.traverseBottomUp(v);
+            SemanticAnalyzer sa = new SemanticAnalyzer();
+            prog.traverseBottomUp(sa);
 
             // ispis sintaksnog stabla
             log.info("===================================");
             tsdump();
 
-			if(!p.errorDetected && v.passed()){
+			if(!p.errorDetected && sa.passed()){
 				log.info("Parsiranje uspesno zavrseno!");
                 /* generisanje koda */
                 File objFile = new File("output/program.obj");
@@ -139,7 +139,7 @@ public class Compiler {
 
                 CodeGenerator codeGen = new CodeGenerator();
                 prog.traverseBottomUp(codeGen);
-                Code.dataSize = 0;
+                Code.dataSize = sa.nVars;
                 Code.mainPc = codeGen.getMainPC();
                 Code.write(new FileOutputStream(objFile));
 			}else{

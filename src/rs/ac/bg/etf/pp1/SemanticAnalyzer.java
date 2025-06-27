@@ -14,6 +14,9 @@ import java.util.Stack;
 
 public class SemanticAnalyzer extends VisitorAdaptor{
 
+    // package rs.ac.bg.etf.pp1;
+    int nVars;
+
     public boolean errorDetected = false;
     private boolean classMethodDecl = false;
     private boolean thisDetected = false;
@@ -280,6 +283,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(Program node){
+        nVars = Tab.currentScope().getnVars();
         Tab.chainLocalSymbols(node.getProgName().obj);
         Tab.closeScope();
 

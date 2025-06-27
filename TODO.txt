@@ -1,2 +1,0 @@
-1) Kind of DesignatorVar in visit method (semantics)
-2) FactorCreateArray visitor behavior if we encounter set as a type

@@ -1,10 +1,6 @@
 package rs.ac.bg.etf.pp1;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
 
 import java_cup.runtime.Symbol;
 
@@ -13,6 +9,7 @@ import org.apache.log4j.xml.DOMConfigurator;
 
 import rs.ac.bg.etf.pp1.ast.*;
 import rs.ac.bg.etf.pp1.util.Log4JUtils;
+import rs.etf.pp1.mj.runtime.Code;
 import rs.etf.pp1.symboltable.Tab;
 import rs.etf.pp1.symboltable.concepts.*;
 import rs.etf.pp1.symboltable.visitors.DumpSymbolTableVisitor;
@@ -52,7 +49,7 @@ public class Compiler {
 //             File sourceCode = new File("test/GenerisanjeKoda-TestPrimeri_24_25_jan_feb/test301.mj");
 //            File sourceCode = new File("test/GenerisanjeKoda-TestPrimeri_24_25_jan_feb/test302.mj");
 //            File sourceCode = new File("test/GenerisanjeKoda-TestPrimeri_24_25_jan_feb/test303.mj");
-            File sourceCode = new File("test/test.mj");
+            File sourceCode = new File("test/code_generation/test.mj");
             log.info("Compiling source file: " + sourceCode.getAbsolutePath());
 
             br = new BufferedReader(new FileReader(sourceCode));
@@ -72,7 +69,7 @@ public class Compiler {
             boolObj.setAdr(-1);
             boolObj.setLevel(-1);
 
-            Struct setStruct = new Struct(Struct.Enum);
+            Struct setStruct = new Struct(Struct.Enum, Tab.intType);
             Obj setObj = Tab.insert(Obj.Type, "set", setStruct);
             setObj.setAdr(-1);
             setObj.setLevel(-1);
@@ -136,6 +133,15 @@ public class Compiler {
 
 			if(!p.errorDetected && v.passed()){
 				log.info("Parsiranje uspesno zavrseno!");
+                /* generisanje koda */
+                File objFile = new File("output/program.obj");
+                if (objFile.exists()) objFile.delete();
+
+                CodeGenerator codeGen = new CodeGenerator();
+                prog.traverseBottomUp(codeGen);
+                Code.dataSize = 0;
+                Code.mainPc = codeGen.getMainPC();
+                Code.write(new FileOutputStream(objFile));
 			}else{
 				log.error("Parsiranje NIJE uspesno zavrseno!");
 			}

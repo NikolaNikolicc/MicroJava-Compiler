@@ -355,10 +355,10 @@ DesignatorAssign ::= (DesignatorAssignExpr) Designator:D1 Assignop:A2 Expr:E3 SE
                      {: parser.report_error("Izvrsen oporavak do ; u liniji " + lleft, null); :} {: RESULT=new DesignatorAssignDerived1(); :}
                      ;
 
-DesignatorStatementUnary ::= INC {: RESULT=new DesignatorStatementUnaryDerived1(); :}
-                              |
-                              DEC {: RESULT=new DesignatorStatementUnaryDerived2(); :}
-                              ;
+DesignatorStatementUnary ::= (UnaryIncrement) INC {: RESULT=new UnaryIncrement(); :}
+                             |
+                             (UnaryDecrement) DEC {: RESULT=new UnaryDecrement(); :}
+                             ;
 
 Designator ::= (DesignatorVar) IDENT:I1 {: RESULT=new DesignatorVar(I1); RESULT.setLine(I1left); :}
                |

@@ -4,9 +4,41 @@ const int pi = 3;
 int x, y[];
 
 {
-    void main() int a, b; char carr[];{
-        print(1+3);
-        print('a');
-        print(2*3 + 1, 2);
+    void main() int a, b; char carr[]; int intt[]; {
+        // print(1+3); // print int expression
+        // print('a'); // print char
+        // print(2*3 + 1, 2); // print with multiple arguments, also mulopp
+        // print(pi); // const print
+
+        // carr = new char[2];
+        // print(carr[2]);
+
+        // a = -4; // assign test
+        // print(-a, 3); // print int variable, 4
+        // print(a, 3); // print int variable, -4
+
+        // carr = new char[5];
+        // carr[1] = 'f';
+        // print(carr[1]); // print char array element, 0
+
+        // read(a);
+        // print(a, 3);
+        // carr = new char[5];
+        // read(carr[0]);
+        // print(carr[0]); // read char array element, 0
+
+        // a = 1;
+        // a++;
+        // print(a, 2);
+        // a--;
+        // print(a, 2); // increment and decrement test
+
+        // intt = new int[5];
+        // intt[0]++;
+        // print(intt[0], 2);
+        // intt[0]--;
+        // return; // return test
+        // print(intt[0], 2); // increment and decrement on array element
+
     }
 }

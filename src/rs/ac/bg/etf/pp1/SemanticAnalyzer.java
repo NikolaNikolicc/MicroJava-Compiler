@@ -441,6 +441,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             n.setLevel(2);
             n.setFpPos(0);
         }
+        node.obj = currMeth;
     }
 
     @Override
@@ -453,6 +454,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             report_error("[MainMethod] Main metoda mora biti povratnog tipa void", node);
         }
         createMethodObjNode("main");
+        node.obj = currMeth;
         mainMeth = currMeth;
     }
 

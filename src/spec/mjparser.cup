@@ -59,13 +59,15 @@ terminal Integer NUMBER, BOOL ;
 terminal String IDENT ;
 terminal Character CHAR ;
 
-nonterminal MethodSignatureEndFormPars, MethodSignatureStartFormPars, MethodName, ConstDeclAssign, Setop, Mulop, Addop, Relop, Assignop, Label, ProgramDeclList, ProgramDeclElem, ConstDecl, ConstDeclList, VarDecl, VarDeclFinal, VarDeclOptionalList, ClassDecl, VarDeclListOptional, MethodSignature, TypeChoice, FormParsOptional, FormPars, MethodDecl, VarDeclList, MethodDeclList, MathodDecl, StatementList, Statement, DesignatorStatement;
+nonterminal MethodSignatureEndFormPars, MethodSignatureStartFormPars, ConstDeclAssign, Setop, Mulop, Addop, Relop, Assignop, Label, ProgramDeclList, ProgramDeclElem, ConstDecl, ConstDeclList, VarDecl, VarDeclFinal, VarDeclOptionalList, ClassDecl, VarDeclListOptional, MethodSignature, TypeChoice, FormParsOptional, FormPars, MethodDecl, VarDeclList, MethodDeclList, MathodDecl, StatementList, Statement, DesignatorStatement;
 nonterminal ActPars, DesignatorFuncCall, DesignatorStatementUnary, StackInitialize, MapDesignator, ClassDeclName, ClassMethodDeclListStart;
 nonterminal Program, InterfaceDeclOptionList, InterfaceDecl, VarDeclProgram, VarDeclErrorComma, VarDeclErrorSemi, DesignatorAssign, VarDeclClass, ClassDeclErrorLBrace, DesignatorAssignWhile, DesignatorStatementWhile, DoStatement ;
 nonterminal ExtendsClass, CopyParentMethods, CloseMethodScope, InterfaceDeclName;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr, CondFact, CondTerm, Condition, StatementCondition, Type;
 nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue, Designator, DesignatorArrayName, DesignatorClassMore, DesignatorClassArrayName, DesignatorClassName, DesignatorClassElem;
+
+nonterminal rs.etf.pp1.symboltable.concepts.Obj MethodName;
 
 precedence left ELSE;
 
@@ -396,8 +398,8 @@ Assignop ::= EQ ;
 
 Relop ::= (EqEq) EQEQ | (NotEq) NOTEQ | (Gr) GR | (GrEq) GREQ | (Le) LE | (Leq) LEQ ;
 
-Addop ::= PLUS | MINUS ;
+Addop ::= (AddopPlus)PLUS | (AddopMinus)MINUS ;
 
-Mulop ::= MUL | DIV | MOD ;
+Mulop ::= (MulopMul)MUL | (MulopDiv)DIV | (MulopMod)MOD ;
 
 Setop ::= UNION ;

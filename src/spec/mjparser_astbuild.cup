@@ -61,7 +61,6 @@ terminal Character CHAR ;
 
 nonterminal MethodSignatureEndFormPars MethodSignatureEndFormPars;
 nonterminal MethodSignatureStartFormPars MethodSignatureStartFormPars;
-nonterminal MethodName MethodName;
 nonterminal ConstDeclAssign ConstDeclAssign;
 nonterminal Setop Setop;
 nonterminal Mulop Mulop;
@@ -115,6 +114,8 @@ nonterminal InterfaceDeclName InterfaceDeclName;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr, CondFact, CondTerm, Condition, StatementCondition, Type;
 nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue, Designator, DesignatorArrayName, DesignatorClassMore, DesignatorClassArrayName, DesignatorClassName, DesignatorClassElem;
+
+nonterminal rs.etf.pp1.symboltable.concepts.Obj MethodName;
 
 precedence left ELSE;
 
@@ -445,8 +446,8 @@ Assignop ::= EQ {: RESULT=new AssignopDerived1(); :} ;
 
 Relop ::= (EqEq) EQEQ {: RESULT=new EqEq(); :} | (NotEq) NOTEQ {: RESULT=new NotEq(); :} | (Gr) GR {: RESULT=new Gr(); :} | (GrEq) GREQ {: RESULT=new GrEq(); :} | (Le) LE {: RESULT=new Le(); :} | (Leq) LEQ {: RESULT=new Leq(); :} ;
 
-Addop ::= PLUS {: RESULT=new AddopDerived1(); :} | MINUS {: RESULT=new AddopDerived2(); :} ;
+Addop ::= (AddopPlus)PLUS {: RESULT=new AddopPlus(); :} | (AddopMinus)MINUS {: RESULT=new AddopMinus(); :} ;
 
-Mulop ::= MUL {: RESULT=new MulopDerived1(); :} | DIV {: RESULT=new MulopDerived2(); :} | MOD {: RESULT=new MulopDerived3(); :} ;
+Mulop ::= (MulopMul)MUL {: RESULT=new MulopMul(); :} | (MulopDiv)DIV {: RESULT=new MulopDiv(); :} | (MulopMod)MOD {: RESULT=new MulopMod(); :} ;
 
 Setop ::= UNION {: RESULT=new SetopDerived1(); :} ;

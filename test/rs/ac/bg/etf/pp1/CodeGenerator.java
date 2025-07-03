@@ -9,6 +9,7 @@ import rs.etf.pp1.symboltable.Tab;
 public class CodeGenerator extends VisitorAdaptor {
 
     private int mainPC;
+    private final static int fieldSize = 4;
 
     public int getMainPC(){return this.mainPC;}
 
@@ -79,15 +80,23 @@ public class CodeGenerator extends VisitorAdaptor {
     }
 
     @Override
+    public void visit(FactorCreateObject node){
+        Code.put(Code.new_);
+        Code.put2(node.getType().struct.getNumberOfFields() * fieldSize); // Load the address of the class constructor
+    }
+
+    @Override
     public void visit(DesignatorAssignExpr node){
         Code.store(node.getDesignator().obj); // Store the value of the expression in the designator
     }
 
     @Override
-    public void visit(UnaryIncrement node){
+    public void visit(UnaryInc node){
         Obj obj = ((DesignatorStatementUnarySemi)node.getParent()).getDesignator().obj;
         if (obj.getKind() == Obj.Elem){
             Code.put(Code.dup2);
+        } else if (obj.getKind() == Obj.Fld){
+            Code.put(Code.dup);
         }
         Code.load(obj);
         Code.loadConst(1);
@@ -96,10 +105,12 @@ public class CodeGenerator extends VisitorAdaptor {
     }
 
     @Override
-    public void visit(UnaryDecrement node){
+    public void visit(UnaryDec node){
         Obj obj = ((DesignatorStatementUnarySemi)node.getParent()).getDesignator().obj;
         if (obj.getKind() == Obj.Elem){
             Code.put(Code.dup2);
+        } else if (obj.getKind() == Obj.Fld){
+            Code.put(Code.dup);
         }
         Code.load(obj);
         Code.loadConst(1);
@@ -108,8 +119,73 @@ public class CodeGenerator extends VisitorAdaptor {
     }
 
     @Override
+    public void visit(DesignatorStatementFuncCall node){
+        int offset = node.getDesignator().obj.getAdr() - Code.pc; // Calculate the offset to the function address
+        Code.put(Code.call);
+        Code.put2(offset);
+
+        if (node.getDesignator().obj.getType() != Tab.noType) {
+            Code.put(Code.pop); // If the function returns a value, we pop it from the stack
+        }
+    }
+
+    @Override
+    public void visit(FactorFuncCall node){
+        int offset = node.getDesignator().obj.getAdr() - Code.pc; // Calculate the offset to the function address
+        Code.put(Code.call);
+        Code.put2(offset);
+    }
+
+    // Designator
+
+    @Override
+    public void visit(DesignatorClassMoreFinal node){
+        SyntaxNode parent = node.getParent();
+        if (parent instanceof DesignatorClassMoreNotFinal || parent instanceof DesignatorClassMoreNotFinalElem){
+            // If the parent is a DesignatorClassMoreFinal or DesignatorClassMoreFinalElem, we need to load the class instance
+            Code.load(node.obj); // Load the address of the class instance
+        }
+    }
+
+    @Override
+    public void visit(DesignatorClassMoreFinalElem node){
+        SyntaxNode parent = node.getParent();
+        if (parent instanceof DesignatorClassMoreNotFinal || parent instanceof DesignatorClassMoreNotFinalElem){
+            // If the parent is a DesignatorClassMoreFinal or DesignatorClassMoreFinalElem, we need to load the class instance
+            Code.load(node.obj); // Load the address of the class instance
+        }
+    }
+
+    @Override
+    public void visit(DesignatorClassMoreNotFinal node){
+        SyntaxNode parent = node.getParent();
+        if (parent instanceof DesignatorClassMoreNotFinal || parent instanceof DesignatorClassMoreNotFinalElem){
+            // If the parent is a DesignatorClassMoreFinal or DesignatorClassMoreFinalElem, we need to load the class instance
+            Code.load(node.obj); // Load the address of the class instance
+        }
+    }
+
+    @Override
+    public void visit(DesignatorClassMoreNotFinalElem node){
+        SyntaxNode parent = node.getParent();
+        if (parent instanceof DesignatorClassMoreNotFinal || parent instanceof DesignatorClassMoreNotFinalElem){
+            // If the parent is a DesignatorClassMoreFinal or DesignatorClassMoreFinalElem, we need to load the class instance
+            Code.load(node.obj); // Load the address of the class instance
+        }
+    }
+
+    @Override
     public void visit(DesignatorArrayName node){
         Code.load(node.obj); // Load the address of the array
+    }
+
+    @Override
+    public void visit(DesignatorClassArrayName node){ Code.load(node.obj); // Load the address of the class instance}
+    }
+
+    @Override
+    public void visit(DesignatorClassElem node){
+        Code.load(node.obj);
     }
 
     @Override
@@ -157,6 +233,13 @@ public class CodeGenerator extends VisitorAdaptor {
             Code.put(Code.rem);
         }
     }
-    
+
+    // Class
+
+    @Override
+    public void visit(DesignatorClassName node){
+        // we don't need to explicitly call getfield  when accessing a class field because we have added load instruction to the factorDesignator method
+        Code.load(node.obj); // Load the address of the class instance
+    }
 
 }

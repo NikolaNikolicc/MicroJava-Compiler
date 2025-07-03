@@ -1,0 +1,35 @@
+program Test
+
+class c1 { int x[]; int y; }
+class c2 { c1 obj[];}
+class c3 { c2 obj[]; }
+
+{
+
+    void ispis() {
+        print(1);
+    }
+
+    int f(){
+        return 7;
+    }
+
+    int m(int a)
+    {
+        return a;
+    }
+
+    void main() c1 o1; c2 o2; c3 o3; c3 o3arr[];int i; int r;{
+        // ispis();
+        // i = f() + 2;
+        // print(2);
+        // print(i);
+
+        // f();f();f();
+
+        read(r);
+        i = m(r);
+        print(i);
+    }
+
+}

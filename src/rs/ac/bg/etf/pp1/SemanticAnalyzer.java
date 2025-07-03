@@ -157,7 +157,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     }
 
     private void formParsSetLevelAndFpPos(Obj node){
-        if(parsingFormPars && !(mainMeth.equals(currMeth) && mainDeclared)){
+        if(parsingFormPars && !(mainDeclared && mainMeth.equals(currMeth))){
             currMeth.setLevel(currMeth.getLevel() + 1);
             node.setFpPos(1);
         }
@@ -208,7 +208,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         }
 
         List<Struct> fpList = getFormalParameters(meth, node);
-
         if (!checkArePassedParametersAndFormalParameterListCompatible(fpList, meth.getName(), node)){
             // nothing to do here but to remember that function above returns true if parameters are compatible
         }
@@ -261,23 +260,25 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     private Obj searchType(String name){
         Obj typeNode;
-        switch(name){
-            case "int":
-                typeNode = intObj;
-                break;
-            case "char":
-                typeNode = charObj;
-                break;
-            case "bool":
-                typeNode = boolObj;
-                break;
-            case "set":
-                typeNode = setObj;
-                break;
-            default:
-                typeNode = Tab.find(name);
-                break;
-        }
+//        switch(name){
+//            case "int":
+//                typeNode = intObj;
+//                break;
+//            case "char":
+//                typeNode = charObj;
+//                break;
+//            case "bool":
+//                typeNode = boolObj;
+//                break;
+//            case "set":
+//                typeNode = setObj;
+//                break;
+//            default:
+//                typeNode = Tab.find(name);
+//                break;
+//        }
+
+        typeNode = Tab.find(name);
         return typeNode;
     }
 
@@ -400,6 +401,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             varNode.setLevel(1);
         }
         formParsSetLevelAndFpPos(varNode);
+        report_info("stigli", node);
         logSymbol(message, varNode, node);
     }
 
@@ -1132,6 +1134,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             for (Obj member: classStruct.getMembers()){
                 if(member.getType().getKind() == Struct.Array && member.getName().equals(field)){
                     node.obj = new Obj(Obj.Elem, member.getName() + "[$]", member.getType().getElemType());
+                    node.getDesignatorClassArrayName().obj = member;
                     accessClass = null;
                     return;
                 }
@@ -1142,6 +1145,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             for (Obj member: Tab.currentScope().getOuter().getLocals().symbols()){
                 if(member.getType().getKind() == Struct.Array && member.getName().equals(field)){
                     node.obj = new Obj(Obj.Elem, member.getName() + "[$]", member.getType().getElemType());
+                    node.getDesignatorClassArrayName().obj = member;
                     accessClass = null;
                     thisDetected = false;
                     return;
@@ -1151,6 +1155,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
         report_error("[DesignatorClassMoreFinalElem] Ovo polje("+ field +") ne postoji kao polje klase", node);
         node.obj = Tab.noObj;
+        node.getDesignatorClassArrayName().obj = Tab.noObj;
         accessClass = null;
         thisDetected = false;
     }
@@ -1210,6 +1215,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             for (Obj member: classStruct.getMembers()){
                 if(member.getType().getKind() == Struct.Array && member.getName().equals(field)){
                     node.obj = new Obj(Obj.Elem, member.getName() + "[$]", member.getType().getElemType());
+                    node.getDesignatorClassArrayName().obj = member;
                     // accessClass = null;
                     return;
                 }
@@ -1220,6 +1226,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             for (Obj member: Tab.currentScope().getOuter().getLocals().symbols()){
                 if(member.getType().getKind() == Struct.Array && member.getName().equals(field)){
                     node.obj = new Obj(Obj.Elem, member.getName() + "[$]", member.getType().getElemType());
+                    node.getDesignatorClassArrayName().obj = member;
                     // accessClass = null;
                     thisDetected = false;
                     return;
@@ -1229,6 +1236,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
         report_error("[DesignatorClassMoreNotFinalElem] Ovo polje("+ field +") ne postoji kao polje klase", node);
         node.obj = Tab.noObj;
+        node.getDesignatorClassArrayName().obj = Tab.noObj;
         thisDetected = false;
     }
 

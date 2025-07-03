@@ -1,0 +1,67 @@
+program Test
+class c1 { int x[]; int y;}
+class c2 { c1 obj[];}
+class c3 { c2 obj[];}
+{
+
+	void main() c1 o1; c2 o2; c3 o3; c3 o3arr[];{ 
+		
+		o1 = new c1();                       
+		o1.x = new int[1];
+		o1.x[0] = 0;
+		o1.x[0]++;
+		print(o1.x[0]);
+		print(eol);
+		o1.y = 1;
+		o1.y++;
+		print(o1.y);
+		print(eol);
+		
+		o2 = new c2();
+		o2.obj = new c1[1];
+		o2.obj[0] = new c1();             
+		o2.obj[0].y =2;
+		o2.obj[0].y++;
+		print(o2.obj[0].y);
+		print(eol);
+		o2.obj[0].x = new int[1];
+		o2.obj[0].x[0] = 3; 
+		o2.obj[0].x[0]++; 					
+		print(o2.obj[0].x[0]);
+		print(eol);
+		
+		o3 = new c3();
+		o3.obj = new c2[1];
+		o3.obj[0] = new c2();             
+		o3.obj[0].obj = new c1[1];
+		o3.obj[0].obj[0] = new c1();
+		o3.obj[0].obj[0].y = 4;
+		o3.obj[0].obj[0].y++;
+		print(o3.obj[0].obj[0].y);
+		print(eol);
+		o3.obj[0].obj[0].x = new int[1];
+		o3.obj[0].obj[0].x[0] = 5;
+		o3.obj[0].obj[0].x[0]++;
+		print(o3.obj[0].obj[0].x[0]);
+		print(eol);
+		
+		
+		o3arr = new c3 [1];
+		
+		o3arr[0] = new c3();
+		o3arr[0].obj = new c2[1];
+		o3arr[0].obj[0] = new c2();             
+		o3arr[0].obj[0].obj = new c1[1];
+		o3arr[0].obj[0].obj[0] = new c1();
+		o3arr[0].obj[0].obj[0].y = 6;
+		o3arr[0].obj[0].obj[0].y++;
+		print(o3arr[0].obj[0].obj[0].y);
+		print(eol);
+		o3arr[0].obj[0].obj[0].x = new int[1];
+		o3arr[0].obj[0].obj[0].x[0] = 7;
+		o3arr[0].obj[0].obj[0].x[0]++;
+		print(o3arr[0].obj[0].obj[0].x[0]);
+		print(eol);
+		
+	}
+}

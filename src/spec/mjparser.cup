@@ -307,9 +307,9 @@ DesignatorAssign ::= (DesignatorAssignExpr) Designator Assignop Expr SEMI
                      {: parser.report_error("Izvrsen oporavak do ; u liniji " + lleft, null); :}
                      ;
 
-DesignatorStatementUnary ::= (UnaryIncrement) INC
+DesignatorStatementUnary ::= (UnaryInc) INC
                              |
-                             (UnaryDecrement) DEC
+                             (UnaryDec) DEC
                              ;
 
 Designator ::= (DesignatorVar) IDENT

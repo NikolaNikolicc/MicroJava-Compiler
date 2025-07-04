@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 2/6/2025 20:51:46
+// 4/6/2025 20:54:52
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -62,12 +62,12 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(MulopMul MulopMul) { visit(); }
     public void visit(AddopMinus AddopMinus) { visit(); }
     public void visit(AddopPlus AddopPlus) { visit(); }
-    public void visit(Leq Leq) { visit(); }
-    public void visit(Le Le) { visit(); }
-    public void visit(GrEq GrEq) { visit(); }
-    public void visit(Gr Gr) { visit(); }
-    public void visit(NotEq NotEq) { visit(); }
-    public void visit(EqEq EqEq) { visit(); }
+    public void visit(RelopLessThanOrEqual RelopLessThanOrEqual) { visit(); }
+    public void visit(RelopLessThan RelopLessThan) { visit(); }
+    public void visit(RelopGreaterThanOrEqual RelopGreaterThanOrEqual) { visit(); }
+    public void visit(RelopGreaterThan RelopGreaterThan) { visit(); }
+    public void visit(RelopNotEqual RelopNotEqual) { visit(); }
+    public void visit(RelopEqual RelopEqual) { visit(); }
     public void visit(AssignopDerived1 AssignopDerived1) { visit(); }
     public void visit(LabelDerived1 LabelDerived1) { visit(); }
     public void visit(StackInitialize StackInitialize) { visit(); }
@@ -122,7 +122,8 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(DesignatorStatementUnarySemiWhile DesignatorStatementUnarySemiWhile) { visit(); }
     public void visit(DesignatorStatementFuncCallWhile DesignatorStatementFuncCallWhile) { visit(); }
     public void visit(DoStatement DoStatement) { visit(); }
-    public void visit(StatementDerived4 StatementDerived4) { visit(); }
+    public void visit(Else Else) { visit(); }
+    public void visit(StatementDerived2 StatementDerived2) { visit(); }
     public void visit(StatementLoopComplex StatementLoopComplex) { visit(); }
     public void visit(StatementLoopCondition StatementLoopCondition) { visit(); }
     public void visit(StatementLoopSimple StatementLoopSimple) { visit(); }
@@ -133,8 +134,8 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(StatementReturn StatementReturn) { visit(); }
     public void visit(StatementContinue StatementContinue) { visit(); }
     public void visit(StatementBreak StatementBreak) { visit(); }
-    public void visit(StatementDerived3 StatementDerived3) { visit(); }
-    public void visit(StatementDerived2 StatementDerived2) { visit(); }
+    public void visit(StatementNoElse StatementNoElse) { visit(); }
+    public void visit(StatementElse StatementElse) { visit(); }
     public void visit(StatementDerived1 StatementDerived1) { visit(); }
     public void visit(StatementListDerived2 StatementListDerived2) { visit(); }
     public void visit(StatementListDerived1 StatementListDerived1) { visit(); }

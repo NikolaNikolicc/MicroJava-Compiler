@@ -62,7 +62,7 @@ terminal Character CHAR ;
 nonterminal MethodSignatureEndFormPars, MethodSignatureStartFormPars, ConstDeclAssign, Setop, Mulop, Addop, Relop, Assignop, Label, ProgramDeclList, ProgramDeclElem, ConstDecl, ConstDeclList, VarDecl, VarDeclFinal, VarDeclOptionalList, ClassDecl, VarDeclListOptional, MethodSignature, TypeChoice, FormParsOptional, FormPars, MethodDecl, VarDeclList, MethodDeclList, MathodDecl, StatementList, Statement, DesignatorStatement;
 nonterminal ActPars, DesignatorFuncCall, DesignatorStatementUnary, StackInitialize, MapDesignator, ClassDeclName, ClassMethodDeclListStart;
 nonterminal Program, InterfaceDeclOptionList, InterfaceDecl, VarDeclProgram, VarDeclErrorComma, VarDeclErrorSemi, DesignatorAssign, VarDeclClass, ClassDeclErrorLBrace, DesignatorAssignWhile, DesignatorStatementWhile, DoStatement ;
-nonterminal ExtendsClass, CopyParentMethods, CloseMethodScope, InterfaceDeclName;
+nonterminal ExtendsClass, CopyParentMethods, CloseMethodScope, InterfaceDeclName, Else;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr, CondFact, CondTerm, Condition, StatementCondition, Type;
 nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue, Designator, DesignatorArrayName, DesignatorClassMore, DesignatorClassArrayName, DesignatorClassName, DesignatorClassElem;
@@ -244,9 +244,9 @@ StatementList ::= StatementList Statement
 
 Statement ::=   DesignatorStatement
               |
-              IF LPAREN StatementCondition Statement ELSE Statement
+              (StatementElse) IF LPAREN StatementCondition Statement Else Statement
               |
-              IF LPAREN StatementCondition Statement
+              (StatementNoElse) IF LPAREN StatementCondition Statement
               |
               (StatementBreak) BREAK SEMI
               |
@@ -270,6 +270,8 @@ Statement ::=   DesignatorStatement
               |
               LBRACE StatementList RBRACE
               ;
+
+Else ::= (Else) ELSE ;
 
 DoStatement ::= (DoStatement) DO;
 
@@ -340,7 +342,7 @@ ActPars ::= (ActParsMultipleItems) Expr COMMA ActPars
             (ActParsSigleItem) Expr
             ;
 
-Condition ::= (ConditionOr) CondTerm OR Condition
+Condition ::= (ConditionOr) Condition OR CondTerm
               |
               (ConditionCondTerm) CondTerm
               ;
@@ -350,7 +352,7 @@ CondTerm ::= (CondTermAnd) CondFact AND CondTerm
              (CondTermCondFact) CondFact
              ;
 
-CondFact ::= (CondFactRelop) Expr Relop CondFact
+CondFact ::= (CondFactRelop) Expr Relop Expr
              |
              (CondFactExpr) Expr
              ;
@@ -396,7 +398,7 @@ Label ::= IDENT ;
 
 Assignop ::= EQ ;
 
-Relop ::= (EqEq) EQEQ | (NotEq) NOTEQ | (Gr) GR | (GrEq) GREQ | (Le) LE | (Leq) LEQ ;
+Relop ::= (RelopEqual) EQEQ | (RelopNotEqual) NOTEQ | (RelopGreaterThan) GR | (RelopGreaterThanOrEqual) GREQ | (RelopLessThan) LE | (RelopLessThanOrEqual) LEQ ;
 
 Addop ::= (AddopPlus)PLUS | (AddopMinus)MINUS ;
 

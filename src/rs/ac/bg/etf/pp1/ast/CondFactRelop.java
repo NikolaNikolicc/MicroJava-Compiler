@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 2/6/2025 20:51:46
+// 4/6/2025 20:54:52
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -9,15 +9,15 @@ public class CondFactRelop extends CondFact {
 
     private Expr Expr;
     private Relop Relop;
-    private CondFact CondFact;
+    private Expr Expr1;
 
-    public CondFactRelop (Expr Expr, Relop Relop, CondFact CondFact) {
+    public CondFactRelop (Expr Expr, Relop Relop, Expr Expr1) {
         this.Expr=Expr;
         if(Expr!=null) Expr.setParent(this);
         this.Relop=Relop;
         if(Relop!=null) Relop.setParent(this);
-        this.CondFact=CondFact;
-        if(CondFact!=null) CondFact.setParent(this);
+        this.Expr1=Expr1;
+        if(Expr1!=null) Expr1.setParent(this);
     }
 
     public Expr getExpr() {
@@ -36,12 +36,12 @@ public class CondFactRelop extends CondFact {
         this.Relop=Relop;
     }
 
-    public CondFact getCondFact() {
-        return CondFact;
+    public Expr getExpr1() {
+        return Expr1;
     }
 
-    public void setCondFact(CondFact CondFact) {
-        this.CondFact=CondFact;
+    public void setExpr1(Expr Expr1) {
+        this.Expr1=Expr1;
     }
 
     public void accept(Visitor visitor) {
@@ -51,20 +51,20 @@ public class CondFactRelop extends CondFact {
     public void childrenAccept(Visitor visitor) {
         if(Expr!=null) Expr.accept(visitor);
         if(Relop!=null) Relop.accept(visitor);
-        if(CondFact!=null) CondFact.accept(visitor);
+        if(Expr1!=null) Expr1.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
         if(Expr!=null) Expr.traverseTopDown(visitor);
         if(Relop!=null) Relop.traverseTopDown(visitor);
-        if(CondFact!=null) CondFact.traverseTopDown(visitor);
+        if(Expr1!=null) Expr1.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
         if(Expr!=null) Expr.traverseBottomUp(visitor);
         if(Relop!=null) Relop.traverseBottomUp(visitor);
-        if(CondFact!=null) CondFact.traverseBottomUp(visitor);
+        if(Expr1!=null) Expr1.traverseBottomUp(visitor);
         accept(visitor);
     }
 
@@ -85,8 +85,8 @@ public class CondFactRelop extends CondFact {
             buffer.append(tab+"  null");
         buffer.append("\n");
 
-        if(CondFact!=null)
-            buffer.append(CondFact.toString("  "+tab));
+        if(Expr1!=null)
+            buffer.append(Expr1.toString("  "+tab));
         else
             buffer.append(tab+"  null");
         buffer.append("\n");

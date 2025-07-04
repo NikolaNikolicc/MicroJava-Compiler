@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 2/6/2025 20:51:46
+// 4/6/2025 20:54:52
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -62,12 +62,12 @@ public interface Visitor {
     public void visit(MulopMul MulopMul);
     public void visit(AddopMinus AddopMinus);
     public void visit(AddopPlus AddopPlus);
-    public void visit(Leq Leq);
-    public void visit(Le Le);
-    public void visit(GrEq GrEq);
-    public void visit(Gr Gr);
-    public void visit(NotEq NotEq);
-    public void visit(EqEq EqEq);
+    public void visit(RelopLessThanOrEqual RelopLessThanOrEqual);
+    public void visit(RelopLessThan RelopLessThan);
+    public void visit(RelopGreaterThanOrEqual RelopGreaterThanOrEqual);
+    public void visit(RelopGreaterThan RelopGreaterThan);
+    public void visit(RelopNotEqual RelopNotEqual);
+    public void visit(RelopEqual RelopEqual);
     public void visit(AssignopDerived1 AssignopDerived1);
     public void visit(LabelDerived1 LabelDerived1);
     public void visit(StackInitialize StackInitialize);
@@ -122,7 +122,8 @@ public interface Visitor {
     public void visit(DesignatorStatementUnarySemiWhile DesignatorStatementUnarySemiWhile);
     public void visit(DesignatorStatementFuncCallWhile DesignatorStatementFuncCallWhile);
     public void visit(DoStatement DoStatement);
-    public void visit(StatementDerived4 StatementDerived4);
+    public void visit(Else Else);
+    public void visit(StatementDerived2 StatementDerived2);
     public void visit(StatementLoopComplex StatementLoopComplex);
     public void visit(StatementLoopCondition StatementLoopCondition);
     public void visit(StatementLoopSimple StatementLoopSimple);
@@ -133,8 +134,8 @@ public interface Visitor {
     public void visit(StatementReturn StatementReturn);
     public void visit(StatementContinue StatementContinue);
     public void visit(StatementBreak StatementBreak);
-    public void visit(StatementDerived3 StatementDerived3);
-    public void visit(StatementDerived2 StatementDerived2);
+    public void visit(StatementNoElse StatementNoElse);
+    public void visit(StatementElse StatementElse);
     public void visit(StatementDerived1 StatementDerived1);
     public void visit(StatementListDerived2 StatementListDerived2);
     public void visit(StatementListDerived1 StatementListDerived1);

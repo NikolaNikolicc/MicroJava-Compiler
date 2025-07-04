@@ -1,13 +1,13 @@
 // generated with ast extension for cup
 // version 0.8
-// 2/6/2025 20:51:46
+// 4/6/2025 20:54:52
 
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class NotEq extends Relop {
+public class RelopNotEqual extends Relop {
 
-    public NotEq () {
+    public RelopNotEqual () {
     }
 
     public void accept(Visitor visitor) {
@@ -28,10 +28,10 @@ public class NotEq extends Relop {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("NotEq(\n");
+        buffer.append("RelopNotEqual(\n");
 
         buffer.append(tab);
-        buffer.append(") [NotEq]");
+        buffer.append(") [RelopNotEqual]");
         return buffer.toString();
     }
 }

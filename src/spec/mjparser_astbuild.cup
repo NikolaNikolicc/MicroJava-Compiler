@@ -111,6 +111,7 @@ nonterminal ExtendsClass ExtendsClass;
 nonterminal CopyParentMethods CopyParentMethods;
 nonterminal CloseMethodScope CloseMethodScope;
 nonterminal InterfaceDeclName InterfaceDeclName;
+nonterminal Else Else;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr, CondFact, CondTerm, Condition, StatementCondition, Type;
 nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue, Designator, DesignatorArrayName, DesignatorClassMore, DesignatorClassArrayName, DesignatorClassName, DesignatorClassElem;
@@ -292,9 +293,9 @@ StatementList ::= StatementList:S1 Statement:S2 {: RESULT=new StatementListDeriv
 
 Statement ::=   DesignatorStatement:D1 {: RESULT=new StatementDerived1(D1); RESULT.setLine(D1left); :}
               |
-              IF LPAREN StatementCondition:S1 Statement:S2 ELSE Statement:S3 {: RESULT=new StatementDerived2(S1, S2, S3); RESULT.setLine(S1left); :}
+              (StatementElse) IF LPAREN StatementCondition:S1 Statement:S2 Else:E3 Statement:S4 {: RESULT=new StatementElse(S1, S2, E3, S4); RESULT.setLine(S1left); :}
               |
-              IF LPAREN StatementCondition:S1 Statement:S2 {: RESULT=new StatementDerived3(S1, S2); RESULT.setLine(S1left); :}
+              (StatementNoElse) IF LPAREN StatementCondition:S1 Statement:S2 {: RESULT=new StatementNoElse(S1, S2); RESULT.setLine(S1left); :}
               |
               (StatementBreak) BREAK SEMI {: RESULT=new StatementBreak(); :}
               |
@@ -316,8 +317,10 @@ Statement ::=   DesignatorStatement:D1 {: RESULT=new StatementDerived1(D1); RESU
               |
               (StatementLoopComplex) DoStatement:D1 Statement:S2 WHILE LPAREN Condition:C3 COMMA DesignatorStatementWhile:D4 RPAREN SEMI {: RESULT=new StatementLoopComplex(D1, S2, C3, D4); RESULT.setLine(D1left); :}
               |
-              LBRACE StatementList:S1 RBRACE {: RESULT=new StatementDerived4(S1); RESULT.setLine(S1left); :}
+              LBRACE StatementList:S1 RBRACE {: RESULT=new StatementDerived2(S1); RESULT.setLine(S1left); :}
               ;
+
+Else ::= (Else) ELSE {: RESULT=new Else(); :} ;
 
 DoStatement ::= (DoStatement) DO {: RESULT=new DoStatement(); :};
 
@@ -388,7 +391,7 @@ ActPars ::= (ActParsMultipleItems) Expr:E1 COMMA ActPars:A2 {: RESULT=new ActPar
             (ActParsSigleItem) Expr:E1 {: RESULT=new ActParsSigleItem(E1); RESULT.setLine(E1left); :}
             ;
 
-Condition ::= (ConditionOr) CondTerm:C1 OR Condition:C2 {: RESULT=new ConditionOr(C1, C2); RESULT.setLine(C1left); :}
+Condition ::= (ConditionOr) Condition:C1 OR CondTerm:C2 {: RESULT=new ConditionOr(C1, C2); RESULT.setLine(C1left); :}
               |
               (ConditionCondTerm) CondTerm:C1 {: RESULT=new ConditionCondTerm(C1); RESULT.setLine(C1left); :}
               ;
@@ -398,7 +401,7 @@ CondTerm ::= (CondTermAnd) CondFact:C1 AND CondTerm:C2 {: RESULT=new CondTermAnd
              (CondTermCondFact) CondFact:C1 {: RESULT=new CondTermCondFact(C1); RESULT.setLine(C1left); :}
              ;
 
-CondFact ::= (CondFactRelop) Expr:E1 Relop:R2 CondFact:C3 {: RESULT=new CondFactRelop(E1, R2, C3); RESULT.setLine(E1left); :}
+CondFact ::= (CondFactRelop) Expr:E1 Relop:R2 Expr:E3 {: RESULT=new CondFactRelop(E1, R2, E3); RESULT.setLine(E1left); :}
              |
              (CondFactExpr) Expr:E1 {: RESULT=new CondFactExpr(E1); RESULT.setLine(E1left); :}
              ;
@@ -444,7 +447,7 @@ Label ::= IDENT:I1 {: RESULT=new LabelDerived1(I1); RESULT.setLine(I1left); :} ;
 
 Assignop ::= EQ {: RESULT=new AssignopDerived1(); :} ;
 
-Relop ::= (EqEq) EQEQ {: RESULT=new EqEq(); :} | (NotEq) NOTEQ {: RESULT=new NotEq(); :} | (Gr) GR {: RESULT=new Gr(); :} | (GrEq) GREQ {: RESULT=new GrEq(); :} | (Le) LE {: RESULT=new Le(); :} | (Leq) LEQ {: RESULT=new Leq(); :} ;
+Relop ::= (RelopEqual) EQEQ {: RESULT=new RelopEqual(); :} | (RelopNotEqual) NOTEQ {: RESULT=new RelopNotEqual(); :} | (RelopGreaterThan) GR {: RESULT=new RelopGreaterThan(); :} | (RelopGreaterThanOrEqual) GREQ {: RESULT=new RelopGreaterThanOrEqual(); :} | (RelopLessThan) LE {: RESULT=new RelopLessThan(); :} | (RelopLessThanOrEqual) LEQ {: RESULT=new RelopLessThanOrEqual(); :} ;
 
 Addop ::= (AddopPlus)PLUS {: RESULT=new AddopPlus(); :} | (AddopMinus)MINUS {: RESULT=new AddopMinus(); :} ;
 

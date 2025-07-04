@@ -1,16 +1,16 @@
 // generated with ast extension for cup
 // version 0.8
-// 2/6/2025 20:51:46
+// 4/6/2025 20:54:52
 
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class StatementDerived3 extends Statement {
+public class StatementNoElse extends Statement {
 
     private StatementCondition StatementCondition;
     private Statement Statement;
 
-    public StatementDerived3 (StatementCondition StatementCondition, Statement Statement) {
+    public StatementNoElse (StatementCondition StatementCondition, Statement Statement) {
         this.StatementCondition=StatementCondition;
         if(StatementCondition!=null) StatementCondition.setParent(this);
         this.Statement=Statement;
@@ -57,7 +57,7 @@ public class StatementDerived3 extends Statement {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("StatementDerived3(\n");
+        buffer.append("StatementNoElse(\n");
 
         if(StatementCondition!=null)
             buffer.append(StatementCondition.toString("  "+tab));
@@ -72,7 +72,7 @@ public class StatementDerived3 extends Statement {
         buffer.append("\n");
 
         buffer.append(tab);
-        buffer.append(") [StatementDerived3]");
+        buffer.append(") [StatementNoElse]");
         return buffer.toString();
     }
 }

@@ -6,10 +6,18 @@ import rs.etf.pp1.symboltable.concepts.*;
 import rs.etf.pp1.mj.runtime.Code;
 import rs.etf.pp1.symboltable.Tab;
 
+import java.util.Stack;
+
 public class CodeGenerator extends VisitorAdaptor {
 
     private int mainPC;
     private final static int fieldSize = 4;
+    private Stack<Integer> elseJumps = new Stack<>(); // Stack to hold the addresses of conditional jumps
+    private Stack<Integer> thenJumps = new Stack<>(); // Stack to hold the addresses of skip jumps
+
+    private Stack<Integer> skipThen = new Stack<>();
+    private Stack<Integer> skipElse = new Stack<>();
+
 
     public int getMainPC(){return this.mainPC;}
 
@@ -241,5 +249,97 @@ public class CodeGenerator extends VisitorAdaptor {
         // we don't need to explicitly call getfield  when accessing a class field because we have added load instruction to the factorDesignator method
         Code.load(node.obj); // Load the address of the class instance
     }
+
+    // <editor-fold desc="Conditional Statements">
+
+    private int returnRelop(Relop node){
+        if (node instanceof RelopEqual) {
+            return Code.eq;
+        } else if (node instanceof RelopNotEqual) {
+            return Code.ne;
+        } else if (node instanceof RelopLessThan) {
+            return Code.lt;
+        } else if (node instanceof RelopGreaterThan) {
+            return Code.gt;
+        } else if (node instanceof RelopLessThanOrEqual) {
+            return Code.le;
+        } else if (node instanceof RelopGreaterThanOrEqual) {
+            return Code.ge;
+        }
+        return -1; // Invalid relop
+    }
+
+    /*
+    int a = 2;
+    if (a){region1}
+    else {region2}
+
+    if (a == 0) then jmp to region2 else continue to region1
+    */
+    @Override
+    public void visit(CondFactExpr node){
+        Code.loadConst(0);
+        Code.putFalseJump(Code.ne, 0);
+        elseJumps.push(Code.pc - 2); // Save the address of the jump instruction
+    }
+
+    @Override
+    public void visit(CondFactRelop node){
+        int relop = returnRelop(node.getRelop());
+        Code.putFalseJump(relop, 0);
+        elseJumps.push(Code.pc - 2); // Save the address of the jump instruction
+    }
+
+    @Override
+    public void visit(ConditionCondTerm node){
+        Code.putJump(0); // jump to THEN region
+        int jumpAddress = Code.pc - 2;
+        thenJumps.push(jumpAddress);
+        while (!elseJumps.isEmpty()) {
+            int condJumpAddress = elseJumps.pop();
+            Code.fixup(condJumpAddress);
+        }
+    }
+
+    @Override
+    public void visit(ConditionOr node){
+        Code.putJump(0); // jump to THEN region
+        int jumpAddress = Code.pc - 2;
+        thenJumps.push(jumpAddress);
+        // here we do not need to fix the else jumps (as above) because we just finished the whole condition
+    }
+
+    @Override
+    public void visit(StatementConditionCondition node){
+        while(!elseJumps.isEmpty()){
+            int condJumpAddress = elseJumps.pop();
+            Code.fixup(condJumpAddress);
+        }
+        Code.putJump(0); // jump to ELSE region
+        skipThen.push(Code.pc - 2);
+        while (!thenJumps.isEmpty()) {
+            int skipJumpAddress = thenJumps.pop();
+            Code.fixup(skipJumpAddress);
+        }
+    }
+
+    @Override
+    public void visit(StatementNoElse node){
+        Code.fixup(skipThen.pop());
+    }
+
+    @Override
+    public void visit(Else node){
+        Code.putJump(0);
+        skipElse.push(Code.pc - 2);
+        Code.fixup(skipThen.pop());
+    }
+
+    @Override
+    public void visit(StatementElse node){
+        Code.fixup(skipElse.pop());
+    }
+
+    // </editor-fold>
 
 }

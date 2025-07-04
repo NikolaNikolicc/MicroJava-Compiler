@@ -622,8 +622,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(CondFactRelop node){
-        Struct left = node.getCondFact().struct;
-        Struct right = node.getExpr().struct;
+        Struct left = node.getExpr().struct;
+        Struct right = node.getExpr1().struct;
         // for case if (true && a < 2){...} - a and 2 only needs to be comparable not necessarily boolType
         if (!left.compatibleWith(right)){
             report_error("[CondFactRelop] Logicki operandi nisu kompatibilni", node);
@@ -631,7 +631,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         if (left.isRefType() || right.isRefType()){
-            if (!(node.getRelop() instanceof EqEq) && !(node.getRelop() instanceof NotEq)){
+            if (!(node.getRelop() instanceof RelopEqual) && !(node.getRelop() instanceof RelopNotEqual)){
                 report_error("[CondFactRelop] Uz promenljive tipa klase ili niza, od relacionih operatora, mogu se koristiti samo != i ==", node);
                 node.struct = Tab.noType;
                 return;

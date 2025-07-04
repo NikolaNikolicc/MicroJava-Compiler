@@ -1,13 +1,31 @@
 // generated with ast extension for cup
 // version 0.8
-// 2/6/2025 20:51:46
+// 4/6/2025 20:54:52
 
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class Le extends Relop {
+public class Else implements SyntaxNode {
 
-    public Le () {
+    private SyntaxNode parent;
+    private int line;
+    public Else () {
+    }
+
+    public SyntaxNode getParent() {
+        return parent;
+    }
+
+    public void setParent(SyntaxNode parent) {
+        this.parent=parent;
+    }
+
+    public int getLine() {
+        return line;
+    }
+
+    public void setLine(int line) {
+        this.line=line;
     }
 
     public void accept(Visitor visitor) {
@@ -28,10 +46,10 @@ public class Le extends Relop {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("Le(\n");
+        buffer.append("Else(\n");
 
         buffer.append(tab);
-        buffer.append(") [Le]");
+        buffer.append(") [Else]");
         return buffer.toString();
     }
 }

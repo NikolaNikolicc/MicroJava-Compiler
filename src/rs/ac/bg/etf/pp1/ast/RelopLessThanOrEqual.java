@@ -1,13 +1,13 @@
 // generated with ast extension for cup
 // version 0.8
-// 2/6/2025 20:51:46
+// 4/6/2025 20:54:52
 
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class EqEq extends Relop {
+public class RelopLessThanOrEqual extends Relop {
 
-    public EqEq () {
+    public RelopLessThanOrEqual () {
     }
 
     public void accept(Visitor visitor) {
@@ -28,10 +28,10 @@ public class EqEq extends Relop {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("EqEq(\n");
+        buffer.append("RelopLessThanOrEqual(\n");
 
         buffer.append(tab);
-        buffer.append(") [EqEq]");
+        buffer.append(") [RelopLessThanOrEqual]");
         return buffer.toString();
     }
 }

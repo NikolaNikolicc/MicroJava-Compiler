@@ -5,27 +5,9 @@
 
 package rs.ac.bg.etf.pp1.ast;
 
-public class ClassMethodDeclListStart implements SyntaxNode {
+public class RelopLessThan extends Relop {
 
-    private SyntaxNode parent;
-    private int line;
-    public ClassMethodDeclListStart () {
-    }
-
-    public SyntaxNode getParent() {
-        return parent;
-    }
-
-    public void setParent(SyntaxNode parent) {
-        this.parent=parent;
-    }
-
-    public int getLine() {
-        return line;
-    }
-
-    public void setLine(int line) {
-        this.line=line;
+    public RelopLessThan () {
     }
 
     public void accept(Visitor visitor) {
@@ -46,10 +28,10 @@ public class ClassMethodDeclListStart implements SyntaxNode {
     public String toString(String tab) {
         StringBuffer buffer=new StringBuffer();
         buffer.append(tab);
-        buffer.append("ClassMethodDeclListStart(\n");
+        buffer.append("RelopLessThan(\n");
 
         buffer.append(tab);
-        buffer.append(") [ClassMethodDeclListStart]");
+        buffer.append(") [RelopLessThan]");
         return buffer.toString();
     }
 }

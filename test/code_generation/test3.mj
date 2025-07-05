@@ -1,0 +1,11 @@
+program Test3
+
+{
+    int meth(){
+        return 1;
+    }
+
+    void main(){
+        print(meth);
+    }
+}

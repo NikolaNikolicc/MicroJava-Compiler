@@ -24,6 +24,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     private Obj currTypeVar = null;
     private Obj currTypeMeth = null;
     private Obj currMeth = null;
+//    private Obj currDesignatorVar = null;
     private Struct currClass = null;
     private Struct accessClass = null;
     private Struct currInterface = null;
@@ -687,6 +688,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         node.obj = var;
+//        currDesignatorVar = var;
     }
 
     @Override
@@ -938,10 +940,29 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     @Override
     public void visit(StatementPrint node){
         Struct type = node.getExpr().struct;
+
         if(!type.equals(Tab.intType) && !type.equals(boolType) && !type.equals(Tab.charType) && !type.equals(setType)){
             report_error("[StatementPrint] Print operacija nad izrazom koji nije tipa int, char ili bool", node);
             return;
         }
+
+//        int kind = currDesignatorVar.getKind();
+//        boolean isMethodCall = false;
+//        if (node.getExpr() instanceof ExprTerm){
+//            ExprTerm exprTerm = (ExprTerm) node.getExpr();
+//            if (exprTerm.getTerm() instanceof TermFactor){
+//                TermFactor termFactor = (TermFactor) exprTerm.getTerm();
+//                if (termFactor.getFactor() instanceof FactorFuncCall){
+//                    isMethodCall = true;
+//                }
+//            }
+//        }
+//
+//        if (kind == Obj.Type || (!isMethodCall && kind == Obj.Meth) || kind == Obj.Prog){
+//            logSymbol("Detektovana promenljiva za print:", currDesignatorVar, node);
+//            report_error("[StatementPrint] Print operacija nad neadekvatnom promenljivom(" + currDesignatorVar.getName() + ")", node);
+//            return;
+//        }
     }
 
     @Override

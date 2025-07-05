@@ -56,6 +56,8 @@ public class CodeGenerator extends VisitorAdaptor {
     }
 
     // </editor-fold>
+    
+    // <editor-fold desc="Methods Declarations and Returns">
 
     @Override
     public void visit(RegularMethod node){
@@ -81,6 +83,16 @@ public class CodeGenerator extends VisitorAdaptor {
     }
 
     @Override
+    public void visit(StatementReturn node){
+        Code.put(Code.exit);
+        Code.put(Code.return_);
+    }
+
+    // </editor-fold>
+
+    // <editor-fold desc="[Read, Print] Standard Input/Output">
+
+    @Override
     public void visit(StatementRead node){
         if (node.getDesignator().obj.getType().equals(Tab.charType)) {
             Code.put(Code.bread);
@@ -104,35 +116,33 @@ public class CodeGenerator extends VisitorAdaptor {
         else Code.put(Code.print);
     }
 
+    // </editor-fold>
+
+    // <editor-fold desc="[Expr, Term] Arithmetic Operations">
+
     @Override
-    public void visit(FactorDesignator node){
-        if (node.getDesignator().obj.getKind() == Obj.Con) {
-            Code.loadConst(node.getDesignator().obj.getAdr());
-        } else {
-            Code.load(node.getDesignator().obj);
+    public void visit(ExprAddopTerm node){
+        if (node.getAddop() instanceof AddopPlus) {
+            Code.put(Code.add);
+        } else if (node.getAddop() instanceof AddopMinus) {
+            Code.put(Code.sub);
         }
     }
 
     @Override
-    public void visit(FactorCreateArray node){
-        Code.put(Code.newarray);
-        if (node.getType().struct.equals(Tab.charType)){
-            Code.put(0);
-        } else{
-            Code.put(1);
+    public void visit(TermTermMulopFactor node){
+        if (node.getMulop() instanceof MulopMul) {
+            Code.put(Code.mul);
+        } else if (node.getMulop() instanceof MulopDiv) {
+            Code.put(Code.div);
+        } else if (node.getMulop() instanceof MulopMod) {
+            Code.put(Code.rem);
         }
     }
 
-    @Override
-    public void visit(FactorCreateObject node){
-        Code.put(Code.new_);
-        Code.put2(node.getType().struct.getNumberOfFields() * fieldSize); // Load the address of the class constructor
-    }
+    // </editor-fold>
 
-    @Override
-    public void visit(DesignatorAssignExpr node){
-        Code.store(node.getDesignator().obj); // Store the value of the expression in the designator
-    }
+    // <editor-fold desc="[Designator Statements] function call, assignment, increment, decrement, left operands">
 
     @Override
     public void visit(UnaryInc node){
@@ -174,13 +184,24 @@ public class CodeGenerator extends VisitorAdaptor {
     }
 
     @Override
-    public void visit(FactorFuncCall node){
-        int offset = node.getDesignator().obj.getAdr() - Code.pc; // Calculate the offset to the function address
-        Code.put(Code.call);
-        Code.put2(offset);
+    public void visit(DesignatorAssignExpr node){
+        Code.store(node.getDesignator().obj); // Store the value of the expression in the designator
     }
 
-    // Designator
+    // </editor-fold>
+
+    // <editor-fold desc="[DesignatorClass] access Class properties">
+
+    @Override
+    public void visit(DesignatorClassName node){
+        // we don't need to explicitly call getfield  when accessing a class field because we have added load instruction to the factorDesignator method
+        Code.load(node.obj); // Load the address of the class instance
+    }
+
+    @Override
+    public void visit(DesignatorClassElem node){
+        Code.load(node.obj);
+    }
 
     @Override
     public void visit(DesignatorClassMoreFinal node){
@@ -218,6 +239,10 @@ public class CodeGenerator extends VisitorAdaptor {
         }
     }
 
+    // </editor-fold>
+
+    // <editor-fold desc="[DesignatorArray] access Arrays">
+
     @Override
     public void visit(DesignatorArrayName node){
         Code.load(node.obj); // Load the address of the array
@@ -227,17 +252,26 @@ public class CodeGenerator extends VisitorAdaptor {
     public void visit(DesignatorClassArrayName node){ Code.load(node.obj); // Load the address of the class instance}
     }
 
+    // </editor-fold>
+
+    // <editor-fold desc="[Factor] Heap Allocation (arrays, objects and sets), Loading Constants and FUnction Calls, right operands">
+
     @Override
-    public void visit(DesignatorClassElem node){
-        Code.load(node.obj);
+    public void visit(FactorDesignator node){
+        if (node.getDesignator().obj.getKind() == Obj.Con) {
+            Code.loadConst(node.getDesignator().obj.getAdr());
+        } else {
+            Code.load(node.getDesignator().obj);
+        }
     }
 
     @Override
-    public void visit(StatementReturn node){
-        Code.put(Code.exit);
-        Code.put(Code.return_);
+    public void visit(FactorFuncCall node){
+        int offset = node.getDesignator().obj.getAdr() - Code.pc; // Calculate the offset to the function address
+        Code.put(Code.call);
+        Code.put2(offset);
     }
-    
+
     @Override
     public void visit(NumConst node){
         Code.loadConst(node.getN1());
@@ -259,32 +293,22 @@ public class CodeGenerator extends VisitorAdaptor {
     }
 
     @Override
-    public void visit(ExprAddopTerm node){
-        if (node.getAddop() instanceof AddopPlus) {
-            Code.put(Code.add);
-        } else if (node.getAddop() instanceof AddopMinus) {
-            Code.put(Code.sub);
+    public void visit(FactorCreateArray node){
+        Code.put(Code.newarray);
+        if (node.getType().struct.equals(Tab.charType)){
+            Code.put(0);
+        } else{
+            Code.put(1);
         }
     }
 
     @Override
-    public void visit(TermTermMulopFactor node){
-        if (node.getMulop() instanceof MulopMul) {
-            Code.put(Code.mul);
-        } else if (node.getMulop() instanceof MulopDiv) {
-            Code.put(Code.div);
-        } else if (node.getMulop() instanceof MulopMod) {
-            Code.put(Code.rem);
-        }
+    public void visit(FactorCreateObject node){
+        Code.put(Code.new_);
+        Code.put2(node.getType().struct.getNumberOfFields() * fieldSize); // Load the address of the class constructor
     }
 
-    // Class
-
-    @Override
-    public void visit(DesignatorClassName node){
-        // we don't need to explicitly call getfield  when accessing a class field because we have added load instruction to the factorDesignator method
-        Code.load(node.obj); // Load the address of the class instance
-    }
+    // </editor-fold>
 
     // <editor-fold desc="Conditional Statements While">
 

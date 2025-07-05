@@ -1,4 +1,4 @@
-program Test
+program Test2
 
 class c1 { int x[]; int y; }
 class c2 { c1 obj[];}

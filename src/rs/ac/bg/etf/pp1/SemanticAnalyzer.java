@@ -401,7 +401,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             varNode.setLevel(1);
         }
         formParsSetLevelAndFpPos(varNode);
-        report_info("stigli", node);
         logSymbol(message, varNode, node);
     }
 
@@ -886,11 +885,11 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             report_error("[StatementBreak] Break naredba se ne moze pozivati van while petlje", node);
             return;
         }
-        loopCounter--;
     }
 
     @Override
     public void visit(StatementContinue node){
+        report_info("stigli", node);
         if(loopCounter == 0){
             report_error("[StatementContinue] Continue naredba se ne moze pozivati van while petlje", node);
             return;

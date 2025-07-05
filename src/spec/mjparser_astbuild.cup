@@ -112,6 +112,9 @@ nonterminal CopyParentMethods CopyParentMethods;
 nonterminal CloseMethodScope CloseMethodScope;
 nonterminal InterfaceDeclName InterfaceDeclName;
 nonterminal Else Else;
+nonterminal WhileStatement WhileStatement;
+nonterminal HandleWhileCondition HandleWhileCondition;
+nonterminal GoToStart GoToStart;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr, CondFact, CondTerm, Condition, StatementCondition, Type;
 nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue, Designator, DesignatorArrayName, DesignatorClassMore, DesignatorClassArrayName, DesignatorClassName, DesignatorClassElem;
@@ -311,11 +314,11 @@ Statement ::=   DesignatorStatement:D1 {: RESULT=new StatementDerived1(D1); RESU
               |
               (StatementPrintNumber) PRINT LPAREN Expr:E1 COMMA NUMBER:N2 RPAREN SEMI {: RESULT=new StatementPrintNumber(E1, N2); RESULT.setLine(E1left); :}
               |
-              (StatementLoopSimple) DoStatement:D1 Statement:S2 WHILE LPAREN RPAREN SEMI {: RESULT=new StatementLoopSimple(D1, S2); RESULT.setLine(D1left); :}
+              (StatementLoopSimple) DoStatement:D1 Statement:S2 WhileStatement:W3 LPAREN RPAREN GoToStart:G4 SEMI {: RESULT=new StatementLoopSimple(D1, S2, W3, G4); RESULT.setLine(D1left); :}
               |
-              (StatementLoopCondition) DoStatement:D1 Statement:S2 WHILE LPAREN Condition:C3 RPAREN SEMI {: RESULT=new StatementLoopCondition(D1, S2, C3); RESULT.setLine(D1left); :}
+              (StatementLoopCondition) DoStatement:D1 Statement:S2 WhileStatement:W3 LPAREN Condition:C4 HandleWhileCondition:H5 RPAREN GoToStart:G6 SEMI {: RESULT=new StatementLoopCondition(D1, S2, W3, C4, H5, G6); RESULT.setLine(D1left); :}
               |
-              (StatementLoopComplex) DoStatement:D1 Statement:S2 WHILE LPAREN Condition:C3 COMMA DesignatorStatementWhile:D4 RPAREN SEMI {: RESULT=new StatementLoopComplex(D1, S2, C3, D4); RESULT.setLine(D1left); :}
+              (StatementLoopComplex) DoStatement:D1 Statement:S2 WhileStatement:W3 LPAREN Condition:C4 COMMA HandleWhileCondition:H5 DesignatorStatementWhile:D6 RPAREN GoToStart:G7 SEMI {: RESULT=new StatementLoopComplex(D1, S2, W3, C4, H5, D6, G7); RESULT.setLine(D1left); :}
               |
               LBRACE StatementList:S1 RBRACE {: RESULT=new StatementDerived2(S1); RESULT.setLine(S1left); :}
               ;
@@ -323,6 +326,13 @@ Statement ::=   DesignatorStatement:D1 {: RESULT=new StatementDerived1(D1); RESU
 Else ::= (Else) ELSE {: RESULT=new Else(); :} ;
 
 DoStatement ::= (DoStatement) DO {: RESULT=new DoStatement(); :};
+
+WhileStatement ::= (WhileStatement) WHILE {: RESULT=new WhileStatement(); :};
+
+HandleWhileCondition ::= (HandleWhileCondition) {: RESULT=new HandleWhileCondition(); :} /* epsilon */ ;
+
+GoToStart ::= (GoToStart) {: RESULT=new GoToStart(); :} /* epsilon */ ;
+
 
 DesignatorStatementWhile ::= (DesignatorStatementFuncCallWhile)Designator:D1 DesignatorFuncCall:D2 {: RESULT=new DesignatorStatementFuncCallWhile(D1, D2); RESULT.setLine(D1left); :}
                              |

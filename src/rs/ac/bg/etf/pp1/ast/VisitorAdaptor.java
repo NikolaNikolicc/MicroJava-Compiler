@@ -1,61 +1,61 @@
 // generated with ast extension for cup
 // version 0.8
-// 4/6/2025 20:54:52
+// 5/6/2025 0:36:49
 
 
 package rs.ac.bg.etf.pp1.ast;
 
 public abstract class VisitorAdaptor implements Visitor { 
 
-    public void visit(DesignatorAssign DesignatorAssign) { }
-    public void visit(StatementCondition StatementCondition) { }
-    public void visit(ClassDeclErrorLBrace ClassDeclErrorLBrace) { }
-    public void visit(Mulop Mulop) { }
-    public void visit(VarDeclOptionalList VarDeclOptionalList) { }
-    public void visit(Relop Relop) { }
-    public void visit(Assignop Assignop) { }
-    public void visit(ProgramDeclList ProgramDeclList) { }
-    public void visit(DesignatorStatementUnary DesignatorStatementUnary) { }
-    public void visit(TypeChoice TypeChoice) { }
-    public void visit(MethodSignature MethodSignature) { }
-    public void visit(VarDeclErrorSemi VarDeclErrorSemi) { }
-    public void visit(DesignatorFuncCall DesignatorFuncCall) { }
-    public void visit(VarDeclClass VarDeclClass) { }
-    public void visit(StatementList StatementList) { }
-    public void visit(Addop Addop) { }
-    public void visit(MathodDecl MathodDecl) { }
-    public void visit(Factor Factor) { }
-    public void visit(CondTerm CondTerm) { }
-    public void visit(VarDeclProgram VarDeclProgram) { }
-    public void visit(DesignatorStatementWhile DesignatorStatementWhile) { }
-    public void visit(Designator Designator) { }
-    public void visit(MethodName MethodName) { }
-    public void visit(Term Term) { }
-    public void visit(Condition Condition) { }
-    public void visit(FormParsOptional FormParsOptional) { }
-    public void visit(DesignatorClassMore DesignatorClassMore) { }
-    public void visit(ConstDeclList ConstDeclList) { }
-    public void visit(ConstDeclListValue ConstDeclListValue) { }
-    public void visit(DesignatorAssignWhile DesignatorAssignWhile) { }
-    public void visit(ProgramDeclElem ProgramDeclElem) { }
-    public void visit(VarDeclErrorComma VarDeclErrorComma) { }
-    public void visit(Label Label) { }
-    public void visit(VarDeclFinal VarDeclFinal) { }
-    public void visit(VarDeclList VarDeclList) { }
-    public void visit(Expr Expr) { }
-    public void visit(ActPars ActPars) { }
-    public void visit(DesignatorStatement DesignatorStatement) { }
-    public void visit(VarDeclListOptional VarDeclListOptional) { }
-    public void visit(Statement Statement) { }
-    public void visit(VarDecl VarDecl) { }
-    public void visit(Type Type) { }
-    public void visit(ClassDecl ClassDecl) { }
-    public void visit(ConstDecl ConstDecl) { }
-    public void visit(CondFact CondFact) { }
-    public void visit(Setop Setop) { }
-    public void visit(MethodDeclList MethodDeclList) { }
-    public void visit(InterfaceDeclOptionList InterfaceDeclOptionList) { }
     public void visit(FormPars FormPars) { }
+    public void visit(Factor Factor) { }
+    public void visit(Statement Statement) { }
+    public void visit(ClassDeclErrorLBrace ClassDeclErrorLBrace) { }
+    public void visit(ConstDeclList ConstDeclList) { }
+    public void visit(VarDeclFinal VarDeclFinal) { }
+    public void visit(Label Label) { }
+    public void visit(Relop Relop) { }
+    public void visit(TypeChoice TypeChoice) { }
+    public void visit(DesignatorStatementWhile DesignatorStatementWhile) { }
+    public void visit(VarDeclClass VarDeclClass) { }
+    public void visit(MathodDecl MathodDecl) { }
+    public void visit(Expr Expr) { }
+    public void visit(VarDeclOptionalList VarDeclOptionalList) { }
+    public void visit(DesignatorAssignWhile DesignatorAssignWhile) { }
+    public void visit(StatementCondition StatementCondition) { }
+    public void visit(VarDecl VarDecl) { }
+    public void visit(VarDeclListOptional VarDeclListOptional) { }
+    public void visit(VarDeclErrorSemi VarDeclErrorSemi) { }
+    public void visit(DesignatorAssign DesignatorAssign) { }
+    public void visit(DesignatorFuncCall DesignatorFuncCall) { }
+    public void visit(VarDeclErrorComma VarDeclErrorComma) { }
+    public void visit(Condition Condition) { }
+    public void visit(Mulop Mulop) { }
+    public void visit(DesignatorStatement DesignatorStatement) { }
+    public void visit(VarDeclProgram VarDeclProgram) { }
+    public void visit(Addop Addop) { }
+    public void visit(StatementList StatementList) { }
+    public void visit(Assignop Assignop) { }
+    public void visit(ConstDecl ConstDecl) { }
+    public void visit(Type Type) { }
+    public void visit(MethodSignature MethodSignature) { }
+    public void visit(Setop Setop) { }
+    public void visit(CondTerm CondTerm) { }
+    public void visit(ClassDecl ClassDecl) { }
+    public void visit(MethodDeclList MethodDeclList) { }
+    public void visit(DesignatorClassMore DesignatorClassMore) { }
+    public void visit(ProgramDeclList ProgramDeclList) { }
+    public void visit(ProgramDeclElem ProgramDeclElem) { }
+    public void visit(MethodName MethodName) { }
+    public void visit(ActPars ActPars) { }
+    public void visit(ConstDeclListValue ConstDeclListValue) { }
+    public void visit(Designator Designator) { }
+    public void visit(VarDeclList VarDeclList) { }
+    public void visit(CondFact CondFact) { }
+    public void visit(DesignatorStatementUnary DesignatorStatementUnary) { }
+    public void visit(FormParsOptional FormParsOptional) { }
+    public void visit(InterfaceDeclOptionList InterfaceDeclOptionList) { }
+    public void visit(Term Term) { }
     public void visit(SetopDerived1 SetopDerived1) { visit(); }
     public void visit(MulopMod MulopMod) { visit(); }
     public void visit(MulopDiv MulopDiv) { visit(); }
@@ -121,6 +121,9 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(DesignatorStatementWhileDerived1 DesignatorStatementWhileDerived1) { visit(); }
     public void visit(DesignatorStatementUnarySemiWhile DesignatorStatementUnarySemiWhile) { visit(); }
     public void visit(DesignatorStatementFuncCallWhile DesignatorStatementFuncCallWhile) { visit(); }
+    public void visit(GoToStart GoToStart) { visit(); }
+    public void visit(HandleWhileCondition HandleWhileCondition) { visit(); }
+    public void visit(WhileStatement WhileStatement) { visit(); }
     public void visit(DoStatement DoStatement) { visit(); }
     public void visit(Else Else) { visit(); }
     public void visit(StatementDerived2 StatementDerived2) { visit(); }

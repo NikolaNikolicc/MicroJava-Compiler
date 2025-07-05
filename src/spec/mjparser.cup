@@ -62,7 +62,7 @@ terminal Character CHAR ;
 nonterminal MethodSignatureEndFormPars, MethodSignatureStartFormPars, ConstDeclAssign, Setop, Mulop, Addop, Relop, Assignop, Label, ProgramDeclList, ProgramDeclElem, ConstDecl, ConstDeclList, VarDecl, VarDeclFinal, VarDeclOptionalList, ClassDecl, VarDeclListOptional, MethodSignature, TypeChoice, FormParsOptional, FormPars, MethodDecl, VarDeclList, MethodDeclList, MathodDecl, StatementList, Statement, DesignatorStatement;
 nonterminal ActPars, DesignatorFuncCall, DesignatorStatementUnary, StackInitialize, MapDesignator, ClassDeclName, ClassMethodDeclListStart;
 nonterminal Program, InterfaceDeclOptionList, InterfaceDecl, VarDeclProgram, VarDeclErrorComma, VarDeclErrorSemi, DesignatorAssign, VarDeclClass, ClassDeclErrorLBrace, DesignatorAssignWhile, DesignatorStatementWhile, DoStatement ;
-nonterminal ExtendsClass, CopyParentMethods, CloseMethodScope, InterfaceDeclName, Else;
+nonterminal ExtendsClass, CopyParentMethods, CloseMethodScope, InterfaceDeclName, Else, WhileStatement, HandleWhileCondition, GoToStart;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr, CondFact, CondTerm, Condition, StatementCondition, Type;
 nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue, Designator, DesignatorArrayName, DesignatorClassMore, DesignatorClassArrayName, DesignatorClassName, DesignatorClassElem;
@@ -262,11 +262,11 @@ Statement ::=   DesignatorStatement
               |
               (StatementPrintNumber) PRINT LPAREN Expr COMMA NUMBER RPAREN SEMI
               |
-              (StatementLoopSimple) DoStatement Statement WHILE LPAREN RPAREN SEMI
+              (StatementLoopSimple) DoStatement Statement WhileStatement LPAREN RPAREN GoToStart SEMI
               |
-              (StatementLoopCondition) DoStatement Statement WHILE LPAREN Condition RPAREN SEMI
+              (StatementLoopCondition) DoStatement Statement WhileStatement LPAREN Condition HandleWhileCondition RPAREN GoToStart SEMI
               |
-              (StatementLoopComplex) DoStatement Statement WHILE LPAREN Condition COMMA DesignatorStatementWhile RPAREN SEMI
+              (StatementLoopComplex) DoStatement Statement WhileStatement LPAREN Condition COMMA HandleWhileCondition DesignatorStatementWhile RPAREN GoToStart SEMI
               |
               LBRACE StatementList RBRACE
               ;
@@ -274,6 +274,13 @@ Statement ::=   DesignatorStatement
 Else ::= (Else) ELSE ;
 
 DoStatement ::= (DoStatement) DO;
+
+WhileStatement ::= (WhileStatement) WHILE;
+
+HandleWhileCondition ::= (HandleWhileCondition) /* epsilon */ ;
+
+GoToStart ::= (GoToStart) /* epsilon */ ;
+
 
 DesignatorStatementWhile ::= (DesignatorStatementFuncCallWhile)Designator DesignatorFuncCall
                              |

@@ -6,6 +6,8 @@ import rs.etf.pp1.symboltable.concepts.*;
 import rs.etf.pp1.mj.runtime.Code;
 import rs.etf.pp1.symboltable.Tab;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Stack;
 
 public class CodeGenerator extends VisitorAdaptor {
@@ -18,8 +20,42 @@ public class CodeGenerator extends VisitorAdaptor {
     private Stack<Integer> skipThen = new Stack<>();
     private Stack<Integer> skipElse = new Stack<>();
 
+    private Stack<Integer> doJumps = new Stack<>(); // for do-while statements (true condition)
+    private Stack<Collection<Integer>> whileJumps = new Stack<>(); // for continue statements
+    private Stack<Collection<Integer>> skipWhile = new Stack<>(); // for break statements
 
     public int getMainPC(){return this.mainPC;}
+
+    // <editor-fold desc="Constructor">
+
+    CodeGenerator(){
+        Obj ordMeth = Tab.find("ord");
+        Obj chrMeth = Tab.find("chr");
+
+        ordMeth.setAdr(Code.pc);
+        chrMeth.setAdr(Code.pc);
+
+        Code.put(Code.enter);
+        Code.put(1);
+        Code.put(1);
+        Code.put(Code.load_n);
+        Code.put(Code.exit);
+        Code.put(Code.return_);
+
+        Obj lenMeth = Tab.find("len");
+        lenMeth.setAdr(Code.pc);
+
+        Code.put(Code.enter);
+        Code.put(1); // 1 formal parameter
+        Code.put(1); // 1 local variable
+        Code.put(Code.load_n);
+        Code.put(Code.arraylength);
+        Code.put(Code.exit);
+        Code.put(Code.return_);
+
+    }
+
+    // </editor-fold>
 
     @Override
     public void visit(RegularMethod node){
@@ -250,7 +286,83 @@ public class CodeGenerator extends VisitorAdaptor {
         Code.load(node.obj); // Load the address of the class instance
     }
 
-    // <editor-fold desc="Conditional Statements">
+    // <editor-fold desc="Conditional Statements While">
+
+    @Override
+    public void visit(DoStatement node){
+        doJumps.push(Code.pc);
+        whileJumps.push(new ArrayList<Integer>());
+        skipWhile.push(new ArrayList<Integer>());
+    }
+
+    @Override
+    public void visit(WhileStatement node){
+        ArrayList<Integer> continueAddresses = (ArrayList<Integer>) whileJumps.pop();
+        while(!continueAddresses.isEmpty()){
+            Code.fixup(continueAddresses.remove(0));
+        }
+    }
+
+    @Override
+    public void visit(HandleWhileCondition node){
+        while(!elseJumps.isEmpty()){
+            int condJumpAddress = elseJumps.pop();
+            Code.fixup(condJumpAddress);
+        }
+        Code.putJump(0); // jump to ELSE region
+        skipThen.push(Code.pc - 2);
+        while (!thenJumps.isEmpty()) {
+            int skipJumpAddress = thenJumps.pop();
+            Code.fixup(skipJumpAddress);
+        }
+    }
+
+    @Override
+    public void visit(GoToStart node){
+        Code.putJump(doJumps.peek());
+        Code.fixup(skipThen.pop()); // for invalid condition
+        ArrayList<Integer> breakAddresses = (ArrayList<Integer>)(skipWhile.pop());
+        while (!breakAddresses.isEmpty()){
+            Code.fixup(breakAddresses.remove(0));
+        }
+    }
+
+    private void popWhileStacks(){
+        doJumps.pop();
+//        whileJumps.pop();
+//        skipWhile.pop();
+    }
+
+    @Override
+    public void visit(StatementLoopSimple node){
+        popWhileStacks();
+    }
+
+    @Override
+    public void visit(StatementLoopCondition node){
+        popWhileStacks();
+    }
+
+    @Override
+    public void visit(StatementLoopComplex node){
+        popWhileStacks();
+    }
+
+    @Override
+    public void visit(StatementBreak node){
+        Code.putJump(0);
+        skipWhile.peek().add(Code.pc - 2);
+    }
+
+    @Override
+    public void visit(StatementContinue node){
+        Code.putJump(0);
+        whileJumps.peek().add(Code.pc - 2);
+    }
+
+    // </editor-fold>
+
+    // <editor-fold desc="Conditional Statements If-Else">
 
     private int returnRelop(Relop node){
         if (node instanceof RelopEqual) {

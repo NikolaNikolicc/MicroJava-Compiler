@@ -469,7 +469,12 @@ public class CodeGenerator extends VisitorAdaptor {
 
     // </editor-fold>
 
-    // <editor-fold desc="[Expr, Term] Arithmetic Operations">
+    // <editor-fold desc="[Expr, Term] Arithmetic Operations (Minus, Addop, Mulop)">
+
+    @Override
+    public void visit(ExprMinusTerm node){
+        Code.put(Code.neg);
+    }
 
     @Override
     public void visit(ExprAddopTerm node){
@@ -615,7 +620,7 @@ public class CodeGenerator extends VisitorAdaptor {
 
     // </editor-fold>
 
-    // <editor-fold desc="[Factor] Heap Allocation (arrays, objects and sets), Loading Constants, Function Calls, Addop, Minus Expr, right operands">
+    // <editor-fold desc="[Factor] Heap Allocation (arrays, objects and sets), Loading Constants, Function Calls, right operands">
 
     @Override
     public void visit(FactorDesignator node){
@@ -646,11 +651,6 @@ public class CodeGenerator extends VisitorAdaptor {
     @Override
     public void visit(BoolConst node){
         Code.loadConst(node.getB1());
-    }
-
-    @Override
-    public void visit(ExprMinusTerm node){
-        Code.put(Code.neg);
     }
 
     @Override

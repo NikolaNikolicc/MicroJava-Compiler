@@ -14,6 +14,11 @@ import java.util.Stack;
 
 public class SemanticAnalyzer extends VisitorAdaptor{
 
+    private static final int FP_POS_REGULAR_OBJ_NODE = 0;
+    private static final int FP_POS_FORMAL_PARAMETER = 1;
+    private static final int FP_POS_IMPLEMENTED_INHERITED_METHOD = 2;
+    private static final int FP_POS_UNIMPLEMENTED_INHERITED_METHOD = 3;
+
     // package rs.ac.bg.etf.pp1;
     int nVars;
 
@@ -54,6 +59,9 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     Logger log = Logger.getLogger(getClass());
 
+
+    // <editor-fold desc="log methods">
+
     public void report_error(String message, SyntaxNode info) {
         errorDetected = true;
         StringBuilder msg = new StringBuilder(message);
@@ -61,6 +69,20 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         if (line != 0)
             msg.append (" na liniji ").append(line);
         log.error(msg.toString());
+    }
+
+    public void report_info(String message, SyntaxNode info) {
+        StringBuilder msg = new StringBuilder(message);
+        int line = (info == null) ? 0: info.getLine();
+        if (line != 0)
+            msg.append (" na liniji ").append(line);
+        log.info(msg.toString());
+    }
+
+    private void printScope(SyntaxNode node){
+        for(Obj member: Tab.currentScope().getLocals().symbols()){
+            report_info("member: " + member.getName() + " fp pos: " + member.getFpPos(), node);
+        }
     }
 
     private void logSymbol(String message, Obj sym, SyntaxNode node) {
@@ -86,178 +108,27 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         log.info(builder.toString());
     }
 
-    public void report_info(String message, SyntaxNode info) {
-        StringBuilder msg = new StringBuilder(message);
-        int line = (info == null) ? 0: info.getLine();
-        if (line != 0)
-            msg.append (" na liniji ").append(line);
-        log.info(msg.toString());
-    }
+    // </editor-fold>
 
+    // <editor-fold desc="helpers for method calls">
+
+    // this method is used to check if semantic analysis passed by Compiler.java
     public boolean passed(){
         return !errorDetected;
     }
 
-    @Override
-    public void visit(ProgName node){
-        node.obj = Tab.insert(Obj.Prog, node.getProgName(), Tab.noType);
-        node.obj.setFpPos(0);
-        Tab.openScope();
-    }
 
     // helpers
     private boolean checkIsObjNodeDeclared(String name){
         Obj node = Tab.currentScope().findSymbol(name);
         // fpPos == 0 implemented class method or field or just method or var
         // fpPos == 3 unimplemented method, just declared
-        return node != null && (node.getFpPos() == 0 || node.getFpPos() == 3);
-//        Obj node;
-//        if(currMeth != null){
-//            node = Tab.currentScope().findSymbol(name);
-//        }else{
-//            node = Tab.find(name);
-//        }
-//
-//        // we can't write this as one condition with OR because everything that is not null will pass and we don't want behaviour like that
-//        if(node == null){
-//            return false;
-//        }
-//        return node != Tab.noObj;
+        return node != null && (node.getFpPos() == FP_POS_REGULAR_OBJ_NODE || node.getFpPos() == FP_POS_UNIMPLEMENTED_INHERITED_METHOD);
     }
 
-    private void closeInterface(){
-        Tab.chainLocalSymbols(currInterface);
-        Tab.closeScope();
-        currInterface = null;
-        classMethodDecl = false;
-    }
+    // </editor-fold>
 
-    private void printScope(SyntaxNode node){
-        for(Obj member: Tab.currentScope().getLocals().symbols()){
-            report_info("member: " + member.getName() + " fp pos: " + member.getFpPos(), node);
-        }
-    }
-
-    private void checkIfAllMethodsAreImplemented(SyntaxNode node){
-        for(Obj member: currClass.getMembers()){
-            if (member.getFpPos() == 3){
-                report_error("[checkIfAllMethodsAreImplemented] Metod " + member.getName() + " interfejsa nije implementiran unutar klase koja ga prosiruje", node);
-                return;
-            }
-        }
-    }
-
-    private void closeClass(SyntaxNode node){
-        Tab.chainLocalSymbols(currClass);
-        checkIfAllMethodsAreImplemented(node);
-        Tab.closeScope();
-        currClass = null;
-        classMethodDecl = false;
-        parentClass = Tab.noType;
-//        scopeNodes.clear();
-    }
-
-    private void formParsSetLevelAndFpPos(Obj node){
-        if(parsingFormPars && !(mainDeclared && mainMeth.equals(currMeth))){
-            currMeth.setLevel(currMeth.getLevel() + 1);
-            node.setFpPos(1);
-        }
-    }
-
-    private List<Struct> getFormalParameters(Obj funcNode, SyntaxNode node){
-        List<Struct> fpList = new ArrayList<>();
-        for (Obj localSym: funcNode.getLocalSymbols()){
-            if (localSym.getKind() == Obj.Var && localSym.getFpPos() == 1 && localSym.getLevel() >= 1){
-                fpList.add(localSym.getType());
-            }
-        }
-        return fpList;
-    }
-
-    private boolean checkArePassedParametersAndFormalParameterListCompatible(List<Struct> fpList, String methName,  SyntaxNode node){
-        if (fpList.size() != fpStack.size()){
-            report_error("[FactorFuncCall][DesignatorStatementFuncCall] Lista prosledjenih parametara se ne poklapa se parametrima koji su prosledjeni prilikom poziva metode " + methName + " po broju prosledjenih parametara("+ fpStack.size() +"), ova metoda prima: " + fpList.size() + " parametara", node);
-
-            fpStack = new Stack<>();
-            return false;
-        }
-
-        boolean errorHappened = false;
-        for (int i = 0; i < fpList.size(); i++){
-            Struct fpListElem = fpList.get(i);
-            Struct fpStackElem = fpStack.pop();
-            if(!fpStackElem.assignableTo(fpListElem)){
-                report_error("[FactorFuncCall][DesignatorStatementFuncCall] Prosledjeni parametar pod brojem: " + (i + 1) + "(indeksirano od 1) nije kompatibilan sa odgovarajucim formalnim parametrom metode " + methName + " po tipu", node);
-
-                errorHappened = true;
-            }
-        }
-        if (errorHappened){
-            fpStack = new Stack<>();
-            return false;
-        }
-        return true;
-    }
-
-    private Struct funccall(Obj meth, SyntaxNode node){
-        if (meth == Tab.noObj){
-            return Tab.noType;
-        }
-        else if (meth.getKind() != Obj.Meth){
-            report_error("[FactorFuncCall][DesignatorStatementFuncCall] Neadekvatna vrsta promenljive (" + meth.getName() + " mora biti metoda)", node);
-            return Tab.noType;
-        }
-
-        List<Struct> fpList = getFormalParameters(meth, node);
-        if (!checkArePassedParametersAndFormalParameterListCompatible(fpList, meth.getName(), node)){
-            // nothing to do here but to remember that function above returns true if parameters are compatible
-        }
-
-        return meth.getType();
-    }
-
-    private boolean checkAssignCompatibility(Struct left, Struct right){
-        // provera za setove
-        if (left.getKind() == Struct.Enum) return right.getKind() == Struct.Enum;
-
-        if (right.assignableTo(left)){
-            return true;
-        }
-
-        for (Struct implementedInterface: right.getImplementedInterfaces()){
-            if (implementedInterface.assignableTo(left)){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void copyLocalSymbols(Obj fromMeth, Obj toMeth){
-        HashTableDataStructure copy = new HashTableDataStructure();
-
-        for (Obj localSym: fromMeth.getLocalSymbols()){
-            Obj node;
-
-            if (localSym.getName().equals("this")){
-                node = new Obj(localSym.getKind(), localSym.getName(), currClass);
-            }else{
-                node = new Obj(localSym.getKind(), localSym.getName(), localSym.getType());
-            }
-            node.setFpPos(localSym.getFpPos());
-            node.setLevel(localSym.getLevel());
-            node.setAdr(localSym.getAdr());
-            copy.insertKey(node);
-        }
-
-        toMeth.setLocals(copy);
-    }
-
-    private void copyClassExtends(Struct to, Struct from, SyntaxNode node){
-        to.setElementType(from.getElemType());
-        for (Struct implementedInterface: from.getImplementedInterfaces()){
-            to.addImplementedInterface(implementedInterface);
-        }
-    }
+    // <editor-fold desc="Program and Type identification">
 
     private Obj searchType(String name){
         Obj typeNode;
@@ -299,6 +170,12 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     }
 
     @Override
+    public void visit(ProgName node){
+        node.obj = Tab.insert(Obj.Prog, node.getProgName(), Tab.noType);
+        Tab.openScope();
+    }
+
+    @Override
     public void visit(TypeIdent node){
 
         Obj typeNode = searchType(node.getI1());
@@ -319,42 +196,15 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         currTypeVar = typeNode;
     }
 
-    @Override
-    public void visit(NoVoidMethod node){
+    // </editor-fold>
 
-        Obj typeNode = searchType(node.getI1());
+    // <editor-fold desc="Const and Var declarations">
 
-        if(typeNode == Tab.noObj){
-            report_error("[NoVoidMethod] Nije pronadjen tip " + node.getI1() + " u tabeli simbola! ", node);
-            currTypeVar = null;
-            return;
+    private void formParsSetLevelAndFpPos(Obj node){
+        if(parsingFormPars && !(mainDeclared && mainMeth.equals(currMeth))){
+            currMeth.setLevel(currMeth.getLevel() + 1);
+            node.setFpPos(FP_POS_FORMAL_PARAMETER);
         }
-        if(Obj.Type != typeNode.getKind()){
-            report_error("[NoVoidMethod] Ime " + node.getI1() + " ne predstavlja tip", node);
-            currTypeVar = null;
-            return;
-        }
-        currTypeMeth = typeNode;
-    }
-
-    @Override
-    public void visit(VoidMethod node){
-        currTypeMeth = null;
-    }
-
-    @Override
-    public void visit(NumConst node){
-        node.obj = new Obj(Obj.Con, "numConst", Tab.intType, node.getN1(), 0);
-    }
-
-    @Override
-    public void visit(CharConst charConst){
-        charConst.obj = new Obj(Obj.Con, "charConst", Tab.charType, charConst.getC1(), 0);
-    }
-
-    @Override
-    public void visit(BoolConst node){
-        node.obj = new Obj(Obj.Con, "boolConst", boolType, node.getB1(), 0);
     }
 
     @Override
@@ -373,7 +223,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             report_error("[ConstDeclAssign] Deklariani tip konstante i vrednost koja se dodeljuje nisu kompatibilni", node);
         }
 
-        constNode.setFpPos(0);
         constNode.setAdr(constObj.getAdr());
         logSymbol("Detektovana simbolicka konstanta:", constNode, node);
     }
@@ -428,11 +277,56 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         logSymbol(message, varNode, node);
     }
 
+
+    // </editor-fold>
+
+    // <editor-fold desc="Method Declarations and Returns">
+
     private void createMethodObjNode(String name){
         currMeth = Tab.insert(Obj.Meth, name, (currTypeMeth == null)? Tab.noType : currTypeMeth.getType());
         currMeth.setLevel(0);
-        currMeth.setFpPos(0);
         Tab.openScope();
+    }
+
+    @Override
+    public void visit(CloseMethodScope node){
+        currMeth.setFpPos(FP_POS_UNIMPLEMENTED_INHERITED_METHOD);
+        Tab.chainLocalSymbols(currMeth);
+        Tab.closeScope();
+        currMeth = null;
+    }
+
+    @Override
+    public void visit(MethodSignatureStartFormPars node){
+        parsingFormPars = true;
+    }
+
+    @Override
+    public void visit(MethodSignatureEndFormPars node){
+        parsingFormPars = false;
+    }
+
+    @Override
+    public void visit(NoVoidMethod node){
+
+        Obj typeNode = searchType(node.getI1());
+
+        if(typeNode == Tab.noObj){
+            report_error("[NoVoidMethod] Nije pronadjen tip " + node.getI1() + " u tabeli simbola! ", node);
+            currTypeVar = null;
+            return;
+        }
+        if(Obj.Type != typeNode.getKind()){
+            report_error("[NoVoidMethod] Ime " + node.getI1() + " ne predstavlja tip", node);
+            currTypeVar = null;
+            return;
+        }
+        currTypeMeth = typeNode;
+    }
+
+    @Override
+    public void visit(VoidMethod node){
+        currTypeMeth = null;
     }
 
     @Override
@@ -441,7 +335,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         if (currClass != null && currClass != Tab.noType){
             Obj n = Tab.insert(Obj.Var, "this", currClass);
             n.setLevel(2);
-            n.setFpPos(0);
         }
         node.obj = currMeth;
     }
@@ -464,8 +357,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     public void visit(MethodDecl node){
 
         // this is when we are implementing method signatures from interface
-        if(currMeth.getFpPos() == 3){
-            currMeth.setFpPos(2);
+        if(currMeth.getFpPos() == FP_POS_UNIMPLEMENTED_INHERITED_METHOD){
+            currMeth.setFpPos(FP_POS_IMPLEMENTED_INHERITED_METHOD);
         }
 
         // we don't want to chain syms to curr meth if (currMeth == mainMeth && mainDeclared)
@@ -485,9 +378,140 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     }
 
     @Override
-    public void visit(FactorConstDeclListValue node){
-        node.struct = node.getConstDeclListValue().obj.getType();
+    public void visit(StatementReturn node){
+        if (currMeth == null){
+            report_error("[StatementReturn] Return naredba se moze pozivati samo unutar tela metode", node);
+            return;
+        }
+        if (!currMeth.getType().equals(Tab.noType)){
+            report_error("[StatementReturn] U metodu povratnog tipa koji nije void svaka return naredba mora da vraca taj tip", node);
+        }
+        returnNode = true;
     }
+
+    @Override
+    public void visit(StatementReturnExpr node){
+        if (currMeth == null){
+            report_error("[StatementReturnExpr] Return naredba se moze pozivati samo unutar tela metode", node);
+            return;
+        }
+        if (!currMeth.getType().equals(node.getExpr().struct)){
+            report_error("[StatementReturnExpr] Povratni tip metoda i tip koji vraca return naredba nisu kompatibilni", node);
+        }
+        returnNode = true;
+    }
+
+    // </editor-fold>
+
+    // <editor-fold desc="Class Methods and Fields">
+
+    private void copyLocalSymbols(Obj fromMeth, Obj toMeth){
+        HashTableDataStructure copy = new HashTableDataStructure();
+
+        for (Obj localSym: fromMeth.getLocalSymbols()){
+            Obj node;
+
+            if (localSym.getName().equals("this")){
+                node = new Obj(localSym.getKind(), localSym.getName(), currClass);
+            }else{
+                node = new Obj(localSym.getKind(), localSym.getName(), localSym.getType());
+            }
+            node.setFpPos(localSym.getFpPos());
+            node.setLevel(localSym.getLevel());
+            node.setAdr(localSym.getAdr());
+            copy.insertKey(node);
+        }
+
+        toMeth.setLocals(copy);
+    }
+
+    @Override
+    public void visit(CopyParentMethods node){
+        // we need this guard in case we have bas Type
+        if(parentClass == Tab.noType){
+            return;
+        }
+        for (Obj member: parentClass.getMembers()){
+            if(member.getKind() == Obj.Meth){
+                Obj n = Tab.insert(Obj.Meth, member.getName(), member.getType());
+                n.setFpPos(member.getFpPos());
+                copyLocalSymbols(member, n);
+                // in case fp pos is 3 that mean it is unimplemented method signature from interface so we leave it
+                if (n.getFpPos() < FP_POS_IMPLEMENTED_INHERITED_METHOD){
+                    n.setFpPos(FP_POS_IMPLEMENTED_INHERITED_METHOD);
+                }
+            }
+        }
+    }
+
+    /*
+    this node is used to set currClass to zero, because in method decl inside class we want
+    to set variables kind to Obj.Var, not Obj.Fld (see DesignatorVar visitor)
+    * */
+    @Override
+    public void visit(ClassMethodDeclListStart node){
+        classMethodDecl = true;
+    }
+
+    // </editor-fold>
+
+    // <editor-fold desc="[Read, Print] Standard Input/Output">
+
+    @Override
+    public void visit(StatementRead node){
+        int kind = node.getDesignator().obj.getKind();
+        String name = node.getDesignator().obj.getName();
+        Struct type = node.getDesignator().obj.getType();
+        if (kind != Obj.Var && kind != Obj.Elem && kind != Obj.Fld){
+            report_error("[StatementRead] Read operacija nad neadekvatnom promenljivom(" + name + ")", node);
+            return;
+        }
+        else if(!type.equals(Tab.intType) && !type.equals(boolType) && !type.equals(Tab.charType)){
+            report_error("[StatementRead] Read operacija nad promenljivom("+ name + ") koja nije tipa int, char ili bool", node);
+            return;
+        }
+    }
+
+    @Override
+    public void visit(StatementPrint node){
+        Struct type = node.getExpr().struct;
+
+        if(!type.equals(Tab.intType) && !type.equals(boolType) && !type.equals(Tab.charType) && !type.equals(setType)){
+            report_error("[StatementPrint] Print operacija nad izrazom koji nije tipa int, char ili bool", node);
+            return;
+        }
+
+//        int kind = currDesignatorVar.getKind();
+//        boolean isMethodCall = false;
+//        if (node.getExpr() instanceof ExprTerm){
+//            ExprTerm exprTerm = (ExprTerm) node.getExpr();
+//            if (exprTerm.getTerm() instanceof TermFactor){
+//                TermFactor termFactor = (TermFactor) exprTerm.getTerm();
+//                if (termFactor.getFactor() instanceof FactorFuncCall){
+//                    isMethodCall = true;
+//                }
+//            }
+//        }
+//
+//        if (kind == Obj.Type || (!isMethodCall && kind == Obj.Meth) || kind == Obj.Prog){
+//            logSymbol("Detektovana promenljiva za print:", currDesignatorVar, node);
+//            report_error("[StatementPrint] Print operacija nad neadekvatnom promenljivom(" + currDesignatorVar.getName() + ")", node);
+//            return;
+//        }
+    }
+
+    @Override
+    public void visit(StatementPrintNumber node){
+        Struct type = node.getExpr().struct;
+        if(!type.equals(Tab.intType) && !type.equals(boolType) && !type.equals(Tab.charType) && !type.equals(setType)){
+            report_error("[StatementPrintNumber] Print operacija nad izrazom koji nije tipa int, char ili bool", node);
+            return;
+        }
+    }
+
+    // </editor-fold>
+
+    // <editor-fold desc="[Expr, Term] Arithmetic Operations (Minus, Addop, Mulop)">
 
     @Override
     public void visit(TermFactor node){
@@ -513,6 +537,16 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     public void visit(ExprMinusTerm node){
         if(!node.getTerm().struct.equals(Tab.intType)){
             report_error("[ExprMinusTerm] Minus mozemo staviti samo ispred operanda koji je tipa int.", node);
+            node.struct = Tab.noType;
+            return;
+        }
+        node.struct = node.getTerm().struct;
+    }
+
+    @Override
+    public void visit(ExprAddopTerm node){
+        if(!node.getTerm().struct.equals(Tab.intType) || !node.getExpr().struct.equals(Tab.intType)){
+            report_error("[ExprAddopTerm] Addop operator zahteva da oba operanda budu int vrednosti.", node);
             node.struct = Tab.noType;
             return;
         }
@@ -567,145 +601,20 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         }
     }
 
-    @Override
-    public void visit(ExprAddopTerm node){
-        if(!node.getTerm().struct.equals(Tab.intType) || !node.getExpr().struct.equals(Tab.intType)){
-            report_error("[ExprAddopTerm] Addop operator zahteva da oba operanda budu int vrednosti.", node);
-            node.struct = Tab.noType;
-            return;
+    // </editor-fold>
+
+    // <editor-fold desc="[Factor] Heap Allocation (arrays, objects and sets), Loading Constants, right operands">
+
+    private void copyClassExtends(Struct to, Struct from, SyntaxNode node){
+        to.setElementType(from.getElemType());
+        for (Struct implementedInterface: from.getImplementedInterfaces()){
+            to.addImplementedInterface(implementedInterface);
         }
-        node.struct = node.getTerm().struct;
     }
 
-    // Condition
-
-    @Override
-    public void visit(StatementConditionCondition node){
-        node.struct = node.getCondition().struct;
-    }
-
-    @Override
-    public void visit(ConditionOr node){
-        if (!node.getCondition().struct.equals(boolType) || !node.getCondTerm().struct.equals(boolType)){
-            report_error("[ConditionOr] Condition mora biti tipa bool [ConditionOr]", node);
-            node.struct = Tab.noType;
-            return;
-        }
-
-        node.struct = node.getCondition().struct;
-    }
-
-    @Override
-    public void visit(ConditionCondTerm node){
-        if (!node.getCondTerm().struct.equals(boolType)){
-            report_error("[ConditionCondTerm] Condition mora biti tipa bool [ConditionCondTerm]", node);
-            node.struct = Tab.noType;
-            return;
-        }
-
-        node.struct = node.getCondTerm().struct;
-    }
-
-    @Override
-    public void visit(CondTermAnd node){
-        if (!node.getCondFact().struct.equals(boolType) || !node.getCondTerm().struct.equals(boolType)){
-            report_error("[CondTermAnd] Condition mora biti tipa bool [CondTermAnd]", node);
-            node.struct = Tab.noType;
-            return;
-        }
-
-        node.struct = node.getCondFact().struct;
-    }
-
-    @Override
-    public void visit(CondTermCondFact node){
-        node.struct = node.getCondFact().struct;
-    }
-
-    @Override
-    public void visit(CondFactRelop node){
-        Struct left = node.getExpr().struct;
-        Struct right = node.getExpr1().struct;
-        // for case if (true && a < 2){...} - a and 2 only needs to be comparable not necessarily boolType
-        if (!left.compatibleWith(right)){
-            report_error("[CondFactRelop] Logicki operandi nisu kompatibilni", node);
-            node.struct = Tab.noType;
-            return;
-        }
-        if (left.isRefType() || right.isRefType()){
-            if (!(node.getRelop() instanceof RelopEqual) && !(node.getRelop() instanceof RelopNotEqual)){
-                report_error("[CondFactRelop] Uz promenljive tipa klase ili niza, od relacionih operatora, mogu se koristiti samo != i ==", node);
-                node.struct = Tab.noType;
-                return;
-            }
-        }
-
-        node.struct = boolType;
-    }
-
-    @Override
-    public void visit(CondFactExpr node){
-        node.struct = node.getExpr().struct;
-    }
-
-    // Factor
     @Override
     public void visit(FactorDesignator node){
         node.struct = node.getDesignator().obj.getType();
-    }
-
-    @Override
-    public void visit(FactorFuncCall node){
-        Obj meth = node.getDesignator().obj;
-        node.struct = funccall(meth, node);
-    }
-
-    // function call parameters
-    @Override
-    public void visit(StackInitialize node){
-        fpStack = new Stack<>();
-    }
-
-    @Override
-    public void visit(ActParsMultipleItems node){
-        fpStack.push(node.getExpr().struct);
-    }
-
-    @Override
-    public void visit(ActParsSigleItem node){
-        fpStack.push(node.getExpr().struct);
-    }
-
-    @Override
-    public void visit(DesignatorVar node){
-        Obj var = Tab.find(node.getI1());
-        if (var == Tab.noObj){
-            report_error("[DesignatorVar] Nije deklarisana promenljiva sa zadatim imenom(" + node.getI1() + ")", node);
-            node.obj = Tab.noObj;
-            return;
-        }
-        else if (var.getKind() != Obj.Fld && var.getKind() != Obj.Var && var.getKind() != Obj.Con && var.getKind() != Obj.Meth){
-            report_error("[DesignatorVar] Neadekvatna vrsta promenljive " + node.getI1(), node);
-            node.obj = Tab.noObj;
-            return;
-        }
-        node.obj = var;
-//        currDesignatorVar = var;
-    }
-
-    @Override
-    public void visit(DesignatorElem node){
-        Obj arr = node.getDesignatorArrayName().obj;
-        if (arr == Tab.noObj){
-            node.obj = Tab.noObj;
-            return;
-        }
-        else if (!node.getExpr().struct.equals(Tab.intType)){
-            report_error("[DesignatorElem] Indeks niza mora biti int vrednost", node);
-            node.obj = Tab.noObj;
-            return;
-        }
-        node.obj = new Obj(Obj.Elem, arr.getName() + "[$]", arr.getType().getElemType());
     }
 
     @Override
@@ -750,304 +659,44 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     }
 
     @Override
-    public void visit(DesignatorArrayName node){
-        Obj arr = Tab.find(node.getI1());
-        if (arr == Tab.noObj){
-            report_error("[DesignatorArrayName] Nije deklarisana promenljiva niza sa imenom" + node.getI1(), node);
-            node.obj = Tab.noObj;
-            return;
+    public void visit(FactorConstDeclListValue node){
+        node.struct = node.getConstDeclListValue().obj.getType();
+    }
+
+
+    @Override
+    public void visit(NumConst node){
+        node.obj = new Obj(Obj.Con, "numConst", Tab.intType, node.getN1(), 0);
+    }
+
+    @Override
+    public void visit(CharConst charConst){
+        charConst.obj = new Obj(Obj.Con, "charConst", Tab.charType, charConst.getC1(), 0);
+    }
+
+    @Override
+    public void visit(BoolConst node){
+        node.obj = new Obj(Obj.Con, "boolConst", boolType, node.getB1(), 0);
+    }
+
+    // </editor-fold>
+
+    // <editor-fold desc="[Designator Statements, regular and while] function call, assignment, unary operations (inc, dec), set operations (union), left operands">
+
+    private boolean checkAssignCompatibility(Struct left, Struct right){
+        // provera za setove
+        if (left.getKind() == Struct.Enum) return right.getKind() == Struct.Enum;
+
+        if (right.assignableTo(left)){
+            return true;
         }
-        else if (arr.getKind() != Obj.Var || arr.getType().getKind() != Struct.Array){
-            report_error("[DesignatorArrayName] Neadekvatna vrsta promenljive niza : " + node.getI1(), node);
-            node.obj = Tab.noObj;
-            return;
-        }
-        node.obj = arr;
-    }
 
-    // Interface
-
-    @Override
-    public void visit(InterfaceDecl node){
-        closeInterface();
-    }
-
-    @Override
-    public void visit(InterfaceDeclName node){
-        if(checkIsObjNodeDeclared(node.getI1())){
-            report_error("[InterfaceDeclName] Vec je deklarisana promenljiva sa imenom: " + node.getI1(), node);
-            return;
-        }
-        currInterface = new Struct(Struct.Interface);
-        classMethodDecl = true;
-        Obj interfaceObj = Tab.insert(Obj.Type, node.getI1(), currInterface);
-        interfaceObj.setFpPos(0);
-        Tab.openScope();
-    }
-
-    @Override
-    public void visit(CloseMethodScope node){
-        currMeth.setFpPos(3);
-        Tab.chainLocalSymbols(currMeth);
-        Tab.closeScope();
-        currMeth = null;
-    }
-
-    // Class
-
-    @Override
-    public void visit(ClassNoExtend node){
-        closeClass(node);
-    }
-
-    @Override
-    public void visit(ClassYesExtend node){
-        closeClass(node);
-    }
-
-    @Override
-    public void visit(ClassNoExtendYesMethods node){
-        closeClass(node);
-    }
-
-    @Override
-    public void visit(ClassYesExtendYesMethods node){
-        closeClass(node);
-    }
-
-    @Override
-    public void visit(ClassDeclName node){
-        if(checkIsObjNodeDeclared(node.getI1())){
-            report_error("[ClassDeclName] Vec je deklarisana promenljiva sa imenom: " + node.getI1(), node);
-            return;
-        }
-        currClass = new Struct(Struct.Class);
-        Obj classObj = Tab.insert(Obj.Type, node.getI1(), currClass);
-        classObj.setFpPos(0);
-        Tab.openScope();
-    }
-
-    @Override
-    public void visit(CopyParentMethods node){
-        // we need this guard in case we have bas Type
-        if(parentClass == Tab.noType){
-            return;
-        }
-        for (Obj member: parentClass.getMembers()){
-            if(member.getKind() == Obj.Meth){
-                Obj n = Tab.insert(Obj.Meth, member.getName(), member.getType());
-                n.setFpPos(member.getFpPos());
-                copyLocalSymbols(member, n);
-                // in case fp pos is 3 that mean it is unimplemented method signature from interface so we leave it
-                if (n.getFpPos() < 2){
-                    n.setFpPos(2);
-                }
+        for (Struct implementedInterface: right.getImplementedInterfaces()){
+            if (implementedInterface.assignableTo(left)){
+                return true;
             }
         }
-    }
-
-    @Override
-    public void visit(ExtendsClass node){
-        Struct n = node.getType().struct;
-        if (n.getKind() != Struct.Class && n.getKind() != Struct.Interface){
-            report_error("[ExtendsClass] Neterminal Type mora da oznacava klasu ili interfejs (korisnicki definisan tip)", node);
-            parentClass = Tab.noType;
-            return;
-        }
-
-        currClass.setElementType(n);
-        currClass.addImplementedInterface(n);
-
-        parentClass = n;
-        for (Obj member: parentClass.getMembers()){
-            if(member.getKind() == Obj.Fld){
-                // insert only parent class fields
-                Obj var = Tab.insert(Obj.Fld, member.getName(), member.getType());
-                // we are setting fpPos so we know that is inherited name and we can "override" it in our children class
-                // but in case we declared that variable in children class twice (fppos != 2) we throw error
-                var.setFpPos(2);
-            }
-        }
-
-    }
-
-
-    /*
-    this node is used to set currClass to zero, because in method decl inside class we want
-    to set variables kind to Obj.Var, not Obj.Fld (see DesignatorVar visitor)
-    * */
-    @Override
-    public void visit(ClassMethodDeclListStart node){
-        classMethodDecl = true;
-    }
-
-    // Statement
-
-    @Override
-    public void visit(StatementBreak node){
-        if(loopCounter == 0){
-            report_error("[StatementBreak] Break naredba se ne moze pozivati van while petlje", node);
-            return;
-        }
-    }
-
-    @Override
-    public void visit(StatementContinue node){
-        report_info("stigli", node);
-        if(loopCounter == 0){
-            report_error("[StatementContinue] Continue naredba se ne moze pozivati van while petlje", node);
-            return;
-        }
-    }
-
-    @Override
-    public void visit(StatementReturn node){
-        if (currMeth == null){
-            report_error("[StatementReturn] Return naredba se moze pozivati samo unutar tela metode", node);
-            return;
-        }
-        if (!currMeth.getType().equals(Tab.noType)){
-            report_error("[StatementReturn] U metodu povratnog tipa koji nije void svaka return naredba mora da vraca taj tip", node);
-        }
-        returnNode = true;
-    }
-
-    @Override
-    public void visit(StatementReturnExpr node){
-        if (currMeth == null){
-            report_error("[StatementReturnExpr] Return naredba se moze pozivati samo unutar tela metode", node);
-            return;
-        }
-        if (!currMeth.getType().equals(node.getExpr().struct)){
-            report_error("[StatementReturnExpr] Povratni tip metoda i tip koji vraca return naredba nisu kompatibilni", node);
-        }
-        returnNode = true;
-    }
-
-    @Override
-    public void visit(StatementRead node){
-        int kind = node.getDesignator().obj.getKind();
-        String name = node.getDesignator().obj.getName();
-        Struct type = node.getDesignator().obj.getType();
-        if (kind != Obj.Var && kind != Obj.Elem && kind != Obj.Fld){
-            report_error("[StatementRead] Read operacija nad neadekvatnom promenljivom(" + name + ")", node);
-            return;
-        }
-        else if(!type.equals(Tab.intType) && !type.equals(boolType) && !type.equals(Tab.charType)){
-            report_error("[StatementRead] Read operacija nad promenljivom("+ name + ") koja nije tipa int, char ili bool", node);
-            return;
-        }
-    }
-
-    @Override
-    public void visit(StatementPrint node){
-        Struct type = node.getExpr().struct;
-
-        if(!type.equals(Tab.intType) && !type.equals(boolType) && !type.equals(Tab.charType) && !type.equals(setType)){
-            report_error("[StatementPrint] Print operacija nad izrazom koji nije tipa int, char ili bool", node);
-            return;
-        }
-
-//        int kind = currDesignatorVar.getKind();
-//        boolean isMethodCall = false;
-//        if (node.getExpr() instanceof ExprTerm){
-//            ExprTerm exprTerm = (ExprTerm) node.getExpr();
-//            if (exprTerm.getTerm() instanceof TermFactor){
-//                TermFactor termFactor = (TermFactor) exprTerm.getTerm();
-//                if (termFactor.getFactor() instanceof FactorFuncCall){
-//                    isMethodCall = true;
-//                }
-//            }
-//        }
-//
-//        if (kind == Obj.Type || (!isMethodCall && kind == Obj.Meth) || kind == Obj.Prog){
-//            logSymbol("Detektovana promenljiva za print:", currDesignatorVar, node);
-//            report_error("[StatementPrint] Print operacija nad neadekvatnom promenljivom(" + currDesignatorVar.getName() + ")", node);
-//            return;
-//        }
-    }
-
-    @Override
-    public void visit(StatementPrintNumber node){
-        Struct type = node.getExpr().struct;
-        if(!type.equals(Tab.intType) && !type.equals(boolType) && !type.equals(Tab.charType) && !type.equals(setType)){
-            report_error("[StatementPrintNumber] Print operacija nad izrazom koji nije tipa int, char ili bool", node);
-            return;
-        }
-    }
-
-    @Override
-    public void visit(StatementLoopSimple node){
-        loopCounter--;
-    }
-
-    @Override
-    public void visit(StatementLoopCondition node){
-        loopCounter--;
-    }
-
-    @Override
-    public void visit(StatementLoopComplex node){
-        loopCounter--;
-    }
-
-    @Override
-    public void visit(DoStatement node){
-       loopCounter++;
-    }
-
-    // Designator
-    @Override
-    public void visit(DesignatorAssignExpr node){
-        int kind = node.getDesignator().obj.getKind();
-        if(kind != Obj.Var && kind != Obj.Elem && kind != Obj.Fld){
-            report_error("[DesignatorAssignExpr] Dodela u neadekvatnu promenljivu : " + node.getDesignator().obj.getName(), node);
-            return;
-        }
-        // it's important to use assignableTo because of assigning null properly
-        else if(!checkAssignCompatibility(node.getDesignator().obj.getType(), node.getExpr().struct)){
-            report_error("[DesignatorAssignExpr] Tip Expr nije kompatibilan sa tipom neterminala Designator : " + node.getDesignator().obj.getName(), node );
-            return;
-        }
-
-    }
-
-    // we need to repeat this function because of error handling implementation
-    @Override
-    public void visit(DesignatorAssignExprWhile node){
-        int kind = node.getDesignator().obj.getKind();
-        if(kind != Obj.Var && kind != Obj.Elem && kind != Obj.Fld){
-            report_error("[DesignatorAssignExprWhile] Dodela u neadekvatnu promenljivu : " + node.getDesignator().obj.getName(), node);
-            return;
-        }
-        // it's important to use assignableTo because of assigning null propery
-        else if(!checkAssignCompatibility(node.getDesignator().obj.getType(), node.getExpr().struct)){
-            report_error("[DesignatorAssignExprWhile] Tip Expr nije kompatibilan sa tipom neterminala Dedsignator : " + node.getDesignator().obj.getName(), node );
-            return;
-        }
-
-    }
-
-    @Override
-    public void visit(DesignatorAssignSetop node){
-        Struct left = node.getDesignator().obj.getType();
-        Struct middle = node.getDesignator1().obj.getType();
-        Struct right = node.getDesignator2().obj.getType();
-        if (!left.equals(setType) || !middle.equals(setType) || !right.equals(setType)){
-            report_error("[DesignatorAssignSetop] Svi Designator neterminali moraju biti tipa set", node);
-            return;
-        }
-    }
-
-    @Override
-    public void visit(DesignatorAssignSetopWhile node){
-        Struct left = node.getDesignator().obj.getType();
-        Struct middle = node.getDesignator1().obj.getType();
-        Struct right = node.getDesignator2().obj.getType();
-        if (!left.equals(setType) || !middle.equals(setType) || !right.equals(setType)){
-            report_error("[DesignatorAssignSetopWhile] Svi Designator neterminali moraju biti tipa set", node);
-            return;
-        }
+        return false;
     }
 
     @Override
@@ -1064,7 +713,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
     }
-
 
     @Override
     public void visit(DesignatorStatementUnarySemiWhile node){
@@ -1098,42 +746,137 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         funccall(meth, node);
     }
 
-    // Designator class more
     @Override
-    public void visit(DesignatorClassMoreFinal node){
-        Struct classStruct = accessClass;
-        if (classStruct == Tab.noType){
-            node.obj = Tab.noObj;
-            thisDetected = false;
+    public void visit(DesignatorAssignExpr node){
+        int kind = node.getDesignator().obj.getKind();
+        if(kind != Obj.Var && kind != Obj.Elem && kind != Obj.Fld){
+            report_error("[DesignatorAssignExpr] Dodela u neadekvatnu promenljivu : " + node.getDesignator().obj.getName(), node);
             return;
         }
-        String field = node.getI1();
-        // if we have this.field we only want to search within class scope (not methods scope) but only for first search
-        if (!thisDetected){
-            for (Obj member: classStruct.getMembers()){
-                if((member.getKind() == Obj.Meth || member.getKind() == Obj.Fld || member.getType().getKind() == Struct.Array) && member.getName().equals(field)){
-                    node.obj = member;
-                    accessClass = null;
-                    return;
-                }
-            }
+        // it's important to use assignableTo because of assigning null properly
+        else if(!checkAssignCompatibility(node.getDesignator().obj.getType(), node.getExpr().struct)){
+            report_error("[DesignatorAssignExpr] Tip Expr nije kompatibilan sa tipom neterminala Designator : " + node.getDesignator().obj.getName(), node );
+            return;
         }
 
-        if (classMethodDecl){
-            for (Obj member: Tab.currentScope().getOuter().getLocals().symbols()){
-                if((member.getKind() == Obj.Meth || member.getKind() == Obj.Fld || member.getType().getKind() == Struct.Array) && member.getName().equals(field)){
-                    node.obj = member;
-                    accessClass = null;
-                    thisDetected = false;
-                    return;
-                }
-            }
-        }
+    }
 
-        report_error("[DesignatorClassMoreFinal] Ovo polje("+ field +") ne postoji kao polje klase", node);
-        node.obj = Tab.noObj;
-        accessClass = null;
-        thisDetected = false;
+    // we need to repeat this function because of error handling implementation
+    @Override
+    public void visit(DesignatorAssignExprWhile node){
+        int kind = node.getDesignator().obj.getKind();
+        if(kind != Obj.Var && kind != Obj.Elem && kind != Obj.Fld){
+            report_error("[DesignatorAssignExprWhile] Dodela u neadekvatnu promenljivu : " + node.getDesignator().obj.getName(), node);
+            return;
+        }
+        // it's important to use assignableTo because of assigning null propery
+        else if(!checkAssignCompatibility(node.getDesignator().obj.getType(), node.getExpr().struct)){
+            report_error("[DesignatorAssignExprWhile] Tip Expr nije kompatibilan sa tipom neterminala Dedsignator : " + node.getDesignator().obj.getName(), node );
+            return;
+        }
+    }
+
+    @Override
+    public void visit(DesignatorAssignSetop node){
+        Struct left = node.getDesignator().obj.getType();
+        Struct middle = node.getDesignator1().obj.getType();
+        Struct right = node.getDesignator2().obj.getType();
+        if (!left.equals(setType) || !middle.equals(setType) || !right.equals(setType)){
+            report_error("[DesignatorAssignSetop] Svi Designator neterminali moraju biti tipa set", node);
+            return;
+        }
+    }
+
+    @Override
+    public void visit(DesignatorAssignSetopWhile node){
+        Struct left = node.getDesignator().obj.getType();
+        Struct middle = node.getDesignator1().obj.getType();
+        Struct right = node.getDesignator2().obj.getType();
+        if (!left.equals(setType) || !middle.equals(setType) || !right.equals(setType)){
+            report_error("[DesignatorAssignSetopWhile] Svi Designator neterminali moraju biti tipa set", node);
+            return;
+        }
+    }
+
+    // </editor-fold>
+
+    // <editor-fold desc="[Designator] (DesignatorVar + ClassAccess + ArrayAccess)">
+
+    @Override
+    public void visit(DesignatorVar node){
+        Obj var = Tab.find(node.getI1());
+        if (var == Tab.noObj){
+            report_error("[DesignatorVar] Nije deklarisana promenljiva sa zadatim imenom(" + node.getI1() + ")", node);
+            node.obj = Tab.noObj;
+            return;
+        }
+        else if (var.getKind() != Obj.Fld && var.getKind() != Obj.Var && var.getKind() != Obj.Con && var.getKind() != Obj.Meth){
+            report_error("[DesignatorVar] Neadekvatna vrsta promenljive " + node.getI1(), node);
+            node.obj = Tab.noObj;
+            return;
+        }
+        node.obj = var;
+//        currDesignatorVar = var;
+    }
+
+    // <editor-fold desc="[DesignatorClass] access Class properties">
+
+    @Override
+    public void visit(DesignatorPropertyAccess node){
+        node.obj = node.getDesignatorClassMore().obj;
+    }
+
+    @Override
+    public void visit(DesignatorElemPropertyAccess node){
+        node.obj = node.getDesignatorClassMore().obj;
+    }
+
+    @Override
+    public void visit(DesignatorClassName node){
+        String name = node.getI1();
+        Obj var = Tab.find(name);
+        if (var == Tab.noObj){
+            report_error("[DesignatorClassName] Pristup nedeklarisanoj promenljivoj klase: " + name, node);
+            node.obj = Tab.noObj;
+            accessClass = Tab.noType;
+            return;
+        }
+        if(var.getKind() != Obj.Var || (var.getType().getKind() != Struct.Class && var.getType().getKind() != Struct.Interface)){
+            report_error("[DesignatorClassName] Pristup neadekvatnoj promenljivoj klase: " + name, node);
+            node.obj = Tab.noObj;
+            accessClass = Tab.noType;
+            return;
+        }
+        if(node.getI1().equals("this")){
+            thisDetected = true;
+        }
+        node.obj = var;
+        accessClass = var.getType();
+    }
+
+    @Override
+    public void visit(DesignatorClassElem node){
+        Obj arr = node.getDesignatorArrayName().obj;
+        if (arr == Tab.noObj){
+            node.obj = Tab.noObj;
+            accessClass = Tab.noType;
+            return;
+        }
+        else if (!node.getExpr().struct.equals(Tab.intType)){
+            report_error("[DesignatorClassElem] Indeks niza mora biti int vrednost", node);
+            node.obj = Tab.noObj;
+            accessClass = Tab.noType;
+            return;
+        }
+        Obj var = new Obj(Obj.Elem, arr.getName() + "[$]", arr.getType().getElemType());
+        if (var.getType().getKind() != Struct.Class){
+            report_error("[DesignatorClassElem] Tip elementa niza("+ node.getDesignatorArrayName().obj.getName() +") kojem se pristupa mora biti klasa", node);
+            node.obj = Tab.noObj;
+            accessClass = Tab.noType;
+            return;
+        }
+        node.obj = var;
+        accessClass = node.obj.getType();
     }
 
     @Override
@@ -1262,63 +1005,61 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         thisDetected = false;
     }
 
-    // Designator property access
     @Override
-    public void visit(DesignatorPropertyAccess node){
-        node.obj = node.getDesignatorClassMore().obj;
+    public void visit(DesignatorClassMoreFinal node){
+        Struct classStruct = accessClass;
+        if (classStruct == Tab.noType){
+            node.obj = Tab.noObj;
+            thisDetected = false;
+            return;
+        }
+        String field = node.getI1();
+        // if we have this.field we only want to search within class scope (not methods scope) but only for first search
+        if (!thisDetected){
+            for (Obj member: classStruct.getMembers()){
+                if((member.getKind() == Obj.Meth || member.getKind() == Obj.Fld || member.getType().getKind() == Struct.Array) && member.getName().equals(field)){
+                    node.obj = member;
+                    accessClass = null;
+                    return;
+                }
+            }
+        }
+
+        if (classMethodDecl){
+            for (Obj member: Tab.currentScope().getOuter().getLocals().symbols()){
+                if((member.getKind() == Obj.Meth || member.getKind() == Obj.Fld || member.getType().getKind() == Struct.Array) && member.getName().equals(field)){
+                    node.obj = member;
+                    accessClass = null;
+                    thisDetected = false;
+                    return;
+                }
+            }
+        }
+
+        report_error("[DesignatorClassMoreFinal] Ovo polje("+ field +") ne postoji kao polje klase", node);
+        node.obj = Tab.noObj;
+        accessClass = null;
+        thisDetected = false;
     }
 
-    @Override
-    public void visit(DesignatorElemPropertyAccess node){
-        node.obj = node.getDesignatorClassMore().obj;
-    }
+    // </editor-fold>
+
+    // <editor-fold desc="[DesignatorArray] access Arrays">
 
     @Override
-    public void visit(DesignatorClassElem node){
-        Obj arr = node.getDesignatorArrayName().obj;
+    public void visit(DesignatorArrayName node){
+        Obj arr = Tab.find(node.getI1());
         if (arr == Tab.noObj){
+            report_error("[DesignatorArrayName] Nije deklarisana promenljiva niza sa imenom" + node.getI1(), node);
             node.obj = Tab.noObj;
-            accessClass = Tab.noType;
             return;
         }
-        else if (!node.getExpr().struct.equals(Tab.intType)){
-            report_error("[DesignatorClassElem] Indeks niza mora biti int vrednost", node);
+        else if (arr.getKind() != Obj.Var || arr.getType().getKind() != Struct.Array){
+            report_error("[DesignatorArrayName] Neadekvatna vrsta promenljive niza : " + node.getI1(), node);
             node.obj = Tab.noObj;
-            accessClass = Tab.noType;
             return;
         }
-        Obj var = new Obj(Obj.Elem, arr.getName() + "[$]", arr.getType().getElemType());
-        if (var.getType().getKind() != Struct.Class){
-            report_error("[DesignatorClassElem] Tip elementa niza("+ node.getDesignatorArrayName().obj.getName() +") kojem se pristupa mora biti klasa", node);
-            node.obj = Tab.noObj;
-            accessClass = Tab.noType;
-            return;
-        }
-        node.obj = var;
-        accessClass = node.obj.getType();
-    }
-
-    @Override
-    public void visit(DesignatorClassName node){
-        String name = node.getI1();
-        Obj var = Tab.find(name);
-        if (var == Tab.noObj){
-            report_error("[DesignatorClassName] Pristup nedeklarisanoj promenljivoj klase: " + name, node);
-            node.obj = Tab.noObj;
-            accessClass = Tab.noType;
-            return;
-        }
-        if(var.getKind() != Obj.Var || (var.getType().getKind() != Struct.Class && var.getType().getKind() != Struct.Interface)){
-            report_error("[DesignatorClassName] Pristup neadekvatnoj promenljivoj klase: " + name, node);
-            node.obj = Tab.noObj;
-            accessClass = Tab.noType;
-            return;
-        }
-        if(node.getI1().equals("this")){
-            thisDetected = true;
-        }
-        node.obj = var;
-        accessClass = var.getType();
+        node.obj = arr;
     }
 
     @Override
@@ -1327,13 +1068,321 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     }
 
     @Override
-    public void visit(MethodSignatureStartFormPars node){
-        parsingFormPars = true;
+    public void visit(DesignatorElem node){
+        Obj arr = node.getDesignatorArrayName().obj;
+        if (arr == Tab.noObj){
+            node.obj = Tab.noObj;
+            return;
+        }
+        else if (!node.getExpr().struct.equals(Tab.intType)){
+            report_error("[DesignatorElem] Indeks niza mora biti int vrednost", node);
+            node.obj = Tab.noObj;
+            return;
+        }
+        node.obj = new Obj(Obj.Elem, arr.getName() + "[$]", arr.getType().getElemType());
+    }
+
+    // </editor-fold>
+
+
+    // </editor-fold>
+
+    // <editor-fold desc="[Factor] Function calls">
+
+    private boolean checkArePassedParametersAndFormalParameterListCompatible(List<Struct> fpList, String methName,  SyntaxNode node){
+        if (fpList.size() != fpStack.size()){
+            report_error("[FactorFuncCall][DesignatorStatementFuncCall] Lista prosledjenih parametara se ne poklapa se parametrima koji su prosledjeni prilikom poziva metode " + methName + " po broju prosledjenih parametara("+ fpStack.size() +"), ova metoda prima: " + fpList.size() + " parametara", node);
+
+            fpStack = new Stack<>();
+            return false;
+        }
+
+        boolean errorHappened = false;
+        for (int i = 0; i < fpList.size(); i++){
+            Struct fpListElem = fpList.get(i);
+            Struct fpStackElem = fpStack.pop();
+            if(!fpStackElem.assignableTo(fpListElem)){
+                report_error("[FactorFuncCall][DesignatorStatementFuncCall] Prosledjeni parametar pod brojem: " + (i + 1) + "(indeksirano od 1) nije kompatibilan sa odgovarajucim formalnim parametrom metode " + methName + " po tipu", node);
+
+                errorHappened = true;
+            }
+        }
+        if (errorHappened){
+            fpStack = new Stack<>();
+            return false;
+        }
+        return true;
+    }
+
+    private List<Struct> getFormalParameters(Obj funcNode, SyntaxNode node){
+        List<Struct> fpList = new ArrayList<>();
+        for (Obj localSym: funcNode.getLocalSymbols()){
+            if (localSym.getKind() == Obj.Var && localSym.getFpPos() == FP_POS_FORMAL_PARAMETER && localSym.getLevel() >= 1){
+                fpList.add(localSym.getType());
+            }
+        }
+        return fpList;
+    }
+
+    private Struct funccall(Obj meth, SyntaxNode node){
+        if (meth == Tab.noObj){
+            return Tab.noType;
+        }
+        else if (meth.getKind() != Obj.Meth){
+            report_error("[FactorFuncCall][DesignatorStatementFuncCall] Neadekvatna vrsta promenljive (" + meth.getName() + " mora biti metoda)", node);
+            return Tab.noType;
+        }
+
+        List<Struct> fpList = getFormalParameters(meth, node);
+        if (!checkArePassedParametersAndFormalParameterListCompatible(fpList, meth.getName(), node)){
+            // nothing to do here but to remember that function above returns true if parameters are compatible
+        }
+
+        return meth.getType();
+    }
+
+
+    @Override
+    public void visit(FactorFuncCall node){
+        Obj meth = node.getDesignator().obj;
+        node.struct = funccall(meth, node);
+    }
+
+    // function call parameters
+    @Override
+    public void visit(StackInitialize node){
+        fpStack = new Stack<>();
     }
 
     @Override
-    public void visit(MethodSignatureEndFormPars node){
-        parsingFormPars = false;
+    public void visit(ActParsMultipleItems node){
+        fpStack.push(node.getExpr().struct);
     }
+
+    @Override
+    public void visit(ActParsSigleItem node){
+        fpStack.push(node.getExpr().struct);
+    }
+
+    // </editor-fold>
+
+    // <editor-fold desc="Conditional Statements If-Else">
+
+    @Override
+    public void visit(StatementConditionCondition node){
+        node.struct = node.getCondition().struct;
+    }
+
+    @Override
+    public void visit(ConditionOr node){
+        if (!node.getCondition().struct.equals(boolType) || !node.getCondTerm().struct.equals(boolType)){
+            report_error("[ConditionOr] Condition mora biti tipa bool [ConditionOr]", node);
+            node.struct = Tab.noType;
+            return;
+        }
+
+        node.struct = node.getCondition().struct;
+    }
+
+    @Override
+    public void visit(ConditionCondTerm node){
+        if (!node.getCondTerm().struct.equals(boolType)){
+            report_error("[ConditionCondTerm] Condition mora biti tipa bool [ConditionCondTerm]", node);
+            node.struct = Tab.noType;
+            return;
+        }
+
+        node.struct = node.getCondTerm().struct;
+    }
+
+    @Override
+    public void visit(CondTermAnd node){
+        if (!node.getCondFact().struct.equals(boolType) || !node.getCondTerm().struct.equals(boolType)){
+            report_error("[CondTermAnd] Condition mora biti tipa bool [CondTermAnd]", node);
+            node.struct = Tab.noType;
+            return;
+        }
+
+        node.struct = node.getCondFact().struct;
+    }
+
+    @Override
+    public void visit(CondTermCondFact node){
+        node.struct = node.getCondFact().struct;
+    }
+
+    @Override
+    public void visit(CondFactRelop node){
+        Struct left = node.getExpr().struct;
+        Struct right = node.getExpr1().struct;
+        // for case if (true && a < 2){...} - a and 2 only needs to be comparable not necessarily boolType
+        if (!left.compatibleWith(right)){
+            report_error("[CondFactRelop] Logicki operandi nisu kompatibilni", node);
+            node.struct = Tab.noType;
+            return;
+        }
+        if (left.isRefType() || right.isRefType()){
+            if (!(node.getRelop() instanceof RelopEqual) && !(node.getRelop() instanceof RelopNotEqual)){
+                report_error("[CondFactRelop] Uz promenljive tipa klase ili niza, od relacionih operatora, mogu se koristiti samo != i ==", node);
+                node.struct = Tab.noType;
+                return;
+            }
+        }
+
+        node.struct = boolType;
+    }
+
+    @Override
+    public void visit(CondFactExpr node){
+        node.struct = node.getExpr().struct;
+    }
+
+    // </editor-fold>
+
+    // <editor-fold desc="Conditional Statements While">
+
+    @Override
+    public void visit(DoStatement node){
+        loopCounter++;
+    }
+
+    @Override
+    public void visit(StatementLoopSimple node){
+        loopCounter--;
+    }
+
+    @Override
+    public void visit(StatementLoopCondition node){
+        loopCounter--;
+    }
+
+    @Override
+    public void visit(StatementLoopComplex node){
+        loopCounter--;
+    }
+
+    @Override
+    public void visit(StatementBreak node){
+        if(loopCounter == 0){
+            report_error("[StatementBreak] Break naredba se ne moze pozivati van while petlje", node);
+            return;
+        }
+    }
+
+    @Override
+    public void visit(StatementContinue node){
+        if(loopCounter == 0){
+            report_error("[StatementContinue] Continue naredba se ne moze pozivati van while petlje", node);
+            return;
+        }
+    }
+
+    // </editor-fold>
+
+    // <editor-fold desc="Interface declaration">
+
+    private void closeInterface(){
+        Tab.chainLocalSymbols(currInterface);
+        Tab.closeScope();
+        currInterface = null;
+        classMethodDecl = false;
+    }
+
+    @Override
+    public void visit(InterfaceDecl node){
+        closeInterface();
+    }
+
+    @Override
+    public void visit(InterfaceDeclName node){
+        if(checkIsObjNodeDeclared(node.getI1())){
+            report_error("[InterfaceDeclName] Vec je deklarisana promenljiva sa imenom: " + node.getI1(), node);
+            return;
+        }
+        currInterface = new Struct(Struct.Interface);
+        classMethodDecl = true;
+        Obj interfaceObj = Tab.insert(Obj.Type, node.getI1(), currInterface);
+        Tab.openScope();
+    }
+
+    // </editor-fold>
+
+    // <editor-fold desc="Class declaration">
+
+    private void checkIfAllMethodsAreImplemented(SyntaxNode node){
+        for(Obj member: currClass.getMembers()){
+            if (member.getFpPos() == FP_POS_UNIMPLEMENTED_INHERITED_METHOD){
+                report_error("[checkIfAllMethodsAreImplemented] Metod " + member.getName() + " interfejsa nije implementiran unutar klase koja ga prosiruje", node);
+                return;
+            }
+        }
+    }
+
+    private void closeClass(SyntaxNode node){
+        Tab.chainLocalSymbols(currClass);
+        checkIfAllMethodsAreImplemented(node);
+        Tab.closeScope();
+        currClass = null;
+        classMethodDecl = false;
+        parentClass = Tab.noType;
+//        scopeNodes.clear();
+    }
+
+    @Override
+    public void visit(ClassDeclName node){
+        if(checkIsObjNodeDeclared(node.getI1())){
+            report_error("[ClassDeclName] Vec je deklarisana promenljiva sa imenom: " + node.getI1(), node);
+            return;
+        }
+        currClass = new Struct(Struct.Class);
+        Obj classObj = Tab.insert(Obj.Type, node.getI1(), currClass);
+        Tab.openScope();
+    }
+
+    @Override
+    public void visit(ClassNoExtend node){
+        closeClass(node);
+    }
+
+    @Override
+    public void visit(ClassYesExtend node){
+        closeClass(node);
+    }
+
+    @Override
+    public void visit(ClassNoExtendYesMethods node){
+        closeClass(node);
+    }
+
+    @Override
+    public void visit(ClassYesExtendYesMethods node){
+        closeClass(node);
+    }
+
+    @Override
+    public void visit(ExtendsClass node){
+        Struct n = node.getType().struct;
+        if (n.getKind() != Struct.Class && n.getKind() != Struct.Interface){
+            report_error("[ExtendsClass] Neterminal Type mora da oznacava klasu ili interfejs (korisnicki definisan tip)", node);
+            parentClass = Tab.noType;
+            return;
+        }
+
+        currClass.setElementType(n);
+        currClass.addImplementedInterface(n);
+
+        parentClass = n;
+        for (Obj member: parentClass.getMembers()){
+            if(member.getKind() == Obj.Fld){
+                // insert only parent class fields
+                Obj var = Tab.insert(Obj.Fld, member.getName(), member.getType());
+                // we are setting fpPos so we know that is inherited name and we can "override" it in our children class
+                // but in case we declared that variable in children class twice (fppos != 2) we throw error
+                var.setFpPos(FP_POS_IMPLEMENTED_INHERITED_METHOD);
+            }
+        }
+    }
+
+    // </editor-fold>
 
 }

@@ -1,0 +1,24 @@
+program SetTest3
+
+{
+
+    void main() set s1; set s2; set s3;{
+        s1 = new set[2];
+        s2 = new set[3];
+        s3 = new set[5];
+        add(s1, 1);
+        add(s1, 2);
+        add(s2, 3);
+        add(s2, 4);
+        add(s2, 5);
+        s3 = s1 union s2;
+
+        print(s1, 5);
+        print(eol);
+        print(s2, 5);
+        print(eol);
+        print(s3, 5);
+
+    }
+
+}

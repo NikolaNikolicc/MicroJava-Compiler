@@ -324,6 +324,7 @@ DesignatorStatementUnary ::= (UnaryInc) INC
 Designator ::= (DesignatorVar) IDENT
                |
                (DesignatorPropertyAccess) DesignatorClassName DesignatorClassMore
+               (DesignatorPropertyAccess) DesignatorClassName DesignatorClassMore
                |
                (DesignatorElem) DesignatorArrayName LBRACKET Expr RBRACKET
                |

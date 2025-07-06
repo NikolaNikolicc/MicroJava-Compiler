@@ -560,7 +560,9 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
         String name = node.getDesignator().obj.getName();
         Obj arr = Tab.find(name);
-        if (arr.getKind() != Obj.Var || arr.getType().getKind() != Struct.Array || !arr.getType().getElemType().equals(Tab.intType)){
+        // if we pass array we are sure that we are passing var or field, other kinds can't be arrays or can't be used due to syntax
+//        if (arr.getKind() != Obj.Fld && arr.getKind() != Obj.Var || arr.getType().getKind() != Struct.Array || !arr.getType().getElemType().equals(Tab.intType)){
+        if (arr.getType().getKind() != Struct.Array || !arr.getType().getElemType().equals(Tab.intType)){
             report_error("[MapDesignator] Designator(" + name + ") sa desne strane operanda MAP mora predstavljati niz celobrojnih vrednosti", node);
         }
     }

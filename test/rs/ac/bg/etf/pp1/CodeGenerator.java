@@ -493,7 +493,7 @@ public class CodeGenerator extends VisitorAdaptor {
 
     // </editor-fold>
 
-    // <editor-fold desc="[Designator Statements] function call, assignment, increment, decrement, left operands">
+    // <editor-fold desc="[Designator Statements] function call, assignment, unary operations (inc, dec), set operations (union), left operands">
 
     @Override
     public void visit(UnaryInc node){
@@ -615,7 +615,7 @@ public class CodeGenerator extends VisitorAdaptor {
 
     // </editor-fold>
 
-    // <editor-fold desc="[Factor] Heap Allocation (arrays, objects and sets), Loading Constants and FUnction Calls, right operands">
+    // <editor-fold desc="[Factor] Heap Allocation (arrays, objects and sets), Loading Constants, Function Calls, Addop, Minus Expr, right operands">
 
     @Override
     public void visit(FactorDesignator node){

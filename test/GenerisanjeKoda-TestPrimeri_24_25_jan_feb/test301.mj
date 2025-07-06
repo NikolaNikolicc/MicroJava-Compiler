@@ -4,7 +4,6 @@ program test301
 
 const int nula = 0;
 const int jedan = 1;
-const int dva = 2;
 const int pet = 5;
 
 int niz[];
@@ -13,9 +12,9 @@ char nizch[];
 int a;
 
 set s1, s2, s3;
-	
+
 {
-	void main()	
+	void main()
 		int bodovi;
 		int temp;
 	{
@@ -26,11 +25,11 @@ set s1, s2, s3;
 		bodovi--;
 		print(bodovi); //9
 		print(eol);
-		
+
 		niz = new int[3];
-		niz[nula] = dva;
+		niz[nula] = 2;
 		niz[jedan] = 3;
-		niz[niz[nula]] = niz[niz[1]] * 4;
+		niz[niz[nula]] = niz[1] * 4;
 		bodovi = niz[2]/niz[0];
 		print(bodovi); //6
 		print(eol);

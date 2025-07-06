@@ -219,7 +219,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         Struct type = (currTypeVar == null) ? Tab.noType : currTypeVar.getType();
         Obj constNode = Tab.insert(Obj.Con, node.getI1(), type);
 
-        if(!constObj.getType().assignableTo(type)){
+        if(!constObj.getType().equals(type)){
             report_error("[ConstDeclAssign] Deklariani tip konstante i vrednost koja se dodeljuje nisu kompatibilni", node);
         }
 

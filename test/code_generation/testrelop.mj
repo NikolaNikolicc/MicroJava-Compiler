@@ -1,0 +1,26 @@
+program TestRelop
+
+{
+
+    void main() int niz1[], niz2[]; {
+
+        niz1 = new int[5];
+
+        niz2 = niz1;
+
+        if (niz1 != niz2){
+            print(1);
+        }
+
+        if (niz1 == niz1){
+            print(2);
+        }
+
+        niz2 = new int[5];
+        if (niz1 != niz2){
+            print(3);
+        }
+
+    }
+
+}

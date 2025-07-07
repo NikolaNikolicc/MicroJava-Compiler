@@ -1168,6 +1168,14 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     // <editor-fold desc="Conditional Statements If-Else">
 
+    private boolean isReferenceType(Struct type){
+        return type.getKind() == Struct.Class || type.getKind() == Struct.Interface || type.getKind() == Struct.Array || type.getKind() == Struct.Enum;
+    }
+
+    private boolean compatibleWithNewReference(Struct left, Struct right) {
+        return left.equals(right) || left == Tab.nullType && isReferenceType(right) || right == Tab.nullType && isReferenceType(left);
+    }
+
     @Override
     public void visit(StatementConditionCondition node){
         node.struct = node.getCondition().struct;
@@ -1216,12 +1224,12 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         Struct left = node.getExpr().struct;
         Struct right = node.getExpr1().struct;
         // for case if (true && a < 2){...} - a and 2 only needs to be comparable not necessarily boolType
-        if (!left.compatibleWith(right)){
+        if (!compatibleWithNewReference(left, right)){
             report_error("[CondFactRelop] Logicki operandi nisu kompatibilni", node);
             node.struct = Tab.noType;
             return;
         }
-        if (left.isRefType() || right.isRefType()){
+        if (isReferenceType(left) || isReferenceType(right)){
             if (!(node.getRelop() instanceof RelopEqual) && !(node.getRelop() instanceof RelopNotEqual)){
                 report_error("[CondFactRelop] Uz promenljive tipa klase ili niza, od relacionih operatora, mogu se koristiti samo != i ==", node);
                 node.struct = Tab.noType;

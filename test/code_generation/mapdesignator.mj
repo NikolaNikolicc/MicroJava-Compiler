@@ -1,0 +1,30 @@
+program MapDesignator
+
+
+{
+
+    int method1(int a) {
+        return a + 1;
+    }
+
+    int method2(int a){
+        return a + 2;
+    }
+
+    void main() char a; int sum; int arr[]; {
+        arr = new int[3];
+        arr[0] = 1;
+        arr[1] = 2;
+        arr[2] = 3;
+
+        // method1(1);
+
+        sum = method1 map arr;
+        print(sum); print(eol);
+
+        sum = method2 map arr;
+        print(sum); print(eol);
+
+    }
+
+}

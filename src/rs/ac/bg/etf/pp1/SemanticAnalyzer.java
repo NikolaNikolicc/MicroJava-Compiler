@@ -560,6 +560,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         }
         String name = node.getDesignator().obj.getName();
         Obj meth = Tab.find(name);
+        logSymbol("pronadjen metod: ", meth, node);
 
         if(meth.getKind() != Obj.Meth){
             report_error("[ExprDesignatorMap] Designator(" + name + ") sa leve strane MAP operanda mora biti metoda", node);
@@ -583,7 +584,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         node.struct = Tab.intType;
-
     }
 
     @Override
@@ -594,6 +594,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
         String name = node.getDesignator().obj.getName();
         Obj arr = Tab.find(name);
+        logSymbol("pronadjen niz: ", arr, node);
         // if we pass array we are sure that we are passing var or field, other kinds can't be arrays or can't be used due to syntax
 //        if (arr.getKind() != Obj.Fld && arr.getKind() != Obj.Var || arr.getType().getKind() != Struct.Array || !arr.getType().getElemType().equals(Tab.intType)){
         if (arr.getType().getKind() != Struct.Array || !arr.getType().getElemType().equals(Tab.intType)){

@@ -18,6 +18,11 @@ import rs.ac.bg.etf.pp1.util.MySymbolTableVisitor;
 
 public class Compiler {
 
+    private static final int FP_POS_REGULAR_OBJ_NODE = 0;
+    private static final int FP_POS_FORMAL_PARAMETER = 1;
+    private static final int FP_POS_IMPLEMENTED_INHERITED_METHOD = 2;
+    private static final int FP_POS_UNIMPLEMENTED_INHERITED_METHOD = 3;
+
     static {
         DOMConfigurator.configure(Log4JUtils.instance().findLoggerConfigFile());
         Log4JUtils.instance().prepareLogFile(Logger.getRootLogger());
@@ -46,10 +51,10 @@ public class Compiler {
 
         Reader br = null;
         try {
-             File sourceCode = new File("test/GenerisanjeKoda-TestPrimeri_24_25_jan_feb/test301.mj");
+//             File sourceCode = new File("test/GenerisanjeKoda-TestPrimeri_24_25_jan_feb/test301.mj");
 //            File sourceCode = new File("test/GenerisanjeKoda-TestPrimeri_24_25_jan_feb/test302.mj");
 //            File sourceCode = new File("test/GenerisanjeKoda-TestPrimeri_24_25_jan_feb/test303.mj");
-//            File sourceCode = new File("test/code_generation/set.mj");
+            File sourceCode = new File("test/code_generation/mapdesignator.mj");
             log.info("Compiling source file: " + sourceCode.getAbsolutePath());
 
             br = new BufferedReader(new FileReader(sourceCode));
@@ -78,13 +83,14 @@ public class Compiler {
             for (Obj node: Tab.currentScope().getLocals().symbols()){
                 if (node.getKind() == Obj.Meth){
                     for (Obj local: node.getLocalSymbols()){
-                        local.setFpPos(1);
+                        local.setFpPos(FP_POS_FORMAL_PARAMETER);
                     }
                 }
             }
 
+            // embedded methods
             Obj addObj;
-            Tab.currentScope().addToLocals(addObj = new Obj(Obj.Meth, "add", Tab.noType, 0, 1));
+            Tab.currentScope().addToLocals(addObj = new Obj(Obj.Meth, "add", Tab.noType, 0, 2));
             {
                 Tab.openScope();
                 Obj a = new Obj(Obj.Var, "a", setObj.getType(), 0, 2);
@@ -92,9 +98,8 @@ public class Compiler {
 
                 Obj i = new Obj(Obj.Var, "i", Tab.intType, 0, 1);
 
-                a.setFpPos(1);
-                b.setFpPos(1);
-                i.setFpPos(0); // local variable
+                a.setFpPos(FP_POS_FORMAL_PARAMETER);
+                b.setFpPos(FP_POS_FORMAL_PARAMETER);
 
                 Tab.currentScope().addToLocals(a);
                 Tab.currentScope().addToLocals(b);
@@ -115,9 +120,8 @@ public class Compiler {
                 Obj b = new Obj(Obj.Var, "b", intArr, 0, 1);
                 Obj i = new Obj(Obj.Var, "i", Tab.intType, 0, 1);
 
-                a.setFpPos(1);
-                b.setFpPos(1);
-                i.setFpPos(0); // local variable
+                a.setFpPos(FP_POS_FORMAL_PARAMETER);
+                b.setFpPos(FP_POS_FORMAL_PARAMETER);
 
                 Tab.currentScope().addToLocals(a);
                 Tab.currentScope().addToLocals(b);
@@ -128,7 +132,7 @@ public class Compiler {
             }
 
             Obj printSetObj;
-            Tab.currentScope().addToLocals(printSetObj = new Obj(Obj.Meth, "$printSet", Tab.noType, 0, 2));
+            Tab.currentScope().addToLocals(printSetObj = new Obj(Obj.Meth, "$printSet", Tab.noType, 0, 3));
             {
                 Tab.openScope();
 
@@ -136,9 +140,8 @@ public class Compiler {
                 Obj offset = new Obj(Obj.Var, "offset", Tab.intType, 0, 1);
                 Obj i = new Obj(Obj.Var, "i", Tab.intType, 0, 1);
 
-                a.setFpPos(1);
-                offset.setFpPos(1);
-                i.setFpPos(0); // local variable
+                a.setFpPos(FP_POS_FORMAL_PARAMETER);
+                offset.setFpPos(FP_POS_FORMAL_PARAMETER);
 
                 Tab.currentScope().addToLocals(a);
                 Tab.currentScope().addToLocals(offset);
@@ -149,7 +152,7 @@ public class Compiler {
             }
 
             Obj unionSetObj;
-            Tab.currentScope().addToLocals(unionSetObj = new Obj(Obj.Meth, "$union", Tab.noType, 0, 2));
+            Tab.currentScope().addToLocals(unionSetObj = new Obj(Obj.Meth, "$union", Tab.noType, 0, 3));
             {
                 Tab.openScope();
 
@@ -158,10 +161,9 @@ public class Compiler {
                 Obj c = new Obj(Obj.Var, "c", setObj.getType(), 0, 1);
                 Obj i = new Obj(Obj.Var, "i", Tab.intType, 0, 1);
 
-                a.setFpPos(1);
-                b.setFpPos(1);
-                c.setFpPos(1);
-                i.setFpPos(0); // local variable
+                a.setFpPos(FP_POS_FORMAL_PARAMETER);
+                b.setFpPos(FP_POS_FORMAL_PARAMETER);
+                c.setFpPos(FP_POS_FORMAL_PARAMETER);
 
                 Tab.currentScope().addToLocals(a);
                 Tab.currentScope().addToLocals(b);
@@ -169,6 +171,28 @@ public class Compiler {
                 Tab.currentScope().addToLocals(i);
 
                 unionSetObj.setLocals(Tab.currentScope.getLocals());
+                Tab.closeScope();
+            }
+
+            Obj mapObj;
+            Tab.currentScope().addToLocals(mapObj = new Obj(Obj.Meth, "addAll", Tab.noType, 0, 2));
+            {
+                Tab.openScope();
+
+                Struct intArr = new Struct(Struct.Array, Tab.intType);
+
+                Obj a = new Obj(Obj.Var, "sum", Tab.intType, 0, 1);
+                Obj b = new Obj(Obj.Var, "arr", intArr, 0, 1);
+                Obj i = new Obj(Obj.Var, "i", Tab.intType, 0, 1);
+
+                a.setFpPos(FP_POS_FORMAL_PARAMETER);
+                b.setFpPos(FP_POS_FORMAL_PARAMETER);
+
+                Tab.currentScope().addToLocals(a);
+                Tab.currentScope().addToLocals(b);
+                Tab.currentScope().addToLocals(i);
+
+                mapObj.setLocals(Tab.currentScope.getLocals());
                 Tab.closeScope();
             }
 

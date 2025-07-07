@@ -16,6 +16,7 @@ public class CodeGenerator extends VisitorAdaptor {
     private Obj addAllMeth;
     private Obj printSetMeth;
     private Obj unionSetsMeth;
+    private Obj mapMeth;
     private Struct setType = Tab.find("set").getType(); // Set type from the symbol table
 
     private int mainPC;
@@ -34,7 +35,7 @@ public class CodeGenerator extends VisitorAdaptor {
 
     // <editor-fold desc="Initialization">
 
-    private void helperOrdChrLenMethods(){
+    private void generateOrdChrLenMethods(){
         Obj ordMeth = Tab.find("ord");
         Obj chrMeth = Tab.find("chr");
 
@@ -60,7 +61,8 @@ public class CodeGenerator extends VisitorAdaptor {
         Code.put(Code.return_);
     }
 
-    private void helperAdd(){
+    // <editor-fold desc="Set Embedded Methods">
+    private void generateAdd(){
 //        add
 //
 //        if (set_size >= set_capacity)return;
@@ -167,7 +169,7 @@ public class CodeGenerator extends VisitorAdaptor {
 
     }
 
-    private void helperAddAll(){
+    private void generateAddAll(){
 //        addAll(a, b)
 //
 //        for (int i = 0; i < b_size; i++){
@@ -229,7 +231,7 @@ public class CodeGenerator extends VisitorAdaptor {
         Code.put(Code.return_);
     }
 
-    private void helperPrintSet(){
+    private void generatePrintSet(){
         printSetMeth = Tab.find("$printSet");
 
         Obj a = null; // Local variable for set
@@ -282,7 +284,7 @@ public class CodeGenerator extends VisitorAdaptor {
     }
 
     // c = a union b
-    private void helperUnionSets(){
+    private void generateUnionSets(){
         unionSetsMeth = Tab.find("$union");
 
         Obj a = null;
@@ -380,12 +382,14 @@ public class CodeGenerator extends VisitorAdaptor {
         Code.put(Code.return_);
     }
 
+    // </editor-fold>
+
     private void initializeMethods(){
-        helperOrdChrLenMethods();
-        helperAdd();
-        helperAddAll();
-        helperPrintSet();
-        helperUnionSets();
+//        generateOrdChrLenMethods();
+//        generateAdd();
+//        generateAddAll();
+//        generatePrintSet();
+//        generateUnionSets();
     }
 
     CodeGenerator(){
@@ -494,6 +498,79 @@ public class CodeGenerator extends VisitorAdaptor {
         } else if (node.getMulop() instanceof MulopMod) {
             Code.put(Code.rem);
         }
+    }
+
+    @Override
+    public void visit(ExprDesignatorMap node){
+        int methAdr = node.getDesignator().obj.getAdr();
+        Obj arr = node.getMapDesignator().getDesignator().obj;
+
+        Obj i = new Obj(Obj.Var, "$i", Tab.intType, 0, 1);
+        Obj sum = new Obj(Obj.Var, "$sum", Tab.intType, 1, 1);
+        Obj arrLocal = new Obj(Obj.Var, "$arr", arr.getType(), 2, 1);
+
+        // Pretpostavljamo:
+        // lokal 0: i
+        // lokal 1: sum
+        // lokal 2: arr
+
+        Code.put(Code.enter);
+        Code.put(0); // 0 formalnih parametara
+        Code.put(3); // 3 lokalne promenljive
+
+        // sum = 0
+        Code.loadConst(0);
+        Code.store(sum);
+
+        // i = 0
+        Code.loadConst(0);
+        Code.store(i);
+
+        // arr = ... (učitaj referencu na niz sa steka)
+//        Code.load(node.getMapDesignator().getDesignator().obj);
+        Code.store(arrLocal);
+
+        int loopStart = Code.pc;
+
+        // uslov: i < arr.length
+        Code.load(i); // i
+        Code.load(arrLocal); // arr
+        Code.put(Code.arraylength);
+        Code.putFalseJump(Code.lt, 0);
+        int loopEnd = Code.pc - 2;
+
+        // sum += poziv_metode(arr[i])
+        Code.load(arrLocal); // arr
+        Code.load(i); // i
+        Code.put(Code.aload); // arr[i]
+        int offset = methAdr - Code.pc;
+        Code.put(Code.call);
+        Code.put2(offset);
+        Code.load(sum); // sum
+        Code.put(Code.add);
+        Code.store(sum); // sum
+
+        // i++
+        Code.load(i);
+        Code.loadConst(1);
+        Code.put(Code.add);
+        Code.store(i);
+
+        Code.putJump(loopStart);
+        Code.fixup(loopEnd);
+
+        Code.load(sum); // vraća sum
+
+        Code.put(Code.exit); // removing local variables from the stack
+//        Code.put(Code.return_); // return instruction is not needed here, as the value is already on the stack
+
+        // Fixing the method address
+        node.getDesignator().obj.setAdr(methAdr);
+    }
+
+    @Override
+    public void visit(MapDesignator node){
+        Code.load(node.getDesignator().obj); // Load the address of the array
     }
 
     // </editor-fold>

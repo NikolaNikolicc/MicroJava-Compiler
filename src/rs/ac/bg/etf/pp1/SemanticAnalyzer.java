@@ -59,7 +59,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     Logger log = Logger.getLogger(getClass());
 
-
     // <editor-fold desc="log methods">
 
     public void report_error(String message, SyntaxNode info) {
@@ -686,7 +685,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     private boolean checkAssignCompatibility(Struct left, Struct right){
         // provera za setove
-        if (left.getKind() == Struct.Enum) return right.getKind() == Struct.Enum;
+        if (left.getKind() == Struct.Enum) return right == Tab.nullType || right.getKind() == Struct.Enum;
 
         if (right.assignableTo(left)){
             return true;
@@ -1102,7 +1101,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         for (int i = 0; i < fpList.size(); i++){
             Struct fpListElem = fpList.get(i);
             Struct fpStackElem = fpStack.pop();
-            if(!fpStackElem.assignableTo(fpListElem)){
+            if(!checkAssignCompatibility(fpStackElem, fpListElem)){
                 report_error("[FactorFuncCall][DesignatorStatementFuncCall] Prosledjeni parametar pod brojem: " + (i + 1) + "(indeksirano od 1) nije kompatibilan sa odgovarajucim formalnim parametrom metode " + methName + " po tipu", node);
 
                 errorHappened = true;

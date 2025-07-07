@@ -385,11 +385,11 @@ public class CodeGenerator extends VisitorAdaptor {
     // </editor-fold>
 
     private void initializeMethods(){
-//        generateOrdChrLenMethods();
-//        generateAdd();
-//        generateAddAll();
-//        generatePrintSet();
-//        generateUnionSets();
+        generateOrdChrLenMethods();
+        generateAdd();
+        generateAddAll();
+        generatePrintSet();
+        generateUnionSets();
     }
 
     CodeGenerator(){
@@ -473,7 +473,7 @@ public class CodeGenerator extends VisitorAdaptor {
 
     // </editor-fold>
 
-    // <editor-fold desc="[Expr, Term] Arithmetic Operations (Minus, Addop, Mulop)">
+    // <editor-fold desc="[Expr, Term] Arithmetic Operations (Minus, Addop, Mulop, Map Designator)">
 
     @Override
     public void visit(ExprMinusTerm node){
@@ -575,11 +575,16 @@ public class CodeGenerator extends VisitorAdaptor {
 
     // </editor-fold>
 
-    // <editor-fold desc="[Designator Statements] function call, assignment, unary operations (inc, dec), set operations (union), left operands">
+    // <editor-fold desc="[Designator Statements, regular and while] function call, assignment, unary operations (inc, dec), set operations (union), left operands">
 
     @Override
     public void visit(UnaryInc node){
-        Obj obj = ((DesignatorStatementUnarySemi)node.getParent()).getDesignator().obj;
+        Obj obj;
+        if (node.getParent() instanceof  DesignatorStatementUnarySemi)
+            obj = ((DesignatorStatementUnarySemi)node.getParent()).getDesignator().obj;
+        else
+            obj = ((DesignatorStatementUnarySemiWhile)node.getParent()).getDesignator().obj;
+
         if (obj.getKind() == Obj.Elem){
             Code.put(Code.dup2);
         } else if (obj.getKind() == Obj.Fld){
@@ -593,10 +598,17 @@ public class CodeGenerator extends VisitorAdaptor {
 
     @Override
     public void visit(UnaryDec node){
-        Obj obj = ((DesignatorStatementUnarySemi)node.getParent()).getDesignator().obj;
+        Obj obj;
+        if (node.getParent() instanceof  DesignatorStatementUnarySemi)
+            obj = ((DesignatorStatementUnarySemi)node.getParent()).getDesignator().obj;
+        else
+            obj = ((DesignatorStatementUnarySemiWhile)node.getParent()).getDesignator().obj;
+
         if (obj.getKind() == Obj.Elem){
+            // If the designator is an array element, we need to duplicate both the index and the value
             Code.put(Code.dup2);
         } else if (obj.getKind() == Obj.Fld){
+            // If the designator is a class field, we only need to duplicate the value
             Code.put(Code.dup);
         }
         Code.load(obj);
@@ -617,12 +629,38 @@ public class CodeGenerator extends VisitorAdaptor {
     }
 
     @Override
+    public void visit(DesignatorStatementFuncCallWhile node){
+        int offset = node.getDesignator().obj.getAdr() - Code.pc; // Calculate the offset to the function address
+        Code.put(Code.call);
+        Code.put2(offset);
+
+        if (node.getDesignator().obj.getType() != Tab.noType) {
+            Code.put(Code.pop); // If the function returns a value, we pop it from the stack
+        }
+    }
+
+    @Override
     public void visit(DesignatorAssignExpr node){
         Code.store(node.getDesignator().obj); // Store the value of the expression in the designator
     }
 
     @Override
+    public void visit(DesignatorAssignExprWhile node){
+        Code.store(node.getDesignator().obj); // Store the value of the expression in the designator
+    }
+
+    @Override
     public void visit(DesignatorAssignSetop node){
+        Code.load(node.getDesignator1().obj);
+        Code.load(node.getDesignator2().obj);
+        Code.load(node.getDesignator().obj);
+        int offset = unionSetsMeth.getAdr() - Code.pc; // Calculate the offset to the add method
+        Code.put(Code.call);
+        Code.put2(offset); // Call the unionSets method
+    }
+
+    @Override
+    public void visit(DesignatorAssignSetopWhile node){
         Code.load(node.getDesignator1().obj);
         Code.load(node.getDesignator2().obj);
         Code.load(node.getDesignator().obj);

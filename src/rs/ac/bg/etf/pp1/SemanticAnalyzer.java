@@ -649,8 +649,9 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             report_error("[FactorCreateObject] Ne moze se kreirati objekat klase od nevalidnog tipa.", node);
             return;
         }
-        node.struct = new Struct(Struct.Class, currTypeVar.getType().getMembersTable());
-        copyClassExtends(node.struct, currTypeVar.getType(), node);
+        node.struct = currTypeVar.getType();
+        // node.struct = new Struct(Struct.Class, currTypeVar.getType().getMembersTable());
+        // copyClassExtends(node.struct, currTypeVar.getType(), node);
     }
 
     @Override
@@ -683,20 +684,31 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     // <editor-fold desc="[Designator Statements, regular and while] function call, assignment, unary operations (inc, dec), set operations (union), left operands">
 
+    public boolean assignableToNewReference(Struct left, Struct right) {
+        return right.equals(left) || right == Tab.nullType && isReferenceType(left) || right.getKind() == 3 && left.getKind() == 3 && left.getElemType() == Tab.noType;
+    }
+
+    private boolean dfsCompatibility(Struct left, Struct right){
+        // TODO check assignableTo
+        if (right.getImplementedInterfaces().isEmpty())
+            return false;
+
+        Struct implementedInterface = right.getImplementedInterfaces().toArray(new Struct[0])[0];
+        if (assignableToNewReference(left, implementedInterface))
+            return true;
+
+        return dfsCompatibility(left, implementedInterface);
+    }
+
     private boolean checkAssignCompatibility(Struct left, Struct right){
         // provera za setove
         if (left.getKind() == Struct.Enum) return right == Tab.nullType || right.getKind() == Struct.Enum;
 
-        if (right.assignableTo(left)){
+        if (assignableToNewReference(left, right)){
             return true;
         }
 
-        for (Struct implementedInterface: right.getImplementedInterfaces()){
-            if (implementedInterface.assignableTo(left)){
-                return true;
-            }
-        }
-        return false;
+        return dfsCompatibility(left, right);
     }
 
     @Override
@@ -1389,6 +1401,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
                 var.setFpPos(FP_POS_IMPLEMENTED_INHERITED_METHOD);
             }
         }
+
+        currClass.addImplementedInterface(parentClass);
     }
 
     // </editor-fold>

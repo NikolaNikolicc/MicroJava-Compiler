@@ -200,7 +200,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     // <editor-fold desc="Const and Var declarations">
 
     private void formParsSetLevelAndFpPos(Obj node){
-        if(parsingFormPars && !(mainDeclared && mainMeth.equals(currMeth))){
+        // second condition is used to check if we are parsing formals for main method if main is declared multiple times
+        if(parsingFormPars && !(mainDeclared && currMeth.getName().equals("main"))){
             currMeth.setLevel(currMeth.getLevel() + 1);
             node.setFpPos(FP_POS_FORMAL_PARAMETER);
         }
@@ -364,7 +365,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         // so because of that we use De Morgan rule for the condition above
         // if (currMeth == mainMeth but we haven't declared main yet (mainDeclared == false) we wan't to chain syms to main meth
 
-        if(!currMeth.equals(mainMeth) || !mainDeclared) Tab.chainLocalSymbols(currMeth);
+        if(!currMeth.getName().equals("main") || !mainDeclared) Tab.chainLocalSymbols(currMeth);
         Tab.closeScope();
 
         if (!es.equals(currMeth.getType(), Tab.noType) && !returnNode){

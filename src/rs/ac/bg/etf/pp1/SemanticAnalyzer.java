@@ -57,7 +57,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     private Stack<Struct> fpStack = new Stack<>();
 //    private Collection<String> scopeNodes = new ArrayList<>();
 
-    private ExtendedStruct ex = ExtendedStruct.getInstance();
+    private ExtendedStruct es = ExtendedStruct.getInstance();
     Logger log = Logger.getLogger(getClass());
 
     // <editor-fold desc="log methods">
@@ -218,8 +218,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         Obj constObj = node.getConstDeclListValue().obj;
         Struct type = (currTypeVar == null) ? Tab.noType : currTypeVar.getType();
         Obj constNode = Tab.insert(Obj.Con, node.getI1(), type);
-
-        if(!constObj.getType().equals(type)){
+        
+        if (!es.equals(constObj.getType(), type)){
             report_error("[ConstDeclAssign] Deklariani tip konstante i vrednost koja se dodeljuje nisu kompatibilni", node);
         }
 
@@ -368,7 +368,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         if(!currMeth.equals(mainMeth) || !mainDeclared) Tab.chainLocalSymbols(currMeth);
         Tab.closeScope();
 
-        if (!currMeth.getType().equals(Tab.noType) && !returnNode){
+        if (!es.equals(currMeth.getType(), Tab.noType) && !returnNode){
             report_error("[MethodDecl] U metodu povratnog tipa koji nije void se mora pojaviti barem jedna return naredba", node);
         }
 
@@ -383,7 +383,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             report_error("[StatementReturn] Return naredba se moze pozivati samo unutar tela metode", node);
             return;
         }
-        if (!currMeth.getType().equals(Tab.noType)){
+        if (!es.equals(currMeth.getType(), Tab.noType)){
             report_error("[StatementReturn] U metodu povratnog tipa koji nije void svaka return naredba mora da vraca taj tip", node);
         }
         returnNode = true;
@@ -395,7 +395,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             report_error("[StatementReturnExpr] Return naredba se moze pozivati samo unutar tela metode", node);
             return;
         }
-        if (!currMeth.getType().equals(node.getExpr().struct)){
+        if (!es.equals(currMeth.getType(), node.getExpr().struct)){
             report_error("[StatementReturnExpr] Povratni tip metoda i tip koji vraca return naredba nisu kompatibilni", node);
         }
         returnNode = true;
@@ -466,7 +466,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             report_error("[StatementRead] Read operacija nad neadekvatnom promenljivom(" + name + ")", node);
             return;
         }
-        else if(!type.equals(Tab.intType) && !type.equals(boolType) && !type.equals(Tab.charType)){
+        else if(!es.equals(type, Tab.intType) && !es.equals(type, boolType) && !es.equals(type, Tab.charType)){
             report_error("[StatementRead] Read operacija nad promenljivom("+ name + ") koja nije tipa int, char ili bool", node);
             return;
         }
@@ -476,7 +476,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     public void visit(StatementPrint node){
         Struct type = node.getExpr().struct;
 
-        if(!type.equals(Tab.intType) && !type.equals(boolType) && !type.equals(Tab.charType) && !type.equals(setType)){
+        if(!es.equals(type, Tab.intType) && !es.equals(type, boolType) && !es.equals(type, Tab.charType) && !es.equals(type, setType)){
             report_error("[StatementPrint] Print operacija nad izrazom koji nije tipa int, char ili bool", node);
             return;
         }
@@ -503,7 +503,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     @Override
     public void visit(StatementPrintNumber node){
         Struct type = node.getExpr().struct;
-        if(!type.equals(Tab.intType) && !type.equals(boolType) && !type.equals(Tab.charType) && !type.equals(setType)){
+        if(!es.equals(type, Tab.intType) && !es.equals(type, boolType) && !es.equals(type, Tab.charType) && !es.equals(type, setType)){
             report_error("[StatementPrintNumber] Print operacija nad izrazom koji nije tipa int, char ili bool", node);
             return;
         }
@@ -520,7 +520,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(TermTermMulopFactor node){
-        if(!node.getFactor().struct.equals(Tab.intType) || !node.getTerm().struct.equals(Tab.intType)){
+        if(!es.equals(node.getFactor().struct, Tab.intType) || !es.equals(node.getTerm().struct, Tab.intType)){
             report_error("[TermTermMulopFactor] Mulop operator zahteva da oba operanda budu int vrednosti.", node);
             node.struct = Tab.noType;
             return;
@@ -535,7 +535,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(ExprMinusTerm node){
-        if(!node.getTerm().struct.equals(Tab.intType)){
+        if(!es.equals(node.getTerm().struct, Tab.intType)){
             report_error("[ExprMinusTerm] Minus mozemo staviti samo ispred operanda koji je tipa int.", node);
             node.struct = Tab.noType;
             return;
@@ -545,7 +545,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(ExprAddopTerm node){
-        if(!node.getTerm().struct.equals(Tab.intType) || !node.getExpr().struct.equals(Tab.intType)){
+        if(!es.equals(node.getTerm().struct, Tab.intType) || !es.equals(node.getExpr().struct, Tab.intType)){
             report_error("[ExprAddopTerm] Addop operator zahteva da oba operanda budu int vrednosti.", node);
             node.struct = Tab.noType;
             return;
@@ -573,12 +573,12 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             node.struct = Tab.noType;
             return;
         }
-        if(!fpList.get(0).equals(Tab.intType)){
+        if(!es.equals(fpList.get(0), Tab.intType)){
             report_error("[ExprDesignatorMap] Parametar metoda sa leve strane MAP operanda mora biti tipa int", node);
             node.struct = Tab.noType;
             return;
         }
-        if(!meth.getType().equals(Tab.intType)){
+        if(!es.equals(meth.getType(), Tab.intType)){
             report_error("[ExprDesignatorMap] Povratna vrednost metoda sa leve strana MAP operanda mora biti tipa int", node);
             node.struct = Tab.noType;
             return;
@@ -597,7 +597,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         logSymbol("pronadjen niz: ", arr, node);
         // if we pass array we are sure that we are passing var or field, other kinds can't be arrays or can't be used due to syntax
 //        if (arr.getKind() != Obj.Fld && arr.getKind() != Obj.Var || arr.getType().getKind() != Struct.Array || !arr.getType().getElemType().equals(Tab.intType)){
-        if (arr.getType().getKind() != Struct.Array || !arr.getType().getElemType().equals(Tab.intType)){
+        if (arr.getType().getKind() != Struct.Array || !es.equals(arr.getType().getElemType(), Tab.intType)){
             report_error("[MapDesignator] Designator(" + name + ") sa desne strane operanda MAP mora predstavljati niz celobrojnih vrednosti", node);
         }
     }
@@ -620,12 +620,12 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(FactorCreateArray node){
-        if (!node.getExpr().struct.equals(Tab.intType)){
+        if (!es.equals(node.getExpr().struct, Tab.intType)){
             report_error("[FactorCreateArray] Izraz prosledjen kao velicina niza mora biti int tipa.", node);
             node.struct = Tab.noType;
             return;
         }
-        if (node.getType().struct.equals(setType)){
+        if (es.equals(node.getType().struct, setType)){
 //            report_info("kreiran skup", node);
             node.struct = setType;
         }else{
@@ -694,7 +694,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             report_error("[DesignatorStatementUnarySemi] Unarna operacija (-- ili ++) nad neadekvatnom promenljivom(" + name + ")", node);
             return;
         }
-        else if(!node.getDesignator().obj.getType().equals(Tab.intType)){
+        else if(!es.equals(node.getDesignator().obj.getType(), Tab.intType)){
             report_error("[DesignatorStatementUnarySemi] Unarna operacija (-- ili ++) nad promenljivom("+ name + ") koja nije tipa int", node);
             return;
         }
@@ -709,7 +709,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             report_error("[DesignatorStatementUnarySemiWhile] Unarna operacija (-- ili ++) nad neadekvatnom promenljivom(" + name + ")", node);
             return;
         }
-        else if(!node.getDesignator().obj.getType().equals(Tab.intType)){
+        else if(!es.equals(node.getDesignator().obj.getType(), Tab.intType)){
             report_error("[DesignatorStatementUnarySemiWhile] Unarna operacija (-- ili ++) nad promenljivom("+ name + ") koja nije tipa int", node);
             return;
         }
@@ -741,7 +741,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         }
         // it's important to use assignableTo because of assigning null properly
 //        else if(!checkAssignCompatibility(node.getDesignator().obj.getType(), node.getExpr().struct)){
-        else if(!ex.assignableTo(node.getExpr().struct, node.getDesignator().obj.getType())){
+        else if(!es.assignableTo(node.getExpr().struct, node.getDesignator().obj.getType())){
             report_error("[DesignatorAssignExpr] Tip Expr nije kompatibilan sa tipom neterminala Designator : " + node.getDesignator().obj.getName(), node );
             return;
         }
@@ -758,7 +758,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         }
         // it's important to use assignableTo because of assigning null propery
 //        else if(!checkAssignCompatibility(node.getDesignator().obj.getType(), node.getExpr().struct)){
-        else if(!ex.assignableTo(node.getExpr().struct, node.getDesignator().obj.getType())){
+        else if(!es.assignableTo(node.getExpr().struct, node.getDesignator().obj.getType())){
             report_error("[DesignatorAssignExprWhile] Tip Expr nije kompatibilan sa tipom neterminala Dedsignator : " + node.getDesignator().obj.getName(), node );
             return;
         }
@@ -769,7 +769,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         Struct left = node.getDesignator().obj.getType();
         Struct middle = node.getDesignator1().obj.getType();
         Struct right = node.getDesignator2().obj.getType();
-        if (!left.equals(setType) || !middle.equals(setType) || !right.equals(setType)){
+        if (!es.equals(left, setType) || !es.equals(middle, setType) || !es.equals(right, setType)){
             report_error("[DesignatorAssignSetop] Svi Designator neterminali moraju biti tipa set", node);
             return;
         }
@@ -780,7 +780,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         Struct left = node.getDesignator().obj.getType();
         Struct middle = node.getDesignator1().obj.getType();
         Struct right = node.getDesignator2().obj.getType();
-        if (!left.equals(setType) || !middle.equals(setType) || !right.equals(setType)){
+        if (!es.equals(left, setType) || !es.equals(middle, setType) || !es.equals(right, setType)){
             report_error("[DesignatorAssignSetopWhile] Svi Designator neterminali moraju biti tipa set", node);
             return;
         }
@@ -850,7 +850,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             accessClass = Tab.noType;
             return;
         }
-        else if (!node.getExpr().struct.equals(Tab.intType)){
+        else if (!es.equals(node.getExpr().struct, Tab.intType)){
             report_error("[DesignatorClassElem] Indeks niza mora biti int vrednost", node);
             node.obj = Tab.noObj;
             accessClass = Tab.noType;
@@ -875,7 +875,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             thisDetected = false;
             return;
         }
-        if (!node.getExpr().struct.equals(Tab.intType)){
+        if (!es.equals(node.getExpr().struct, Tab.intType)){
             report_error("[DesignatorClassMoreFinalElem] Indeks niza mora biti tipa int", node);
             node.obj = Tab.noObj;
             thisDetected = false;
@@ -956,7 +956,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             thisDetected = false;
             return;
         }
-        if (!node.getExpr().struct.equals(Tab.intType)){
+        if (!es.equals(node.getExpr().struct, Tab.intType)){
             report_error("[DesignatorClassMoreFinalElem] Indeks niza mora biti tipa int", node);
             node.obj = Tab.noObj;
             thisDetected = false;
@@ -1062,7 +1062,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             node.obj = Tab.noObj;
             return;
         }
-        else if (!node.getExpr().struct.equals(Tab.intType)){
+        else if (!es.equals(node.getExpr().struct, Tab.intType)){
             report_error("[DesignatorElem] Indeks niza mora biti int vrednost", node);
             node.obj = Tab.noObj;
             return;
@@ -1090,7 +1090,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             Struct fpListElem = fpList.get(i);
             Struct fpStackElem = fpStack.pop();
 //            if(!checkAssignCompatibility(fpStackElem, fpListElem)){
-            if (!ex.assignableTo(fpStackElem, fpListElem)){
+            if (!es.assignableTo(fpStackElem, fpListElem)){
                 report_error("[FactorFuncCall][DesignatorStatementFuncCall] Prosledjeni parametar pod brojem: " + (i + 1) + "(indeksirano od 1) nije kompatibilan sa odgovarajucim formalnim parametrom metode " + methName + " po tipu", node);
 
                 errorHappened = true;
@@ -1164,7 +1164,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(ConditionOr node){
-        if (!node.getCondition().struct.equals(boolType) || !node.getCondTerm().struct.equals(boolType)){
+        if (!es.equals(node.getCondition().struct, boolType) || !es.equals(node.getCondTerm().struct, boolType)){
             report_error("[ConditionOr] Condition mora biti tipa bool [ConditionOr]", node);
             node.struct = Tab.noType;
             return;
@@ -1175,7 +1175,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(ConditionCondTerm node){
-        if (!node.getCondTerm().struct.equals(boolType)){
+        if (!es.equals(node.getCondTerm().struct, boolType)){
             report_error("[ConditionCondTerm] Condition mora biti tipa bool [ConditionCondTerm]", node);
             node.struct = Tab.noType;
             return;
@@ -1186,7 +1186,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(CondTermAnd node){
-        if (!node.getCondFact().struct.equals(boolType) || !node.getCondTerm().struct.equals(boolType)){
+        if (!es.equals(node.getCondFact().struct, boolType) || !es.equals(node.getCondTerm().struct, boolType)){
             report_error("[CondTermAnd] Condition mora biti tipa bool [CondTermAnd]", node);
             node.struct = Tab.noType;
             return;
@@ -1206,12 +1206,12 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         Struct right = node.getExpr1().struct;
         // for case if (true && a < 2){...} - a and 2 only needs to be comparable not necessarily boolType
 //        if (!compatibleWithNewReference(left, right)){
-        if (!ex.compatibleWith(left, right)){
+        if (!es.compatibleWith(left, right)){
             report_error("[CondFactRelop] Logicki operandi nisu kompatibilni", node);
             node.struct = Tab.noType;
             return;
         }
-        if (ex.isRefType(left) || ex.isRefType(right)){
+        if (es.isRefType(left) || es.isRefType(right)){
             if (!(node.getRelop() instanceof RelopEqual) && !(node.getRelop() instanceof RelopNotEqual)){
                 report_error("[CondFactRelop] Uz promenljive tipa klase ili niza, od relacionih operatora, mogu se koristiti samo != i ==", node);
                 node.struct = Tab.noType;

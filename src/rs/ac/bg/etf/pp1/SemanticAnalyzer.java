@@ -606,13 +606,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     // <editor-fold desc="[Factor] Heap Allocation (arrays, objects and sets), Loading Constants, right operands">
 
-    private void copyClassExtends(Struct to, Struct from, SyntaxNode node){
-        to.setElementType(from.getElemType());
-        for (Struct implementedInterface: from.getImplementedInterfaces()){
-            to.addImplementedInterface(implementedInterface);
-        }
-    }
-
     @Override
     public void visit(FactorDesignator node){
         node.struct = node.getDesignator().obj.getType();
@@ -1358,10 +1351,17 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
 
-        currClass.setElementType(n);
-        currClass.addImplementedInterface(n);
-
         parentClass = n;
+        if (node.getType().struct.getKind() == Struct.Class){
+            currClass.setElementType(n);
+            for (Struct implementedInterface: parentClass.getImplementedInterfaces()){
+                currClass.addImplementedInterface(implementedInterface);
+            }
+        }
+        else{
+            currClass.addImplementedInterface(parentClass);
+        }
+
         for (Obj member: parentClass.getMembers()){
             if(member.getKind() == Obj.Fld){
                 // insert only parent class fields
@@ -1371,8 +1371,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
                 var.setFpPos(FP_POS_IMPLEMENTED_INHERITED_METHOD);
             }
         }
-
-        currClass.addImplementedInterface(parentClass);
     }
 
     // </editor-fold>

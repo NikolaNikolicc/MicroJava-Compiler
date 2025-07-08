@@ -36,17 +36,24 @@ public class ExtendedStruct {
     }
 
 
-    private boolean isPolymorphicallyAssignableTo(Struct right, Struct dest) {
-        if (right.getImplementedInterfaces().isEmpty()){
-            return false;
+    private boolean isPolyAssignableToClass(Struct right, Struct dest) {
+        Struct node = right;
+        while (node.getElemType() != null){
+            if (equals(node, dest)) {
+                return true;
+            }
+            node = node.getElemType();
         }
+        return false;
+    }
 
-        Struct node = right.getImplementedInterfaces().toArray(new Struct[0])[0];
-        if (equals(node, dest)){
-            return true;
+    private boolean isPolyAssignableToInterface(Struct right, Struct dest) {
+        for (Struct iface : right.getImplementedInterfaces()) {
+            if (equals(iface, dest)) {
+                return true;
+            }
         }
-
-        return isPolymorphicallyAssignableTo(node, dest);
+        return false;
     }
 
     public boolean assignableTo(Struct node, Struct dest) {
@@ -54,7 +61,7 @@ public class ExtendedStruct {
             return true;
         }
 
-        return isPolymorphicallyAssignableTo(node, dest);
+        return isPolyAssignableToClass(node, dest) || isPolyAssignableToInterface(node, dest);
     }
 
 }

@@ -7,38 +7,24 @@ import rs.etf.pp1.symboltable.structure.SymbolDataStructure;
 
 import java.util.HashSet;
 
-public class ExtendedStruct extends Struct {
+public class ExtendedStruct {
 
-    private HashSet<ExtendedStruct> visited = new HashSet<>();
 
-    public ExtendedStruct(int kind) {
-        super(kind);
+    public static boolean isRefType(Struct node) {
+        int kind = node.getKind();
+        return kind == Struct.Class || kind == Struct.Interface || kind == Struct.Array || kind == Struct.Enum;
     }
 
-    public ExtendedStruct(int kind, ExtendedStruct elemType) {
-        super(kind, elemType);
-    }
-
-    public ExtendedStruct(int kind, SymbolDataStructure members) {
-        super(kind, members);
-    }
-
-
-    public boolean isRefType() {
-        int kind = this.getKind();
-        return kind == Class || kind == Interface || kind == Array || kind == Enum;
-    }
-
-    public boolean equals(ExtendedStruct other) {
-        if (this.getKind() == Array) {
-            return other.getKind() == Array && this.getElemType().equals(other.getElemType());
+    public static boolean equals(Struct node, Struct other) {
+        if (node.getKind() == Struct.Array) {
+            return node.getKind() == Struct.Array && equals(node.getElemType(), other.getElemType());
         }else {
-            return this == other;
+            return node == other;
         }
     }
 
-    public boolean compatibleWith(ExtendedStruct other) {
-        return this.equals(other) || this == Tab.nullType && other.isRefType() || other == Tab.nullType && this.isRefType();
+    public static boolean compatibleWith(Struct node, Struct other) {
+        return equals(node, other) || node == Tab.nullType && isRefType(other) || other == Tab.nullType && isRefType(node);
     }
 
 
@@ -48,19 +34,19 @@ public class ExtendedStruct extends Struct {
         }
 
         Struct node = right.getImplementedInterfaces().toArray(new Struct[0])[0];
-        if (node.equals(dest)){
+        if (equals(node, dest)){
             return true;
         }
 
         return isPolymorphicallyAssignableTo(node, dest);
     }
 
-    public boolean assignableTo(ExtendedStruct dest) {
-        if (this.equals(dest) || this == Tab.nullType && dest.isRefType() || this.getKind() == Array && dest.getKind() == Array && dest.getElemType() == Tab.noType){
+    public static boolean assignableTo(Struct node, Struct dest) {
+        if (equals(node, dest) || node == Tab.nullType && isRefType(dest) || node.getKind() == Struct.Array && dest.getKind() == Struct.Array && dest.getElemType() == Tab.noType){
             return true;
         }
 
-        return isPolymorphicallyAssignableTo(this, dest);
+        return isPolymorphicallyAssignableTo(node, dest);
     }
 
 }

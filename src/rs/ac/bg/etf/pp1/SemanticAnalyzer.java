@@ -685,33 +685,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     // <editor-fold desc="[Designator Statements, regular and while] function call, assignment, unary operations (inc, dec), set operations (union), left operands">
 
-    public boolean assignableToNewReference(Struct left, Struct right) {
-        return right.equals(left) || right == Tab.nullType && isReferenceType(left) || right.getKind() == 3 && left.getKind() == 3 && left.getElemType() == Tab.noType;
-    }
-
-    private boolean dfsCompatibility(Struct left, Struct right){
-        // TODO check assignableTo
-        if (right.getImplementedInterfaces().isEmpty())
-            return false;
-
-        Struct implementedInterface = right.getImplementedInterfaces().toArray(new Struct[0])[0];
-        if (assignableToNewReference(left, implementedInterface))
-            return true;
-
-        return dfsCompatibility(left, implementedInterface);
-    }
-
-    private boolean checkAssignCompatibility(Struct left, Struct right){
-        // provera za setove
-        if (left.getKind() == Struct.Enum) return right == Tab.nullType || right.getKind() == Struct.Enum;
-
-        if (assignableToNewReference(left, right)){
-            return true;
-        }
-
-        return dfsCompatibility(left, right);
-    }
-
     @Override
     public void visit(DesignatorStatementUnarySemi node){
         int kind = node.getDesignator().obj.getKind();
@@ -767,7 +740,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         // it's important to use assignableTo because of assigning null properly
-        else if(!checkAssignCompatibility(node.getDesignator().obj.getType(), node.getExpr().struct)){
+//        else if(!checkAssignCompatibility(node.getDesignator().obj.getType(), node.getExpr().struct)){
+        else if(!ex.assignableTo(node.getExpr().struct, node.getDesignator().obj.getType())){
             report_error("[DesignatorAssignExpr] Tip Expr nije kompatibilan sa tipom neterminala Designator : " + node.getDesignator().obj.getName(), node );
             return;
         }
@@ -783,7 +757,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         // it's important to use assignableTo because of assigning null propery
-        else if(!checkAssignCompatibility(node.getDesignator().obj.getType(), node.getExpr().struct)){
+//        else if(!checkAssignCompatibility(node.getDesignator().obj.getType(), node.getExpr().struct)){
+        else if(!ex.assignableTo(node.getExpr().struct, node.getDesignator().obj.getType())){
             report_error("[DesignatorAssignExprWhile] Tip Expr nije kompatibilan sa tipom neterminala Dedsignator : " + node.getDesignator().obj.getName(), node );
             return;
         }
@@ -1114,7 +1089,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         for (int i = 0; i < fpList.size(); i++){
             Struct fpListElem = fpList.get(i);
             Struct fpStackElem = fpStack.pop();
-            if(!checkAssignCompatibility(fpStackElem, fpListElem)){
+//            if(!checkAssignCompatibility(fpStackElem, fpListElem)){
+            if (!ex.assignableTo(fpStackElem, fpListElem)){
                 report_error("[FactorFuncCall][DesignatorStatementFuncCall] Prosledjeni parametar pod brojem: " + (i + 1) + "(indeksirano od 1) nije kompatibilan sa odgovarajucim formalnim parametrom metode " + methName + " po tipu", node);
 
                 errorHappened = true;
@@ -1181,14 +1157,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     // <editor-fold desc="Conditional Statements If-Else">
 
-    private boolean isReferenceType(Struct type){
-        return type.getKind() == Struct.Class || type.getKind() == Struct.Interface || type.getKind() == Struct.Array || type.getKind() == Struct.Enum;
-    }
-
-    private boolean compatibleWithNewReference(Struct left, Struct right) {
-        return left.equals(right) || left == Tab.nullType && isReferenceType(right) || right == Tab.nullType && isReferenceType(left);
-    }
-
     @Override
     public void visit(StatementConditionCondition node){
         node.struct = node.getCondition().struct;
@@ -1237,12 +1205,13 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         Struct left = node.getExpr().struct;
         Struct right = node.getExpr1().struct;
         // for case if (true && a < 2){...} - a and 2 only needs to be comparable not necessarily boolType
-        if (!compatibleWithNewReference(left, right)){
+//        if (!compatibleWithNewReference(left, right)){
+        if (!ex.compatibleWith(left, right)){
             report_error("[CondFactRelop] Logicki operandi nisu kompatibilni", node);
             node.struct = Tab.noType;
             return;
         }
-        if (isReferenceType(left) || isReferenceType(right)){
+        if (ex.isRefType(left) || ex.isRefType(right)){
             if (!(node.getRelop() instanceof RelopEqual) && !(node.getRelop() instanceof RelopNotEqual)){
                 report_error("[CondFactRelop] Uz promenljive tipa klase ili niza, od relacionih operatora, mogu se koristiti samo != i ==", node);
                 node.struct = Tab.noType;

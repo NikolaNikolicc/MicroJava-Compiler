@@ -57,6 +57,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     private Stack<Struct> fpStack = new Stack<>();
 //    private Collection<String> scopeNodes = new ArrayList<>();
 
+    private ExtendedStruct ex = ExtendedStruct.getInstance();
     Logger log = Logger.getLogger(getClass());
 
     // <editor-fold desc="log methods">

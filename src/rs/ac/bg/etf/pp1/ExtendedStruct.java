@@ -5,17 +5,27 @@ import rs.etf.pp1.symboltable.concepts.Obj;
 import rs.etf.pp1.symboltable.concepts.Struct;
 import rs.etf.pp1.symboltable.structure.SymbolDataStructure;
 
-import java.util.HashSet;
-
 public class ExtendedStruct {
+    // Singleton instance
+    private static ExtendedStruct instance;
 
+    // Private constructor to prevent instantiation
+    private ExtendedStruct() {}
 
-    public static boolean isRefType(Struct node) {
+    // Public method to get the singleton instance
+    public static ExtendedStruct getInstance() {
+        if (instance == null) {
+            instance = new ExtendedStruct();
+        }
+        return instance;
+    }
+
+    public boolean isRefType(Struct node) {
         int kind = node.getKind();
         return kind == Struct.Class || kind == Struct.Interface || kind == Struct.Array || kind == Struct.Enum;
     }
 
-    public static boolean equals(Struct node, Struct other) {
+    public boolean equals(Struct node, Struct other) {
         if (node.getKind() == Struct.Array) {
             return node.getKind() == Struct.Array && equals(node.getElemType(), other.getElemType());
         }else {
@@ -23,12 +33,12 @@ public class ExtendedStruct {
         }
     }
 
-    public static boolean compatibleWith(Struct node, Struct other) {
+    public boolean compatibleWith(Struct node, Struct other) {
         return equals(node, other) || node == Tab.nullType && isRefType(other) || other == Tab.nullType && isRefType(node);
     }
 
 
-    private static boolean isPolymorphicallyAssignableTo(Struct right, Struct dest) {
+    private boolean isPolymorphicallyAssignableTo(Struct right, Struct dest) {
         if (right.getImplementedInterfaces().isEmpty()){
             return false;
         }
@@ -41,7 +51,7 @@ public class ExtendedStruct {
         return isPolymorphicallyAssignableTo(node, dest);
     }
 
-    public static boolean assignableTo(Struct node, Struct dest) {
+    public boolean assignableTo(Struct node, Struct dest) {
         if (equals(node, dest) || node == Tab.nullType && isRefType(dest) || node.getKind() == Struct.Array && dest.getKind() == Struct.Array && dest.getElemType() == Tab.noType){
             return true;
         }

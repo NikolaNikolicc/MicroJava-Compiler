@@ -31,6 +31,8 @@ public class CodeGenerator extends VisitorAdaptor {
     private Stack<Collection<Integer>> whileJumps = new Stack<>(); // for continue statements
     private Stack<Collection<Integer>> skipWhile = new Stack<>(); // for break statements
 
+    private ExtendedStruct es = ExtendedStruct.getInstance();
+
     public int getMainPC(){return this.mainPC;}
 
     // <editor-fold desc="Initialization">
@@ -435,7 +437,7 @@ public class CodeGenerator extends VisitorAdaptor {
 
     @Override
     public void visit(StatementRead node){
-        if (node.getDesignator().obj.getType().equals(Tab.charType)) {
+        if (es.equals(node.getDesignator().obj.getType(), Tab.charType)) {
             Code.put(Code.bread);
         } else {
             Code.put(Code.read);
@@ -445,7 +447,7 @@ public class CodeGenerator extends VisitorAdaptor {
 
     @Override
     public void visit(StatementPrint node){
-        if (node.getExpr().struct.equals(setType)) {
+        if (es.equals(node.getExpr().struct, setType)) {
             Code.loadConst(0);
             int offset = printSetMeth.getAdr() - Code.pc; // Calculate the offset to the printSet method
             Code.put(Code.call);
@@ -453,13 +455,13 @@ public class CodeGenerator extends VisitorAdaptor {
             return;
         }
         Code.loadConst(0);
-        if (node.getExpr().struct.equals(Tab.charType)) Code.put(Code.bprint);
+        if (es.equals(node.getExpr().struct, Tab.charType)) Code.put(Code.bprint);
         else Code.put(Code.print);
     }
 
     @Override
     public void visit(StatementPrintNumber node){
-        if (node.getExpr().struct.equals(setType)) {
+        if (es.equals(node.getExpr().struct, setType)) {
             Code.loadConst(node.getN2());
             int offset = printSetMeth.getAdr() - Code.pc; // Calculate the offset to the printSet method
             Code.put(Code.call);
@@ -467,7 +469,7 @@ public class CodeGenerator extends VisitorAdaptor {
             return;
         }
         Code.loadConst(node.getN2());
-        if (node.getExpr().struct.equals(Tab.charType)) Code.put(Code.bprint);
+        if (es.equals(node.getExpr().struct, Tab.charType)) Code.put(Code.bprint);
         else Code.put(Code.print);
     }
 
@@ -777,7 +779,7 @@ public class CodeGenerator extends VisitorAdaptor {
         }
 
         Code.put(Code.newarray);
-        if (node.getType().struct.equals(Tab.charType)){
+        if (es.equals(node.getType().struct, Tab.charType)){
             Code.put(0);
         } else{
             Code.put(1);

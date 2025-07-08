@@ -16,7 +16,6 @@ public class CodeGenerator extends VisitorAdaptor {
     private Obj addAllMeth;
     private Obj printSetMeth;
     private Obj unionSetsMeth;
-    private Obj mapMeth;
     private Struct setType = Tab.find("set").getType(); // Set type from the symbol table
 
     private int mainPC;
@@ -31,7 +30,7 @@ public class CodeGenerator extends VisitorAdaptor {
     private Stack<Collection<Integer>> whileJumps = new Stack<>(); // for continue statements
     private Stack<Collection<Integer>> skipWhile = new Stack<>(); // for break statements
 
-    private ExtendedStruct es = ExtendedStruct.getInstance();
+    private final ExtendedStruct es = ExtendedStruct.getInstance();
 
     public int getMainPC(){return this.mainPC;}
 

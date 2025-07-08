@@ -38,12 +38,9 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     // because we want to allow initialization of variables that are named int char and bool we are saving pointers to this object nodes
     // this is used in TypeIdent visitor and in that case we are sure we are getting right object node, in other case Tab.find(name) function can return Object node which overrides those names
-    private static Obj intObj = Tab.find("int");
-    private static Obj charObj = Tab.find("char");
-    private static Obj boolObj = Tab.find("bool");
-    private static Obj setObj = Tab.find("set");
-    public static Struct boolType = boolObj.getType();
-    public static Struct setType = setObj.getType();
+
+    public static Struct boolType = Tab.find("bool").getType();
+    public static Struct setType = Tab.find("set").getType();
 
     private Obj mainMeth = null;
     private boolean parsingFormPars = false;
@@ -56,7 +53,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     private Stack<Struct> fpStack = new Stack<>();
 //    private Collection<String> scopeNodes = new ArrayList<>();
 
-    private ExtendedStruct es = ExtendedStruct.getInstance();
+    private final ExtendedStruct es = ExtendedStruct.getInstance();
     Logger log = Logger.getLogger(getClass());
 
     // <editor-fold desc="log methods">
@@ -87,7 +84,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     private void logSymbol(String message, Obj sym, SyntaxNode node) {
         StringBuilder builder = new StringBuilder(message);
         if (node != null) {
-            builder.append(" (linija " + node.getLine() + ")");
+            String tmp = " (linija " + node.getLine() + ")";
+            builder.append(tmp);
         }
 
         builder.append(": [NAME: ");
@@ -1116,9 +1114,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         }
 
         List<Struct> fpList = getFormalParameters(meth, node);
-        if (!checkArePassedParametersAndFormalParameterListCompatible(fpList, meth.getName(), node)){
-            // nothing to do here but to remember that function above returns true if parameters are compatible
-        }
+        checkArePassedParametersAndFormalParameterListCompatible(fpList, meth.getName(), node);
 
         return meth.getType();
     }

@@ -625,8 +625,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         if (node.getType().struct.equals(setType)){
-//            report_info("kreiran enum", node);
-            node.struct = new Struct(Struct.Enum, Tab.intType);
+//            report_info("kreiran skup", node);
+            node.struct = setType;
         }else{
 //            report_info("kreiran niz", node);
             Struct type = (currTypeVar == null)? Tab.noType : currTypeVar.getType();

@@ -15,6 +15,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     private static final int FP_POS_REGULAR_OBJ_NODE = 0;
     private static final int FP_POS_FORMAL_PARAMETER = 1;
+    private static final int FP_POS_CLASS_METHOD = 1;
     private static final int FP_POS_IMPLEMENTED_INHERITED_METHOD = 2;
     private static final int FP_POS_UNIMPLEMENTED_INHERITED_METHOD = 3;
 
@@ -51,7 +52,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     private static final String[] structKindNames = { "None", "Int", "Char", "Array", "Class", "Bool", "Set", "Interface" };
 
     private Stack<Struct> fpStack = new Stack<>();
-//    private Collection<String> scopeNodes = new ArrayList<>();
 
     private final ExtendedStruct es = ExtendedStruct.getInstance();
     Logger log = Logger.getLogger(getClass());
@@ -120,7 +120,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         Obj node = Tab.currentScope().findSymbol(name);
         // fpPos == 0 implemented class method or field or just method or var
         // fpPos == 3 unimplemented method, just declared
-        return node != null && (node.getFpPos() == FP_POS_REGULAR_OBJ_NODE || node.getFpPos() == FP_POS_UNIMPLEMENTED_INHERITED_METHOD);
+        // fpPos == 1 formal parameter so we want to override it
+        return node != null;
     }
 
     // </editor-fold>
@@ -229,7 +230,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     public void visit(VarDeclFinalVar node){
         // since we are not chained symbols to class node we are storing them in scope nodes as we visit them
         // we can't override name of class field with funcion variable name with this logic
-//        if(checkIsObjNodeDeclared(node.getI1()) || scopeNodes.contains(node.getI1())){
         if(checkIsObjNodeDeclared(node.getI1())){
             report_error("[VarDeclFinalVar] Vec je deklarisana promenljiva sa imenom: " + node.getI1(), node);
             return;
@@ -263,9 +263,12 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         Struct array = new Struct(Struct.Array, type);
         Obj varNode;
         String message;
-        if (currClass == null){
+        if (currClass == null || classMethodDecl){
             varNode = Tab.insert(Obj.Var, node.getI1(), array);
             message = "Detektovana promenljiva (element niza)";
+            if(classMethodDecl){
+                varNode.setLevel(2);
+            }
         } else {
             varNode = Tab.insert(Obj.Fld, node.getI1(), array);
             message = "Detektovano polje (element niza)";
@@ -280,10 +283,16 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     // <editor-fold desc="Method Declarations and Returns">
 
-    private void createMethodObjNode(String name){
+    private boolean createMethodObjNode(String name){
+        Obj meth = Tab.find(name);
+        if (meth != Tab.noObj && meth.getFpPos() != FP_POS_REGULAR_OBJ_NODE){
+            currMeth = Tab.noObj;
+            return false;
+        }
         currMeth = Tab.insert(Obj.Meth, name, (currTypeMeth == null)? Tab.noType : currTypeMeth.getType());
         currMeth.setLevel(0);
         Tab.openScope();
+        return true;
     }
 
     @Override
@@ -329,10 +338,15 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(RegularMethod node){
-        createMethodObjNode(node.getI1());
+        if (!createMethodObjNode(node.getI1())){
+            report_error("Vec je definisan metod sa imenom " + node.getI1(), node);
+            node.obj = currMeth; // Tab.noObj;
+            return;
+        }
         if (currClass != null && currClass != Tab.noType){
-            Obj n = Tab.insert(Obj.Var, "this", currClass);
+            Obj n = Tab.insert(Obj.Var, "$this", currClass);
             n.setLevel(2);
+            formParsSetLevelAndFpPos(n);
         }
         node.obj = currMeth;
     }
@@ -347,6 +361,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             report_error("[MainMethod] Main metoda mora biti povratnog tipa void", node);
         }
         createMethodObjNode("main");
+
         node.obj = currMeth;
         mainMeth = currMeth;
     }
@@ -409,7 +424,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         for (Obj localSym: fromMeth.getLocalSymbols()){
             Obj node;
 
-            if (localSym.getName().equals("this")){
+            if (localSym.getName().equals("$this")){
                 node = new Obj(localSym.getKind(), localSym.getName(), currClass);
             }else{
                 node = new Obj(localSym.getKind(), localSym.getName(), localSym.getType());
@@ -425,7 +440,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(CopyParentMethods node){
-        // we need this guard in case we have bas Type
+        // we need this guard in case we have bad Type
         if(parentClass == Tab.noType){
             return;
         }
@@ -731,7 +746,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         // it's important to use assignableTo because of assigning null properly
-//        else if(!checkAssignCompatibility(node.getDesignator().obj.getType(), node.getExpr().struct)){
         else if(!es.assignableTo(node.getExpr().struct, node.getDesignator().obj.getType())){
             report_error("[DesignatorAssignExpr] Tip Expr nije kompatibilan sa tipom neterminala Designator : " + node.getDesignator().obj.getName(), node );
             return;
@@ -748,7 +762,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         // it's important to use assignableTo because of assigning null propery
-//        else if(!checkAssignCompatibility(node.getDesignator().obj.getType(), node.getExpr().struct)){
         else if(!es.assignableTo(node.getExpr().struct, node.getDesignator().obj.getType())){
             report_error("[DesignatorAssignExprWhile] Tip Expr nije kompatibilan sa tipom neterminala Dedsignator : " + node.getDesignator().obj.getName(), node );
             return;
@@ -820,13 +833,14 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             accessClass = Tab.noType;
             return;
         }
-        if(var.getKind() != Obj.Var || (var.getType().getKind() != Struct.Class && var.getType().getKind() != Struct.Interface)){
+        if(!(var.getKind() == Obj.Var || var.getKind() == Obj.Fld && currClass != null ) ||
+                (var.getType().getKind() != Struct.Class && var.getType().getKind() != Struct.Interface)){
             report_error("[DesignatorClassName] Pristup neadekvatnoj promenljivoj klase: " + name, node);
             node.obj = Tab.noObj;
             accessClass = Tab.noType;
             return;
         }
-        if(node.getI1().equals("this")){
+        if(node.getI1().equals("$this")){
             thisDetected = true;
         }
         node.obj = var;
@@ -864,12 +878,14 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         if (classStruct == Tab.noType){
             node.obj = Tab.noObj;
             thisDetected = false;
+            accessClass = null;
             return;
         }
         if (!es.equals(node.getExpr().struct, Tab.intType)){
             report_error("[DesignatorClassMoreFinalElem] Indeks niza mora biti tipa int", node);
             node.obj = Tab.noObj;
             thisDetected = false;
+            accessClass = null;
             return;
         }
         String field = node.getDesignatorClassArrayName().getI1();
@@ -884,8 +900,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
                 }
             }
         }
-
-        if (classMethodDecl){
+        else {
             for (Obj member: Tab.currentScope().getOuter().getLocals().symbols()){
                 if(member.getType().getKind() == Struct.Array && member.getName().equals(field)){
                     node.obj = new Obj(Obj.Elem, member.getName() + "[$]", member.getType().getElemType());
@@ -916,17 +931,16 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         // if we have this.field we only want to search within class scope (not methods scope) but only for first search
         if (!thisDetected){
             for (Obj member: classStruct.getMembers()){
-                if((member.getKind() == Obj.Meth || member.getKind() == Obj.Fld || member.getType().getKind() == Struct.Array) && member.getName().equals(field)){
+                if((member.getKind() == Obj.Meth || member.getKind() == Obj.Fld) && member.getName().equals(field)){
                     node.obj = member;
                     // accessClass = null;
                     return;
                 }
             }
         }
-
-        if (classMethodDecl){
+        else {
             for (Obj member: Tab.currentScope().getOuter().getLocals().symbols()){
-                if((member.getKind() == Obj.Meth || member.getKind() == Obj.Fld || member.getType().getKind() == Struct.Array) && member.getName().equals(field)){
+                if((member.getKind() == Obj.Meth || member.getKind() == Obj.Fld) && member.getName().equals(field)){
                     node.obj = member;
                     thisDetected = false;
                     return;
@@ -965,8 +979,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
                 }
             }
         }
-
-        if (classMethodDecl){
+        else {
+//        if (classMethodDecl){
             for (Obj member: Tab.currentScope().getOuter().getLocals().symbols()){
                 if(member.getType().getKind() == Struct.Array && member.getName().equals(field)){
                     node.obj = new Obj(Obj.Elem, member.getName() + "[$]", member.getType().getElemType());
@@ -990,23 +1004,23 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         if (classStruct == Tab.noType){
             node.obj = Tab.noObj;
             thisDetected = false;
+            accessClass = null;
             return;
         }
         String field = node.getI1();
         // if we have this.field we only want to search within class scope (not methods scope) but only for first search
         if (!thisDetected){
             for (Obj member: classStruct.getMembers()){
-                if((member.getKind() == Obj.Meth || member.getKind() == Obj.Fld || member.getType().getKind() == Struct.Array) && member.getName().equals(field)){
+                if((member.getKind() == Obj.Meth || member.getKind() == Obj.Fld) && member.getName().equals(field)){
                     node.obj = member;
                     accessClass = null;
                     return;
                 }
             }
         }
-
-        if (classMethodDecl){
+        else {
             for (Obj member: Tab.currentScope().getOuter().getLocals().symbols()){
-                if((member.getKind() == Obj.Meth || member.getKind() == Obj.Fld || member.getType().getKind() == Struct.Array) && member.getName().equals(field)){
+                if((member.getKind() == Obj.Meth || member.getKind() == Obj.Fld) && member.getName().equals(field)){
                     node.obj = member;
                     accessClass = null;
                     thisDetected = false;
@@ -1033,7 +1047,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             node.obj = Tab.noObj;
             return;
         }
-        else if (arr.getKind() != Obj.Var || arr.getType().getKind() != Struct.Array){
+        if (!(arr.getKind() == Obj.Var || arr.getKind() == Obj.Fld && currClass != null ) ||
+                arr.getType().getKind() != Struct.Array){
             report_error("[DesignatorArrayName] Neadekvatna vrsta promenljive niza : " + node.getI1(), node);
             node.obj = Tab.noObj;
             return;
@@ -1080,7 +1095,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         for (int i = 0; i < fpList.size(); i++){
             Struct fpListElem = fpList.get(i);
             Struct fpStackElem = fpStack.pop();
-//            if(!checkAssignCompatibility(fpStackElem, fpListElem)){
             if (!es.assignableTo(fpStackElem, fpListElem)){
                 report_error("[FactorFuncCall][DesignatorStatementFuncCall] Prosledjeni parametar pod brojem: " + (i + 1) + "(indeksirano od 1) nije kompatibilan sa odgovarajucim formalnim parametrom metode " + methName + " po tipu", node);
 
@@ -1097,7 +1111,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     private List<Struct> getFormalParameters(Obj funcNode, SyntaxNode node){
         List<Struct> fpList = new ArrayList<>();
         for (Obj localSym: funcNode.getLocalSymbols()){
-            if (localSym.getKind() == Obj.Var && localSym.getFpPos() == FP_POS_FORMAL_PARAMETER && localSym.getLevel() >= 1){
+            if (localSym.getKind() == Obj.Var && localSym.getFpPos() == FP_POS_FORMAL_PARAMETER && localSym.getLevel() >= 1 && !localSym.getName().equals("$this")){
                 fpList.add(localSym.getType());
             }
         }
@@ -1194,7 +1208,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         Struct left = node.getExpr().struct;
         Struct right = node.getExpr1().struct;
         // for case if (true && a < 2){...} - a and 2 only needs to be comparable not necessarily boolType
-//        if (!compatibleWithNewReference(left, right)){
         if (!es.compatibleWith(left, right)){
             report_error("[CondFactRelop] Logicki operandi nisu kompatibilni", node);
             node.struct = Tab.noType;
@@ -1294,6 +1307,9 @@ public class SemanticAnalyzer extends VisitorAdaptor{
                 report_error("[checkIfAllMethodsAreImplemented] Metod " + member.getName() + " interfejsa nije implementiran unutar klase koja ga prosiruje", node);
                 return;
             }
+            if (member.getKind() == Obj.Meth){
+                member.setFpPos(FP_POS_CLASS_METHOD); // now there shouldn't be methods with fppos > 1
+            }
         }
     }
 
@@ -1304,7 +1320,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         currClass = null;
         classMethodDecl = false;
         parentClass = Tab.noType;
-//        scopeNodes.clear();
     }
 
     @Override

@@ -900,7 +900,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
                 }
             }
         }
-        else {
+        if (classMethodDecl) {
             for (Obj member: Tab.currentScope().getOuter().getLocals().symbols()){
                 if(member.getType().getKind() == Struct.Array && member.getName().equals(field)){
                     node.obj = new Obj(Obj.Elem, member.getName() + "[$]", member.getType().getElemType());
@@ -938,7 +938,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
                 }
             }
         }
-        else {
+        if (classMethodDecl) {
             for (Obj member: Tab.currentScope().getOuter().getLocals().symbols()){
                 if((member.getKind() == Obj.Meth || member.getKind() == Obj.Fld) && member.getName().equals(field)){
                     node.obj = member;
@@ -979,8 +979,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
                 }
             }
         }
-        else {
-//        if (classMethodDecl){
+        if (classMethodDecl) {
             for (Obj member: Tab.currentScope().getOuter().getLocals().symbols()){
                 if(member.getType().getKind() == Struct.Array && member.getName().equals(field)){
                     node.obj = new Obj(Obj.Elem, member.getName() + "[$]", member.getType().getElemType());
@@ -1018,7 +1017,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
                 }
             }
         }
-        else {
+        if (classMethodDecl) {
             for (Obj member: Tab.currentScope().getOuter().getLocals().symbols()){
                 if((member.getKind() == Obj.Meth || member.getKind() == Obj.Fld) && member.getName().equals(field)){
                     node.obj = member;

@@ -1307,8 +1307,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
                 report_error("[checkIfAllMethodsAreImplemented] Metod " + member.getName() + " interfejsa nije implementiran unutar klase koja ga prosiruje", node);
                 return;
             }
-            if (member.getKind() == Obj.Meth){
-                member.setFpPos(FP_POS_CLASS_METHOD); // now there shouldn't be methods with fppos > 1
+            if (member.getKind() == Obj.Meth && member.getFpPos() < FP_POS_IMPLEMENTED_INHERITED_METHOD){
+                member.setFpPos(FP_POS_CLASS_METHOD); // now there shouldn't be methods with fppos < 1
             }
         }
     }

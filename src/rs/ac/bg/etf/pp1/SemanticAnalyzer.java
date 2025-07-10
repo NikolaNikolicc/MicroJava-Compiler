@@ -825,6 +825,12 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(DesignatorPropertyAccess node){
+        SyntaxNode parent = node.getParent();
+        if (node.getDesignatorClassMore().obj.getKind() == Obj.Meth && !(parent instanceof DesignatorStatementFuncCall)){
+            report_error("[DesignatorPropertyAccess] Ukoliko koristimo ime metoda prilikom ulancavanja, ono iza sebe mora imati i poziv funkcije, dakle metoda(...), a ne samo metoda bez zagrada", node);
+            node.obj = Tab.noObj;
+            return;
+        }
         node.obj = node.getDesignatorClassMore().obj;
     }
 
@@ -938,10 +944,12 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         String field = node.getI2();
+        SyntaxNode parent = node.getParent();
         // if we have this.field we only want to search within class scope (not methods scope) but only for first search
         if (!thisDetected){
             for (Obj member: classStruct.getMembers()){
-                if((member.getKind() == Obj.Meth || member.getKind() == Obj.Fld) && member.getName().equals(field)){
+                if(((member.getKind() == Obj.Meth && parent instanceof DesignatorPropertyAccess) ||
+                        member.getKind() == Obj.Fld) && member.getName().equals(field)){
                     node.obj = member;
                     // accessClass = null;
                     return;
@@ -950,7 +958,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         }
         if (classMethodDecl) {
             for (Obj member: Tab.currentScope().getOuter().getLocals().symbols()){
-                if((member.getKind() == Obj.Meth || member.getKind() == Obj.Fld) && member.getName().equals(field)){
+                if(((member.getKind() == Obj.Meth && parent instanceof DesignatorPropertyAccess) ||
+                        member.getKind() == Obj.Fld) && member.getName().equals(field)){
                     node.obj = member;
                     thisDetected = false;
                     return;
@@ -1017,10 +1026,12 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         String field = node.getI1();
+        SyntaxNode parent = node.getParent();
         // if we have this.field we only want to search within class scope (not methods scope) but only for first search
         if (!thisDetected){
             for (Obj member: classStruct.getMembers()){
-                if((member.getKind() == Obj.Meth || member.getKind() == Obj.Fld) && member.getName().equals(field)){
+                if(((member.getKind() == Obj.Meth && parent instanceof DesignatorPropertyAccess) ||
+                        member.getKind() == Obj.Fld) && member.getName().equals(field)){
                     node.obj = member;
                     accessClass = null;
                     return;
@@ -1029,7 +1040,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         }
         if (classMethodDecl) {
             for (Obj member: Tab.currentScope().getOuter().getLocals().symbols()){
-                if((member.getKind() == Obj.Meth || member.getKind() == Obj.Fld) && member.getName().equals(field)){
+                if(((member.getKind() == Obj.Meth && parent instanceof DesignatorPropertyAccess) ||
+                        member.getKind() == Obj.Fld) && member.getName().equals(field)){
                     node.obj = member;
                     accessClass = null;
                     thisDetected = false;

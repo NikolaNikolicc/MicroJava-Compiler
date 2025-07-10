@@ -396,7 +396,7 @@ public class CodeGenerator extends VisitorAdaptor {
     }
 
     CodeGenerator(){
-//        initializeMethods();
+        initializeMethods();
     }
 
     // </editor-fold>

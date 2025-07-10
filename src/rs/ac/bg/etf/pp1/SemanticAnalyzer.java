@@ -284,8 +284,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     // <editor-fold desc="Method Declarations and Returns">
 
     private boolean createMethodObjNode(String name){
-        Obj meth = Tab.currentScope().findSymbol(name);
-        if (meth != Tab.noObj){
+        Obj meth = Tab.currentScope.findSymbol(name);
+        if (meth != null){
             if (meth.getFpPos() == FP_POS_UNIMPLEMENTED_INHERITED_METHOD){
                 currMeth = meth;
             } else{

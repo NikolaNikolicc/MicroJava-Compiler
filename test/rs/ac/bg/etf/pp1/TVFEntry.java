@@ -6,13 +6,11 @@ import rs.etf.pp1.symboltable.concepts.Obj;
  * Predstavlja jedan unos u virtuelnoj tabeli metoda (VMT).
  * Svaki unos sadrži ime metode, njen offset u VMT i referencu na obj čvor.
  */
-public class VMTEntry {
+public class TVFEntry {
     /** Ime metode */
     String methodName;
 
     /** Offset metode u VMT (u rečima) */
-    int offset;
+    int methodAddress;
 
-    /** Referenca na obj čvor metode */
-    Obj methodObj;
 }

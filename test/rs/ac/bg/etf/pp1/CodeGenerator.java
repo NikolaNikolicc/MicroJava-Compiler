@@ -31,6 +31,7 @@ public class CodeGenerator extends VisitorAdaptor {
     private Stack<Collection<Integer>> skipWhile = new Stack<>(); // for break statements
 
     private final ExtendedStruct es = ExtendedStruct.getInstance();
+    private final static TVFHandler tvfHandler = TVFHandler.getInstance();
 
     public int getMainPC(){return this.mainPC;}
 
@@ -63,6 +64,7 @@ public class CodeGenerator extends VisitorAdaptor {
     }
 
     // <editor-fold desc="Set Embedded Methods">
+
     private void generateAdd(){
 //        add
 //
@@ -394,7 +396,7 @@ public class CodeGenerator extends VisitorAdaptor {
     }
 
     CodeGenerator(){
-        initializeMethods();
+//        initializeMethods();
     }
 
     // </editor-fold>
@@ -789,8 +791,14 @@ public class CodeGenerator extends VisitorAdaptor {
 
     @Override
     public void visit(FactorCreateObject node){
+        Struct classType = node.getType().struct;
+
         Code.put(Code.new_);
-        Code.put2(node.getType().struct.getNumberOfFields() * fieldSize); // Load the address of the class constructor
+        Code.put2((classType.getNumberOfFields() + 1) * fieldSize); // Load the address of the class constructor
+        Code.put(Code.dup);
+        Code.loadConst(tvfHandler.getMyTVFaddressInMemory(classType)); // Load the address of the TVF for the class
+        Code.put(Code.putfield);
+        Code.put2(0);
     }
 
     // </editor-fold>
@@ -959,6 +967,41 @@ public class CodeGenerator extends VisitorAdaptor {
     @Override
     public void visit(StatementElse node){
         Code.fixup(skipElse.pop());
+    }
+
+    // </editor-fold>
+
+    // <editor-fold desc="Class Type Virtual Function Table (TVF)">
+
+    @Override
+    public void visit(ClassDeclName node){
+        tvfHandler.createTVF(node.struct);
+    }
+
+    @Override
+    public void visit(ExtendsClass node){
+        tvfHandler.inheritMethods(node.struct);
+    }
+
+    @Override
+    public void visit(ClassNoExtend node) {
+        tvfHandler.putTVFInMemory(node.struct);
+    }
+
+    @Override
+    public void visit(ClassYesExtend node){
+        tvfHandler.putTVFInMemory(node.struct);
+    }
+
+    @Override
+    public void visit(ClassNoExtendYesMethods node){
+        tvfHandler.addClassMethods(node.struct);
+        tvfHandler.putTVFInMemory(node.struct);
+    }
+
+    @Override
+    public void visit(ClassYesExtendYesMethods node){
+        tvfHandler.putTVFInMemory(node.struct);
     }
 
     // </editor-fold>

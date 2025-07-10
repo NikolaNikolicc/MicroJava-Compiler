@@ -439,22 +439,32 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     }
 
     @Override
-    public void visit(CopyParentMethods node){
-        // we need this guard in case we have bad Type
-        if(parentClass == Tab.noType){
-            return;
+    public void visit(SetClassFieldAddress node){
+        int currentOffset = 1; // 0 is for VTF address
+        if (currClass.getElemType() != null) { // ako ima nadklasu
+            currentOffset += currClass.getElemType().getNumberOfFields();
         }
-        for (Obj member: parentClass.getMembers()){
-            if(member.getKind() == Obj.Meth){
-                Obj n = Tab.insert(Obj.Meth, member.getName(), member.getType());
-                n.setFpPos(member.getFpPos());
-                copyLocalSymbols(member, n);
-                // in case fp pos is 3 that mean it is unimplemented method signature from interface so we leave it
-                if (n.getFpPos() < FP_POS_IMPLEMENTED_INHERITED_METHOD){
-                    n.setFpPos(FP_POS_IMPLEMENTED_INHERITED_METHOD);
-                }
+        for (Obj field : Tab.currentScope().getLocals().symbols()) {
+            if (field.getKind() == Obj.Fld) {
+                field.setAdr(currentOffset++);
             }
         }
+
+        // we need this guard in case we have bad Type
+//        if(parentClass == Tab.noType){
+//            return;
+//        }
+//        for (Obj member: parentClass.getMembers()){
+//            if(member.getKind() == Obj.Meth){
+//                Obj n = Tab.insert(Obj.Meth, member.getName(), member.getType());
+//                n.setFpPos(member.getFpPos());
+//                copyLocalSymbols(member, n);
+//                // in case fp pos is 3 that mean it is unimplemented method signature from interface so we leave it
+//                if (n.getFpPos() < FP_POS_IMPLEMENTED_INHERITED_METHOD){
+//                    n.setFpPos(FP_POS_IMPLEMENTED_INHERITED_METHOD);
+//                }
+//            }
+//        }
     }
 
     /*
@@ -1328,33 +1338,39 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         currClass = new Struct(Struct.Class);
+        node.struct = currClass;
         Obj classObj = Tab.insert(Obj.Type, node.getI1(), currClass);
         Tab.openScope();
     }
 
     @Override
     public void visit(ClassNoExtend node){
+        node.struct = currClass;
         closeClass(node);
     }
 
     @Override
     public void visit(ClassYesExtend node){
+        node.struct = currClass;
         closeClass(node);
     }
 
     @Override
     public void visit(ClassNoExtendYesMethods node){
+        node.struct = currClass;
         closeClass(node);
     }
 
     @Override
     public void visit(ClassYesExtendYesMethods node){
+        node.struct = currClass;
         closeClass(node);
     }
 
     @Override
     public void visit(ExtendsClass node){
         Struct n = node.getType().struct;
+        node.struct = currClass;
         if (n.getKind() != Struct.Class && n.getKind() != Struct.Interface){
             report_error("[ExtendsClass] Neterminal Type mora da oznacava klasu ili interfejs (korisnicki definisan tip)", node);
             parentClass = Tab.noType;

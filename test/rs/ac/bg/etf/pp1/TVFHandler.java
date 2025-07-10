@@ -1,0 +1,60 @@
+package rs.ac.bg.etf.pp1;
+
+import rs.etf.pp1.symboltable.Tab;
+import rs.etf.pp1.symboltable.concepts.Obj;
+import rs.etf.pp1.symboltable.concepts.Struct;
+
+import java.util.HashMap;
+
+public class TVFHandler {
+
+    public static final HashMap<Struct, TVF> tvfMap = new HashMap<>(); // map of all TVFs, key is class type
+
+    // Singleton instance
+    private static TVFHandler instance;
+
+    // Private constructor to prevent instantiation
+    private TVFHandler() {}
+
+    // Public method to get the singleton instance
+    public static TVFHandler getInstance() {
+        if (instance == null) {
+            instance = new TVFHandler();
+        }
+        return instance;
+    }
+
+    public void createTVF(Struct classType) {
+        TVF tvf = new TVF();
+        tvfMap.put(classType, tvf);
+    }
+
+    public void inheritMethods(Struct classType) {
+        TVF currTvf = tvfMap.get(classType);
+        Struct parent = classType.getElemType();
+        while (parent != null && parent != Tab.noType){
+            currTvf.inheritMethodsFromParent(tvfMap.get(parent));
+            parent = parent.getElemType();
+        }
+    }
+
+    public void addClassMethods(Struct classType) {
+        TVF myTVF = tvfMap.get(classType);
+        for (Obj member: classType.getMembers()){
+            if (member.getKind() == Obj.Meth){
+                myTVF.addMethod(member.getName(), member.getAdr());
+            }
+        }
+    }
+
+    public void putTVFInMemory(Struct classType){
+        TVF myTVF = tvfMap.get(classType);
+        myTVF.putTVFInMemory();
+    }
+
+    public int getMyTVFaddressInMemory(Struct classType) {
+        TVF myTVF = tvfMap.get(classType);
+        return myTVF.getMemoryStartTVF();
+    }
+
+}

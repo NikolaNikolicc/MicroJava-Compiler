@@ -75,7 +75,6 @@ nonterminal ConstDeclList ConstDeclList;
 nonterminal VarDecl VarDecl;
 nonterminal VarDeclFinal VarDeclFinal;
 nonterminal VarDeclOptionalList VarDeclOptionalList;
-nonterminal ClassDecl ClassDecl;
 nonterminal VarDeclListOptional VarDeclListOptional;
 nonterminal MethodSignature MethodSignature;
 nonterminal TypeChoice TypeChoice;
@@ -93,7 +92,6 @@ nonterminal DesignatorFuncCall DesignatorFuncCall;
 nonterminal DesignatorStatementUnary DesignatorStatementUnary;
 nonterminal StackInitialize StackInitialize;
 nonterminal MapDesignator MapDesignator;
-nonterminal ClassDeclName ClassDeclName;
 nonterminal ClassMethodDeclListStart ClassMethodDeclListStart;
 nonterminal Program Program;
 nonterminal InterfaceDeclOptionList InterfaceDeclOptionList;
@@ -107,8 +105,7 @@ nonterminal ClassDeclErrorLBrace ClassDeclErrorLBrace;
 nonterminal DesignatorAssignWhile DesignatorAssignWhile;
 nonterminal DesignatorStatementWhile DesignatorStatementWhile;
 nonterminal DoStatement DoStatement ;
-nonterminal ExtendsClass ExtendsClass;
-nonterminal CopyParentMethods CopyParentMethods;
+nonterminal SetClassFieldAddress SetClassFieldAddress;
 nonterminal CloseMethodScope CloseMethodScope;
 nonterminal InterfaceDeclName InterfaceDeclName;
 nonterminal Else Else;
@@ -116,7 +113,7 @@ nonterminal WhileStatement WhileStatement;
 nonterminal HandleWhileCondition HandleWhileCondition;
 nonterminal GoToStart GoToStart;
 
-nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr, CondFact, CondTerm, Condition, StatementCondition, Type;
+nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr, CondFact, CondTerm, Condition, StatementCondition, Type, ClassDeclName, ExtendsClass, ClassDecl;
 nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue, Designator, DesignatorArrayName, DesignatorClassMore, DesignatorClassArrayName, DesignatorClassName, DesignatorClassElem;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Obj MethodName;
@@ -199,26 +196,26 @@ InterfaceDeclOptionList ::= InterfaceDeclOptionList:I1 MethodDecl:M2 {: RESULT=n
 
 CloseMethodScope ::= (CloseMethodScope) {: RESULT=new CloseMethodScope(); :} /* epsilon */ ;
 
-ClassDecl ::= (ClassNoExtend) CLASS ClassDeclName:C1 LBRACE VarDeclListOptional:V2 RBRACE {: RESULT=new ClassNoExtend(C1, V2); RESULT.setLine(C1left); :}
+ClassDecl ::= (ClassNoExtend) CLASS ClassDeclName:C1 LBRACE VarDeclListOptional:V2 SetClassFieldAddress:S3 RBRACE {: RESULT=new ClassNoExtend(C1, V2, S3); RESULT.setLine(C1left); :}
               |
-              (ClassYesExtend) CLASS ClassDeclName:C1 ExtendsClass:E2 LBRACE VarDeclListOptional:V3 RBRACE CopyParentMethods:C4 {: RESULT=new ClassYesExtend(C1, E2, V3, C4); RESULT.setLine(C1left); :}
+              (ClassYesExtend) CLASS ClassDeclName:C1 ExtendsClass:E2 LBRACE VarDeclListOptional:V3 SetClassFieldAddress:S4 RBRACE {: RESULT=new ClassYesExtend(C1, E2, V3, S4); RESULT.setLine(C1left); :}
               |
               CLASS ClassDeclName:C1 EXTENDS ClassDeclErrorLBrace:C2 VarDeclListOptional:V3 RBRACE {: RESULT=new ClassDeclDerived1(C1, C2, V3); RESULT.setLine(C1left); :} /* error */
               |
-              (ClassNoExtendYesMethods) CLASS ClassDeclName:C1 LBRACE VarDeclListOptional:V2 LBRACE ClassMethodDeclListStart:C3 MethodDeclList:M4 RBRACE RBRACE {: RESULT=new ClassNoExtendYesMethods(C1, V2, C3, M4); RESULT.setLine(C1left); :}
+              (ClassNoExtendYesMethods) CLASS ClassDeclName:C1 LBRACE VarDeclListOptional:V2 SetClassFieldAddress:S3 LBRACE ClassMethodDeclListStart:C4 MethodDeclList:M5 RBRACE RBRACE {: RESULT=new ClassNoExtendYesMethods(C1, V2, S3, C4, M5); RESULT.setLine(C1left); :}
               |
-              (ClassYesExtendYesMethods) CLASS ClassDeclName:C1 ExtendsClass:E2 LBRACE VarDeclListOptional:V3 CopyParentMethods:C4 LBRACE ClassMethodDeclListStart:C5 MethodDeclList:M6 RBRACE RBRACE {: RESULT=new ClassYesExtendYesMethods(C1, E2, V3, C4, C5, M6); RESULT.setLine(C1left); :}
+              (ClassYesExtendYesMethods) CLASS ClassDeclName:C1 ExtendsClass:E2 LBRACE VarDeclListOptional:V3 SetClassFieldAddress:S4 LBRACE ClassMethodDeclListStart:C5 MethodDeclList:M6 RBRACE RBRACE {: RESULT=new ClassYesExtendYesMethods(C1, E2, V3, S4, C5, M6); RESULT.setLine(C1left); :}
               |
               CLASS ClassDeclName:C1 EXTENDS ClassDeclErrorLBrace:C2 VarDeclListOptional:V3 LBRACE ClassMethodDeclListStart:C4 MethodDeclList:M5 RBRACE RBRACE {: RESULT=new ClassDeclDerived2(C1, C2, V3, C4, M5); RESULT.setLine(C1left); :} /* error */
               |
               CLASS ClassDeclName:C1 LBRACE VarDeclListOptional:V2 ClassDeclErrorLBrace:C3 ClassMethodDeclListStart:C4 MethodDeclList:M5 RBRACE RBRACE {: RESULT=new ClassDeclDerived3(C1, V2, C3, C4, M5); RESULT.setLine(C1left); :} /* error */
               |
-              CLASS ClassDeclName:C1 ExtendsClass:E2 LBRACE VarDeclListOptional:V3 ClassDeclErrorLBrace:C4 CopyParentMethods:C5 ClassMethodDeclListStart:C6 MethodDeclList:M7 RBRACE RBRACE {: RESULT=new ClassDeclDerived4(C1, E2, V3, C4, C5, C6, M7); RESULT.setLine(C1left); :} /* error */
+              CLASS ClassDeclName:C1 ExtendsClass:E2 LBRACE VarDeclListOptional:V3 ClassDeclErrorLBrace:C4 ClassMethodDeclListStart:C5 MethodDeclList:M6 RBRACE RBRACE {: RESULT=new ClassDeclDerived4(C1, E2, V3, C4, C5, M6); RESULT.setLine(C1left); :} /* error */
               |
               CLASS ClassDeclName:C1 EXTENDS ClassDeclErrorLBrace:C2 VarDeclListOptional:V3 ClassDeclErrorLBrace:C4 ClassMethodDeclListStart:C5 MethodDeclList:M6 RBRACE RBRACE {: RESULT=new ClassDeclDerived5(C1, C2, V3, C4, C5, M6); RESULT.setLine(C1left); :} /* error */
               ;
 
-CopyParentMethods ::= (CopyParentMethods) {: RESULT=new CopyParentMethods(); :} /* epsilon */ ;
+SetClassFieldAddress ::= (SetClassFieldAddress) {: RESULT=new SetClassFieldAddress(); :} /* epsilon */ ;
 
 ExtendsClass ::= (ExtendsClass) EXTENDS Type:T1 {: RESULT=new ExtendsClass(T1); RESULT.setLine(T1left); :} ;
 

@@ -52,9 +52,10 @@ public class Compiler {
         Reader br = null;
         try {
 //             File sourceCode = new File("test/GenerisanjeKoda-TestPrimeri_24_25_jan_feb/test301.mj");
-            File sourceCode = new File("test/GenerisanjeKoda-TestPrimeri_24_25_jan_feb/test302.mj");
+//            File sourceCode = new File("test/GenerisanjeKoda-TestPrimeri_24_25_jan_feb/test302.mj");
 //            File sourceCode = new File("test/GenerisanjeKoda-TestPrimeri_24_25_jan_feb/test303.mj");
-//            File sourceCode = new File("test/code_generation/testrelop.mj");
+            File sourceCode = new File("test/code_generation/klase.mj");
+//            File sourceCode = new File("test/semantic_analysis/test_paja.mj");
             log.info("Compiling source file: " + sourceCode.getAbsolutePath());
 
             br = new BufferedReader(new FileReader(sourceCode));

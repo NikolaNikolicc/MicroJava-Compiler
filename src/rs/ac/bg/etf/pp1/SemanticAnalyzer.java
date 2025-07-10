@@ -284,17 +284,23 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     // <editor-fold desc="Method Declarations and Returns">
 
     private boolean createMethodObjNode(String name){
-        Obj meth = Tab.find(name);
-        if (meth != Tab.noObj && meth.getFpPos() != FP_POS_REGULAR_OBJ_NODE){
-            currMeth = Tab.noObj;
-            return false;
+        Obj meth = Tab.currentScope().findSymbol(name);
+        if (meth != Tab.noObj){
+            if (meth.getFpPos() == FP_POS_UNIMPLEMENTED_INHERITED_METHOD){
+                currMeth = meth;
+            } else{
+                currMeth = Tab.noObj;
+                return false;
+            }
+        } else {
+            currMeth = Tab.insert(Obj.Meth, name, (currTypeMeth == null)? Tab.noType : currTypeMeth.getType());
         }
-        currMeth = Tab.insert(Obj.Meth, name, (currTypeMeth == null)? Tab.noType : currTypeMeth.getType());
         currMeth.setLevel(0);
         Tab.openScope();
         return true;
     }
 
+    // this method is called only from interface method signature
     @Override
     public void visit(CloseMethodScope node){
         currMeth.setFpPos(FP_POS_UNIMPLEMENTED_INHERITED_METHOD);
@@ -418,32 +424,34 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     // <editor-fold desc="Class Methods and Fields">
 
-    private void copyLocalSymbols(Obj fromMeth, Obj toMeth){
-        HashTableDataStructure copy = new HashTableDataStructure();
+    private void chainLocalSymbolsMethod(Obj fromMeth, Obj toMeth){
 
         for (Obj localSym: fromMeth.getLocalSymbols()){
-            Obj node;
-
-            if (localSym.getName().equals("$this")){
-                node = new Obj(localSym.getKind(), localSym.getName(), currClass);
-            }else{
-                node = new Obj(localSym.getKind(), localSym.getName(), localSym.getType());
-            }
-            node.setFpPos(localSym.getFpPos());
-            node.setLevel(localSym.getLevel());
-            node.setAdr(localSym.getAdr());
-            copy.insertKey(node);
+            toMeth.getLocalSymbols().add(localSym);
         }
 
-        toMeth.setLocals(copy);
+//        HashTableDataStructure copy = new HashTableDataStructure();
+//
+//        for (Obj localSym: fromMeth.getLocalSymbols()){
+//            Obj node;
+//
+//            if (localSym.getName().equals("$this")){
+//                node = new Obj(localSym.getKind(), localSym.getName(), currClass);
+//            }else{
+//                node = new Obj(localSym.getKind(), localSym.getName(), localSym.getType());
+//            }
+//            node.setFpPos(localSym.getFpPos());
+//            node.setLevel(localSym.getLevel());
+//            copy.insertKey(node);
+//        }
+//
+//        toMeth.setLocals(copy);
     }
 
     @Override
     public void visit(SetClassFieldAddress node){
         int currentOffset = 1; // 0 is for VTF address
-        if (currClass.getElemType() != null) { // ako ima nadklasu
-            currentOffset += currClass.getElemType().getNumberOfFields();
-        }
+
         for (Obj field : Tab.currentScope().getLocals().symbols()) {
             if (field.getKind() == Obj.Fld) {
                 field.setAdr(currentOffset++);
@@ -451,20 +459,15 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         }
 
         // we need this guard in case we have bad Type
-//        if(parentClass == Tab.noType){
-//            return;
-//        }
-//        for (Obj member: parentClass.getMembers()){
-//            if(member.getKind() == Obj.Meth){
-//                Obj n = Tab.insert(Obj.Meth, member.getName(), member.getType());
-//                n.setFpPos(member.getFpPos());
-//                copyLocalSymbols(member, n);
-//                // in case fp pos is 3 that mean it is unimplemented method signature from interface so we leave it
-//                if (n.getFpPos() < FP_POS_IMPLEMENTED_INHERITED_METHOD){
-//                    n.setFpPos(FP_POS_IMPLEMENTED_INHERITED_METHOD);
-//                }
-//            }
-//        }
+        if(parentClass != Tab.noType && parentClass.getKind() == Struct.Interface){
+            for (Obj member: parentClass.getMembers()){
+                if(member.getKind() == Obj.Meth){
+                    Obj n = Tab.insert(Obj.Meth, member.getName(), member.getType());
+                    n.setFpPos(member.getFpPos());
+                    chainLocalSymbolsMethod(member, n);
+                }
+            }
+        }
     }
 
     /*
@@ -888,6 +891,19 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         accessClass = node.obj.getType();
     }
 
+    private Obj searchMethod(Struct currClassType, String methodName){
+        Struct curr = currClassType;
+        while (curr != null && curr != Tab.noType){
+            for (Obj member: curr.getMembers()){
+                if(member.getKind() == Obj.Meth && member.getName().equals(methodName)){
+                    return member;
+                }
+            }
+            curr = curr.getElemType();
+        }
+        return Tab.noObj;
+    }
+
     @Override
     public void visit(DesignatorClassMoreFinalElem node){
         Struct classStruct = accessClass;
@@ -947,16 +963,24 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         SyntaxNode parent = node.getParent();
         // if we have this.field we only want to search within class scope (not methods scope) but only for first search
         if (!thisDetected){
+            // case Obj.Meth
+            Obj mem = searchMethod(classStruct, field);
+            if ((mem != Tab.noObj) && parent instanceof DesignatorPropertyAccess){
+                node.obj = mem;
+                accessClass = null;
+                return;
+            }
+            // case Obj.Fld
             for (Obj member: classStruct.getMembers()){
-                if(((member.getKind() == Obj.Meth && parent instanceof DesignatorPropertyAccess) ||
-                        member.getKind() == Obj.Fld) && member.getName().equals(field)){
+                if ((member.getKind() == Obj.Fld) && member.getName().equals(field)){
                     node.obj = member;
-                    // accessClass = null;
+                    accessClass = null;
                     return;
                 }
             }
         }
         if (classMethodDecl) {
+            // this must go before searchMethod because we want to check if field is in method scope first
             for (Obj member: Tab.currentScope().getOuter().getLocals().symbols()){
                 if(((member.getKind() == Obj.Meth && parent instanceof DesignatorPropertyAccess) ||
                         member.getKind() == Obj.Fld) && member.getName().equals(field)){
@@ -964,6 +988,14 @@ public class SemanticAnalyzer extends VisitorAdaptor{
                     thisDetected = false;
                     return;
                 }
+            }
+            // case Obj.Meth
+            Obj mem = searchMethod(classStruct, field);
+            if ((mem != Tab.noObj) && parent instanceof DesignatorPropertyAccess){
+                node.obj = mem;
+                accessClass = null;
+                thisDetected = false;
+                return;
             }
         }
 
@@ -1029,9 +1061,16 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         SyntaxNode parent = node.getParent();
         // if we have this.field we only want to search within class scope (not methods scope) but only for first search
         if (!thisDetected){
+            // case Obj.Meth
+            Obj mem = searchMethod(classStruct, field);
+            if ((mem != Tab.noObj) && parent instanceof DesignatorPropertyAccess){
+                node.obj = mem;
+                accessClass = null;
+                return;
+            }
+            // case Obj.Fld
             for (Obj member: classStruct.getMembers()){
-                if(((member.getKind() == Obj.Meth && parent instanceof DesignatorPropertyAccess) ||
-                        member.getKind() == Obj.Fld) && member.getName().equals(field)){
+                if ((member.getKind() == Obj.Fld) && member.getName().equals(field)){
                     node.obj = member;
                     accessClass = null;
                     return;
@@ -1039,6 +1078,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             }
         }
         if (classMethodDecl) {
+            // this must go before searchMethod because we want to check if field is in method scope first
             for (Obj member: Tab.currentScope().getOuter().getLocals().symbols()){
                 if(((member.getKind() == Obj.Meth && parent instanceof DesignatorPropertyAccess) ||
                         member.getKind() == Obj.Fld) && member.getName().equals(field)){
@@ -1047,6 +1087,14 @@ public class SemanticAnalyzer extends VisitorAdaptor{
                     thisDetected = false;
                     return;
                 }
+            }
+            // case Obj.Meth
+            Obj mem = searchMethod(classStruct, field);
+            if ((mem != Tab.noObj) && parent instanceof DesignatorPropertyAccess){
+                node.obj = mem;
+                accessClass = null;
+                thisDetected = false;
+                return;
             }
         }
 
@@ -1403,10 +1451,11 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         for (Obj member: parentClass.getMembers()){
             if(member.getKind() == Obj.Fld){
                 // insert only parent class fields
-                Obj var = Tab.insert(Obj.Fld, member.getName(), member.getType());
+                Tab.currentScope().addToLocals(member);
+//                Obj var = Tab.insert(Obj.Fld, member.getName(), member.getType());
                 // we are setting fpPos so we know that is inherited name and we can "override" it in our children class
                 // but in case we declared that variable in children class twice (fppos != 2) we throw error
-                var.setFpPos(FP_POS_IMPLEMENTED_INHERITED_METHOD);
+//                var.setFpPos(FP_POS_IMPLEMENTED_INHERITED_METHOD);
             }
         }
     }

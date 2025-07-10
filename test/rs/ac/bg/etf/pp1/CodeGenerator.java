@@ -698,6 +698,18 @@ public class CodeGenerator extends VisitorAdaptor {
 
     @Override
     public void visit(DesignatorClassMoreFinalElem node){
+        if (node.obj.getKind() == Obj.Meth){
+            Code.put(Code.enter);
+            Code.put(Code.const_1); // 1 formal parameter (the class instance)
+            Code.put(Code.const_1); // 1 + 0 local variable (the class instance)
+            Code.put(Code.load_n);
+            Code.put(Code.const_n);
+            Code.put(Code.getfield);
+            Code.put(Code.load_n);
+            Code.put(Code.exit);
+            return;
+        }
+
         SyntaxNode parent = node.getParent();
         if (parent instanceof DesignatorClassMoreNotFinal || parent instanceof DesignatorClassMoreNotFinalElem){
             // If the parent is a DesignatorClassMoreFinal or DesignatorClassMoreFinalElem, we need to load the class instance
@@ -707,6 +719,17 @@ public class CodeGenerator extends VisitorAdaptor {
 
     @Override
     public void visit(DesignatorClassMoreNotFinal node){
+        if (node.obj.getKind() == Obj.Meth){
+            Code.put(Code.enter);
+            Code.put(Code.const_1); // 1 formal parameter (the class instance)
+            Code.put(Code.const_1); // 1 + 0 local variable (the class instance)
+            Code.put(Code.load_n);
+            Code.put(Code.const_n);
+            Code.put(Code.getfield);
+            Code.put(Code.load_n);
+            Code.put(Code.exit);
+            return;
+        }
         SyntaxNode parent = node.getParent();
         if (parent instanceof DesignatorClassMoreNotFinal || parent instanceof DesignatorClassMoreNotFinalElem){
             // If the parent is a DesignatorClassMoreFinal or DesignatorClassMoreFinalElem, we need to load the class instance

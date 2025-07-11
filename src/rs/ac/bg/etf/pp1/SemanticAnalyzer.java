@@ -200,7 +200,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     private void formParsSetLevelAndFpPos(Obj node){
         // second condition is used to check if we are parsing formals for main method if main is declared multiple times
-        if(parsingFormPars && !(mainDeclared && currMeth.getName().equals("main"))){
+        if(node.getName().equals("this") || parsingFormPars && !(mainDeclared && currMeth.getName().equals("main"))){
             currMeth.setLevel(currMeth.getLevel() + 1);
             node.setFpPos(FP_POS_FORMAL_PARAMETER);
         }
@@ -350,7 +350,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         if (currClass != null && currClass != Tab.noType){
-            Obj n = Tab.insert(Obj.Var, "$this", currClass);
+            Obj n = Tab.insert(Obj.Var, "this", currClass);
             n.setLevel(2);
             formParsSetLevelAndFpPos(n);
         }
@@ -435,7 +435,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 //        for (Obj localSym: fromMeth.getLocalSymbols()){
 //            Obj node;
 //
-//            if (localSym.getName().equals("$this")){
+//            if (localSym.getName().equals("this")){
 //                node = new Obj(localSym.getKind(), localSym.getName(), currClass);
 //            }else{
 //                node = new Obj(localSym.getKind(), localSym.getName(), localSym.getType());
@@ -859,7 +859,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             accessClass = Tab.noType;
             return;
         }
-        if(node.getI1().equals("$this")){
+        if(node.getI1().equals("this")){
             thisDetected = true;
         }
         node.obj = var;
@@ -1180,7 +1180,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     private List<Struct> getFormalParameters(Obj funcNode, SyntaxNode node){
         List<Struct> fpList = new ArrayList<>();
         for (Obj localSym: funcNode.getLocalSymbols()){
-            if (localSym.getKind() == Obj.Var && localSym.getFpPos() == FP_POS_FORMAL_PARAMETER && localSym.getLevel() >= 1 && !localSym.getName().equals("$this")){
+            if (localSym.getKind() == Obj.Var && localSym.getFpPos() == FP_POS_FORMAL_PARAMETER && localSym.getLevel() >= 1 && !localSym.getName().equals("this")){
                 fpList.add(localSym.getType());
             }
         }

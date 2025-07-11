@@ -18,6 +18,8 @@ public class CodeGenerator extends VisitorAdaptor {
     private Obj unionSetsMeth;
     private Struct setType = Tab.find("set").getType(); // Set type from the symbol table
 
+    private boolean chainingMethodCall = false;
+
     private int mainPC;
     private final static int fieldSize = 4;
     private Stack<Integer> elseJumps = new Stack<>(); // Stack to hold the addresses of conditional jumps
@@ -396,7 +398,7 @@ public class CodeGenerator extends VisitorAdaptor {
     }
 
     CodeGenerator(){
-        initializeMethods();
+//        initializeMethods();
     }
 
     // </editor-fold>
@@ -620,11 +622,31 @@ public class CodeGenerator extends VisitorAdaptor {
         Code.store(obj);
     }
 
+    private void functionCall(Obj node){
+        if (chainingMethodCall){
+            chainingMethodCall = false;
+            // load TVF
+            Code.put(Code.load_n);
+            Code.put(Code.getfield);
+            Code.put2(Code.const_n);
+            // remove 0th parameter (the class instance) from the stack
+            Code.put(Code.exit);
+            // invokevirtual
+            Code.put(Code.invokevirtual);
+            for (char ch: node.getName().toCharArray()){
+                Code.put4(ch);
+            }
+            Code.put4(-1);
+        } else {
+            int offset = node.getAdr() - Code.pc; // Calculate the offset to the function address
+            Code.put(Code.call);
+            Code.put2(offset);
+        }
+    }
+
     @Override
     public void visit(DesignatorStatementFuncCall node){
-        int offset = node.getDesignator().obj.getAdr() - Code.pc; // Calculate the offset to the function address
-        Code.put(Code.call);
-        Code.put2(offset);
+        functionCall(node.getDesignator().obj);
 
         if (node.getDesignator().obj.getType() != Tab.noType) {
             Code.put(Code.pop); // If the function returns a value, we pop it from the stack
@@ -633,9 +655,7 @@ public class CodeGenerator extends VisitorAdaptor {
 
     @Override
     public void visit(DesignatorStatementFuncCallWhile node){
-        int offset = node.getDesignator().obj.getAdr() - Code.pc; // Calculate the offset to the function address
-        Code.put(Code.call);
-        Code.put2(offset);
+        functionCall(node.getDesignator().obj);
 
         if (node.getDesignator().obj.getType() != Tab.noType) {
             Code.put(Code.pop); // If the function returns a value, we pop it from the stack
@@ -702,11 +722,10 @@ public class CodeGenerator extends VisitorAdaptor {
             Code.put(Code.enter);
             Code.put(Code.const_1); // 1 formal parameter (the class instance)
             Code.put(Code.const_1); // 1 + 0 local variable (the class instance)
+            // load this
             Code.put(Code.load_n);
-            Code.put(Code.const_n);
-            Code.put(Code.getfield);
-            Code.put(Code.load_n);
-            Code.put(Code.exit);
+            // set flag
+            chainingMethodCall = true;
             return;
         }
 
@@ -723,11 +742,10 @@ public class CodeGenerator extends VisitorAdaptor {
             Code.put(Code.enter);
             Code.put(Code.const_1); // 1 formal parameter (the class instance)
             Code.put(Code.const_1); // 1 + 0 local variable (the class instance)
+            // load this
             Code.put(Code.load_n);
-            Code.put(Code.const_n);
-            Code.put(Code.getfield);
-            Code.put(Code.load_n);
-            Code.put(Code.exit);
+            // set flag
+            chainingMethodCall = true;
             return;
         }
         SyntaxNode parent = node.getParent();
@@ -774,9 +792,7 @@ public class CodeGenerator extends VisitorAdaptor {
 
     @Override
     public void visit(FactorFuncCall node){
-        int offset = node.getDesignator().obj.getAdr() - Code.pc; // Calculate the offset to the function address
-        Code.put(Code.call);
-        Code.put2(offset);
+        functionCall(node.getDesignator().obj);
     }
 
     @Override

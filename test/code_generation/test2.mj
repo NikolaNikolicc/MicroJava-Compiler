@@ -1,35 +1,37 @@
 program Test2
 
-class c1 { int x[]; int y; }
-class c2 { c1 obj[];}
-class c3 { c2 obj[]; }
+class c1 {
+    int x[];
+    int y;
+    {
+        void printClass(){
+            print('c');
+            print('1');
+            print(eol);
+        }
+    }
+
+}
+
+
+class c4 extends c1{
+    {
+        void printClass(){
+            print('c');
+            print('4');
+            print(eol);
+        }
+    }
+}
+
+
+
 
 {
+    void main() c1 o1; c4 o4; {
 
-    void ispis() {
-        print(1);
+        o4 = new c4();
+        o1 = o4;
+        o1.printClass();
     }
-
-    int f(){
-        return 7;
-    }
-
-    int m(int a)
-    {
-        return a;
-    }
-
-    void main() c1 o1; c2 o2; c3 o3; c3 o3arr[];int i; int r;{
-        // ispis();
-        // i = f() + 2;
-        // print(2);
-        // print(i);
-
-        // f();f();f();
-
-        read(r);
-        i = m(r);
-        print(i);
-    }
-
 }

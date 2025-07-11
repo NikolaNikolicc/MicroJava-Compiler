@@ -38,7 +38,7 @@ public class ExtendedStruct {
 
     private boolean isPolyAssignableToClass(Struct right, Struct dest) {
         Struct node = right;
-        while (node.getElemType() != null){
+        while (node != null){
             if (equals(node, dest)) {
                 return true;
             }
@@ -60,8 +60,7 @@ public class ExtendedStruct {
         if (equals(node, dest) || node == Tab.nullType && isRefType(dest) || node.getKind() == Struct.Array && dest.getKind() == Struct.Array && dest.getElemType() == Tab.noType){
             return true;
         }
-
-        return isPolyAssignableToClass(node, dest) || isPolyAssignableToInterface(node, dest);
+        return isPolyAssignableToClass(node.getElemType(), dest) || isPolyAssignableToInterface(node, dest);
     }
 
 }

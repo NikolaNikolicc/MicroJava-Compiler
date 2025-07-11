@@ -16,21 +16,21 @@ public class CodeGenerator extends VisitorAdaptor {
     private Obj addAllMeth;
     private Obj printSetMeth;
     private Obj unionSetsMeth;
-    private Struct setType = Tab.find("set").getType(); // Set type from the symbol table
+    private final Struct setType = Tab.find("set").getType(); // Set type from the symbol table
 
     private boolean chainingMethodCall = false;
 
     private int mainPC;
     private final static int fieldSize = 4;
-    private Stack<Integer> elseJumps = new Stack<>(); // Stack to hold the addresses of conditional jumps
-    private Stack<Integer> thenJumps = new Stack<>(); // Stack to hold the addresses of skip jumps
+    private final Stack<Integer> elseJumps = new Stack<>(); // Stack to hold the addresses of conditional jumps
+    private final Stack<Integer> thenJumps = new Stack<>(); // Stack to hold the addresses of skip jumps
 
-    private Stack<Integer> skipThen = new Stack<>();
-    private Stack<Integer> skipElse = new Stack<>();
+    private final Stack<Integer> skipThen = new Stack<>();
+    private final Stack<Integer> skipElse = new Stack<>();
 
-    private Stack<Integer> doJumps = new Stack<>(); // for do-while statements (true condition)
-    private Stack<Collection<Integer>> whileJumps = new Stack<>(); // for continue statements
-    private Stack<Collection<Integer>> skipWhile = new Stack<>(); // for break statements
+    private final Stack<Integer> doJumps = new Stack<>(); // for do-while statements (true condition)
+    private final Stack<Collection<Integer>> whileJumps = new Stack<>(); // for continue statements
+    private final Stack<Collection<Integer>> skipWhile = new Stack<>(); // for break statements
 
     private final ExtendedStruct es = ExtendedStruct.getInstance();
     private final static TVFHandler tvfHandler = TVFHandler.getInstance();

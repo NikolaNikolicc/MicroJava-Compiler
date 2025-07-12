@@ -23,10 +23,7 @@ public class TVF {
         if (parentTVF != null) {
             for (TVFEntry entry : parentTVF.entries) {
                 // Pravimo kopiju TVFEntry-ja za nasleđene metode
-                TVFEntry inherited = new TVFEntry();
-                inherited.methodName = entry.methodName;
-                inherited.methodAddress = entry.methodAddress;
-                entries.add(inherited);
+                addEntry(entry.methodName, entry.methodAddress);
             }
         }
     }
@@ -73,7 +70,7 @@ public class TVF {
                 Code.put2(memAddress++);
             }
             // add -1 terminator for end of string
-            Code.put(Code.const_m1);
+            Code.loadConst(-1);
             Code.put(Code.putstatic);
             Code.put2(memAddress++);
 
@@ -91,7 +88,5 @@ public class TVF {
         Code.put2(memAddress);
 
         Code.dataSize++; // 1 for the -2 terminator
-        
-
     }
 }

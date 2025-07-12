@@ -1,5 +1,7 @@
 package rs.ac.bg.etf.pp1;
 
+import org.apache.log4j.Logger;
+import rs.ac.bg.etf.pp1.ast.SyntaxNode;
 import rs.etf.pp1.symboltable.Tab;
 import rs.etf.pp1.symboltable.concepts.Obj;
 import rs.etf.pp1.symboltable.concepts.Struct;
@@ -9,6 +11,17 @@ import java.util.HashMap;
 public class TVFHandler {
 
     public static final HashMap<Struct, TVF> tvfMap = new HashMap<>(); // map of all TVFs, key is class type
+
+    Logger log = Logger.getLogger(getClass());
+
+    public void report_info(String message, SyntaxNode info) {
+        StringBuilder msg = new StringBuilder(message);
+        int line = (info == null) ? 0: info.getLine();
+        if (line != 0)
+            msg.append (" na liniji ").append(line);
+        log.info(msg.toString());
+    }
+
 
     // Singleton instance
     private static TVFHandler instance;
@@ -44,6 +57,13 @@ public class TVFHandler {
             if (member.getKind() == Obj.Meth){
                 myTVF.addMethod(member.getName(), member.getAdr());
             }
+        }
+    }
+
+    public void putAllTVFsInMemory() {
+        for (Struct classType : tvfMap.keySet()) {
+            TVF myTVF = tvfMap.get(classType);
+            myTVF.putTVFInMemory();
         }
     }
 

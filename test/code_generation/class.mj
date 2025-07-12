@@ -41,6 +41,7 @@ class c6 extends c1 {
         void meth(int a) int b; {
             read(b);
             print(a + b);
+            print(eol);
         }
     }
 }
@@ -49,24 +50,23 @@ class c6 extends c1 {
 {
     void main() c1 o1; c2 o2; c3 o3; c4 o4; c5 o5; c6 o6; c3 o3arr[]; int var; {
 
-		// o1 = new c1();
-        // o1.printClass();
-        // o4 = new c4();
-        // o4.printClass();
+		o1 = new c1();
+        o1.printClass(); // prints c1
+        o4 = new c4();
+        o4.printClass(); // prints c4
 
-        // o5 = new c5();
-        // o5.printClass();
+        o5 = new c5();
+        o5.printClass(); // prints c4 (c5 extends c4, so it inherits the printClass method)
 
         o6 = new c6();
-        o6.printClass();
+        o6.printClass(); // prints c1 (c6 does not override printClass)
 
-        o6.meth(5);
+        o6.meth(5); // reads an integer and prints the sum of 5 and the read value
 
-        // o1 = o4;
-        // o1.printClass();
+        o1 = o4;
+        o1.printClass(); // prints c4 (o1 now references an instance of c4)
 
-
-        // o1 = o4;
-        // o1.printClass();
+        o1 = new c1();
+        o1.printClass(); // prints c1 (o1 is now a new instance of c1)
     }
 }

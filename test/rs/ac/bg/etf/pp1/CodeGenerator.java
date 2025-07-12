@@ -415,8 +415,10 @@ public class CodeGenerator extends VisitorAdaptor {
 
     @Override
     public void visit(MainMethod node){
-        node.obj.setAdr(Code.pc); // Set the address of the method in the symbol table;
         this.mainPC = Code.pc; // save the position of the main method
+        tvfHandler.putAllTVFsInMemory();
+
+        node.obj.setAdr(Code.pc); // Set the address of the method in the symbol table;
         Code.put(Code.enter);
         Code.put(node.obj.getLevel()); // b1 - number of formal parameters
         Code.put(node.obj.getLocalSymbols().size()); // b2 - number of local variables (formal + local)
@@ -628,7 +630,7 @@ public class CodeGenerator extends VisitorAdaptor {
             // load TVF
             Code.put(Code.load_n);
             Code.put(Code.getfield);
-            Code.put2(Code.const_n);
+            Code.put2(0);
             // remove 0th parameter (the class instance) from the stack
             Code.put(Code.exit);
             // invokevirtual
@@ -696,6 +698,16 @@ public class CodeGenerator extends VisitorAdaptor {
 
     // <editor-fold desc="[DesignatorClass] access Class properties">
 
+    private void prepareForInvokeVirtual(){
+        Code.put(Code.enter);
+        Code.put(1); // 1 formal parameter (the class instance)
+        Code.put(1); // 1 + 0 local variable (the class instance)
+        // load this
+        Code.put(Code.load_n);
+        // set flag
+        chainingMethodCall = true;
+    }
+
     @Override
     public void visit(DesignatorClassName node){
         // we don't need to explicitly call getfield  when accessing a class field because we have added load instruction to the factorDesignator method
@@ -709,6 +721,10 @@ public class CodeGenerator extends VisitorAdaptor {
 
     @Override
     public void visit(DesignatorClassMoreFinal node){
+        if (node.obj.getKind() == Obj.Meth){
+            prepareForInvokeVirtual();
+            return;
+        }
         SyntaxNode parent = node.getParent();
         if (parent instanceof DesignatorClassMoreNotFinal || parent instanceof DesignatorClassMoreNotFinalElem){
             // If the parent is a DesignatorClassMoreFinal or DesignatorClassMoreFinalElem, we need to load the class instance
@@ -718,17 +734,6 @@ public class CodeGenerator extends VisitorAdaptor {
 
     @Override
     public void visit(DesignatorClassMoreFinalElem node){
-        if (node.obj.getKind() == Obj.Meth){
-            Code.put(Code.enter);
-            Code.put(Code.const_1); // 1 formal parameter (the class instance)
-            Code.put(Code.const_1); // 1 + 0 local variable (the class instance)
-            // load this
-            Code.put(Code.load_n);
-            // set flag
-            chainingMethodCall = true;
-            return;
-        }
-
         SyntaxNode parent = node.getParent();
         if (parent instanceof DesignatorClassMoreNotFinal || parent instanceof DesignatorClassMoreNotFinalElem){
             // If the parent is a DesignatorClassMoreFinal or DesignatorClassMoreFinalElem, we need to load the class instance
@@ -739,13 +744,7 @@ public class CodeGenerator extends VisitorAdaptor {
     @Override
     public void visit(DesignatorClassMoreNotFinal node){
         if (node.obj.getKind() == Obj.Meth){
-            Code.put(Code.enter);
-            Code.put(Code.const_1); // 1 formal parameter (the class instance)
-            Code.put(Code.const_1); // 1 + 0 local variable (the class instance)
-            // load this
-            Code.put(Code.load_n);
-            // set flag
-            chainingMethodCall = true;
+            prepareForInvokeVirtual();
             return;
         }
         SyntaxNode parent = node.getParent();
@@ -1024,23 +1023,24 @@ public class CodeGenerator extends VisitorAdaptor {
 
     @Override
     public void visit(ClassNoExtend node) {
-        tvfHandler.putTVFInMemory(node.struct);
+//        tvfHandler.putTVFInMemory(node.struct);
     }
 
     @Override
     public void visit(ClassYesExtend node){
-        tvfHandler.putTVFInMemory(node.struct);
+//        tvfHandler.putTVFInMemory(node.struct);
     }
 
     @Override
     public void visit(ClassNoExtendYesMethods node){
         tvfHandler.addClassMethods(node.struct);
-        tvfHandler.putTVFInMemory(node.struct);
+//        tvfHandler.putTVFInMemory(node.struct);
     }
 
     @Override
     public void visit(ClassYesExtendYesMethods node){
-        tvfHandler.putTVFInMemory(node.struct);
+        tvfHandler.addClassMethods(node.struct);
+//        tvfHandler.putTVFInMemory(node.struct);
     }
 
     // </editor-fold>

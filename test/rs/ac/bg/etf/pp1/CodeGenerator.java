@@ -416,12 +416,13 @@ public class CodeGenerator extends VisitorAdaptor {
     @Override
     public void visit(MainMethod node){
         this.mainPC = Code.pc; // save the position of the main method
-        tvfHandler.putAllTVFsInMemory();
-
         node.obj.setAdr(Code.pc); // Set the address of the method in the symbol table;
+
         Code.put(Code.enter);
         Code.put(node.obj.getLevel()); // b1 - number of formal parameters
         Code.put(node.obj.getLocalSymbols().size()); // b2 - number of local variables (formal + local)
+
+        tvfHandler.putAllTVFsInMemory();
     }
 
     @Override
@@ -709,13 +710,25 @@ public class CodeGenerator extends VisitorAdaptor {
     }
 
     @Override
+    public void visit(DesignatorVar node){
+        if (node.obj.getKind() == Obj.Fld){
+            Code.put(Code.load_n);
+        }
+    }
+
+    @Override
     public void visit(DesignatorClassName node){
-        // we don't need to explicitly call getfield  when accessing a class field because we have added load instruction to the factorDesignator method
-        Code.load(node.obj); // Load the address of the class instance
+        if (node.obj.getKind() == Obj.Fld && !node.obj.getName().equals("this")) {
+            Code.put(Code.load_n);
+        }
+        Code.load(node.obj);
     }
 
     @Override
     public void visit(DesignatorClassElem node){
+        if (node.obj.getKind() == Obj.Fld && !node.obj.getName().equals("this")){
+            Code.put(Code.load_n);
+        }
         Code.load(node.obj);
     }
 
@@ -769,6 +782,9 @@ public class CodeGenerator extends VisitorAdaptor {
 
     @Override
     public void visit(DesignatorArrayName node){
+        if (node.obj.getKind() == Obj.Fld){
+            Code.put(Code.load_n);
+        }
         Code.load(node.obj); // Load the address of the array
     }
 

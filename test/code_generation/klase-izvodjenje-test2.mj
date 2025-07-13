@@ -1,0 +1,37 @@
+program Test
+class c1 {
+    int x[];
+    int y;
+
+    {
+        void printClass() {
+            print(y);
+            print(x[y]);
+            print(eol);
+        }
+    }
+
+}
+class c2 { c1 obj[];}
+class c3 { c2 obj[];}
+{
+
+	void main() c2 o2;{
+
+		o2 = new c2();
+		o2.obj = new c1[1];
+		o2.obj[0] = new c1();
+		o2.obj[0].x = new int[3];
+
+
+		o2.obj[0].x[0] = 1;
+		o2.obj[0].x[1] = o2.obj[0].x[0] + 1;
+		o2.obj[0].x[2] = 3;
+		o2.obj[0].y = 0;
+		do{
+		    o2.obj[0].printClass();
+		} while (o2.obj[0].y < 2, o2.obj[0].y++);
+
+
+	}
+}

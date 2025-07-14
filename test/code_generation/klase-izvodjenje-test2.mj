@@ -4,6 +4,11 @@ class c1 {
     int y;
 
     {
+        void printClassThis() {
+            print(this.y);
+            print(this.x[y]);
+            print(eol);
+        }
         void printClass() {
             print(y);
             print(x[y]);
@@ -30,6 +35,7 @@ class c3 { c2 obj[];}
 		o2.obj[0].y = 0;
 		do{
 		    o2.obj[0].printClass();
+		    o2.obj[0].printClassThis();
 		} while (o2.obj[0].y < 2, o2.obj[0].y++);
 
 

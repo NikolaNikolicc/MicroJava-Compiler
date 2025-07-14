@@ -7,10 +7,12 @@ import rs.etf.pp1.symboltable.concepts.Obj;
 import rs.etf.pp1.symboltable.concepts.Struct;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class TVFHandler {
 
-    public static final HashMap<Struct, TVF> tvfMap = new HashMap<>(); // map of all TVFs, key is class type
+    public static Map<Struct, TVF> tvfMap; // map of all TVFs, key is class type
 
     Logger log = Logger.getLogger(getClass());
 
@@ -27,7 +29,9 @@ public class TVFHandler {
     private static TVFHandler instance;
 
     // Private constructor to prevent instantiation
-    private TVFHandler() {}
+    private TVFHandler() {
+        tvfMap = new LinkedHashMap<>();
+    }
 
     // Public method to get the singleton instance
     public static TVFHandler getInstance() {
@@ -44,6 +48,12 @@ public class TVFHandler {
 
     public void inheritMethods(Struct classType) {
         TVF currTvf = tvfMap.get(classType);
+
+        // ingerit interface methods (implemented methods only)
+        for(Struct iface: classType.getImplementedInterfaces()){
+            currTvf.inheritMethodsFromParent(tvfMap.get(iface));
+        }
+        // inherit methods from parent class
         Struct parent = classType.getElemType();
         while (parent != null && parent != Tab.noType){
             currTvf.inheritMethodsFromParent(tvfMap.get(parent));
@@ -54,7 +64,7 @@ public class TVFHandler {
     public void addClassMethods(Struct classType) {
         TVF myTVF = tvfMap.get(classType);
         for (Obj member: classType.getMembers()){
-            if (member.getKind() == Obj.Meth){
+            if (member.getKind() == Obj.Meth && member.getFpPos() == SemanticAnalyzer.FP_POS_IMPLEMENTED_NONGLOBAL_METHOD) {
                 myTVF.addMethod(member.getName(), member.getAdr());
             }
         }

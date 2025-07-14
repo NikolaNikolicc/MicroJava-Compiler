@@ -18,11 +18,6 @@ import rs.ac.bg.etf.pp1.util.MySymbolTableVisitor;
 
 public class Compiler {
 
-    private static final int FP_POS_REGULAR_OBJ_NODE = 0;
-    private static final int FP_POS_FORMAL_PARAMETER = 1;
-    private static final int FP_POS_IMPLEMENTED_INHERITED_METHOD = 2;
-    private static final int FP_POS_UNIMPLEMENTED_INHERITED_METHOD = 3;
-
     static {
         DOMConfigurator.configure(Log4JUtils.instance().findLoggerConfigFile());
         Log4JUtils.instance().prepareLogFile(Logger.getRootLogger());
@@ -54,7 +49,7 @@ public class Compiler {
 //             File sourceCode = new File("test/GenerisanjeKoda-TestPrimeri_24_25_jan_feb/test301.mj");
 //            File sourceCode = new File("test/GenerisanjeKoda-TestPrimeri_24_25_jan_feb/test302.mj");
 //            File sourceCode = new File("test/GenerisanjeKoda-TestPrimeri_24_25_jan_feb/test303.mj");
-            File sourceCode = new File("test/code_generation/klase-izvodjenje-test2.mj");
+            File sourceCode = new File("test/code_generation/test303.mj");
             log.info("Compiling source file: " + sourceCode.getAbsolutePath());
 
             br = new BufferedReader(new FileReader(sourceCode));
@@ -79,11 +74,14 @@ public class Compiler {
             setObj.setAdr(-1);
             setObj.setLevel(-1);
 
+            // we need to set the FP_POS for all formal parameters so we initialize the SemanticAnalyzer here
+            SemanticAnalyzer sa = new SemanticAnalyzer();
+
             // podesiti fp pos na 1 za sve parametre metoda
             for (Obj node: Tab.currentScope().getLocals().symbols()){
                 if (node.getKind() == Obj.Meth){
                     for (Obj local: node.getLocalSymbols()){
-                        local.setFpPos(FP_POS_FORMAL_PARAMETER);
+                        local.setFpPos(SemanticAnalyzer.FP_POS_FORMAL_PARAMETER);
                     }
                 }
             }
@@ -98,8 +96,8 @@ public class Compiler {
 
                 Obj i = new Obj(Obj.Var, "i", Tab.intType, 0, 1);
 
-                a.setFpPos(FP_POS_FORMAL_PARAMETER);
-                b.setFpPos(FP_POS_FORMAL_PARAMETER);
+                a.setFpPos(SemanticAnalyzer.FP_POS_FORMAL_PARAMETER);
+                b.setFpPos(SemanticAnalyzer.FP_POS_FORMAL_PARAMETER);
 
                 Tab.currentScope().addToLocals(a);
                 Tab.currentScope().addToLocals(b);
@@ -120,8 +118,8 @@ public class Compiler {
                 Obj b = new Obj(Obj.Var, "b", intArr, 0, 1);
                 Obj i = new Obj(Obj.Var, "i", Tab.intType, 0, 1);
 
-                a.setFpPos(FP_POS_FORMAL_PARAMETER);
-                b.setFpPos(FP_POS_FORMAL_PARAMETER);
+                a.setFpPos(SemanticAnalyzer.FP_POS_FORMAL_PARAMETER);
+                b.setFpPos(SemanticAnalyzer.FP_POS_FORMAL_PARAMETER);
 
                 Tab.currentScope().addToLocals(a);
                 Tab.currentScope().addToLocals(b);
@@ -140,8 +138,8 @@ public class Compiler {
                 Obj offset = new Obj(Obj.Var, "offset", Tab.intType, 0, 1);
                 Obj i = new Obj(Obj.Var, "i", Tab.intType, 0, 1);
 
-                a.setFpPos(FP_POS_FORMAL_PARAMETER);
-                offset.setFpPos(FP_POS_FORMAL_PARAMETER);
+                a.setFpPos(SemanticAnalyzer.FP_POS_FORMAL_PARAMETER);
+                offset.setFpPos(SemanticAnalyzer.FP_POS_FORMAL_PARAMETER);
 
                 Tab.currentScope().addToLocals(a);
                 Tab.currentScope().addToLocals(offset);
@@ -161,9 +159,9 @@ public class Compiler {
                 Obj c = new Obj(Obj.Var, "c", setObj.getType(), 0, 1);
                 Obj i = new Obj(Obj.Var, "i", Tab.intType, 0, 1);
 
-                a.setFpPos(FP_POS_FORMAL_PARAMETER);
-                b.setFpPos(FP_POS_FORMAL_PARAMETER);
-                c.setFpPos(FP_POS_FORMAL_PARAMETER);
+                a.setFpPos(SemanticAnalyzer.FP_POS_FORMAL_PARAMETER);
+                b.setFpPos(SemanticAnalyzer.FP_POS_FORMAL_PARAMETER);
+                c.setFpPos(SemanticAnalyzer.FP_POS_FORMAL_PARAMETER);
 
                 Tab.currentScope().addToLocals(a);
                 Tab.currentScope().addToLocals(b);
@@ -185,8 +183,8 @@ public class Compiler {
                 Obj b = new Obj(Obj.Var, "arr", intArr, 0, 1);
                 Obj i = new Obj(Obj.Var, "i", Tab.intType, 0, 1);
 
-                a.setFpPos(FP_POS_FORMAL_PARAMETER);
-                b.setFpPos(FP_POS_FORMAL_PARAMETER);
+                a.setFpPos(SemanticAnalyzer.FP_POS_FORMAL_PARAMETER);
+                b.setFpPos(SemanticAnalyzer.FP_POS_FORMAL_PARAMETER);
 
                 Tab.currentScope().addToLocals(a);
                 Tab.currentScope().addToLocals(b);
@@ -200,7 +198,7 @@ public class Compiler {
             log.info("===================================");
 
             // semanticka analiza
-            SemanticAnalyzer sa = new SemanticAnalyzer();
+//            SemanticAnalyzer sa = new SemanticAnalyzer();
             prog.traverseBottomUp(sa);
 
             // ispis sintaksnog stabla
@@ -215,7 +213,7 @@ public class Compiler {
 
                 CodeGenerator codeGen = new CodeGenerator();
                 prog.traverseBottomUp(codeGen);
-                Code.dataSize += sa.nVars;
+//                Code.dataSize += sa.nVars;
                 Code.mainPc = codeGen.getMainPC();
                 Code.write(new FileOutputStream(objFile));
 			}else{

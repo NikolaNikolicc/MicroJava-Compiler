@@ -59,13 +59,13 @@ terminal Integer NUMBER, BOOL ;
 terminal String IDENT ;
 terminal Character CHAR ;
 
-nonterminal MethodSignatureEndFormPars, MethodSignatureStartFormPars, ConstDeclAssign, Setop, Mulop, Addop, Relop, Assignop, Label, ProgramDeclList, ProgramDeclElem, ConstDecl, ConstDeclList, VarDecl, VarDeclFinal, VarDeclOptionalList, VarDeclListOptional, MethodSignature, TypeChoice, FormParsOptional, FormPars, MethodDecl, VarDeclList, MethodDeclList, MathodDecl, StatementList, Statement, DesignatorStatement;
+nonterminal MethodSignatureEndFormPars, MethodSignatureStartFormPars, ConstDeclAssign, Setop, Mulop, Addop, Relop, Assignop, Label, ProgramDeclList, ProgramDeclElem, ConstDecl, ConstDeclList, VarDecl, VarDeclOptionalList, VarDeclListOptional, MethodSignature, TypeChoice, FormParsOptional, FormPars, MethodDecl, VarDeclList, MethodDeclList, StatementList, Statement, DesignatorStatement;
 nonterminal ActPars, DesignatorFuncCall, DesignatorStatementUnary, StackInitialize, MapDesignator, ClassMethodDeclListStart;
-nonterminal Program, InterfaceDeclOptionList, InterfaceDecl, VarDeclProgram, VarDeclErrorComma, VarDeclErrorSemi, DesignatorAssign, VarDeclClass, ClassDeclErrorLBrace, DesignatorAssignWhile, DesignatorStatementWhile, DoStatement ;
-nonterminal SetClassFieldAddress, CloseMethodScope, InterfaceDeclName, Else, WhileStatement, HandleWhileCondition, GoToStart;
+nonterminal Program, InterfaceDeclOptionList, VarDeclProgram, VarDeclErrorComma, VarDeclErrorSemi, DesignatorAssign, VarDeclClass, ClassDeclErrorLBrace, DesignatorAssignWhile, DesignatorStatementWhile, DoStatement ;
+nonterminal SetClassFieldAddress, CloseMethodScope, Else, WhileStatement, HandleWhileCondition, GoToStart;
 
-nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr, CondFact, CondTerm, Condition, StatementCondition, Type, ClassDeclName, ExtendsClass, ClassDecl;
-nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue, Designator, DesignatorArrayName, DesignatorClassMore, DesignatorClassArrayName, DesignatorClassName, DesignatorClassElem;
+nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr, CondFact, CondTerm, Condition, StatementCondition, Type, ClassDeclName, ExtendsClass, ClassDecl, InterfaceDeclName, InterfaceDecl;
+nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue, Designator, DesignatorArrayName, DesignatorClassMore, DesignatorClassArrayName, DesignatorClassName, DesignatorClassElem, VarDeclFinal;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Obj MethodName;
 

@@ -64,7 +64,7 @@
         <java classname="rs.etf.pp1.mj.runtime.Run" input="input/input.txt">
             <arg value="output/program.obj"/>
             <arg value="-debug"/>
-<!--            <redirector input="input/input.txt" />-->
+            <!--            <redirector input="input/input.txt" />-->
             <classpath>
                 <pathelement location="lib/mj-runtime-1.1.jar"/>
             </classpath>
@@ -74,7 +74,7 @@
     <target name="runObj" depends="debugObj">
         <java classname="rs.etf.pp1.mj.runtime.Run" input="input/input.txt">
             <arg value="output/program.obj"/>
-<!--            <redirector input="input/input.txt" />-->
+            <!--            <redirector input="input/input.txt" />-->
             <classpath>
                 <pathelement location="lib/mj-runtime-1.1.jar"/>
             </classpath>

@@ -13,11 +13,17 @@ import java.util.Stack;
 
 public class SemanticAnalyzer extends VisitorAdaptor{
 
-    private static final int FP_POS_REGULAR_OBJ_NODE = 0;
-    private static final int FP_POS_FORMAL_PARAMETER = 1;
-    private static final int FP_POS_CLASS_METHOD = 1;
-    private static final int FP_POS_IMPLEMENTED_INHERITED_METHOD = 2;
-    private static final int FP_POS_UNIMPLEMENTED_INHERITED_METHOD = 3;
+    static final int FP_POS_GLOBAL_METHOD = 0; // by default fp pos is set to 0
+    static final int FP_POS_IMPLEMENTED_NONGLOBAL_METHOD = 1;
+    static final int FP_POS_UNIMPLEMENTED_INTERFACE_METHOD = 2;
+
+    static final int FP_POS_FORMAL_PARAMETER = 1;
+
+    static final int LEVEL_INTERFACE_VAR = 1;
+    static final int LEVEL_CLASS_FLD = 1;
+    static final int LEVEL_CLASS_VAR = 2;
+    static final int LEVEL_GLOBAL_METH_VAR = 1;
+    static final int LEVEL_GLOBAL_VAR = 0;
 
     // package rs.ac.bg.etf.pp1;
     int nVars;
@@ -29,7 +35,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     private Obj currTypeVar = null;
     private Obj currTypeMeth = null;
     private Obj currMeth = null;
-//    private Obj currDesignatorVar = null;
     private Struct currClass = null;
     private Struct accessClass = null;
     private Struct currInterface = null;
@@ -118,9 +123,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     // helpers
     private boolean checkIsObjNodeDeclared(String name){
         Obj node = Tab.currentScope().findSymbol(name);
-        // fpPos == 0 implemented class method or field or just method or var
-        // fpPos == 3 unimplemented method, just declared
-        // fpPos == 1 formal parameter so we want to override it
         return node != null;
     }
 
@@ -130,23 +132,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     private Obj searchType(String name){
         Obj typeNode;
-//        switch(name){
-//            case "int":
-//                typeNode = intObj;
-//                break;
-//            case "char":
-//                typeNode = charObj;
-//                break;
-//            case "bool":
-//                typeNode = boolObj;
-//                break;
-//            case "set":
-//                typeNode = setObj;
-//                break;
-//            default:
-//                typeNode = Tab.find(name);
-//                break;
-//        }
 
         typeNode = Tab.find(name);
         return typeNode;
@@ -212,8 +197,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             report_error("[ConstDeclAssign] Vec je deklarisana konstanta sa imenom " + node.getI1(), node);
             return;
         }
-        // assignableTo mora da stoji, a ne equals jer onda u slucaju lose procitanih tokena (noType) opet ubacujemo vrednost
-        // u tabelu simbola i onda mozemo tu informaciju koristiti za dalju sintaksnu analizu
+
         Obj constObj = node.getConstDeclListValue().obj;
         Struct type = (currTypeVar == null) ? Tab.noType : currTypeVar.getType();
         Obj constNode = Tab.insert(Obj.Con, node.getI1(), type);
@@ -226,6 +210,34 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         logSymbol("Detektovana simbolicka konstanta:", constNode, node);
     }
 
+    private void setLevel(Obj node){
+        if (currInterface != null && currInterface != Tab.noType){
+            node.setLevel(LEVEL_INTERFACE_VAR);
+        } else if (currClass != null && currClass != Tab.noType){
+            if (classMethodDecl){
+                node.setLevel(LEVEL_CLASS_VAR);
+            } else {
+                node.setLevel(LEVEL_CLASS_FLD);
+            }
+        } else if (currMeth != null && currMeth != Tab.noObj){
+            node.setLevel(LEVEL_GLOBAL_METH_VAR);
+        } else {
+            node.setLevel(LEVEL_GLOBAL_VAR);
+        }
+    }
+
+    private Obj insertNewVarNode(String name, Struct type){
+        Obj varNode;
+        if (currClass != null && currClass != Tab.noType && !classMethodDecl){
+            varNode = Tab.insert(Obj.Fld, name, type);
+        } else {
+            varNode = Tab.insert(Obj.Var, name, type);
+        }
+        setLevel(varNode);
+        formParsSetLevelAndFpPos(varNode);
+        return varNode;
+    }
+
     @Override
     public void visit(VarDeclFinalVar node){
         // since we are not chained symbols to class node we are storing them in scope nodes as we visit them
@@ -234,22 +246,10 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             report_error("[VarDeclFinalVar] Vec je deklarisana promenljiva sa imenom: " + node.getI1(), node);
             return;
         }
-        Obj varNode;
         Struct type = (currTypeVar == null) ? Tab.noType : currTypeVar.getType();
-        String message;
-        if (currClass == null || classMethodDecl){
-            varNode = Tab.insert(Obj.Var, node.getI1(), type);
-            message = "Detektovana promenljiva";
-            if(classMethodDecl){
-                varNode.setLevel(2);
-            }
-        } else {
-            varNode = Tab.insert(Obj.Fld, node.getI1(), type);
-            message = "Detektovano polje klase";
-            varNode.setLevel(1);
-        }
-        formParsSetLevelAndFpPos(varNode);
-        logSymbol(message, varNode, node);
+        Obj varNode = insertNewVarNode(node.getI1(), type);
+        node.obj = varNode;
+        logSymbol("detektovan Obj cvor", varNode, node);
     }
 
     @Override
@@ -258,24 +258,11 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             report_error("[VarDeclFinalArray] Vec je deklarisana promenljiva sa imenom " + node.getI1(), node);
             return;
         }
-
         Struct type = (currTypeVar == null) ? Tab.noType : currTypeVar.getType();
         Struct array = new Struct(Struct.Array, type);
-        Obj varNode;
-        String message;
-        if (currClass == null || classMethodDecl){
-            varNode = Tab.insert(Obj.Var, node.getI1(), array);
-            message = "Detektovana promenljiva (element niza)";
-            if(classMethodDecl){
-                varNode.setLevel(2);
-            }
-        } else {
-            varNode = Tab.insert(Obj.Fld, node.getI1(), array);
-            message = "Detektovano polje (element niza)";
-            varNode.setLevel(1);
-        }
-        formParsSetLevelAndFpPos(varNode);
-        logSymbol(message, varNode, node);
+        Obj varNode = insertNewVarNode(node.getI1(), array);
+        node.obj = varNode;
+        logSymbol("detektovan Obj cvor (elem niza)", varNode, node);
     }
 
 
@@ -286,7 +273,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     private boolean createMethodObjNode(String name){
         Obj meth = Tab.currentScope.findSymbol(name);
         if (meth != null){
-            if (meth.getFpPos() == FP_POS_UNIMPLEMENTED_INHERITED_METHOD){
+            if (meth.getFpPos() == FP_POS_UNIMPLEMENTED_INTERFACE_METHOD){
                 currMeth = meth;
             } else{
                 currMeth = Tab.noObj;
@@ -303,7 +290,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     // this method is called only from interface method signature
     @Override
     public void visit(CloseMethodScope node){
-        currMeth.setFpPos(FP_POS_UNIMPLEMENTED_INHERITED_METHOD);
+        currMeth.setFpPos(FP_POS_UNIMPLEMENTED_INTERFACE_METHOD);
         Tab.chainLocalSymbols(currMeth);
         Tab.closeScope();
         currMeth = null;
@@ -349,11 +336,14 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             node.obj = currMeth; // Tab.noObj;
             return;
         }
+
         if (currClass != null && currClass != Tab.noType){
-            Obj n = Tab.insert(Obj.Var, "this", currClass);
-            n.setLevel(2);
-            formParsSetLevelAndFpPos(n);
+            insertNewVarNode("this", currClass);
         }
+        if (currInterface != null && currInterface != Tab.noType){
+            insertNewVarNode("this", currInterface);
+        }
+
         node.obj = currMeth;
     }
 
@@ -374,10 +364,11 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(MethodDecl node){
-
-        // this is when we are implementing method signatures from interface
-        if(currMeth.getFpPos() == FP_POS_UNIMPLEMENTED_INHERITED_METHOD){
-            currMeth.setFpPos(FP_POS_IMPLEMENTED_INHERITED_METHOD);
+        
+        if(currClass != null || currInterface != null){
+            currMeth.setFpPos(FP_POS_IMPLEMENTED_NONGLOBAL_METHOD);
+        } else {
+            currMeth.setFpPos(FP_POS_GLOBAL_METHOD);
         }
 
         // we don't want to chain syms to curr meth if (currMeth == mainMeth && mainDeclared)
@@ -425,27 +416,12 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     // <editor-fold desc="Class Methods and Fields">
 
     private void chainLocalSymbolsMethod(Obj fromMeth, Obj toMeth){
-
+        SymbolDataStructure locals = new HashTableDataStructure();
         for (Obj localSym: fromMeth.getLocalSymbols()){
-            toMeth.getLocalSymbols().add(localSym);
-        }
+            locals.insertKey(localSym);
 
-//        HashTableDataStructure copy = new HashTableDataStructure();
-//
-//        for (Obj localSym: fromMeth.getLocalSymbols()){
-//            Obj node;
-//
-//            if (localSym.getName().equals("this")){
-//                node = new Obj(localSym.getKind(), localSym.getName(), currClass);
-//            }else{
-//                node = new Obj(localSym.getKind(), localSym.getName(), localSym.getType());
-//            }
-//            node.setFpPos(localSym.getFpPos());
-//            node.setLevel(localSym.getLevel());
-//            copy.insertKey(node);
-//        }
-//
-//        toMeth.setLocals(copy);
+        }
+        toMeth.setLocals(locals);
     }
 
     @Override
@@ -461,7 +437,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         // we need this guard in case we have bad Type
         if(parentClass != Tab.noType && parentClass.getKind() == Struct.Interface){
             for (Obj member: parentClass.getMembers()){
-                if(member.getKind() == Obj.Meth){
+                if(member.getKind() == Obj.Meth && member.getFpPos() == FP_POS_UNIMPLEMENTED_INTERFACE_METHOD){
                     Obj n = Tab.insert(Obj.Meth, member.getName(), member.getType());
                     n.setFpPos(member.getFpPos());
                     chainLocalSymbolsMethod(member, n);
@@ -829,7 +805,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     @Override
     public void visit(DesignatorPropertyAccess node){
         SyntaxNode parent = node.getParent();
-        if (node.getDesignatorClassMore().obj.getKind() == Obj.Meth && !(parent instanceof DesignatorStatementFuncCall)){
+        if (node.getDesignatorClassMore().obj.getKind() == Obj.Meth && !(parent instanceof DesignatorStatementFuncCall || parent instanceof FactorFuncCall || parent instanceof DesignatorStatementFuncCallWhile)){
             report_error("[DesignatorPropertyAccess] Ukoliko koristimo ime metoda prilikom ulancavanja, ono iza sebe mora imati i poziv funkcije, dakle metoda(...), a ne samo metoda bez zagrada", node);
             node.obj = Tab.noObj;
             return;
@@ -893,6 +869,13 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     private Obj searchMethod(Struct currClassType, String methodName){
         Struct curr = currClassType;
+        for (Struct iface: curr.getImplementedInterfaces()){
+            for (Obj member: iface.getMembers()) {
+                if (member.getFpPos() == FP_POS_IMPLEMENTED_NONGLOBAL_METHOD && member.getName().equals(methodName)) {
+                    return member;
+                }
+            }
+        }
         while (curr != null && curr != Tab.noType){
             for (Obj member: curr.getMembers()){
                 if(member.getKind() == Obj.Meth && member.getName().equals(methodName)){
@@ -902,6 +885,10 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             curr = curr.getElemType();
         }
         return Tab.noObj;
+    }
+
+    private boolean isParentPropertyAccess(SyntaxNode parent){
+        return parent instanceof DesignatorPropertyAccess || parent instanceof DesignatorElemPropertyAccess;
     }
 
     @Override
@@ -965,7 +952,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         if (!thisDetected){
             // case Obj.Meth
             Obj mem = searchMethod(classStruct, field);
-            if ((mem != Tab.noObj) && parent instanceof DesignatorPropertyAccess){
+            if ((mem != Tab.noObj) && isParentPropertyAccess(parent)){
                 node.obj = mem;
                 accessClass = null;
                 return;
@@ -982,7 +969,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         if (classMethodDecl) {
             // this must go before searchMethod because we want to check if field is in method scope first
             for (Obj member: Tab.currentScope().getOuter().getLocals().symbols()){
-                if(((member.getKind() == Obj.Meth && parent instanceof DesignatorPropertyAccess) ||
+                if(((member.getKind() == Obj.Meth && isParentPropertyAccess(parent)) ||
                         member.getKind() == Obj.Fld) && member.getName().equals(field)){
                     node.obj = member;
                     thisDetected = false;
@@ -991,7 +978,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             }
             // case Obj.Meth
             Obj mem = searchMethod(classStruct, field);
-            if ((mem != Tab.noObj) && parent instanceof DesignatorPropertyAccess){
+            if ((mem != Tab.noObj) && isParentPropertyAccess(parent)){
                 node.obj = mem;
                 accessClass = null;
                 thisDetected = false;
@@ -1063,7 +1050,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         if (!thisDetected){
             // case Obj.Meth
             Obj mem = searchMethod(classStruct, field);
-            if ((mem != Tab.noObj) && parent instanceof DesignatorPropertyAccess){
+            if ((mem != Tab.noObj) && isParentPropertyAccess(parent)){
                 node.obj = mem;
                 accessClass = null;
                 return;
@@ -1080,7 +1067,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         if (classMethodDecl) {
             // this must go before searchMethod because we want to check if field is in method scope first
             for (Obj member: Tab.currentScope().getOuter().getLocals().symbols()){
-                if(((member.getKind() == Obj.Meth && parent instanceof DesignatorPropertyAccess) ||
+                if(((member.getKind() == Obj.Meth && isParentPropertyAccess(parent)) ||
                         member.getKind() == Obj.Fld) && member.getName().equals(field)){
                     node.obj = member;
                     accessClass = null;
@@ -1090,7 +1077,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             }
             // case Obj.Meth
             Obj mem = searchMethod(classStruct, field);
-            if ((mem != Tab.noObj) && parent instanceof DesignatorPropertyAccess){
+            if ((mem != Tab.noObj) && isParentPropertyAccess(parent)){
                 node.obj = mem;
                 accessClass = null;
                 thisDetected = false;
@@ -1152,12 +1139,13 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     // <editor-fold desc="[Factor] Function calls">
 
-    private boolean checkArePassedParametersAndFormalParameterListCompatible(List<Struct> fpList, String methName,  SyntaxNode node){
+    private void checkArePassedParametersAndFormalParameterListCompatible(List<Struct> fpList, String methName,  SyntaxNode node){
         if (fpList.size() != fpStack.size()){
             report_error("[FactorFuncCall][DesignatorStatementFuncCall] Lista prosledjenih parametara se ne poklapa se parametrima koji su prosledjeni prilikom poziva metode " + methName + " po broju prosledjenih parametara("+ fpStack.size() +"), ova metoda prima: " + fpList.size() + " parametara", node);
 
             fpStack = new Stack<>();
-            return false;
+//            return false;
+            return;
         }
 
         boolean errorHappened = false;
@@ -1172,9 +1160,11 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         }
         if (errorHappened){
             fpStack = new Stack<>();
-            return false;
+//            return false;
+            return;
         }
-        return true;
+//        return true;
+        return;
     }
 
     private List<Struct> getFormalParameters(Obj funcNode, SyntaxNode node){
@@ -1351,6 +1341,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(InterfaceDecl node){
+        node.struct = node.getInterfaceDeclName().struct;
         closeInterface();
     }
 
@@ -1361,6 +1352,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         currInterface = new Struct(Struct.Interface);
+        node.struct = currInterface;
         classMethodDecl = true;
         Obj interfaceObj = Tab.insert(Obj.Type, node.getI1(), currInterface);
         Tab.openScope();
@@ -1372,12 +1364,9 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     private void checkIfAllMethodsAreImplemented(SyntaxNode node){
         for(Obj member: currClass.getMembers()){
-            if (member.getFpPos() == FP_POS_UNIMPLEMENTED_INHERITED_METHOD){
+            if (member.getFpPos() == FP_POS_UNIMPLEMENTED_INTERFACE_METHOD){
                 report_error("[checkIfAllMethodsAreImplemented] Metod " + member.getName() + " interfejsa nije implementiran unutar klase koja ga prosiruje", node);
                 return;
-            }
-            if (member.getKind() == Obj.Meth && member.getFpPos() < FP_POS_IMPLEMENTED_INHERITED_METHOD){
-                member.setFpPos(FP_POS_CLASS_METHOD); // now there shouldn't be methods with fppos < 1
             }
         }
     }
@@ -1452,10 +1441,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             if(member.getKind() == Obj.Fld){
                 // insert only parent class fields
                 Tab.currentScope().addToLocals(member);
-//                Obj var = Tab.insert(Obj.Fld, member.getName(), member.getType());
-                // we are setting fpPos so we know that is inherited name and we can "override" it in our children class
-                // but in case we declared that variable in children class twice (fppos != 2) we throw error
-//                var.setFpPos(FP_POS_IMPLEMENTED_INHERITED_METHOD);
             }
         }
     }

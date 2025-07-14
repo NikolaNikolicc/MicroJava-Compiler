@@ -183,14 +183,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     // <editor-fold desc="Const and Var declarations">
 
-    private void formParsSetLevelAndFpPos(Obj node){
-        // second condition is used to check if we are parsing formals for main method if main is declared multiple times
-        if(node.getName().equals("this") || parsingFormPars && !(mainDeclared && currMeth.getName().equals("main"))){
-            currMeth.setLevel(currMeth.getLevel() + 1);
-            node.setFpPos(FP_POS_FORMAL_PARAMETER);
-        }
-    }
-
     @Override
     public void visit(ConstDeclAssign node){
         if(checkIsObjNodeDeclared(node.getI1())){
@@ -208,6 +200,14 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
         constNode.setAdr(constObj.getAdr());
         logSymbol("Detektovana simbolicka konstanta:", constNode, node);
+    }
+
+    private void setMethodLevelAndVarFpPosIfFormalParameter(Obj node){
+        // second condition is used to check if we are parsing formals for main method if main is declared multiple times
+        if(node.getName().equals("this") || parsingFormPars && !(mainDeclared && currMeth.getName().equals("main"))){
+            currMeth.setLevel(currMeth.getLevel() + 1);
+            node.setFpPos(FP_POS_FORMAL_PARAMETER);
+        }
     }
 
     private void setLevel(Obj node){
@@ -234,7 +234,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             varNode = Tab.insert(Obj.Var, name, type);
         }
         setLevel(varNode);
-        formParsSetLevelAndFpPos(varNode);
+        setMethodLevelAndVarFpPosIfFormalParameter(varNode);
         return varNode;
     }
 

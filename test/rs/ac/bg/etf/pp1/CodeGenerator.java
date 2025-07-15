@@ -651,11 +651,10 @@ public class CodeGenerator extends VisitorAdaptor {
         if (chainingMethodCall){
             chainingMethodCall = false;
             // load TVF
-            Code.put(Code.load_n);
+            Code.put(Code.getstatic);
+            Code.put2(0);
             Code.put(Code.getfield);
             Code.put2(0);
-            // remove 0th parameter (the class instance) from the stack
-            Code.put(Code.exit);
             // invokevirtual
             Code.put(Code.invokevirtual);
             for (char ch: node.getName().toCharArray()){
@@ -722,11 +721,11 @@ public class CodeGenerator extends VisitorAdaptor {
     // <editor-fold desc="[DesignatorClass] access Class properties">
 
     private void prepareForInvokeVirtual(){
-        Code.put(Code.enter);
-        Code.put(1); // 1 formal parameter (the class instance)
-        Code.put(1); // 1 + 0 local variable (the class instance)
+        Code.put(Code.putstatic);
+        Code.put2(0); // 0 is the offset for the TVF in the class instance
         // load this
-        Code.put(Code.load_n);
+        Code.put(Code.getstatic);
+        Code.put2(0);
         // set flag
         chainingMethodCall = true;
     }

@@ -76,6 +76,7 @@ public class Compiler {
             setObj.setLevel(-1);
 
             // we need to set the FP_POS for all formal parameters so we initialize the SemanticAnalyzer here
+            Code.dataSize++; // 0th position is reserved for this pointer in code generation
             SemanticAnalyzer sa = new SemanticAnalyzer();
 
             // podesiti fp pos na 1 za sve parametre metoda

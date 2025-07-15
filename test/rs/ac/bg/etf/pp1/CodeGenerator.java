@@ -783,7 +783,7 @@ public class CodeGenerator extends VisitorAdaptor {
     @Override
     public void visit(DesignatorClassMoreNotFinal node){
         if (node.obj.getKind() == Obj.Meth){
-//            prepareForInvokeVirtual();
+            prepareForInvokeVirtual();
             return;
         }
         SyntaxNode parent = node.getParent();
@@ -1078,27 +1078,23 @@ public class CodeGenerator extends VisitorAdaptor {
 
     @Override
     public void visit(ClassNoExtend node) {
-    //        tvfHandler.putTVFInMemory(node.struct);
         currClass = null;
     }
 
     @Override
     public void visit(ClassYesExtend node){
-    //        tvfHandler.putTVFInMemory(node.struct);
         currClass = null;
     }
 
     @Override
     public void visit(ClassNoExtendYesMethods node){
         tvfHandler.addClassMethods(node.struct);
-    //        tvfHandler.putTVFInMemory(node.struct);
         currClass = null;
     }
 
     @Override
     public void visit(ClassYesExtendYesMethods node){
         tvfHandler.addClassMethods(node.struct);
-    //        tvfHandler.putTVFInMemory(node.struct);
         currClass = null;
     }
 

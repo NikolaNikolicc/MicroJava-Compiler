@@ -16,6 +16,10 @@ public class CodeGenerator extends VisitorAdaptor {
     private Obj addAllMeth;
     private Obj printSetMeth;
     private Obj unionSetsMeth;
+
+    private Struct currClass = null;
+    private Struct currInterface = null;
+
     private final Struct setType = Tab.find("set").getType(); // Set type from the symbol table
 
     private boolean chainingMethodCall = false;
@@ -731,6 +735,11 @@ public class CodeGenerator extends VisitorAdaptor {
     public void visit(DesignatorVar node){
         if (node.obj.getKind() == Obj.Fld){
             Code.put(Code.load_n);
+        } else if (node.obj.getKind() == Obj.Meth && (currClass != null || currInterface != null)) {
+            // If the designator is a method and we are in a class or interface context, prepare for virtual invocation
+            Code.put(Code.load_n);
+            prepareForInvokeVirtual();
+            return;
         }
     }
 
@@ -775,7 +784,7 @@ public class CodeGenerator extends VisitorAdaptor {
     @Override
     public void visit(DesignatorClassMoreNotFinal node){
         if (node.obj.getKind() == Obj.Meth){
-            prepareForInvokeVirtual();
+//            prepareForInvokeVirtual();
             return;
         }
         SyntaxNode parent = node.getParent();
@@ -1048,16 +1057,19 @@ public class CodeGenerator extends VisitorAdaptor {
     @Override
     public void visit(ClassDeclName node){
         tvfHandler.createTVF(node.struct);
+        currClass = node.struct;
     }
 
     @Override
     public void visit(InterfaceDeclName node){
         tvfHandler.createTVF(node.struct);
+        currInterface = node.struct;
     }
 
     @Override
     public void visit(InterfaceDecl node){
         tvfHandler.addClassMethods(node.struct);
+        currInterface = null;
     }
 
     @Override
@@ -1068,23 +1080,27 @@ public class CodeGenerator extends VisitorAdaptor {
     @Override
     public void visit(ClassNoExtend node) {
     //        tvfHandler.putTVFInMemory(node.struct);
+        currClass = null;
     }
 
     @Override
     public void visit(ClassYesExtend node){
     //        tvfHandler.putTVFInMemory(node.struct);
+        currClass = null;
     }
 
     @Override
     public void visit(ClassNoExtendYesMethods node){
         tvfHandler.addClassMethods(node.struct);
     //        tvfHandler.putTVFInMemory(node.struct);
+        currClass = null;
     }
 
     @Override
     public void visit(ClassYesExtendYesMethods node){
         tvfHandler.addClassMethods(node.struct);
     //        tvfHandler.putTVFInMemory(node.struct);
+        currClass = null;
     }
 
     // </editor-fold>

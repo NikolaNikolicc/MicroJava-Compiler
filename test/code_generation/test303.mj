@@ -109,7 +109,6 @@ int tezinaK, tezinaS;
 
 	void main() Predmet predmeti[]; int i; Sfera s1, s2, s3; Kvadar k1, k2, k3; int t; Displayable d1, d2;
 	{
-        tezinaK = 3;
 		predmeti = new Predmet[6];
 		s1 = new Sfera();
 		s1.postaviPoluprecnik(3);

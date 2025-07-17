@@ -127,18 +127,13 @@ class Class13 extends Class12
 
     }
 
-    // [MethodName] syntax node ERROR: Name 'main' already defined in the current scope
-    // [FormalParameterSingle] syntax node ERROR: Invalid definition of the current method
-    // [MethodSignature] syntax node ERROR: Name 'main' already defined in the current scope
-    // [MethodDecl] syntax node ERROR: Name 'main' already defined in the current scope
+    // [MethodName] syntax node ERROR: Name 'main' already defined in the current scope // pass
     char main(int parameter1)
     {
 
     }
 
-    // [MethodName] syntax node ERROR: Name 'main' already defined in the current scope
-    // [MethodSignature] syntax node ERROR: Name 'main' already defined in the current scope
-    // [MethodDecl] syntax node ERROR: Name 'main' already defined in the current scope
+    // [MethodName] syntax node ERROR: Name 'main' already defined in the current scope // pass
     int main()
     {
 

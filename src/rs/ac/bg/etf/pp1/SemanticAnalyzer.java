@@ -31,7 +31,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     public boolean errorDetected = false;
     private boolean classMethodDecl = false;
     private boolean thisDetected = false;
-    private boolean mainDeclared = false;
     private boolean voidMethodFlag = false;
 
     private Struct currTypeVar = Tab.noType; // Tab.noType - invalid type
@@ -203,7 +202,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     private void setMethodLevelAndVarFpPosIfFormalParameter(Obj node){
         // second condition is used to check if we are parsing formals for main method if main is declared multiple times
-        if(node.getName().equals("this") || parsingFormPars && !(mainDeclared && currMeth.getName().equals("main"))){
+        if(node.getName().equals("this") || parsingFormPars){
             currMeth.setLevel(currMeth.getLevel() + 1);
             node.setFpPos(FP_POS_FORMAL_PARAMETER);
         }
@@ -267,6 +266,11 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     // <editor-fold desc="Method Declarations and Returns">
 
+    /**
+     *
+     * @param name
+     * @return false if implemented method with that name already exists in current scope
+     */
     private boolean createMethodObjNode(String name){
         Obj meth = Tab.currentScope.findSymbol(name);
         if (meth != null){
@@ -347,17 +351,18 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(MainMethod node){
-        if(mainMeth != null){
-            report_error("[MainMethod] Vec je definisan main metod", node);
-            mainDeclared = true;
-        }
-        else if(!voidMethodFlag){
-            report_error("[MainMethod] Main metoda mora biti povratnog tipa void", node);
-        }
         createMethodObjNode("main");
+        if (mainMeth == null){
+            mainMeth = currMeth;
+
+            if(!voidMethodFlag){
+                report_error("[MainMethod] Main metoda mora biti povratnog tipa void", node.getParent());
+            }
+        } else {
+            report_error("[MainMethod] Vec je definisan main metod", node.getParent());
+        }
 
         node.obj = currMeth;
-        mainMeth = currMeth;
     }
 
     @Override
@@ -369,18 +374,13 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             currMeth.setFpPos(FP_POS_GLOBAL_METHOD);
         }
 
-        // we don't want to chain syms to curr meth if (currMeth == mainMeth && mainDeclared)
-        // so because of that we use De Morgan rule for the condition above
-        // if (currMeth == mainMeth but we haven't declared main yet (mainDeclared == false) we wan't to chain syms to main meth
-
-        if(!currMeth.getName().equals("main") || !mainDeclared) Tab.chainLocalSymbols(currMeth);
-        Tab.closeScope();
-
-        if (!voidMethodFlag && !returnNode){
+        if (!voidMethodFlag && !returnNode && !currMeth.getName().equals("main")){
             report_error("[MethodDecl] U metodu("+ currMeth.getName() +") povratnog tipa koji nije void se mora pojaviti barem jedna return naredba", node);
         }
 
-        mainDeclared = false;
+        Tab.chainLocalSymbols(currMeth);
+        Tab.closeScope();
+
         currMeth = null;
         returnNode = false;
         voidMethodFlag = false;

@@ -1,73 +1,64 @@
-// [ProgramName] syntax node ERROR: Built-in keyword 'chr' is not a valid program name
-program chr
+program TestFull
 
-// [Type] syntax node ERROR: 'ord' is not a type
-// [ConstantAssignment] syntax node ERROR: Invalid type when defining constant 'constant1'
+// [Type] syntax node ERROR: 'ord' is not a type // pass
+// [ConstantAssignment] syntax node ERROR: Invalid type when defining constant 'constant1' // pass
 const ord constant1 = 1;
 
-// [Type] syntax node ERROR: Type 'intt' used before declaration
-// [ConstantAssignment] syntax node ERROR: Invalid type when defining constant 'constant2'
-// [ConstantAssignment] syntax node ERROR: Name 'constant2' already defined in the current scope
+// [Type] syntax node ERROR: Type 'intt' used before declaration // pass
+// [ConstantAssignment] syntax node ERROR: Invalid type when defining constant 'constant2' // pass
+// [ConstantAssignment] syntax node ERROR: Name 'constant2' already defined in the current scope // pass
 const intt constant2 = 2, constant2 = 4;
 
-// [ConstantAssignment] syntax node ERROR: Incompatible types when defining constant 'constant3'
+// [ConstantAssignment] syntax node ERROR: Incompatible types when defining constant 'constant3' // pass
 const int constant3 = true;
 
-// [ConstantAssignment] syntax node ERROR: Name 'constant4' already defined in the current scope
+// [ConstantAssignment] syntax node ERROR: Name 'constant4' already defined in the current scope // pass
 const int constant4 = 4, constant4 = 4;
 
-// [ConstantAssignment] syntax node ERROR: Incompatible types when defining constant 'co8'
-// [ConstantAssignment] syntax node ERROR: Incompatible types when defining constant 'constant9'
+// [ConstantAssignment] syntax node ERROR: Incompatible types when defining constant 'co8' // pass
+// [ConstantAssignment] syntax node ERROR: Incompatible types when defining constant 'constant9' // pass
 const char cons5 = 'a', const6 = 'd', constan7 = 'A', co8 = 65, constant9 = false;
 
-// [VariableSingle] syntax node ERROR: Name 'var2' already defined in the current scope
+// [VariableSingle] syntax node ERROR: Name 'var2' already defined in the current scope // pass
 char var1, var2, var2;
 
-// [VariableArray] syntax node ERROR: Name 'var4' already defined in the current scope
+// [VariableArray] syntax node ERROR: Name 'var4' already defined in the current scope // pass
 bool var3[], var4[], var4[];
 
-// [Type] syntax node ERROR: Type 'invalidtype' used before declaration
-// [VariableSingle] syntax node ERROR: Invalid type when defining variable 'var5'
-// [VariableArray] syntax node ERROR: Invalid type when defining variable 'var6'
-// [VariableSingle] syntax node ERROR: Name 'var5' already defined in the current scope
+// [Type] syntax node ERROR: Type 'invalidtype' used before declaration // pass
+// [VariableSingle] syntax node ERROR: Name 'var5' already defined in the current scope // pass
 invalidtype var5, var6[], var5;
 
-// [ClassName] syntax node ERROR: Name 'var1' already defined in the current scope
-// [ClassDecl] syntax node ERROR: Name used for the class is already defined in the current scope
+// [ClassName] syntax node ERROR: Name 'var1' already defined in the current scope // pass
 class var1 {}
 
 class Class1
 {
-    // [ClassAttributeSingle] syntax node ERROR: Name 'attr1' already defined in the current scope
+    // [ClassAttributeSingle] syntax node ERROR: Name 'attr1' already defined in the current scope // pass
     int attr1, attr2, attr1;
 
-    // [Type] syntax node ERROR: Type 'boool' used before declaration
-    // [ClassAttributeSingle] syntax node ERROR: Invalid type when defining class attribute 'attr3'
-    // [ClassAttributeDeclSingle] syntax node ERROR: Invalid type when defining class attributes
+    // [Type] syntax node ERROR: Type 'boool' used before declaration // pass
     boool attr3;
 
-    // [ClassAttributeArray] syntax node ERROR: Name 'attr4' already defined in the current scope
+    // [ClassAttributeArray] syntax node ERROR: Name 'attr4' already defined in the current scope // pass
     int attr4[], attr4[];
 
-    // [Type] syntax node ERROR: Type 'intt' used before declaration
-    // [ClassAttributeArray] syntax node ERROR: Invalid type when defining class attribute 'attr5'
-    // [ClassAttributeDeclSingle] syntax node ERROR: Invalid type when defining class attributes
+    // [Type] syntax node ERROR: Type 'intt' used before declaration // pass
     intt attr5[];
 }
 
 class Class2 { }
 
-// [ClassNameExtendsBaseTypeName] syntax node ERROR: Name 'Class2' already defined in the current scope
-// [ClassDecl] syntax node ERROR: Name used for the class is already defined in the current scope
+// [ClassNameExtendsBaseTypeName] syntax node ERROR: Name 'Class2' already defined in the current scope // pass
 class Class2 extends Class1 { }
 
-// [ClassNameExtendsBaseTypeName] syntax node ERROR: Base type name 'fgasga' is not defined
+// [ClassNameExtendsBaseTypeName] syntax node ERROR: Base type name 'fgasga' is not defined // pass
 class Class3 extends fgasga { }
 
-// [ClassNameExtendsBaseTypeName] syntax node ERROR: Base type name 'InvalidProgramName' is neither a class nor an interface
+// [ClassNameExtendsBaseTypeName] syntax node ERROR: Base type name 'InvalidProgramName' is neither a class nor an interface // pass
 class Class4 extends InvalidProgramName { }
 
-// [ClassNameExtendsBaseTypeName] syntax node ERROR: Base type name 'int' is neither a class nor an interface
+// [ClassNameExtendsBaseTypeName] syntax node ERROR: Base type name 'int' is neither a class nor an interface // pass
 class Class5 extends int { }
 
 class Class6
@@ -77,13 +68,21 @@ class Class6
 
 class Class7 extends Class6
 {
-    // [ClassAttributeSingle] syntax node ERROR: Name 'attr2' already defined in the current scope
+    // [ClassAttributeSingle] syntax node ERROR: Name 'attr2' already defined in the current scope // pass
     int attr2;
 }
 
-interface Interface1 { }
+interface Interface1
+{
+    void interface1_method1();
 
-// [InterfaceName] syntax node ERROR: Name 'Interface1' already defined in the current scope
+    int interface1_method2(int param1, int param2)
+    {
+        return param1 + param2;
+    }
+}
+
+// [InterfaceName] syntax node ERROR: Name 'Interface1' already defined in the current scope // pass
 // [InterfaceDecl] syntax node ERROR: Name used for the interface is already defined in the current scope
 interface Interface1 { }
 
@@ -91,6 +90,7 @@ interface Interface2 { }
 
 interface Interface3 { }
 
+// [ClassDecl] syntax node ERROR: Class 'Class8' does not implement all unimplemented interface methods // pass
 class Class8 extends Interface1 { }
 
 class Class9 extends Interface2 { }
@@ -99,12 +99,29 @@ class Class10 extends Interface3 { }
 
 class Class11 extends Class10 { }
 
-class Class12 extends Class11 { }
+class Class12 extends Class11
+{
+    int attr12_1;
+}
 
-class Class13 extends Class12 { }
+class Class13 extends Class12
+{
+    int attr1;
+    Class12 obj12;
+
+    {
+        void method13_1()
+        {
+            arr1 = new int[10];
+            arr1[0] = 100;
+
+            obj12 = new Class13();
+        }
+    }
+}
 
 {
-    // [Type] syntax node ERROR: Type 'booool' used before declaration
+    // [Type] syntax node ERROR: Type 'booool' used before declaration // pass
     booool main()
     {
 
@@ -545,5 +562,65 @@ class Class13 extends Class12 { }
     {
         // [StatementReturnWithExpr] syntax node ERROR: Return statement expression type does not match method return type
         return 2;
+    }
+
+    void validMethod19()
+        int var1;
+    {
+        var1 = 0;
+        // [StatementDoWhileWithCondition] syntax node ERROR: Condition of a 'do-while' statement must be of type 'bool'
+        do {} while (1);
+
+        // [StatementDoWhileConditionAndDesignatorStatement] syntax node ERROR: Condition of a 'do-while' statement must be of type 'bool'
+        do {} while ('c', var1++);
+
+        // [StatementBreak] syntax node ERROR: Break statement can only be used inside of a loop
+        break;
+
+        // [StatementContinue] syntax node ERROR: Continue statement can only be used inside of a loop
+        continue;
+    }
+
+    void validMethod20()
+        int var1;
+        Class13 obj1;
+        Interface1 obj2;
+    {
+        // [DesignatorIdentificator] syntax node ERROR: Name 'fsafas' not found in the symbols table
+        // [DesignatorClassAccess] syntax node ERROR: Designator identificator is invalid
+        // [DesignatorStatementAssignopExpr] syntax node ERROR: Designator is invalid
+        fsafas.attr1 = 5;
+
+        // [DesignatorClassAccess] syntax node ERROR: Designator identificator must be a variable, class attribute or array element to be accessed
+        // [DesignatorStatementAssignopExpr] syntax node ERROR: Designator is invalid
+        validMethod19.attr1 = 10;
+
+        // [DesignatorClassAccess] syntax node ERROR: Designator identificator must be a variable, class attribute or array element to be accessed
+        // [DesignatorStatementAssignopExpr] syntax node ERROR: Designator is invalid
+        int.attr1 = 15;
+
+        // [DesignatorClassAccess] syntax node ERROR: Class designator identificator must be an object
+        // [DesignatorStatementAssignopExpr] syntax node ERROR: Designator is invalid
+        var1.attr1 = 20;
+
+        obj1 = new Class13();
+
+        // [DesignatorClassAccess] Class member 'attr2' is not defined in the 'obj1' object
+        // [DesignatorStatementAssignopExpr] syntax node ERROR: Designator is invalid
+        obj1.attr2 = 25;
+
+        // [DesignatorStatementAssignopExpr] syntax node ERROR: Expression is not assignable to the designator
+        obj1.obj12 = 20;
+
+        // [DesignatorClassAccess] Class member 'attr12' is not defined in the 'obj12' object
+        // [DesignatorStatementAssignopExpr] syntax node ERROR: Designator is invalid
+        obj1.obj12.attr12 = 30;
+
+        // [DesignatorUserTypeAccess] Interface method 'interface1_methofsa' is not defined in the 'obj2' interface
+        obj2 = new Class8();
+        obj2.interface1_methofsa();
+
+        // [DesignatorUserTypeAccess] syntax node ERROR: Designator identificator must be a variable, class attribute or array element to be accessed
+        obj2.interface1_method1.fafas();
     }
 }

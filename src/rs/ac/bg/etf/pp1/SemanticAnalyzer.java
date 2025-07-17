@@ -80,9 +80,14 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         log.info(msg.toString());
     }
 
-    private void printScope(SyntaxNode node){
+    private void printScope(SyntaxNode node) {
+        report_info("--- CURRENT SCOPE SYMBOLS ---", node);
+        if (Tab.currentScope().getLocals() == null){
+            report_info("There is no locals in current scope", node);
+            return;
+        }
         for(Obj member: Tab.currentScope().getLocals().symbols()){
-            report_info("member: " + member.getName() + " fp pos: " + member.getFpPos(), node);
+            logSymbol("member: ", member, node);
         }
     }
 
@@ -131,10 +136,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     // <editor-fold desc="Program and Type identification">
 
     private Obj searchType(String name){
-        Obj typeNode;
-
-        typeNode = Tab.find(name);
-        return typeNode;
+        return Tab.find(name);
     }
 
     @Override
@@ -427,14 +429,17 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     @Override
     public void visit(SetClassFieldAddress node){
         int currentOffset = 1; // 0 is for VTF address
-
-        for (Obj field : Tab.currentScope().getLocals().symbols()) {
-            if (field.getKind() == Obj.Fld) {
-                field.setAdr(currentOffset++);
+        // there is a chance what we still haven't added any Obj nodes and scope is null in that case
+        if (Tab.currentScope().getLocals() != null){
+            for (Obj field : Tab.currentScope().getLocals().symbols()) {
+                if (field.getKind() == Obj.Fld) {
+                    field.setAdr(currentOffset++);
+                }
             }
         }
 
-        // we need this guard in case we have bad Type
+
+        // we are creating Obj meth node for unimplemented interface methods in the current class scope
         if(parentClass != Tab.noType && parentClass.getKind() == Struct.Interface){
             for (Obj member: parentClass.getMembers()){
                 if(member.getKind() == Obj.Meth && member.getFpPos() == FP_POS_UNIMPLEMENTED_INTERFACE_METHOD){
@@ -621,10 +626,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         if (es.equals(node.getType().struct, setType)){
-//            report_info("kreiran skup", node);
             node.struct = setType;
         }else{
-//            report_info("kreiran niz", node);
             Struct type = (currTypeVar == null)? Tab.noType : currTypeVar.getType();
             node.struct = new Struct(Struct.Array, type);
         }
@@ -1099,7 +1102,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     public void visit(DesignatorArrayName node){
         Obj arr = Tab.find(node.getI1());
         if (arr == Tab.noObj){
-            report_error("[DesignatorArrayName] Nije deklarisana promenljiva niza sa imenom" + node.getI1(), node);
+            report_error("[DesignatorArrayName] Nije deklarisana promenljiva niza sa imenom(" + node.getI1() + ")", node);
             node.obj = Tab.noObj;
             return;
         }
@@ -1333,7 +1336,9 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     // <editor-fold desc="Interface declaration">
 
     private void closeInterface(){
-        Tab.chainLocalSymbols(currInterface);
+        if (currInterface != Tab.noType){
+            Tab.chainLocalSymbols(currInterface);
+        }
         Tab.closeScope();
         currInterface = null;
         classMethodDecl = false;
@@ -1349,12 +1354,13 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     public void visit(InterfaceDeclName node){
         if(checkIsObjNodeDeclared(node.getI1())){
             report_error("[InterfaceDeclName] Vec je deklarisana promenljiva sa imenom: " + node.getI1(), node);
-            return;
+            currInterface = Tab.noType;
+        } else {
+            currInterface = new Struct(Struct.Interface);
+            Tab.insert(Obj.Type, node.getI1(), currInterface);
         }
-        currInterface = new Struct(Struct.Interface);
         node.struct = currInterface;
         classMethodDecl = true;
-        Obj interfaceObj = Tab.insert(Obj.Type, node.getI1(), currInterface);
         Tab.openScope();
     }
 
@@ -1372,8 +1378,10 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     }
 
     private void closeClass(SyntaxNode node){
-        Tab.chainLocalSymbols(currClass);
-        checkIfAllMethodsAreImplemented(node);
+        if (currClass != Tab.noType){
+            Tab.chainLocalSymbols(currClass);
+            checkIfAllMethodsAreImplemented(node);
+        }
         Tab.closeScope();
         currClass = null;
         classMethodDecl = false;
@@ -1384,11 +1392,12 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     public void visit(ClassDeclName node){
         if(checkIsObjNodeDeclared(node.getI1())){
             report_error("[ClassDeclName] Vec je deklarisana promenljiva sa imenom: " + node.getI1(), node);
-            return;
+            currClass = Tab.noType;
+        } else {
+            currClass = new Struct(Struct.Class);
+            Tab.insert(Obj.Type, node.getI1(), currClass);
         }
-        currClass = new Struct(Struct.Class);
         node.struct = currClass;
-        Obj classObj = Tab.insert(Obj.Type, node.getI1(), currClass);
         Tab.openScope();
     }
 

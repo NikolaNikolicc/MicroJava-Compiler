@@ -884,212 +884,146 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         return Tab.noObj;
     }
 
-    private boolean isParentPropertyAccess(SyntaxNode parent){
+    private boolean isParentPropertyAccess (SyntaxNode parent){
         return parent instanceof DesignatorPropertyAccess || parent instanceof DesignatorElemPropertyAccess;
+    }
+
+    private Obj findDesignatorClassMoreIdent (Struct classStruct, SyntaxNode node, String field){
+        if (classStruct == Tab.noType){
+            return Tab.noObj;
+        }
+
+        SyntaxNode parent = node.getParent();
+        if (!thisDetected){
+            // case Obj.Meth
+            Obj mem = searchMethod(classStruct, field);
+            if ((mem != Tab.noObj) && isParentPropertyAccess(parent)){
+                return mem;
+            }
+            // case Obj.Fld
+            for (Obj member: classStruct.getMembers()){
+                if ((member.getKind() == Obj.Fld) && member.getName().equals(field)){
+                    return member;
+                }
+            }
+        }
+        // if thidDetected or we are in class method scope
+        if (classMethodDecl) {
+            // this must go before searchMethod because we want to check if field is in method scope first
+            if (Tab.currentScope().getLocals() != null) {
+                for (Obj member : Tab.currentScope().getOuter().getLocals().symbols()) {
+                    if (((member.getKind() == Obj.Meth && isParentPropertyAccess(parent)) ||
+                            member.getKind() == Obj.Fld) && member.getName().equals(field)) {
+                        return member;
+                    }
+                }
+            }
+            // case Obj.Meth
+            Obj mem = searchMethod(classStruct, field);
+            if ((mem != Tab.noObj) && isParentPropertyAccess(parent)){
+                return mem;
+            }
+        }
+        // not fount
+        return null;
+    }
+
+    private Obj findDesignatorClassMoreElem (Struct classStruct, SyntaxNode node, String field, Struct exprStruct){
+        if (classStruct == Tab.noType){
+            return Tab.noObj;
+        }
+        if (!es.equals(exprStruct, Tab.intType)){
+            report_error("[DesignatorClassMoreFinalElem] Indeks niza mora biti tipa int", node);
+            return Tab.noObj;
+        }
+        // if we have this.field we only want to search within class scope (not methods scope) but only for first search
+        if (!thisDetected){
+            for (Obj member: classStruct.getMembers()){
+                if(member.getType().getKind() == Struct.Array && member.getName().equals(field)){
+                    return member;
+                }
+            }
+        }
+        // if thidDetected or we are in class method scope
+        if (classMethodDecl && Tab.currentScope().getLocals() != null) {
+            for (Obj member: Tab.currentScope().getOuter().getLocals().symbols()){
+                if(member.getType().getKind() == Struct.Array && member.getName().equals(field)){
+                    return member;
+                }
+            }
+        }
+        // not fount
+        return null;
     }
 
     @Override
     public void visit(DesignatorClassMoreFinalElem node){
         Struct classStruct = accessClass;
-        if (classStruct == Tab.noType){
-            node.obj = Tab.noObj;
-            thisDetected = false;
-            accessClass = null;
-            return;
-        }
-        if (!es.equals(node.getExpr().struct, Tab.intType)){
-            report_error("[DesignatorClassMoreFinalElem] Indeks niza mora biti tipa int", node);
-            node.obj = Tab.noObj;
-            thisDetected = false;
-            accessClass = null;
-            return;
-        }
         String field = node.getDesignatorClassArrayName().getI1();
-        // if we have this.field we only want to search within class scope (not methods scope) but only for first search
-        if (!thisDetected){
-            for (Obj member: classStruct.getMembers()){
-                if(member.getType().getKind() == Struct.Array && member.getName().equals(field)){
-                    node.obj = new Obj(Obj.Elem, member.getName() + "[$]", member.getType().getElemType());
-                    node.getDesignatorClassArrayName().obj = member;
-                    accessClass = null;
-                    return;
-                }
-            }
-        }
-        if (classMethodDecl && Tab.currentScope().getLocals() != null) {
-            for (Obj member: Tab.currentScope().getOuter().getLocals().symbols()){
-                if(member.getType().getKind() == Struct.Array && member.getName().equals(field)){
-                    node.obj = new Obj(Obj.Elem, member.getName() + "[$]", member.getType().getElemType());
-                    node.getDesignatorClassArrayName().obj = member;
-                    accessClass = null;
-                    thisDetected = false;
-                    return;
-                }
-            }
-        }
 
+        Obj res = findDesignatorClassMoreElem(classStruct, node, field, node.getExpr().struct);
+        accessClass = null;
+        thisDetected = false;
+
+        if (res != null){
+            if (res == Tab.noObj) node.obj = Tab.noObj;
+            else node.obj = new Obj(Obj.Elem, res.getName() + "[$]", res.getType().getElemType());
+            node.getDesignatorClassArrayName().obj = res;
+            return;
+        }
         report_error("[DesignatorClassMoreFinalElem] Ovo polje("+ field +") ne postoji kao polje klase", node);
         node.obj = Tab.noObj;
         node.getDesignatorClassArrayName().obj = Tab.noObj;
-        accessClass = null;
-        thisDetected = false;
     }
 
     @Override
     public void visit(DesignatorClassMoreNotFinal node){
         Struct classStruct = node.getDesignatorClassMore().obj.getType();
-        if (classStruct == Tab.noType){
-            node.obj = Tab.noObj;
-            thisDetected = false;
+        // if we have this.field we only want to search within class scope (not methods scope) but only for first search
+        Obj res = findDesignatorClassMoreIdent(classStruct, node, node.getI2());
+        accessClass = null;
+        thisDetected = false;
+        if (res != null){
+            node.obj = res;
             return;
         }
-        String field = node.getI2();
-        SyntaxNode parent = node.getParent();
-        // if we have this.field we only want to search within class scope (not methods scope) but only for first search
-        if (!thisDetected){
-            // case Obj.Meth
-            Obj mem = searchMethod(classStruct, field);
-            if ((mem != Tab.noObj) && isParentPropertyAccess(parent)){
-                node.obj = mem;
-                accessClass = null;
-                return;
-            }
-            // case Obj.Fld
-            for (Obj member: classStruct.getMembers()){
-                if ((member.getKind() == Obj.Fld) && member.getName().equals(field)){
-                    node.obj = member;
-                    accessClass = null;
-                    return;
-                }
-            }
-        }
-        if (classMethodDecl) {
-            // this must go before searchMethod because we want to check if field is in method scope first
-            if (Tab.currentScope().getLocals() != null) {
-                for (Obj member : Tab.currentScope().getOuter().getLocals().symbols()) {
-                    if (((member.getKind() == Obj.Meth && isParentPropertyAccess(parent)) ||
-                            member.getKind() == Obj.Fld) && member.getName().equals(field)) {
-                        node.obj = member;
-                        thisDetected = false;
-                        return;
-                    }
-                }
-            }
-            // case Obj.Meth
-            Obj mem = searchMethod(classStruct, field);
-            if ((mem != Tab.noObj) && isParentPropertyAccess(parent)){
-                node.obj = mem;
-                accessClass = null;
-                thisDetected = false;
-                return;
-            }
-        }
-
-        report_error("[DesignatorClassMoreNotFinal] Ovo polje("+ field +") ne postoji kao polje klase", node);
+        report_error("[DesignatorClassMoreNotFinal] Ovo polje("+ node.getI2() +") ne postoji kao polje klase", node);
         node.obj = Tab.noObj;
-        thisDetected = false;
     }
 
     @Override
     public void visit(DesignatorClassMoreNotFinalElem node){
         Struct classStruct = node.getDesignatorClassMore().obj.getType();
-        if (classStruct == Tab.noType){
-            node.obj = Tab.noObj;
-            thisDetected = false;
-            return;
-        }
-        if (!es.equals(node.getExpr().struct, Tab.intType)){
-            report_error("[DesignatorClassMoreFinalElem] Indeks niza mora biti tipa int", node);
-            node.obj = Tab.noObj;
-            thisDetected = false;
-            return;
-        }
         String field = node.getDesignatorClassArrayName().getI1();
-        // if we have this.field we only want to search within class scope (not methods scope) but only for first search
-        if (!thisDetected){
-            for (Obj member: classStruct.getMembers()){
-                if(member.getType().getKind() == Struct.Array && member.getName().equals(field)){
-                    node.obj = new Obj(Obj.Elem, member.getName() + "[$]", member.getType().getElemType());
-                    node.getDesignatorClassArrayName().obj = member;
-                    // accessClass = null;
-                    return;
-                }
-            }
-        }
-        if (classMethodDecl && Tab.currentScope().getLocals() != null) {
-            for (Obj member: Tab.currentScope().getOuter().getLocals().symbols()){
-                if(member.getType().getKind() == Struct.Array && member.getName().equals(field)){
-                    node.obj = new Obj(Obj.Elem, member.getName() + "[$]", member.getType().getElemType());
-                    node.getDesignatorClassArrayName().obj = member;
-                    // accessClass = null;
-                    thisDetected = false;
-                    return;
-                }
-            }
-        }
 
+        Obj res = findDesignatorClassMoreElem(classStruct, node, field, node.getExpr().struct);
+        accessClass = null;
+        thisDetected = false;
+
+        if (res != null){
+            if (res == Tab.noObj) node.obj = Tab.noObj;
+            else node.obj = new Obj(Obj.Elem, res.getName() + "[$]", res.getType().getElemType());
+            node.getDesignatorClassArrayName().obj = res;
+            return;
+        }
         report_error("[DesignatorClassMoreNotFinalElem] Ovo polje("+ field +") ne postoji kao polje klase", node);
         node.obj = Tab.noObj;
         node.getDesignatorClassArrayName().obj = Tab.noObj;
-        thisDetected = false;
     }
 
     @Override
     public void visit(DesignatorClassMoreFinal node){
         Struct classStruct = accessClass;
-        if (classStruct == Tab.noType){
-            node.obj = Tab.noObj;
-            thisDetected = false;
-            accessClass = null;
-            return;
-        }
-        String field = node.getI1();
-        SyntaxNode parent = node.getParent();
-        // if we have this.field we only want to search within class scope (not methods scope) but only for first search
-        if (!thisDetected){
-            // case Obj.Meth
-            Obj mem = searchMethod(classStruct, field);
-            if ((mem != Tab.noObj) && isParentPropertyAccess(parent)){
-                node.obj = mem;
-                accessClass = null;
-                return;
-            }
-            // case Obj.Fld
-            for (Obj member: classStruct.getMembers()){
-                if ((member.getKind() == Obj.Fld) && member.getName().equals(field)){
-                    node.obj = member;
-                    accessClass = null;
-                    return;
-                }
-            }
-        }
-        if (classMethodDecl) {
-            // this must go before searchMethod because we want to check if field is in method scope first
-            if (Tab.currentScope().getLocals() != null) {
-                for (Obj member : Tab.currentScope().getOuter().getLocals().symbols()) {
-                    if (((member.getKind() == Obj.Meth && isParentPropertyAccess(parent)) ||
-                            member.getKind() == Obj.Fld) && member.getName().equals(field)) {
-                        node.obj = member;
-                        accessClass = null;
-                        thisDetected = false;
-                        return;
-                    }
-                }
-            }
-            // case Obj.Meth
-            Obj mem = searchMethod(classStruct, field);
-            if ((mem != Tab.noObj) && isParentPropertyAccess(parent)){
-                node.obj = mem;
-                accessClass = null;
-                thisDetected = false;
-                return;
-            }
-        }
-
-        report_error("[DesignatorClassMoreFinal] Ovo polje("+ field +") ne postoji kao polje klase", node);
-        node.obj = Tab.noObj;
+        Obj res = findDesignatorClassMoreIdent(classStruct, node, node.getI1());
         accessClass = null;
         thisDetected = false;
+
+        if (res != null){
+            node.obj = res;
+            return;
+        }
+        report_error("[DesignatorClassMoreFinal] Ovo polje("+ node.getI1() +") ne postoji kao polje klase", node);
+        node.obj = Tab.noObj;
     }
 
     // </editor-fold>

@@ -916,7 +916,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
                 }
             }
         }
-        if (classMethodDecl) {
+        if (classMethodDecl && Tab.currentScope().getLocals() != null) {
             for (Obj member: Tab.currentScope().getOuter().getLocals().symbols()){
                 if(member.getType().getKind() == Struct.Array && member.getName().equals(field)){
                     node.obj = new Obj(Obj.Elem, member.getName() + "[$]", member.getType().getElemType());
@@ -965,12 +965,14 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         }
         if (classMethodDecl) {
             // this must go before searchMethod because we want to check if field is in method scope first
-            for (Obj member: Tab.currentScope().getOuter().getLocals().symbols()){
-                if(((member.getKind() == Obj.Meth && isParentPropertyAccess(parent)) ||
-                        member.getKind() == Obj.Fld) && member.getName().equals(field)){
-                    node.obj = member;
-                    thisDetected = false;
-                    return;
+            if (Tab.currentScope().getLocals() != null) {
+                for (Obj member : Tab.currentScope().getOuter().getLocals().symbols()) {
+                    if (((member.getKind() == Obj.Meth && isParentPropertyAccess(parent)) ||
+                            member.getKind() == Obj.Fld) && member.getName().equals(field)) {
+                        node.obj = member;
+                        thisDetected = false;
+                        return;
+                    }
                 }
             }
             // case Obj.Meth
@@ -1014,7 +1016,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
                 }
             }
         }
-        if (classMethodDecl) {
+        if (classMethodDecl && Tab.currentScope().getLocals() != null) {
             for (Obj member: Tab.currentScope().getOuter().getLocals().symbols()){
                 if(member.getType().getKind() == Struct.Array && member.getName().equals(field)){
                     node.obj = new Obj(Obj.Elem, member.getName() + "[$]", member.getType().getElemType());
@@ -1063,13 +1065,15 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         }
         if (classMethodDecl) {
             // this must go before searchMethod because we want to check if field is in method scope first
-            for (Obj member: Tab.currentScope().getOuter().getLocals().symbols()){
-                if(((member.getKind() == Obj.Meth && isParentPropertyAccess(parent)) ||
-                        member.getKind() == Obj.Fld) && member.getName().equals(field)){
-                    node.obj = member;
-                    accessClass = null;
-                    thisDetected = false;
-                    return;
+            if (Tab.currentScope().getLocals() != null) {
+                for (Obj member : Tab.currentScope().getOuter().getLocals().symbols()) {
+                    if (((member.getKind() == Obj.Meth && isParentPropertyAccess(parent)) ||
+                            member.getKind() == Obj.Fld) && member.getName().equals(field)) {
+                        node.obj = member;
+                        accessClass = null;
+                        thisDetected = false;
+                        return;
+                    }
                 }
             }
             // case Obj.Meth

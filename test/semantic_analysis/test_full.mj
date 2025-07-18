@@ -296,46 +296,46 @@ class Class13 extends Class12
         // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types // pass
         print(int / var1);
 
-        // [TermTermMulopFactor] syntax node ERROR: Both factors of a multiplication operation must be values of type 'int'
+        // [TermTermMulopFactor] syntax node ERROR: Both factors of a multiplication operation must be values of type 'int' // pass
         // [ExprTerm] syntax node ERROR: Term type is not defined
-        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types
+        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types // pass
         print(validMethod2 * validMethod3);
 
-        // [TermTermMulopFactor] syntax node ERROR: Both factors of a multiplication operation must be values of type 'int'
-        // [ExprTerm] syntax node ERROR: Term type is not defined
-        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types
+        // [TermTermMulopFactor] syntax node ERROR: Both factors of a multiplication operation must be values of type 'int' // pass
+        // [ExprTerm] syntax node ERROR: Term type is not defined // pass
+        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types // pass
         print(Class1 % validMethod1);
     }
 
     int validMethod5()
         int var1;
     {
-        // [ExprExprAddopTerm] syntax node ERROR: Both terms of an addition operation must be values of type 'int'
-        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types
+        // [ExprExprAddopTerm] syntax node ERROR: Both terms of an addition operation must be values of type 'int' // pass
+        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types // pass
         print(var1 + int);
 
-        // [ExprExprAddopTerm] syntax node ERROR: Both terms of an addition operation must be values of type 'int'
-        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types
+        // [ExprExprAddopTerm] syntax node ERROR: Both terms of an addition operation must be values of type 'int' // pass
+        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types // pass
         print(int - var1);
 
-        // [ExprExprAddopTerm] syntax node ERROR: Both terms of an addition operation must be values of type 'int'
-        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types
+        // [ExprExprAddopTerm] syntax node ERROR: Both terms of an addition operation must be values of type 'int' // pass
+        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types // pass
         print(validMethod2 + validMethod3);
 
-        // [ExprExprAddopTerm] syntax node ERROR: Both terms of an addition operation must be values of type 'int'
-        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types
+        // [ExprExprAddopTerm] syntax node ERROR: Both terms of an addition operation must be values of type 'int' // pass
+        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types // pass
         print(Class1 - validMethod1);
 
-        // [ExprAddopMinusTerm] syntax node ERROR: Only terms of 'int' type can be negated
-        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types
+        // [ExprAddopMinusTerm] syntax node ERROR: Only terms of 'int' type can be negated // pass
+        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types // pass
         print(-int);
 
-        // [ExprAddopMinusTerm] syntax node ERROR: Only terms of 'int' type can be negated
-        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types
+        // [ExprAddopMinusTerm] syntax node ERROR: Only terms of 'int' type can be negated // pass
+        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types // pass
         print(-validMethod2);
 
-        // [ExprAddopMinusTerm] syntax node ERROR: Only terms of 'int' type can be negated
-        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types
+        // [ExprAddopMinusTerm] syntax node ERROR: Only terms of 'int' type can be negated // pass
+        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types // pass
         print(-Class1);
     }
 
@@ -345,7 +345,7 @@ class Class13 extends Class12
         // [Type] syntax node ERROR: Type 'intt' used before declaration
         // [FactorCollectionInstantiation] syntax node ERROR: Invalid type when instantiating a collection
         // [TermFactor] syntax node ERROR: Factor type is not defined
-        // [ExprTerm] syntax node ERROR: Term type is not defined
+        // [ExprTerm] syntax node ERROR: Term type is not defined // pass
         arr1 = new intt[5];
 
         // [FactorCollectionInstantiation] syntax node ERROR: Collection size expression must be an integer
@@ -353,53 +353,53 @@ class Class13 extends Class12
         // [ExprTerm] syntax node ERROR: Term type is not defined
         arr1 = new int[true];
 
-        // [FactorCollectionInstantiation] syntax node ERROR: Collection size expression must be an integer
+        // [FactorCollectionInstantiation] syntax node ERROR: Collection size expression must be an integer // pass
         // [TermFactor] syntax node ERROR: Factor type is not defined
-        // [ExprTerm] syntax node ERROR: Term type is not defined
+        // [ExprTerm] syntax node ERROR: Term type is not defined // pass
         arr1 = new int[int];
 
-        // [FactorCollectionInstantiation] syntax node ERROR: Collection size expression must be an integer
+        // [FactorCollectionInstantiation] syntax node ERROR: Collection size expression must be an integer // pass
         // [TermFactor] syntax node ERROR: Factor type is not defined
-        // [ExprTerm] syntax node ERROR: Term type is not defined
+        // [ExprTerm] syntax node ERROR: Term type is not defined // pass
         arr1 = new int[validMethod5];
 
-        // [FactorCollectionInstantiation] syntax node ERROR: Collection size expression must be an integer
+        // [FactorCollectionInstantiation] syntax node ERROR: Collection size expression must be an integer // pass
         // [TermFactor] syntax node ERROR: Factor type is not defined
-        // [ExprTerm] syntax node ERROR: Term type is not defined
+        // [ExprTerm] syntax node ERROR: Term type is not defined // pass
         arr1 = new int[Class1];
     }
 
     int validMethod7()
         int var1, arr1[];
     {
-        // [DesignatorArrayAccess] syntax node ERROR: Array designator identificator must be an array variable
+        // [DesignatorArrayAccess] syntax node ERROR: Array designator identificator must be an array variable // pass
         // [FactorDesignator] syntax node ERROR: Some of the designator's identificators are invalid
         // [TermFactor] syntax node ERROR: Factor type is not defined
         // [ExprTerm] syntax node ERROR: Term type is not defined
-        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types
+        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types // pass
         print(var1[5]);
 
-        // [DesignatorArrayAccess] syntax node ERROR: Array designator identificator must be an array variable
+        // [DesignatorArrayAccess] syntax node ERROR: Array designator identificator must be an array variable // pass
         // [FactorDesignator] syntax node ERROR: Some of the designator's identificators are invalid
         // [TermFactor] syntax node ERROR: Factor type is not defined
         // [ExprTerm] syntax node ERROR: Term type is not defined
-        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types
+        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types // pass
         print(var2[10]);
 
-        // [DesignatorArrayAccess] syntax node ERROR: Array designator identificator must be an array variable
+        // [DesignatorArrayAccess] syntax node ERROR: Array designator identificator must be an array variable // pass
         validMethod6[4] = 2;
 
-        // [DesignatorArrayAccess] syntax node ERROR: Array index expression must be an integer
+        // [DesignatorArrayAccess] syntax node ERROR: Array index expression must be an integer // pass
         arr1[true] = 5;
 
-        // [DesignatorArrayAccess] syntax node ERROR: Array index expression must be an integer
+        // [DesignatorArrayAccess] syntax node ERROR: Array index expression must be an integer // pass
         arr1[int] = 10;
 
-        // [DesignatorArrayAccess] syntax node ERROR: Array index expression must be an integer
+        // [DesignatorArrayAccess] syntax node ERROR: Array index expression must be an integer // pass
         arr1[validMethod5] = 15;
 
-        // [DesignatorIdentificator] syntax node ERROR: Name 'gfsafs' not found in the symbols table
-        // [DesignatorArrayAccess] syntax node ERROR: Array designator identificator must be an array variable
+        // [DesignatorIdentificator] syntax node ERROR: Name 'gfsafs' not found in the symbols table // pass
+        // [DesignatorArrayAccess] syntax node ERROR: Array designator identificator must be an array variable // pass
         gfsafs[5] = 12;
     }
 
@@ -411,6 +411,8 @@ class Class13 extends Class12
         // [TermFactor] syntax node ERROR: Factor type is not defined
         // [ExprTerm] syntax node ERROR: Term type is not defined
         obj1 = new InvalidType();
+
+        milance = 3;
 
         // [Type] syntax node ERROR: Type 'InvalidType' used before declaration
         // [FactorObjectInstantiation] syntax node ERROR: Type 'int' is not a class

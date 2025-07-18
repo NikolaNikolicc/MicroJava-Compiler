@@ -525,7 +525,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     @Override
     public void visit(ExprMinusTerm node){
         if(!es.equals(node.getTerm().struct, Tab.intType)){
-            report_error("[ExprMinusTerm] Minus mozemo staviti samo ispred operanda koji je tipa int.", node);
+            report_error("[ExprMinusTerm] Minus mozemo staviti samo ispred operanda koji je tipa int", node);
             node.struct = Tab.noType;
             return;
         }
@@ -535,7 +535,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     @Override
     public void visit(ExprAddopTerm node){
         if(!es.equals(node.getTerm().struct, Tab.intType) || !es.equals(node.getExpr().struct, Tab.intType)){
-            report_error("[ExprAddopTerm] Addop operator zahteva da oba operanda budu int vrednosti.", node);
+            report_error("[ExprAddopTerm] Addop operator zahteva da oba operanda budu int vrednosti", node);
             node.struct = Tab.noType;
             return;
         }
@@ -546,6 +546,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     public void visit(ExprDesignatorMap node){
         Obj meth = node.getDesignator().obj;
         if (node.getMapDesignator().getDesignator().obj == Tab.noObj || meth == Tab.noObj){
+            node.struct = Tab.noType;
             return;
         }
 
@@ -605,7 +606,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     @Override
     public void visit(FactorCreateArray node){
         if (!es.equals(node.getExpr().struct, Tab.intType)){
-            report_error("[FactorCreateArray] Izraz prosledjen kao velicina niza mora biti int tipa.", node);
+            report_error("[FactorCreateArray] Izraz prosledjen kao velicina niza mora biti int tipa", node);
             node.struct = Tab.noType;
             return;
         }
@@ -620,6 +621,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     @Override
     public void visit(FactorCreateObject node){
         if (node.getType().struct == Tab.noType){
+            node.struct = Tab.noType;
             return;
         }
         if(node.getType().struct.getKind() != Struct.Class){
@@ -628,7 +630,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         if (currTypeVar == Tab.noType){
-            report_error("[FactorCreateObject] Ne moze se kreirati objekat klase od nevalidnog tipa.", node);
+            report_error("[FactorCreateObject] Ne moze se kreirati objekat klase od nevalidnog tipa", node);
+            node.struct = Tab.noType;
             return;
         }
         node.struct = currTypeVar;

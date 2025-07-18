@@ -29,9 +29,10 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     int nVars;
 
     public boolean errorDetected = false;
-    private boolean classMethodDecl = false;
+    private boolean classMethodDecl = false; // used to check if we are in class method declaration or not
     private boolean thisDetected = false;
-    private boolean voidMethodFlag = false;
+    private boolean voidMethodFlag = false; // used to check if method is void or not
+    private boolean returnExprFlag = false; // used to check if method has return expression, no need to check if it is simple return because we do all checks in statementReturn visitor
 
     private Struct currTypeVar = Tab.noType; // Tab.noType - invalid type
     private Struct currTypeMeth = null; // null - void method, Tab.noType - invalid return type
@@ -41,11 +42,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     private Struct accessClass = null; // for chaining
     private Struct currInterface = null; // for creating interface
     private Struct parentClass = Tab.noType; // parent class for currClass (can be class or interface)
-
-    private boolean returnNode = false;
-
-    // because we want to allow initialization of variables that are named int char and bool we are saving pointers to this object nodes
-    // this is used in TypeIdent visitor and in that case we are sure we are getting right object node, in other case Tab.find(name) function can return Object node which overrides those names
 
     public static Struct boolType = Tab.find("bool").getType();
     public static Struct setType = Tab.find("set").getType();
@@ -268,7 +264,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     /**
      *
-     * @param name
+     * @param name method name
      * @return false if implemented method with that name already exists in current scope
      */
     private boolean createMethodObjNode(String name){
@@ -293,7 +289,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         Tab.closeScope();
 
         currMeth = null;
-        returnNode = false;
+        returnExprFlag = false;
         voidMethodFlag = false;
     }
 
@@ -381,8 +377,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             currMeth.setFpPos(FP_POS_GLOBAL_METHOD);
         }
 
-        if (!voidMethodFlag && !returnNode && !currMeth.getName().equals("main")){
-            report_error("[MethodDecl] U metodu("+ currMeth.getName() +") povratnog tipa koji nije void se mora pojaviti barem jedna return naredba", node);
+        if (!voidMethodFlag && !returnExprFlag && !currMeth.getName().equals("main")){
+            report_error("[MethodDecl] U metodu("+ currMeth.getName() +") povratnog tipa koji nije void se mora pojaviti barem jedna return naredba koja vraca vrednost", node);
         }
 
         closeMethod();
@@ -397,7 +393,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         if (!voidMethodFlag){
             report_error("[StatementReturn] U metodu("+ currMeth.getName() +") povratnog tipa koji nije void svaka return naredba mora da vraca vrednost", node);
         }
-        returnNode = true;
     }
 
     @Override
@@ -408,13 +403,13 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         }
         if (voidMethodFlag){
             report_error("[StatementReturnExpr] U metodu("+ currMeth.getName() +") povratnog tipa koji je void ne moze se vratiti vrednost", node);
-            returnNode = true;
+            returnExprFlag = true;
             return;
         }
         if (!es.equals(currMeth.getType(), node.getExpr().struct)){
             report_error("[StatementReturnExpr] Povratni tip metoda i tip koji vraca return naredba nisu kompatibilni", node);
         }
-        returnNode = true;
+        returnExprFlag = true;
     }
 
     // </editor-fold>
@@ -566,15 +561,13 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(ExprDesignatorMap node){
-        if (node.getMapDesignator().getDesignator().obj == Tab.noObj || node.getDesignator().obj == Tab.noObj){
+        Obj meth = node.getDesignator().obj;
+        if (node.getMapDesignator().getDesignator().obj == Tab.noObj || meth == Tab.noObj){
             return;
         }
-        String name = node.getDesignator().obj.getName();
-        Obj meth = Tab.find(name);
-        logSymbol("pronadjen metod: ", meth, node);
 
         if(meth.getKind() != Obj.Meth){
-            report_error("[ExprDesignatorMap] Designator(" + name + ") sa leve strane MAP operanda mora biti metoda", node);
+            report_error("[ExprDesignatorMap] Designator(" + meth.getName() + ") sa leve strane MAP operanda mora biti metoda", node);
             node.struct = Tab.noType;
             return;
         }
@@ -603,13 +596,13 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
 
-        String name = node.getDesignator().obj.getName();
-        Obj arr = Tab.find(name);
+        Obj arr = node.getDesignator().obj;
+
         logSymbol("pronadjen niz: ", arr, node);
         // if we pass array we are sure that we are passing var or field, other kinds can't be arrays or can't be used due to syntax
 //        if (arr.getKind() != Obj.Fld && arr.getKind() != Obj.Var || arr.getType().getKind() != Struct.Array || !arr.getType().getElemType().equals(Tab.intType)){
         if (arr.getType().getKind() != Struct.Array || !es.equals(arr.getType().getElemType(), Tab.intType)){
-            report_error("[MapDesignator] Designator(" + name + ") sa desne strane operanda MAP mora predstavljati niz celobrojnih vrednosti", node);
+            report_error("[MapDesignator] Designator(" + arr.getName() + ") sa desne strane operanda MAP mora predstavljati niz celobrojnih vrednosti", node);
         }
     }
 

@@ -8,6 +8,7 @@ import rs.etf.pp1.symboltable.concepts.*;
 import rs.etf.pp1.symboltable.structure.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Stack;
 
@@ -30,9 +31,9 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     public boolean errorDetected = false;
     private boolean classMethodDecl = false; // used to check if we are in class method declaration or not
-    private boolean thisDetected = false;
     private boolean voidMethodFlag = false; // used to check if method is void or not
     private boolean returnExprFlag = false; // used to check if method has return expression, no need to check if it is simple return because we do all checks in statementReturn visitor
+    private boolean thisVarDetectedFlag = false;
 
     private Struct currTypeVar = Tab.noType; // Tab.noType - invalid type
     private Struct currTypeMeth = null; // null - void method, Tab.noType - invalid return type
@@ -833,7 +834,14 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         if(node.getI1().equals("this")){
-            thisDetected = true;
+            if (currClass == null && currInterface == null) {
+                report_error("[DesignatorClassName] Pristup this promenljivoj van klase ili interfejsa", node);
+                node.obj = Tab.noObj;
+                accessClass = Tab.noType;
+                return;
+            } else {
+                thisVarDetectedFlag = true;
+            }
         }
         node.obj = var;
         accessClass = var.getType();
@@ -888,42 +896,45 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         return parent instanceof DesignatorPropertyAccess || parent instanceof DesignatorElemPropertyAccess;
     }
 
+    private Collection<Obj> getClassMembers(Struct classStruct){
+        if (thisVarDetectedFlag){
+            thisVarDetectedFlag = false;
+            Scope outerScope = Tab.currentScope().getOuter();
+            if (outerScope.getLocals() != null){
+                return outerScope.getLocals().symbols();
+            } else {
+                // not found (we don't have Obj nodes in outer scope)
+                return null;
+            }
+        } else {
+            return classStruct.getMembers();
+        }
+    }
+
     private Obj findDesignatorClassMoreIdent (Struct classStruct, SyntaxNode node, String field){
         if (classStruct == Tab.noType){
             return Tab.noObj;
         }
 
+        // we need this check in case of this.field access (bcs Obj nodes are not chained to class node)
+        Collection<Obj> members = getClassMembers(classStruct);
+        if (members == null){
+            // not found (we don't have Obj nodes in outer scope)
+            return null;
+        }
+
         SyntaxNode parent = node.getParent();
-        if (!thisDetected){
-            // case Obj.Meth
-            Obj mem = searchMethod(classStruct, field);
-            if ((mem != Tab.noObj) && isParentPropertyAccess(parent)){
-                return mem;
-            }
-            // case Obj.Fld
-            for (Obj member: classStruct.getMembers()){
-                if ((member.getKind() == Obj.Fld) && member.getName().equals(field)){
-                    return member;
-                }
+        for (Obj member: members){
+            if ((member.getKind() == Obj.Fld || member.getKind() == Obj.Meth && isParentPropertyAccess(parent)) && member.getName().equals(field)){
+                return member;
             }
         }
-        // if thidDetected or we are in class method scope
-        if (classMethodDecl) {
-            // this must go before searchMethod because we want to check if field is in method scope first
-            if (Tab.currentScope().getLocals() != null) {
-                for (Obj member : Tab.currentScope().getOuter().getLocals().symbols()) {
-                    if (((member.getKind() == Obj.Meth && isParentPropertyAccess(parent)) ||
-                            member.getKind() == Obj.Fld) && member.getName().equals(field)) {
-                        return member;
-                    }
-                }
-            }
-            // case Obj.Meth
-            Obj mem = searchMethod(classStruct, field);
-            if ((mem != Tab.noObj) && isParentPropertyAccess(parent)){
-                return mem;
-            }
+        // case Obj.Meth
+        Obj mem = searchMethod(classStruct, field);
+        if ((mem != Tab.noObj) && isParentPropertyAccess(parent)){
+            return mem;
         }
+
         // not fount
         return null;
     }
@@ -936,23 +947,21 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             report_error("[DesignatorClassMoreFinalElem] Indeks niza mora biti tipa int", node);
             return Tab.noObj;
         }
+
+        // we need this check in case of this.field access (bcs Obj nodes are not chained to class node)
+        Collection<Obj> members = getClassMembers(classStruct);
+        if (members == null){
+            // not found (we don't have Obj nodes in outer scope)
+            return null;
+        }
+
         // if we have this.field we only want to search within class scope (not methods scope) but only for first search
-        if (!thisDetected){
-            for (Obj member: classStruct.getMembers()){
-                if(member.getType().getKind() == Struct.Array && member.getName().equals(field)){
-                    return member;
-                }
+        for (Obj member: members){
+            if(member.getType().getKind() == Struct.Array && member.getName().equals(field)){
+                return member;
             }
         }
-        // if thidDetected or we are in class method scope
-        if (classMethodDecl && Tab.currentScope().getLocals() != null) {
-            for (Obj member: Tab.currentScope().getOuter().getLocals().symbols()){
-                if(member.getType().getKind() == Struct.Array && member.getName().equals(field)){
-                    return member;
-                }
-            }
-        }
-        // not fount
+        // not found
         return null;
     }
 
@@ -963,7 +972,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
         Obj res = findDesignatorClassMoreElem(classStruct, node, field, node.getExpr().struct);
         accessClass = null;
-        thisDetected = false;
 
         if (res != null){
             if (res == Tab.noObj) node.obj = Tab.noObj;
@@ -982,7 +990,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         // if we have this.field we only want to search within class scope (not methods scope) but only for first search
         Obj res = findDesignatorClassMoreIdent(classStruct, node, node.getI2());
         accessClass = null;
-        thisDetected = false;
         if (res != null){
             node.obj = res;
             return;
@@ -998,7 +1005,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
         Obj res = findDesignatorClassMoreElem(classStruct, node, field, node.getExpr().struct);
         accessClass = null;
-        thisDetected = false;
 
         if (res != null){
             if (res == Tab.noObj) node.obj = Tab.noObj;
@@ -1016,7 +1022,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         Struct classStruct = accessClass;
         Obj res = findDesignatorClassMoreIdent(classStruct, node, node.getI1());
         accessClass = null;
-        thisDetected = false;
 
         if (res != null){
             node.obj = res;

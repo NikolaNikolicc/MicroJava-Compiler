@@ -487,24 +487,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             report_error("[StatementPrint] Print operacija nad izrazom koji nije tipa int, char ili bool", node);
             return;
         }
-
-//        int kind = currDesignatorVar.getKind();
-//        boolean isMethodCall = false;
-//        if (node.getExpr() instanceof ExprTerm){
-//            ExprTerm exprTerm = (ExprTerm) node.getExpr();
-//            if (exprTerm.getTerm() instanceof TermFactor){
-//                TermFactor termFactor = (TermFactor) exprTerm.getTerm();
-//                if (termFactor.getFactor() instanceof FactorFuncCall){
-//                    isMethodCall = true;
-//                }
-//            }
-//        }
-//
-//        if (kind == Obj.Type || (!isMethodCall && kind == Obj.Meth) || kind == Obj.Prog){
-//            logSymbol("Detektovana promenljiva za print:", currDesignatorVar, node);
-//            report_error("[StatementPrint] Print operacija nad neadekvatnom promenljivom(" + currDesignatorVar.getName() + ")", node);
-//            return;
-//        }
     }
 
     @Override
@@ -613,7 +595,11 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(FactorDesignator node){
-        node.struct = node.getDesignator().obj.getType();
+        int kind = node.getDesignator().obj.getKind();
+        if (kind == Obj.Con || kind == Obj.Fld || kind == Obj.Var || kind == Obj.Elem)
+            node.struct = node.getDesignator().obj.getType();
+        else
+            node.struct = Tab.noType;
     }
 
     @Override
@@ -795,7 +781,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         node.obj = var;
-//        currDesignatorVar = var;
     }
 
     // <editor-fold desc="[DesignatorClass] access Class properties">
@@ -1167,7 +1152,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     @Override
     public void visit(ConditionOr node){
         if (!es.equals(node.getCondition().struct, boolType) || !es.equals(node.getCondTerm().struct, boolType)){
-            report_error("[ConditionOr] Condition mora biti tipa bool [ConditionOr]", node);
+            report_error("[ConditionOr] Condition mora biti tipa bool", node);
             node.struct = Tab.noType;
             return;
         }
@@ -1178,7 +1163,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     @Override
     public void visit(ConditionCondTerm node){
         if (!es.equals(node.getCondTerm().struct, boolType)){
-            report_error("[ConditionCondTerm] Condition mora biti tipa bool [ConditionCondTerm]", node);
+            report_error("[ConditionCondTerm] Condition mora biti tipa bool", node);
             node.struct = Tab.noType;
             return;
         }
@@ -1189,7 +1174,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     @Override
     public void visit(CondTermAnd node){
         if (!es.equals(node.getCondFact().struct, boolType) || !es.equals(node.getCondTerm().struct, boolType)){
-            report_error("[CondTermAnd] Condition mora biti tipa bool [CondTermAnd]", node);
+            report_error("[CondTermAnd] Condition mora biti tipa bool", node);
             node.struct = Tab.noType;
             return;
         }

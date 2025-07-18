@@ -182,20 +182,20 @@ class Class13 extends Class12
         // [ExprAddopMinusTerm] syntax node ERROR: Only terms of 'int' type can be negated // pass
         localVariable1 = -false;
 
-        // [ExprAddopMinusTerm] syntax node ERROR: Only terms of 'int' type can be negated
-        // [ExprExprAddopTerm] syntax node ERROR: Both terms of an addition operation must be of type 'int'
-        // [ExprExprAddopTerm] syntax node ERROR: Both terms of an addition operation must be of type 'int'
-        // [ExprExprAddopTerm] syntax node ERROR: Both terms of an addition operation must be of type 'int'
-        // [ExprExprAddopTerm] syntax node ERROR: Both terms of an addition operation must be of type 'int'
+        // [ExprAddopMinusTerm] syntax node ERROR: Only terms of 'int' type can be negated // pass
+        // [ExprExprAddopTerm] syntax node ERROR: Both terms of an addition operation must be of type 'int' // pass
+        // [ExprExprAddopTerm] syntax node ERROR: Both terms of an addition operation must be of type 'int' // pass
+        // [ExprExprAddopTerm] syntax node ERROR: Both terms of an addition operation must be of type 'int' // pass
+        // [ExprExprAddopTerm] syntax node ERROR: Both terms of an addition operation must be of type 'int' // pass
         localVariable1 = -'a' + 5 - 6 + 4 - false;
 
-        // [CondFactExprRelopExpr] syntax node ERROR: Expressions of a relational operation must be compatible
-        // [StatementIf] syntax node ERROR: Condition of an 'if' statement must be of type 'bool'
+        // [CondFactExprRelopExpr] syntax node ERROR: Expressions of a relational operation must be compatible // pass
+        // [StatementIf] syntax node ERROR: Condition of an 'if' statement must be of type 'bool' // pass
         if (5 > 'c')
             localVariable1 = 10;
 
-        // [CondFactExprRelopExpr] syntax node ERROR: Expressions of a relational operation must be compatible
-        // [StatementIf] syntax node ERROR: Condition of an 'if' statement must be of type 'bool'
+        // [CondFactExprRelopExpr] syntax node ERROR: Expressions of a relational operation must be compatible // pass
+        // [StatementIf] syntax node ERROR: Condition of an 'if' statement must be of type 'bool' // pass
         if (false == 'f')
             localVariable1 = 20;
 
@@ -204,38 +204,38 @@ class Class13 extends Class12
         set1 = new set[5];
         set2 = new set[10];
 
-        // [CondFactExprRelopExpr] syntax node ERROR: Relational operations on reference types (Class, Array, Set) must be equality operations
-        // [CondTermCondFact] syntax node ERROR: CondFact type is not defined
-        // [ConditionCondTerm] syntax node ERROR: CondTerm type is not defined
-        // [StatementIf] syntax node ERROR: Condition of an 'if' statement must be of type 'bool'
+        // [CondFactExprRelopExpr] syntax node ERROR: Relational operations on reference types (Class, Array, Set) must be equality operations // pass
+        // [CondTermCondFact] syntax node ERROR: CondFact type is not defined // pass
+        // [ConditionCondTerm] syntax node ERROR: CondTerm type is not defined // pass
+        // [StatementIf] syntax node ERROR: Condition of an 'if' statement must be of type 'bool' // pass
         if (obj1 < obj2)
             localVariable1 = 25;
 
-        // [CondFactExprRelopExpr] syntax node ERROR: Relational operations on reference types (Class, Array, Set) must be equality operations
-        // [CondTermCondFact] syntax node ERROR: CondFact type is not defined
-        // [ConditionCondTerm] syntax node ERROR: CondTerm type is not defined
-        // [StatementIf] syntax node ERROR: Condition of an 'if' statement must be of type 'bool'
+        // [CondFactExprRelopExpr] syntax node ERROR: Relational operations on reference types (Class, Array, Set) must be equality operations // pass
+        // [CondTermCondFact] syntax node ERROR: CondFact type is not defined // pass
+        // [ConditionCondTerm] syntax node ERROR: CondTerm type is not defined // pass
+        // [StatementIf] syntax node ERROR: Condition of an 'if' statement must be of type 'bool' // pass
         if (arr1 < arr2)
             localVariable1 = 26;
 
-        // [CondFactExprRelopExpr] syntax node ERROR: Relational operations on reference types (Class, Array, Set) must be equality operations
-        // [CondTermCondFact] syntax node ERROR: CondFact type is not defined
-        // [ConditionCondTerm] syntax node ERROR: CondTerm type is not defined
-        // [StatementIf] syntax node ERROR: Condition of an 'if' statement must be of type 'bool'
+        // [CondFactExprRelopExpr] syntax node ERROR: Relational operations on reference types (Class, Array, Set) must be equality operations // pass
+        // [CondTermCondFact] syntax node ERROR: CondFact type is not defined // pass
+        // [ConditionCondTerm] syntax node ERROR: CondTerm type is not defined // pass
+        // [StatementIf] syntax node ERROR: Condition of an 'if' statement must be of type 'bool' // pass
         if (set1 > set2)
             localVariable1 = 26;
 
-        // [CondTermCondFactAndCondFact] syntax node ERROR: Both CondFacts in a logical and operation (&&) must be of type 'bool'
-        // [StatementIf] syntax node ERROR: Condition of an 'if' statement must be of type 'bool'
+        // [CondTermCondFactAndCondFact] syntax node ERROR: Both CondFacts in a logical and operation (&&) must be of type 'bool' // pass
+        // [StatementIf] syntax node ERROR: Condition of an 'if' statement must be of type 'bool' // pass
         if (5 < 10 && 10)
             localVariable1 = 30;
 
-        // [ConditionCondTermOrCondTerm] syntax node ERROR: Both CondTerms in a logical or operation (||) must be of type 'bool'
-        // [StatementIf] syntax node ERROR: Condition of an 'if' statement must be of type 'bool'
+        // [ConditionCondTermOrCondTerm] syntax node ERROR: Both CondTerms in a logical or operation (||) must be of type 'bool' // pass
+        // [StatementIf] syntax node ERROR: Condition of an 'if' statement must be of type 'bool' // pass
         if (5 < 10 && true == true || 10)
             localVariable1 = 40;
 
-        // [StatementIfElse] syntax node ERROR: Condition of an 'if' statement must be of type 'bool'
+        // [StatementIfElse] syntax node ERROR: Condition of an 'if' statement must be of type 'bool' // pass
         if (5)
         {
             localVariable1 = 50;
@@ -245,55 +245,55 @@ class Class13 extends Class12
             localVariable1 = 60;
         }
 
-        // [ExprExprAddopTerm] syntax node ERROR: Both terms of an addition operation must be of type 'int'
-        // [FactorExpr] syntax node ERROR: Expr type is not defined
-        // [TermFactor] syntax node ERROR: Factor type is not defined
-        // [ExprTerm] syntax node ERROR: Term type is not defined
+        // [ExprExprAddopTerm] syntax node ERROR: Both terms of an addition operation must be of type 'int' // pass
+        // [FactorExpr] syntax node ERROR: Expr type is not defined // pass
+        // [TermFactor] syntax node ERROR: Factor type is not defined // pass
+        // [ExprTerm] syntax node ERROR: Term type is not defined // pass
         localVariable1 = (6 + false);
     }
 
     int validMethod3()
     {
-        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types
+        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types // pass
         print(int);
 
-        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types
+        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types // pass
         print(char);
 
-        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types
+        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types // pass
         print(bool);
 
-        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types
+        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types // pass
         print(set);
 
-        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types
+        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types // pass
         print(Class1);
 
-        // [StatementPrintWithParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types
+        // [StatementPrintWithParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types // pass
         print(int, 2);
 
-        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types
+        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types // pass
         print(validMethod2);
 
-        // [DesignatorIdentificator] syntax node ERROR: Name 'InvalidProgramName' is not a valid designator identificator
+        // [DesignatorIdentificator] syntax node ERROR: Name 'InvalidProgramName' is not a valid designator identificator // pass
         // [FactorDesignator] syntax node ERROR: Some of the designator's identificators are invalid
         // [TermFactor] syntax node ERROR: Factor type is not defined
         // [ExprTerm] syntax node ERROR: Term type is not defined
-        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types
+        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types // pass
         print(InvalidProgramName);
     }
 
     int validMethod4()
         int var1;
     {
-        // [TermTermMulopFactor] syntax node ERROR: Both factors of a multiplication operation must be values of type 'int'
-        // [ExprTerm] syntax node ERROR: Term type is not defined
-        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types
+        // [TermTermMulopFactor] syntax node ERROR: Both factors of a multiplication operation must be values of type 'int' // pass
+        // [ExprTerm] syntax node ERROR: Term type is not defined // pass
+        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types // pass
         print(var1 * int);
 
-        // [TermTermMulopFactor] syntax node ERROR: Both factors of a multiplication operation must be values of type 'int'
-        // [ExprTerm] syntax node ERROR: Term type is not defined
-        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types
+        // [TermTermMulopFactor] syntax node ERROR: Both factors of a multiplication operation must be values of type 'int' // pass
+        // [ExprTerm] syntax node ERROR: Term type is not defined // pass
+        // [StatementPrintWithoutParameter] syntax node ERROR: Print statement can only print values of 'int', 'char', 'bool' or 'set' types // pass
         print(int / var1);
 
         // [TermTermMulopFactor] syntax node ERROR: Both factors of a multiplication operation must be values of type 'int'

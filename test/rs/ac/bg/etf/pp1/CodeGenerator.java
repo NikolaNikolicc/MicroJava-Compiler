@@ -917,7 +917,8 @@ public class CodeGenerator extends VisitorAdaptor {
     @Override
     public void visit(GoToStart node){
         Code.putJump(doJumps.peek());
-        Code.fixup(skipThen.pop()); // for invalid condition
+        // if we don't have condition, we don't put anything in skipThen stack
+        if (!skipThen.isEmpty()) Code.fixup(skipThen.pop()); // for invalid condition
         ArrayList<Integer> breakAddresses = (ArrayList<Integer>)(skipWhile.pop());
         while (!breakAddresses.isEmpty()){
             Code.fixup(breakAddresses.remove(0));

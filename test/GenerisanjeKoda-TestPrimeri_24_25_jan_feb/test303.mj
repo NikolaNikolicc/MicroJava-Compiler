@@ -152,11 +152,14 @@ int tezinaK, tezinaS;
 				i++;
 				continue; 
 			}
+			if(i == 6){
+				break;
+			}
 			zapreminaS = zapreminaS + predmeti[i].zapremina();
 			tezinaS = tezinaS + predmeti[i].Q();
 			ispis(predmeti[i]);
 			i++;
-		} while (i < 5);
+		} while ();
 		
 		
 		zapreminaK = 0; 
@@ -167,11 +170,14 @@ int tezinaK, tezinaS;
 				i++;
 				continue; 
 			}
+			if(i == 7){
+				break;
+			}
 			zapreminaK = zapreminaK + predmeti[i].zapremina();
 			tezinaK = tezinaK + predmeti[i].Q();
 			ispis(predmeti[i]);
 			i++;
-		} while (i < 5);
+		} while ();
 		
 		print(zapreminaS); print(eol); //659(656 sa zaokruzivanjem pri deljenju)
 		print(zapreminaK); print(eol); //945

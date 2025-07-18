@@ -37,6 +37,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     private Struct currTypeVar = Tab.noType; // Tab.noType - invalid type
     private Struct currTypeMeth = null; // null - void method, Tab.noType - invalid return type
 
+    private Obj mainMeth = null;
     private Obj currMeth = null; // for creating method
     private Struct currClass = null; // for creating class
     private Struct accessClass = null; // for chaining
@@ -46,7 +47,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     public static Struct boolType = Tab.find("bool").getType();
     public static Struct setType = Tab.find("set").getType();
 
-    private Obj mainMeth = null;
     private boolean parsingFormPars = false;
 
     private int loopCounter = 0;

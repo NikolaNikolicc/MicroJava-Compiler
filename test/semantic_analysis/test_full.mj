@@ -407,17 +407,17 @@ class Class13 extends Class12
         Class1 obj1;
     {
         // [Type] syntax node ERROR: Type 'InvalidType' used before declaration
-        // [FactorObjectInstantiation] syntax node ERROR: Invalid type when instantiating an object
+        // [FactorObjectInstantiation] syntax node ERROR: Invalid type when instantiating an object // pass
         // [TermFactor] syntax node ERROR: Factor type is not defined
-        // [ExprTerm] syntax node ERROR: Term type is not defined
+        // [ExprTerm] syntax node ERROR: Term type is not defined // pass
         obj1 = new InvalidType();
 
-        milance = 3;
+        milance = 3; // pass
 
         // [Type] syntax node ERROR: Type 'InvalidType' used before declaration
-        // [FactorObjectInstantiation] syntax node ERROR: Type 'int' is not a class
+        // [FactorObjectInstantiation] syntax node ERROR: Type 'int' is not a class // pass
         // [TermFactor] syntax node ERROR: Factor type is not defined
-        // [ExprTerm] syntax node ERROR: Term type is not defined
+        // [ExprTerm] syntax node ERROR: Term type is not defined // pass
         obj1 = new int();
     }
 

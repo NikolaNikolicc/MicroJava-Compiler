@@ -621,6 +621,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     @Override
     public void visit(FactorCreateObject node){
         if (node.getType().struct == Tab.noType){
+            report_error("[FactorCreateObject] Neterminal Type mora da bude validan korisnicki tip da bismo od njega kreirali objekat", node);
             node.struct = Tab.noType;
             return;
         }
@@ -722,7 +723,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         // it's important to use assignableTo because of assigning null properly
-        else if(!es.assignableTo(node.getExpr().struct, node.getDesignator().obj.getType())){
+        else if(node.getExpr().struct == Tab.noType || !es.assignableTo(node.getExpr().struct, node.getDesignator().obj.getType())){
             report_error("[DesignatorAssignExpr] Tip Expr nije kompatibilan sa tipom neterminala Designator : " + node.getDesignator().obj.getName(), node );
             return;
         }
@@ -738,7 +739,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         // it's important to use assignableTo because of assigning null propery
-        else if(!es.assignableTo(node.getExpr().struct, node.getDesignator().obj.getType())){
+        else if(node.getExpr().struct == Tab.noType || !es.assignableTo(node.getExpr().struct, node.getDesignator().obj.getType())){
             report_error("[DesignatorAssignExprWhile] Tip Expr nije kompatibilan sa tipom neterminala Dedsignator : " + node.getDesignator().obj.getName(), node );
             return;
         }

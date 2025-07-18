@@ -710,7 +710,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     @Override
     public void visit(DesignatorStatementFuncCall node){
         Obj meth = node.getDesignator().obj;
-        funccall(meth, node);
+        funccall(meth, node, "DesignatorStatementFuncCall");
 
     }
 
@@ -721,7 +721,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         Obj meth = node.getDesignator().obj;
-        funccall(meth, node);
+        funccall(meth, node, "DesignatorStatementFuncCallWhile");
     }
 
     @Override
@@ -1136,9 +1136,9 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     // <editor-fold desc="[Factor] Function calls">
 
-    private void checkArePassedParametersAndFormalParameterListCompatible(List<Struct> fpList, String methName,  SyntaxNode node){
+    private void checkArePassedParametersAndFormalParameterListCompatible(List<Struct> fpList, String methName,  SyntaxNode node, String nodeName){
         if (fpList.size() != fpStack.size()){
-            report_error("[FactorFuncCall][DesignatorStatementFuncCall] Lista prosledjenih parametara se ne poklapa se parametrima koji su prosledjeni prilikom poziva metode " + methName + " po broju prosledjenih parametara("+ fpStack.size() +"), ova metoda prima: " + fpList.size() + " parametara", node);
+            report_error("["+ nodeName +"] Lista prosledjenih parametara se ne poklapa se parametrima koji su prosledjeni prilikom poziva metode " + methName + " po broju prosledjenih parametara("+ fpStack.size() +"), ova metoda prima: " + fpList.size() + " parametara", node);
 
             fpStack = new Stack<>();
 //            return false;
@@ -1150,7 +1150,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             Struct fpListElem = fpList.get(i);
             Struct fpStackElem = fpStack.pop();
             if (!es.assignableTo(fpStackElem, fpListElem)){
-                report_error("[FactorFuncCall][DesignatorStatementFuncCall] Prosledjeni parametar pod brojem: " + (i + 1) + "(indeksirano od 1) nije kompatibilan sa odgovarajucim formalnim parametrom metode " + methName + " po tipu", node);
+                report_error("["+ nodeName +"] Prosledjeni parametar pod brojem: " + (i + 1) + "(indeksirano od 1) nije kompatibilan sa odgovarajucim formalnim parametrom metode " + methName + " po tipu", node);
 
                 errorHappened = true;
             }
@@ -1174,17 +1174,17 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         return fpList;
     }
 
-    private Struct funccall(Obj meth, SyntaxNode node){
+    private Struct funccall(Obj meth, SyntaxNode node, String nodeName){
         if (meth == Tab.noObj){
             return Tab.noType;
         }
         else if (meth.getKind() != Obj.Meth){
-            report_error("[FactorFuncCall][DesignatorStatementFuncCall] Neadekvatna vrsta promenljive (" + meth.getName() + " mora biti metoda)", node);
+            report_error("["+ nodeName +"] Neadekvatna vrsta promenljive (" + meth.getName() + " mora biti metoda)", node);
             return Tab.noType;
         }
 
         List<Struct> fpList = getFormalParameters(meth, node);
-        checkArePassedParametersAndFormalParameterListCompatible(fpList, meth.getName(), node);
+        checkArePassedParametersAndFormalParameterListCompatible(fpList, meth.getName(), node, nodeName);
 
         return meth.getType();
     }
@@ -1193,7 +1193,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     @Override
     public void visit(FactorFuncCall node){
         Obj meth = node.getDesignator().obj;
-        node.struct = funccall(meth, node);
+        node.struct = funccall(meth, node, "FactorFuncCall");
     }
 
     // function call parameters

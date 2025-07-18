@@ -288,13 +288,20 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         return true;
     }
 
+    private void closeMethod(){
+        Tab.chainLocalSymbols(currMeth);
+        Tab.closeScope();
+
+        currMeth = null;
+        returnNode = false;
+        voidMethodFlag = false;
+    }
+
     // this method is called only from interface method signature
     @Override
     public void visit(CloseMethodScope node){
         currMeth.setFpPos(FP_POS_UNIMPLEMENTED_INTERFACE_METHOD);
-        Tab.chainLocalSymbols(currMeth);
-        Tab.closeScope();
-        currMeth = null;
+        closeMethod();
     }
 
     @Override
@@ -378,12 +385,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             report_error("[MethodDecl] U metodu("+ currMeth.getName() +") povratnog tipa koji nije void se mora pojaviti barem jedna return naredba", node);
         }
 
-        Tab.chainLocalSymbols(currMeth);
-        Tab.closeScope();
-
-        currMeth = null;
-        returnNode = false;
-        voidMethodFlag = false;
+        closeMethod();
     }
 
     @Override

@@ -48,9 +48,9 @@ public class Compiler {
         try {
 //             File sourceCode = new File("test/GenerisanjeKoda-TestPrimeri_24_25_jan_feb/test301.mj");
 //            File sourceCode = new File("test/GenerisanjeKoda-TestPrimeri_24_25_jan_feb/test302.mj");
-            File sourceCode = new File("test/GenerisanjeKoda-TestPrimeri_24_25_jan_feb/test303.mj");
+//            File sourceCode = new File("test/GenerisanjeKoda-TestPrimeri_24_25_jan_feb/test303.mj");
 //            File sourceCode = new File("test/code_generation/klase.mj");
-//            File sourceCode = new File("test/semantic_analysis/test_full.mj");
+            File sourceCode = new File("test/semantic_analysis/test_full.mj");
             log.info("Compiling source file: " + sourceCode.getAbsolutePath());
 
             br = new BufferedReader(new FileReader(sourceCode));
@@ -77,6 +77,7 @@ public class Compiler {
 
             // we need to set the FP_POS for all formal parameters so we initialize the SemanticAnalyzer here
             Code.dataSize++; // 0th position is reserved for this pointer in code generation
+            Code.dataSize = 10;
             SemanticAnalyzer sa = new SemanticAnalyzer();
 
             // podesiti fp pos na 1 za sve parametre metoda

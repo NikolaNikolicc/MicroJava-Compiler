@@ -275,6 +275,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
                 currMeth = meth;
             } else{
                 currMeth = Tab.noObj;
+                Tab.openScope();
                 return false;
             }
         } else {
@@ -381,7 +382,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         if (!voidMethodFlag && !returnExprFlag && !currMeth.getName().equals("main")){
             report_error("[MethodDecl] U metodu("+ currMeth.getName() +") povratnog tipa koji nije void se mora pojaviti barem jedna return naredba koja vraca vrednost", node);
         }
-
         closeMethod();
     }
 

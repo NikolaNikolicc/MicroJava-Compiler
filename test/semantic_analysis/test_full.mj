@@ -139,28 +139,27 @@ class Class13 extends Class12
 
     }
 
-    // [Type] syntax node ERROR: Type 'intttt' used before declaration
-    // [FormalParameterSingle] syntax node ERROR: Invalid type when defining variable 'parameter1'
-    // [Type] syntax node ERROR: Type 'charr' used before declaration
-    // [FormalParameterArray] syntax node ERROR: Invalid type when defining variable 'parameter5'
-    // [FormalParameterSingle] syntax node ERROR: Name 'parameter5' already defined in the current scope
-    // [FormalParameterArray] syntax node ERROR: Name 'parameter5' already defined in the current scope
+    // [Type] syntax node ERROR: Type 'intttt' used before declaration // pass
+    // [Type] syntax node ERROR: Type 'charr' used before declaration // pass
+    // [FormalParameterSingle] syntax node ERROR: Name 'parameter5' already defined in the current scope // pass
+    // [FormalParameterArray] syntax node ERROR: Name 'parameter5' already defined in the current scope // pass
     int method1(intttt parameter1, int parameter2, char parameter4[], charr parameter5[], bool parameter5, int parameter5[])
+        // ERROR 17:15:47,745 - [TypeIdent] Nije pronadjen tip intttt u tabeli simbola na liniji 149
         intttt localVariable1, localvariable2;
         char localVariable3, localVariable4[];
     {
-
+        // ERROR 17:15:47,745 - [MethodDecl] U metodu(method1) povratnog tipa koji nije void se mora pojaviti barem jedna return naredba koja vraca vrednost
     }
 
-    // [VariableSingle] syntax node ERROR: Invalid type when defining variable 'var1'
-    // [VariableSingle] syntax node ERROR: Invalid type when defining variable 'var2'
+    // [VariableSingle] syntax node ERROR: Invalid type when defining variable 'var1' // pass
+    // [VariableSingle] syntax node ERROR: Invalid type when defining variable 'var2' // pass
     int validMethod1()
         int int;
         bool char;
         int var1;
         char var2;
     {
-
+        // ERROR 17:15:47,745 - [MethodDecl] U metodu(validMethod1) povratnog tipa koji nije void se mora pojaviti barem jedna return naredba koja vraca vrednost
     }
 
     int validMethod2()
@@ -169,16 +168,18 @@ class Class13 extends Class12
         set set1, set2;
         int arr1[], arr2[];
     {
-        // [TermMulopFactor] syntax node ERROR: Both factors of a multiplication operation must be of type 'int'
-        // [TermMulopFactor] syntax node ERROR: Both factors of a multiplication operation must be of type 'int'
-        // [TermMulopFactor] syntax node ERROR: Both factors of a multiplication operation must be of type 'int'
+        // [TermMulopFactor] syntax node ERROR: Both factors of a multiplication operation must be of type 'int' // pass
+        // [TermMulopFactor] syntax node ERROR: Both factors of a multiplication operation must be of type 'int' // pass
+        // [TermMulopFactor] syntax node ERROR: Both factors of a multiplication operation must be of type 'int' // pass
+        // ERROR 19:49:33,486 - [DesignatorAssignExpr] Tip Expr nije kompatibilan sa tipom neterminala Designator : localVariable1 na liniji 174
         localVariable1 = 'c' * 5 / 2 % 4;
 
-        // [TermMulopFactor] syntax node ERROR: Both factors of a multiplication operation must be of type 'int'
-        // [TermMulopFactor] syntax node ERROR: Both factors of a multiplication operation must be of type 'int'
+        // [TermMulopFactor] syntax node ERROR: Both factors of a multiplication operation must be of type 'int' // pass
+        // [TermMulopFactor] syntax node ERROR: Both factors of a multiplication operation must be of type 'int' // pass
+        // ERROR 19:49:33,487 - [DesignatorAssignExpr] Tip Expr nije kompatibilan sa tipom neterminala Designator : localVariable1 na liniji 178 // pass
         localVariable1 = 5 * 2 * false * 4;
 
-        // [ExprAddopMinusTerm] syntax node ERROR: Only terms of 'int' type can be negated
+        // [ExprAddopMinusTerm] syntax node ERROR: Only terms of 'int' type can be negated // pass
         localVariable1 = -false;
 
         // [ExprAddopMinusTerm] syntax node ERROR: Only terms of 'int' type can be negated

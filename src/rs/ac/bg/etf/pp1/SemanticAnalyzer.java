@@ -20,11 +20,11 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     static final int FP_POS_FORMAL_PARAMETER = 1;
 
-    static final int LEVEL_INTERFACE_VAR = 1;
-    static final int LEVEL_CLASS_FLD = 1;
-    static final int LEVEL_CLASS_VAR = 2;
-    static final int LEVEL_GLOBAL_METH_VAR = 1;
-    static final int LEVEL_GLOBAL_VAR = 0;
+    static final int LEVEL_INTERFACE_VAR = 3; // interface method variables
+    static final int LEVEL_CLASS_FLD = 1; // class field variables
+    static final int LEVEL_CLASS_VAR = 2; // class method variables
+    static final int LEVEL_GLOBAL_METH_VAR = 1; // global method variables
+    static final int LEVEL_GLOBAL_VAR = 0; // global variables
 
     // package rs.ac.bg.etf.pp1;
     int nVars;
@@ -37,6 +37,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     private Struct currTypeVar = Tab.noType; // Tab.noType - invalid type
     private Struct currTypeMeth = null; // null - void method, Tab.noType - invalid return type
+    private String currTypeName = "";
 
     private Obj mainMeth = null;
     private Obj currMeth = null; // for creating method
@@ -173,6 +174,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         }
         node.struct = typeNode.getType();
         currTypeVar = typeNode.getType();
+        currTypeName = node.getI1();
     }
 
     // </editor-fold>
@@ -194,7 +196,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         }
 
         constNode.setAdr(constObj.getAdr());
-        logSymbol("Detektovana simbolicka konstanta:", constNode, node);
+//        logSymbol("Detektovana simbolicka konstanta:", constNode, node);
     }
 
     private void setMethodLevelAndVarFpPosIfFormalParameter(Obj node){
@@ -243,7 +245,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         }
         Obj varNode = insertNewVarNode(node.getI1(), currTypeVar);
         node.obj = varNode;
-        logSymbol("detektovan Obj cvor", varNode, node);
+//        logSymbol("detektovan Obj cvor", varNode, node);
     }
 
     @Override
@@ -255,7 +257,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         Struct array = new Struct(Struct.Array, currTypeVar);
         Obj varNode = insertNewVarNode(node.getI1(), array);
         node.obj = varNode;
-        logSymbol("detektovan Obj cvor (elem niza)", varNode, node);
+//        logSymbol("detektovan Obj cvor (elem niza)", varNode, node);
     }
 
 
@@ -582,7 +584,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
         Obj arr = node.getDesignator().obj;
 
-        logSymbol("pronadjen niz: ", arr, node);
         // if we pass array we are sure that we are passing var or field, other kinds can't be arrays or can't be used due to syntax
 //        if (arr.getKind() != Obj.Fld && arr.getKind() != Obj.Var || arr.getType().getKind() != Struct.Array || !arr.getType().getElemType().equals(Tab.intType)){
         if (arr.getType().getKind() != Struct.Array || !es.equals(arr.getType().getElemType(), Tab.intType)){
@@ -636,6 +637,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         node.struct = currTypeVar;
+        report_info("Kreiran objekat klase: " + currTypeName, node);
     }
 
     @Override
@@ -771,6 +773,85 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     // <editor-fold desc="[Designator] (DesignatorVar + ClassAccess + ArrayAccess)">
 
+    private void detectSymbol(Obj node, SyntaxNode syntaxNode){
+
+        if (node == Tab.noObj) {
+            report_info("[Designator] Detektovanje simbola nad nepostojećim simbolom (noObj)", syntaxNode);
+            return;
+        }
+
+        String message = "Detektovano koriscnje simbola: ";
+        StringBuilder builder = new StringBuilder(message);
+        int kind = node.getKind();
+
+        boolean skipLogSymbol = false;
+
+        switch (kind){
+            case Obj.Con:
+                builder.append(" simbolicka konstanta ");
+                break;
+            case Obj.Var:
+
+                String parameterType;
+                if (node.getFpPos() == FP_POS_FORMAL_PARAMETER){
+                    parameterType = " formalni";
+                } else {
+                    parameterType = " lokalni";
+                }
+
+                switch (node.getLevel()){
+                    case LEVEL_GLOBAL_VAR:
+                        builder.append(" globalna promenljiva ");
+                        break;
+                    case LEVEL_CLASS_VAR:
+                        builder.append(parameterType);
+                        builder.append(" parametar metode klase ");
+                        break;
+                    case LEVEL_GLOBAL_METH_VAR:
+                        builder.append(parameterType);
+                        builder.append(" parametar globalne metode ");
+                        break;
+                    case LEVEL_INTERFACE_VAR:
+                        builder.append(parameterType);
+                        builder.append(" parametar metode interfejsa ");
+                        break;
+                    default:
+                        builder.append(" nepoznata vrsta promenljive ");
+                        break;
+                }
+                break;
+            case Obj.Fld:
+                builder.append(" polje klase ");
+                break;
+            case Obj.Elem:
+                builder.append(" element niza ");
+                break;
+            case Obj.Meth:
+                SyntaxNode parent = syntaxNode.getParent();
+                if (parent instanceof FactorDesignator) skipLogSymbol = true;
+
+                switch (node.getFpPos()){
+                    case FP_POS_GLOBAL_METHOD:
+                        builder.append(" globalna metoda ");
+                        break;
+                    case FP_POS_IMPLEMENTED_NONGLOBAL_METHOD:
+                        builder.append(" implementirana metoda klase ili interfejsa ");
+                        break;
+                    case FP_POS_UNIMPLEMENTED_INTERFACE_METHOD:
+                        builder.append(" neimplementirana metoda interfejsa ");
+                        break;
+                    default:
+                        builder.append(" nepoznata vrsta metode ");
+                        break;
+                }
+                break;
+            default:
+                builder.append(" nepoznata vrsta promenljive ");
+                break;
+        }
+        if (!skipLogSymbol)logSymbol(builder.toString(), node, syntaxNode);
+    }
+
     @Override
     public void visit(DesignatorVar node){
         Obj var = Tab.find(node.getI1());
@@ -785,6 +866,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         node.obj = var;
+        detectSymbol(node.obj, node);
     }
 
     // <editor-fold desc="[DesignatorClass] access Class properties">
@@ -833,6 +915,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             }
         }
         node.obj = var;
+        detectSymbol(node.obj, node);
         accessClass = var.getType();
     }
 
@@ -858,6 +941,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         node.obj = var;
+        detectSymbol(node.obj, node);
         accessClass = node.obj.getType();
     }
 
@@ -966,6 +1050,9 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             if (res == Tab.noObj) node.obj = Tab.noObj;
             else node.obj = new Obj(Obj.Elem, res.getName() + "[$]", res.getType().getElemType());
             node.getDesignatorClassArrayName().obj = res;
+
+            detectSymbol(node.getDesignatorClassArrayName().obj, node);
+            detectSymbol(node.obj, node);
             return;
         }
         report_error("[DesignatorClassMoreFinalElem] Ovo polje("+ field +") ne postoji kao polje klase", node);
@@ -981,6 +1068,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         accessClass = null;
         if (res != null){
             node.obj = res;
+            detectSymbol(node.obj, node);
             return;
         }
         report_error("[DesignatorClassMoreNotFinal] Ovo polje("+ node.getI2() +") ne postoji kao polje klase", node);
@@ -999,6 +1087,9 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             if (res == Tab.noObj) node.obj = Tab.noObj;
             else node.obj = new Obj(Obj.Elem, res.getName() + "[$]", res.getType().getElemType());
             node.getDesignatorClassArrayName().obj = res;
+
+            detectSymbol(node.getDesignatorClassArrayName().obj, node);
+            detectSymbol(node.obj, node);
             return;
         }
         report_error("[DesignatorClassMoreNotFinalElem] Ovo polje("+ field +") ne postoji kao polje klase", node);
@@ -1014,6 +1105,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
         if (res != null){
             node.obj = res;
+            detectSymbol(node.obj, node);
             return;
         }
         report_error("[DesignatorClassMoreFinal] Ovo polje("+ node.getI1() +") ne postoji kao polje klase", node);
@@ -1039,6 +1131,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         node.obj = arr;
+        detectSymbol(node.obj, node);
     }
 
     @Override
@@ -1059,6 +1152,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         node.obj = new Obj(Obj.Elem, arr.getName() + "[$]", arr.getType().getElemType());
+        detectSymbol(node.obj, node);
     }
 
     // </editor-fold>

@@ -426,26 +426,26 @@ class Class13 extends Class12
         int arr1[];
         Class1 obj1;
     {
-        // [StatementRead] syntax node ERROR: Designator in a read statement must be modifiable (variable, class attribute or array element)
+        // [StatementRead] syntax node ERROR: Designator in a read statement must be modifiable (variable, class attribute or array element) // pass
         read(constant4);
 
-        // [StatementRead] syntax node ERROR: Designator in a read statement must be modifiable (variable, class attribute or array element)
+        // [StatementRead] syntax node ERROR: Designator in a read statement must be modifiable (variable, class attribute or array element) // pass
         read(Class1);
 
-        // [StatementRead] syntax node ERROR: Designator in a read statement must be modifiable (variable, class attribute or array element)
+        // [StatementRead] syntax node ERROR: Designator in a read statement must be modifiable (variable, class attribute or array element) // pass
         read(validMethod1);
 
-        // [DesignatorIdentificator] syntax node ERROR: Name 'InvalidProgramName' is not a valid designator identificator
-        // [StatementRead] syntax node ERROR: Read statement can only read values of 'int', 'char' or 'bool' types
+        // [DesignatorIdentificator] syntax node ERROR: Name 'InvalidProgramName' is not a valid designator identificator // pass
+        // [StatementRead] syntax node ERROR: Read statement can only read values of 'int', 'char' or 'bool' types // pass
         read(InvalidProgramName);
 
-        // [StatementRead] syntax node ERROR: Read statement can only read values of 'int', 'char' or 'bool' types
+        // [StatementRead] syntax node ERROR: Read statement can only read values of 'int', 'char' or 'bool' types // pass
         read(set1);
 
-        // [StatementRead] syntax node ERROR: Read statement can only read values of 'int', 'char' or 'bool' types
+        // [StatementRead] syntax node ERROR: Read statement can only read values of 'int', 'char' or 'bool' types // pass
         read(arr1);
 
-        // [StatementRead] syntax node ERROR: Read statement can only read values of 'int', 'char' or 'bool' types
+        // [StatementRead] syntax node ERROR: Read statement can only read values of 'int', 'char' or 'bool' types // pass
         read(obj1);
     }
 
@@ -465,22 +465,22 @@ class Class13 extends Class12
         arr1 = new int[1];
         arr1[0] = 5;
 
-        // [ExprDesignatorMapDesignator] syntax node ERROR: Left designator in a mapping operation must be a function with this signature: int func(int param)
+        // [ExprDesignatorMapDesignator] syntax node ERROR: Left designator in a mapping operation must be a function with this signature: int func(int param) // pass
         var1 = var1 map arr1;
 
-        // [ExprDesignatorMapDesignator] syntax node ERROR: Left designator in a mapping operation must be a function with this signature: int func(int param)
+        // [ExprDesignatorMapDesignator] syntax node ERROR: Left designator in a mapping operation must be a function with this signature: int func(int param) // pass
         var1 = validMethod10 map arr1;
 
-        // [ExprDesignatorMapDesignator] syntax node ERROR: Left designator in a mapping operation must be a function with this signature: int func(int param)
+        // [ExprDesignatorMapDesignator] syntax node ERROR: Left designator in a mapping operation must be a function with this signature: int func(int param) // pass
         var1 = validMethod11 map arr1;
 
         // [ExprDesignatorMapDesignator] syntax node ERROR: Left designator in a mapping operation must be a function with this signature: int func(char param)
         var1 = validMethod12 map arr1;
 
-        // [ExprDesignatorMapDesignator] syntax node ERROR: Right designator in a mapping operation must be an array of integers
+        // [ExprDesignatorMapDesignator] syntax node ERROR: Right designator in a mapping operation must be an array of integers // pass
         var1 = validMethod13 map int;
 
-        // [ExprDesignatorMapDesignator] syntax node ERROR: Right designator in a mapping operation must be an array of integers
+        // [ExprDesignatorMapDesignator] syntax node ERROR: Right designator in a mapping operation must be an array of integers // pass
         var1 = validMethod13 map arr2;
     }
 
@@ -496,26 +496,26 @@ class Class13 extends Class12
         Class12 obj8;
         Class13 obj9;
     {
-        // [DesignatorIdentificator] syntax node ERROR: Name 'sgaafag' not found in the symbols table
+        // [DesignatorIdentificator] syntax node ERROR: Name 'sgaafag' not found in the symbols table // pass
         // [DesignatorStatementAssignopExpr] syntax node ERROR: Designator is invalid
         sgaafag = new set[5];
 
-        // [DesignatorStatementAssignopExpr] syntax node ERROR: Designator in an assignment statement must be modifiable (variable, class attribute or array element)
+        // [DesignatorStatementAssignopExpr] syntax node ERROR: Designator in an assignment statement must be modifiable (variable, class attribute or array element) // pass
         validMethod14 = 15;
 
-        // [DesignatorStatementAssignopExpr] syntax node ERROR: Expression is not assignable to the designator
+        // [DesignatorStatementAssignopExpr] syntax node ERROR: Expression is not assignable to the designator // pass
         set2 = 'c';
 
-        // [DesignatorStatementAssignopExpr] syntax node ERROR: Expression is not assignable to the designator
+        // [DesignatorStatementAssignopExpr] syntax node ERROR: Expression is not assignable to the designator // pass
         obj1 = obj5;
 
-        // [DesignatorStatementAssignopExpr] syntax node ERROR: Expression is not assignable to the designator
+        // [DesignatorStatementAssignopExpr] syntax node ERROR: Expression is not assignable to the designator // pass
         obj2 = obj4;
 
-        // [DesignatorStatementAssignopExpr] syntax node ERROR: Expression is not assignable to the designator
+        // [DesignatorStatementAssignopExpr] syntax node ERROR: Expression is not assignable to the designator // pass
         obj3 = obj4;
 
-        // [DesignatorStatementAssignopExpr] syntax node ERROR: Expression is not assignable to the designator
+        // [DesignatorStatementAssignopExpr] syntax node ERROR: Expression is not assignable to the designator // pass
         obj9 = obj8;
     }
 
@@ -524,27 +524,27 @@ class Class13 extends Class12
         char var2;
         set set1, set2;
     {
-        // [DesignatorIdentificator] syntax node ERROR: Name 'sffsaf' not found in the symbols table
-        // [DesignatorStatementIncrement] syntax node ERROR: Designator is invalid
+        // [DesignatorIdentificator] syntax node ERROR: Name 'sffsaf' not found in the symbols table // pass
+        // [DesignatorStatementIncrement] syntax node ERROR: Designator is invalid // pass
         sffsaf++;
 
-        // [DesignatorIdentificator] syntax node ERROR: Name 'geqgq' not found in the symbols table
-        // [DesignatorStatementDecrement] syntax node ERROR: Designator is invalid
+        // [DesignatorIdentificator] syntax node ERROR: Name 'geqgq' not found in the symbols table // pass
+        // [DesignatorStatementDecrement] syntax node ERROR: Designator is invalid // pass
         geqgq--;
 
-        // [DesignatorStatementIncrement] syntax node ERROR: Designator in an increment statement must be modifiable (variable, class attribute or array element)
+        // [DesignatorStatementIncrement] syntax node ERROR: Designator in an increment statement must be modifiable (variable, class attribute or array element) // pass
         validMethod15++;
 
-        // [DesignatorStatementDecrement] syntax node ERROR: Designator in a decrement statement must be modifiable (variable, class attribute or array element)
+        // [DesignatorStatementDecrement] syntax node ERROR: Designator in a decrement statement must be modifiable (variable, class attribute or array element) // pass
         int--;
 
-        // [DesignatorStatementIncrement] syntax node ERROR: Increment statement can only be applied to integer designators
+        // [DesignatorStatementIncrement] syntax node ERROR: Increment statement can only be applied to integer designators // pass
         var2++;
 
-        // [DesignatorStatementDecrement] syntax node ERROR: Decrement statement can only be applied to integer designators
+        // [DesignatorStatementDecrement] syntax node ERROR: Decrement statement can only be applied to integer designators // pass
         var2--;
 
-        // [DesignatorStatementSetop] syntax node ERROR: All designators in a union operation must be of type 'set'
+        // [DesignatorStatementSetop] syntax node ERROR: All designators in a union operation must be of type 'set' // pass
         var1 = set1 union set2;
     }
 
@@ -552,13 +552,13 @@ class Class13 extends Class12
     int validMethod17()
         int var1;
     {
-        // [StatementReturnWithoutExpr] syntax node ERROR: Return statement without expression can only be used in methods with 'void' return type
+        // [StatementReturnWithoutExpr] syntax node ERROR: Return statement without expression can only be used in methods with 'void' return type // pass
         return;
     }
 
     void validMethod18()
     {
-        // [StatementReturnWithExpr] syntax node ERROR: Return statement expression type does not match method return type
+        // [StatementReturnWithExpr] syntax node ERROR: Return statement expression type does not match method return type // pass
         return 2;
     }
 
@@ -566,16 +566,16 @@ class Class13 extends Class12
         int var1;
     {
         var1 = 0;
-        // [StatementDoWhileWithCondition] syntax node ERROR: Condition of a 'do-while' statement must be of type 'bool'
+        // [StatementDoWhileWithCondition] syntax node ERROR: Condition of a 'do-while' statement must be of type 'bool' // pass
         do {} while (1);
 
-        // [StatementDoWhileConditionAndDesignatorStatement] syntax node ERROR: Condition of a 'do-while' statement must be of type 'bool'
+        // [StatementDoWhileConditionAndDesignatorStatement] syntax node ERROR: Condition of a 'do-while' statement must be of type 'bool' // pass
         do {} while ('c', var1++);
 
-        // [StatementBreak] syntax node ERROR: Break statement can only be used inside of a loop
+        // [StatementBreak] syntax node ERROR: Break statement can only be used inside of a loop // pass
         break;
 
-        // [StatementContinue] syntax node ERROR: Continue statement can only be used inside of a loop
+        // [StatementContinue] syntax node ERROR: Continue statement can only be used inside of a loop // pass
         continue;
     }
 
@@ -584,41 +584,41 @@ class Class13 extends Class12
         Class13 obj1;
         Interface1 obj2;
     {
-        // [DesignatorIdentificator] syntax node ERROR: Name 'fsafas' not found in the symbols table
+        // [DesignatorIdentificator] syntax node ERROR: Name 'fsafas' not found in the symbols table // pass
         // [DesignatorClassAccess] syntax node ERROR: Designator identificator is invalid
         // [DesignatorStatementAssignopExpr] syntax node ERROR: Designator is invalid
         fsafas.attr1 = 5;
 
-        // [DesignatorClassAccess] syntax node ERROR: Designator identificator must be a variable, class attribute or array element to be accessed
+        // [DesignatorClassAccess] syntax node ERROR: Designator identificator must be a variable, class attribute or array element to be accessed // pass
         // [DesignatorStatementAssignopExpr] syntax node ERROR: Designator is invalid
         validMethod19.attr1 = 10;
 
-        // [DesignatorClassAccess] syntax node ERROR: Designator identificator must be a variable, class attribute or array element to be accessed
+        // [DesignatorClassAccess] syntax node ERROR: Designator identificator must be a variable, class attribute or array element to be accessed // pass
         // [DesignatorStatementAssignopExpr] syntax node ERROR: Designator is invalid
         int.attr1 = 15;
 
-        // [DesignatorClassAccess] syntax node ERROR: Class designator identificator must be an object
+        // [DesignatorClassAccess] syntax node ERROR: Class designator identificator must be an object // pass
         // [DesignatorStatementAssignopExpr] syntax node ERROR: Designator is invalid
         var1.attr1 = 20;
 
         obj1 = new Class13();
 
-        // [DesignatorClassAccess] Class member 'attr2' is not defined in the 'obj1' object
+        // [DesignatorClassAccess] Class member 'attr2' is not defined in the 'obj1' object // pass
         // [DesignatorStatementAssignopExpr] syntax node ERROR: Designator is invalid
         obj1.attr2 = 25;
 
-        // [DesignatorStatementAssignopExpr] syntax node ERROR: Expression is not assignable to the designator
+        // [DesignatorStatementAssignopExpr] syntax node ERROR: Expression is not assignable to the designator // pass
         obj1.obj12 = 20;
 
-        // [DesignatorClassAccess] Class member 'attr12' is not defined in the 'obj12' object
+        // [DesignatorClassAccess] Class member 'attr12' is not defined in the 'obj12' object // pass
         // [DesignatorStatementAssignopExpr] syntax node ERROR: Designator is invalid
         obj1.obj12.attr12 = 30;
 
-        // [DesignatorUserTypeAccess] Interface method 'interface1_methofsa' is not defined in the 'obj2' interface
+        // [DesignatorUserTypeAccess] Interface method 'interface1_methofsa' is not defined in the 'obj2' interface // pass
         obj2 = new Class8();
         obj2.interface1_methofsa();
 
-        // [DesignatorUserTypeAccess] syntax node ERROR: Designator identificator must be a variable, class attribute or array element to be accessed
+        // [DesignatorUserTypeAccess] syntax node ERROR: Designator identificator must be a variable, class attribute or array element to be accessed // pass
         obj2.interface1_method1.fafas();
     }
 }

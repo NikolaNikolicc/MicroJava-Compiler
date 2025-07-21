@@ -56,7 +56,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     private static final String[] objKindNames = { "Con", "Var", "Type", "Meth", "Fld", "Elem", "Prog" };
     private static final String[] structKindNames = { "None", "Int", "Char", "Array", "Class", "Bool", "Set", "Interface" };
 
-    private Stack<Struct> fpStack = new Stack<>();
+    private Stack<Struct> apStack = new Stack<>();
 
     private final ExtendedStruct es = ExtendedStruct.getInstance();
     Logger log = Logger.getLogger(getClass());
@@ -1163,10 +1163,10 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     // <editor-fold desc="[Factor] Function calls">
 
     private void checkArePassedParametersAndFormalParameterListCompatible(List<Struct> fpList, String methName,  SyntaxNode node, String nodeName){
-        if (fpList.size() != fpStack.size()){
-            report_error("["+ nodeName +"] Lista prosledjenih parametara se ne poklapa se parametrima koji su prosledjeni prilikom poziva metode " + methName + " po broju prosledjenih parametara("+ fpStack.size() +"), ova metoda prima: " + fpList.size() + " parametara", node);
+        if (fpList.size() != apStack.size()){
+            report_error("["+ nodeName +"] Lista prosledjenih parametara se ne poklapa se parametrima koji su prosledjeni prilikom poziva metode " + methName + " po broju prosledjenih parametara("+ apStack.size() +"), ova metoda prima: " + fpList.size() + " parametara", node);
 
-            fpStack = new Stack<>();
+            apStack.clear();
 //            return false;
             return;
         }
@@ -1174,15 +1174,15 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         boolean errorHappened = false;
         for (int i = 0; i < fpList.size(); i++){
             Struct fpListElem = fpList.get(i);
-            Struct fpStackElem = fpStack.pop();
-            if (!es.assignableTo(fpStackElem, fpListElem)){
+            Struct apStackElem = apStack.pop();
+            if (!es.assignableTo(apStackElem, fpListElem)){
                 report_error("["+ nodeName +"] Prosledjeni parametar pod brojem: " + (i + 1) + "(indeksirano od 1) nije kompatibilan sa odgovarajucim formalnim parametrom metode " + methName + " po tipu", node);
 
                 errorHappened = true;
             }
         }
         if (errorHappened){
-            fpStack = new Stack<>();
+            apStack.clear();
 //            return false;
             return;
         }
@@ -1225,17 +1225,17 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     // function call parameters
     @Override
     public void visit(StackInitialize node){
-        fpStack = new Stack<>();
+        apStack.clear();
     }
 
     @Override
     public void visit(ActParsMultipleItems node){
-        fpStack.push(node.getExpr().struct);
+        apStack.push(node.getExpr().struct);
     }
 
     @Override
     public void visit(ActParsSigleItem node){
-        fpStack.push(node.getExpr().struct);
+        apStack.push(node.getExpr().struct);
     }
 
     // </editor-fold>

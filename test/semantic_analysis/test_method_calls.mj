@@ -1,0 +1,35 @@
+program TestMethodCalls
+
+class Class1 {
+    int f1;
+}
+
+{
+
+    int meth1(int a, int b, Class1 c){
+        return a + b + c.f1;
+    }
+
+    int meth2(int d, char e, bool f, char g [], int h []) int tmp; {
+        if (f) {
+            tmp = 1;
+        } else {
+            tmp = 0;
+        }
+        return d + ord(e) + tmp + len(g) + len(h);
+    }
+
+    int sum(int s1, int s2){
+        return s1 + s2;
+    }
+
+    void main() int res; Class1 c1;{
+        c1 = new Class1();
+        c1.f1 = 10;
+
+        res = sum(meth1(0, 1, 'a'), meth2(0, '1', false, 20, 33));
+        print(res);
+
+    }
+
+}

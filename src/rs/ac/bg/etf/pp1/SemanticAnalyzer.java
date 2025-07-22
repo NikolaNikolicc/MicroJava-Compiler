@@ -56,7 +56,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     private static final String[] objKindNames = { "Con", "Var", "Type", "Meth", "Fld", "Elem", "Prog" };
     private static final String[] structKindNames = { "None", "Int", "Char", "Array", "Class", "Bool", "Set", "Interface" };
 
-    private Stack<Struct> apStack = new Stack<>();
+    private final Stack<Struct> apStack = new Stack<>();
 
     private final ExtendedStruct es = ExtendedStruct.getInstance();
     Logger log = Logger.getLogger(getClass());
@@ -243,8 +243,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             report_error("[VarDeclFinalVar] Vec je deklarisana promenljiva sa imenom: " + node.getI1(), node);
             return;
         }
-        Obj varNode = insertNewVarNode(node.getI1(), currTypeVar);
-        node.obj = varNode;
+        node.obj = insertNewVarNode(node.getI1(), currTypeVar);
 //        logSymbol("detektovan Obj cvor", varNode, node);
     }
 
@@ -255,8 +254,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         Struct array = new Struct(Struct.Array, currTypeVar);
-        Obj varNode = insertNewVarNode(node.getI1(), array);
-        node.obj = varNode;
+        node.obj = insertNewVarNode(node.getI1(), array);
 //        logSymbol("detektovan Obj cvor (elem niza)", varNode, node);
     }
 

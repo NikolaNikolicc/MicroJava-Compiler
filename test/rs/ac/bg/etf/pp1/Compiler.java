@@ -1,6 +1,8 @@
 package rs.ac.bg.etf.pp1;
 
 import java.io.*;
+import java.util.Arrays;
+import java.util.List;
 
 import java_cup.runtime.Symbol;
 
@@ -38,6 +40,11 @@ public class Compiler {
 
     public static void tsdump(){
         dump((MySymbolTableVisitor) null);
+    }
+
+    static boolean isMethodEmbedded(String node) {
+        List<String> embeddedMethods = Arrays.asList("add", "addAll", "ord", "ch", "len", "arr", "$printSet", "$union");
+        return embeddedMethods.contains(node);
     }
 
     public static void main(String[] args) throws Exception {

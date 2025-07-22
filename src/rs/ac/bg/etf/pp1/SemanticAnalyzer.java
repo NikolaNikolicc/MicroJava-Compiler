@@ -272,6 +272,11 @@ public class SemanticAnalyzer extends VisitorAdaptor{
      */
     private boolean createMethodObjNode(String name){
         Obj meth = Tab.currentScope.findSymbol(name);
+        if (Compiler.isMethodEmbedded(name)){
+            report_error("[createMethodObjNode] Vec je definisan metod sa imenom " + name, null);
+            Tab.openScope();
+            return false;
+        }
         if (meth != null){
             if (meth.getFpPos() == FP_POS_UNIMPLEMENTED_INTERFACE_METHOD){
                 currMeth = meth;

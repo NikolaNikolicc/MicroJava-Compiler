@@ -48,10 +48,10 @@ public class Compiler {
         try {
 //             File sourceCode = new File("test/GenerisanjeKoda-TestPrimeri_24_25_jan_feb/test301.mj");
 //            File sourceCode = new File("test/GenerisanjeKoda-TestPrimeri_24_25_jan_feb/test302.mj");
-//            File sourceCode = new File("test/GenerisanjeKoda-TestPrimeri_24_25_jan_feb/test303.mj");
+            File sourceCode = new File("test/GenerisanjeKoda-TestPrimeri_24_25_jan_feb/test303.mj");
 //            File sourceCode = new File("test/code_generation/klase.mj");
 //            File sourceCode = new File("test/semantic_analysis/test_full.mj");
-            File sourceCode = new File("test/semantic_analysis/test_method_calls.mj");
+//            File sourceCode = new File("test/semantic_analysis/test_method_calls.mj");
             log.info("Compiling source file: " + sourceCode.getAbsolutePath());
 
             br = new BufferedReader(new FileReader(sourceCode));
@@ -173,28 +173,6 @@ public class Compiler {
                 Tab.currentScope().addToLocals(i);
 
                 unionSetObj.setLocals(Tab.currentScope.getLocals());
-                Tab.closeScope();
-            }
-
-            Obj mapObj;
-            Tab.currentScope().addToLocals(mapObj = new Obj(Obj.Meth, "addAll", Tab.noType, 0, 2));
-            {
-                Tab.openScope();
-
-                Struct intArr = new Struct(Struct.Array, Tab.intType);
-
-                Obj a = new Obj(Obj.Var, "sum", Tab.intType, 0, 1);
-                Obj b = new Obj(Obj.Var, "arr", intArr, 0, 1);
-                Obj i = new Obj(Obj.Var, "i", Tab.intType, 0, 1);
-
-                a.setFpPos(SemanticAnalyzer.FP_POS_FORMAL_PARAMETER);
-                b.setFpPos(SemanticAnalyzer.FP_POS_FORMAL_PARAMETER);
-
-                Tab.currentScope().addToLocals(a);
-                Tab.currentScope().addToLocals(b);
-                Tab.currentScope().addToLocals(i);
-
-                mapObj.setLocals(Tab.currentScope.getLocals());
                 Tab.closeScope();
             }
 

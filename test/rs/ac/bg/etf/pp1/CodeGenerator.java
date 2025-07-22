@@ -6,9 +6,7 @@ import rs.etf.pp1.symboltable.concepts.*;
 import rs.etf.pp1.mj.runtime.Code;
 import rs.etf.pp1.symboltable.Tab;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Stack;
+import java.util.*;
 
 public class CodeGenerator extends VisitorAdaptor {
 
@@ -730,11 +728,17 @@ public class CodeGenerator extends VisitorAdaptor {
         chainingMethodCall = true;
     }
 
+    private boolean isMethodEmbedded(String node) {
+        List<String> embeddedMethods = Arrays.asList("add", "addAll", "ord", "ch", "len", "arr", "$printSet", "$union");
+        return embeddedMethods.contains(node);
+    }
+
+
     @Override
     public void visit(DesignatorVar node){
         if (node.obj.getKind() == Obj.Fld){
             Code.put(Code.load_n);
-        } else if (node.obj.getKind() == Obj.Meth && (currClass != null || currInterface != null)) {
+        } else if (node.obj.getKind() == Obj.Meth && (currClass != null || currInterface != null) && !isMethodEmbedded(node.obj.getName())) {
             // If the designator is a method and we are in a class or interface context, prepare for virtual invocation
             Code.put(Code.load_n);
             prepareForInvokeVirtual();

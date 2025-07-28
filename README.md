@@ -86,7 +86,6 @@ File sourceCode = new File(<"src/test/microjava/Example.mj">);
 
 Then, run the compiler:
 ```
-
 java rs.ac.bg.etf.pp1.Compiler <source_file.mj>
 ```
 

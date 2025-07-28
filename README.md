@@ -119,14 +119,18 @@ program Example
         int pos[], neg;
         int factor;
 
-        void setFactor(int f) { this.factor = f; }
-
-        int sum() {
-            int total = 0;
-            for (int i = 0; i < SIZE; i++) {
-                total += pos[i] + neg[i];
+        {
+            void setFactor ( int f){
+                this.factor = f;
             }
-            return total * factor;
+
+            int sum () {
+               int total = 0;
+               for (int i = 0; i < SIZE; i++) {
+                   total += pos[i] + neg[i];
+               }
+               return total * factor;
+            }
         }
     }
     

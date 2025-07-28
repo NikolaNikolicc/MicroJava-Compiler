@@ -82,10 +82,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     private void printScope(SyntaxNode node) {
         report_info("--- CURRENT SCOPE SYMBOLS ---", node);
-        if (Tab.currentScope().getLocals() == null){
-            report_info("There is no locals in current scope", node);
-            return;
-        }
         for(Obj member: Tab.currentScope().getLocals().symbols()){
             logSymbol("member: ", member, node);
         }
@@ -433,17 +429,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(SetClassFieldAddress node){
-        int currentOffset = 1; // 0 is for VTF address
-        // there is a chance what we still haven't added any Obj nodes and scope is null in that case
-        if (Tab.currentScope().getLocals() != null){
-            for (Obj field : Tab.currentScope().getLocals().symbols()) {
-                if (field.getKind() == Obj.Fld) {
-                    field.setAdr(currentOffset++);
-                }
-            }
-        }
-
-
         // we are creating Obj meth node for unimplemented interface methods in the current class scope
         if(parentClass != Tab.noType && parentClass.getKind() == Struct.Interface){
             for (Obj member: parentClass.getMembers()){
@@ -975,13 +960,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     private Collection<Obj> getClassMembers(Struct classStruct){
         if (thisVarDetectedFlag){
             thisVarDetectedFlag = false;
-            Scope outerScope = Tab.currentScope().getOuter();
-            if (outerScope.getLocals() != null){
-                return outerScope.getLocals().symbols();
-            } else {
-                // not found (we don't have Obj nodes in outer scope)
-                return null;
-            }
+            return Tab.currentScope().getOuter().getLocals().symbols();
         } else {
             return classStruct.getMembers();
         }
@@ -1385,6 +1364,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         node.struct = currInterface;
         classMethodDecl = true;
         Tab.openScope();
+        Tab.insert(Obj.Fld, "$tvf", Tab.intType);
     }
 
     // </editor-fold>
@@ -1422,6 +1402,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         }
         node.struct = currClass;
         Tab.openScope();
+        Tab.insert(Obj.Fld, "$tvf", Tab.intType);
     }
 
     @Override

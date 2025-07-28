@@ -81,7 +81,13 @@ This will:
 To compile a MicroJava program, open the `Compiler.java` file and set the desired `.mj` file path directly in the source code (e.g. inside the `main` method):
 
 ```java
-File sourceCode = new File("test/semantic_analysis/test_full.mj");
+File sourceCode = new File(<"src/test/microjava/Example.mj">);
+```
+
+Then, run the compiler:
+```
+
+Then, run the compiler:
 ```
 
 After compiling the source file, it will generate:

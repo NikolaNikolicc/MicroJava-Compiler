@@ -78,16 +78,28 @@ This will:
 
 ## ▶️ Usage
 
-To compile a MicroJava program:
+To compile a MicroJava program, open the `Compiler.java` file and set the desired `.mj` file path directly in the source code (e.g. inside the `main` method):
 
-```bash
-java rs.ac.bg.etf.pp1.Compiler <source_file.mj>
+```java
+File sourceCode = new File("test/semantic_analysis/test_full.mj");
 ```
 
-This will generate:
+After compiling the source file, it will generate:
 
 - `program.obj` — The compiled bytecode
 - Log files with compilation details
+
+To execute the compiled program, run:
+
+```bash
+ant run
+```
+
+This will execute the `runObj` target defined in `build.xml`, which in turn:
+
+- Disassembles the `.obj` file (bytecode)
+- Optionally runs it in debug mode (via `debugObj`)
+- Executes the final program using the MicroJava runtime
 
 ---
 
@@ -95,39 +107,38 @@ This will generate:
 
 ```java
 program Example 
-        
- const int SIZE = 10;
- set s1;
+    const int SIZE = 10;
+    set s1;
 
- class Table {
-     int pos[], neg;
-     int factor;
+    class Table {
+        int pos[], neg;
+        int factor;
 
-     void setFactor(int f) { this.factor = f; }
+        void setFactor(int f) { this.factor = f; }
 
-     int sum() {
-         int total = 0;
-         for (int i = 0; i < SIZE; i++) {
-             total += pos[i] + neg[i];
-         }
-         return total * factor;
-     }
- }
+        int sum() {
+            int total = 0;
+            for (int i = 0; i < SIZE; i++) {
+                total += pos[i] + neg[i];
+            }
+            return total * factor;
+        }
+    }
+    
+ {
+    void main() {
+        Table t = new Table();
+        t.pos = new int[SIZE];
+        t.neg = new int[SIZE];
+        t.setFactor(2);
 
- void main() {
-     Table t = new Table();
-     t.pos = new int[SIZE];
-     t.neg = new int[SIZE];
-     t.setFactor(2);
-     print(t.sum());
+        s1 = new set[20];
+        add(s1, 5);
+        add(s1, 10);
 
-     s1 = new set[20];
-     add(s1, 5);
-     add(s1, 10);
-
-     print(s1);
- }
-
+        print(s1);
+    }
+}
 ```
 
 ---

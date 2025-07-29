@@ -111,42 +111,67 @@ This will execute the `runObj` target defined in `build.xml`, which in turn:
 ## 📄 Example Program
 
 ```java
-program Example 
-    const int SIZE = 10;
-    set s1;
-
-    class Table {
-        int pos[], neg;
-        int factor;
-
+program p
+        
+const int tableSize = 10;
+set s1;
+class Table {
+   int pos[], neg[], factor;
+   {
+      void setfactor(int factor) {this.factor = factor;}
+      void putp (int a, int idx) { this.pos[idx] = a; }
+      void putn (int a, int idx) { this.neg[idx] = a; }
+      int getp (int idx) { return pos[idx]; }
+      int getn (int idx) { return neg[idx]; }
+   }
+}
+Table val;
+int rows, columns;
+{
+    void f(char ch, int a, int arg) int x;
+    {
+        x = arg;
+    }
+   void main() int x, i; char c; int arr[];
+   {
+      val = new Table();
+      val.setfactor(2);
+      s1 = new set[5];
+      add(s1, 5); add(s1, 10);
+      print(s1);
+      arr = new int[3];
+      i = 0;
+      do
+        arr[i] = i;
+      while ( i<3, i++);
+      i = 0;
+      do
+        print(arr[i]);
+      while ( i<3, i++);
+      val.pos = new int [tableSize];
+      val.neg = new int [tableSize];
+      read(x);
+      i = 0;
+      do{
+        val.putp(0, i);
+        val.putn(0, i);
+      } while (i < tableSize, i++);
+      f(c, x, i);
+      read(rows);
+      x=rows;
+      do{
+        if(x <= 0) break;
+        if (0 <= x && x < tableSize)
         {
-            void setFactor ( int f){
-                this.factor = f;
-            }
-
-            int sum () {
-               int total = 0;
-               for (int i = 0; i < SIZE; i++) {
-                   total += pos[i] + neg[i];
-               }
-               return total * factor;
-            }
+        val.putp(val.getp(x)+1);
         }
-    }
-    
- {
-    void main() {
-        Table t = new Table();
-        t.pos = new int[SIZE];
-        t.neg = new int[SIZE];
-        t.setFactor(2);
-
-        s1 = new set[20];
-        add(s1, 5);
-        add(s1, 10);
-
-        print(s1);
-    }
+        else if (‐tableSize < x && x < 0)
+        {
+        val.putn(val.getn(‐x)+1);
+        }
+        read(x);
+      }while();
+   }
 }
 ```
 

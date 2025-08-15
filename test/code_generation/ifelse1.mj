@@ -1,0 +1,95 @@
+program testif
+
+{
+    void main() int i; {
+        if (5 < 10)
+        {
+            print('t'); print('h'); print('e'); print('n'); print('_'); print('1'); print(eol);
+        }
+        else
+        {
+            print('e'); print('l'); print('s'); print('e'); print('_'); print('1'); print(eol);
+        }
+
+        if (5 >= 10)
+        {
+            print('t'); print('h'); print('e'); print('n'); print('_'); print('2'); print(eol);
+        }
+        else
+        {
+            print('e'); print('l'); print('s'); print('e'); print('_'); print('2'); print(eol);
+        }
+
+        if (3 > 2 && 4 > 3 && 8 > 7 || 9 == 9)
+        {
+            print('t'); print('h'); print('e'); print('n'); print('_'); print('3'); print(eol);
+        }
+        else
+        {
+            print('e'); print('l'); print('s'); print('e'); print('_'); print('3'); print(eol);
+        }
+
+        if (3 > 2 && 4 > 3 && 8 > 7 || 2 == 3)
+        {
+            print('t'); print('h'); print('e'); print('n'); print('_'); print('4'); print(eol);
+        }
+
+        if (2 == 2 || 2 == 3)
+        {
+            print('t'); print('h'); print('e'); print('n'); print('_'); print('5'); print(eol);
+        }
+        else
+        {
+            print('e'); print('l'); print('s'); print('e'); print('_'); print('5'); print(eol);
+        }
+
+        if (2 == 5 || 2 == 2)
+        {
+            print('t'); print('h'); print('e'); print('n'); print('_'); print('6'); print(eol);
+        }
+        else
+        {
+            print('e'); print('l'); print('s'); print('e'); print('_'); print('6'); print(eol);
+        }
+
+        if (2 == 3 || 2 == 4 || 2 == 5)
+        {
+            print('t'); print('h'); print('e'); print('n'); print('_'); print('7'); print(eol);
+        }
+        else
+        {
+            print('e'); print('l'); print('s'); print('e'); print('_'); print('7'); print(eol);
+        }
+
+        if (2 == 3 && 2 == 2 || 3 == 3 && 3 == 3)
+        {
+            print('t'); print('h'); print('e'); print('n'); print('_'); print('8'); print('_'); print('1'); print(eol);
+            if (2 == 2)
+            {
+                if (3 == 3)
+                {
+                    if (4 == 9)
+                    {
+                        print('t'); print('h'); print('e'); print('n'); print('_'); print('8'); print('_'); print('4'); print(eol);
+                    }
+                    else
+                    {
+                        print('e'); print('l'); print('s'); print('e'); print('_'); print('8'); print('_'); print('4'); print(eol);
+                    }
+                }
+            }
+        }
+        else
+        {
+            print('e'); print('l'); print('s'); print('e'); print('_'); print('8'); print('_'); print('1'); print(eol);
+        }
+        if (2 == 3 || 3 == 3 && 8 == 9)
+        {
+            print('t'); print('h'); print('e'); print('n'); print('_'); print('9'); print(eol);
+        }
+        else
+        {
+            print('e'); print('l'); print('s'); print('e'); print('_'); print('9'); print(eol);
+        }
+    }
+}

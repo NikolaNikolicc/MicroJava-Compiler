@@ -1,0 +1,18 @@
+program IfElse2
+
+{
+
+    void main(){
+
+        if (222 == 333 || 2 == 4 && 4 == 5 || 2 == 2)
+        {
+            print(1);
+        }
+        else
+        {
+            print(0);
+        }
+
+    }
+
+}

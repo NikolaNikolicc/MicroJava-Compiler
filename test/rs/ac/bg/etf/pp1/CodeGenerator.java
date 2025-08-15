@@ -1014,15 +1014,14 @@ public class CodeGenerator extends VisitorAdaptor {
         Code.putJump(0); // jump to THEN region
         int jumpAddress = Code.pc - 2;
         thenJumps.push(jumpAddress);
-        // here we do not need to fix the else jumps (as above) because we just finished the whole condition
-    }
-
-    @Override
-    public void visit(StatementConditionCondition node){
         while(!elseJumps.isEmpty()){
             int condJumpAddress = elseJumps.pop();
             Code.fixup(condJumpAddress);
         }
+    }
+
+    @Override
+    public void visit(StatementConditionCondition node){
         Code.putJump(0); // jump to ELSE region
         skipThen.push(Code.pc - 2);
         while (!thenJumps.isEmpty()) {

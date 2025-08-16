@@ -10,11 +10,6 @@ import java.util.*;
 
 public class CodeGenerator extends VisitorAdaptor {
 
-    private Obj addMeth;
-    private Obj addAllMeth;
-    private Obj printSetMeth;
-    private Obj unionSetsMeth;
-
     private Struct currClass = null;
     private Struct currInterface = null;
 
@@ -36,6 +31,7 @@ public class CodeGenerator extends VisitorAdaptor {
 
     private final ExtendedStruct es = ExtendedStruct.getInstance();
     private final TVFHandler tvfHandler = TVFHandler.getInstance();
+    private final SetHandler setHandler = SetHandler.getInstance();
 
     public int getMainPC(){return this.mainPC;}
 
@@ -67,336 +63,9 @@ public class CodeGenerator extends VisitorAdaptor {
         Code.put(Code.return_);
     }
 
-    // <editor-fold desc="Set Embedded Methods">
-
-    private void generateAdd(){
-//        add
-//
-//        if (set_size >= set_capacity)return;
-//        set: [set_size, set_elem_0, ...], set_size <= set_capacity
-//        set_capacity = arraylength
-//
-//        for (int i = 0; i < set_size; i++){
-//            if (set[i + 1] == b)return;
-//        }
-//        set[set_size] = b;
-//        set_size++;
-
-        addMeth = Tab.find("add");
-        Obj a = null; // Local variable for set
-        Obj b = null; // Local variable for element to add
-        Obj i = null;
-        for(Obj member: addMeth.getLocalSymbols()){
-            if (member.getName().equals("a")) {
-                a = member;
-            } else if (member.getName().equals("b")) {
-                b = member;
-            } else if (member.getName().equals("i")) {
-                i = member;
-            }
-        }
-        addMeth.setAdr(Code.pc);
-
-        // add(set, b):
-        // set[0] = set_size
-        // set[1..set_size] = elementi
-        // Ako je set_size >= set.length - 1, return
-        // Ako je b već u skupu, return
-        // Ako nije, dodaj na kraj i uvećaj set[0]
-        Code.put(Code.enter);
-        Code.put(2); // 2 formalna parametra: a, b
-        Code.put(3); // 2 parametra + 1 lokalna promenljiva (i)
-
-        Code.load(a);
-        Code.loadConst(0);
-        Code.put(Code.aload); // set[0]
-
-        Code.load(a);
-        Code.put(Code.arraylength); // set.length
-        Code.loadConst(1);
-        Code.put(Code.sub);
-
-        Code.putFalseJump(Code.lt, 0); // if set[0] >= set.length - 1 then return
-        int fullReturnJump = Code.pc - 2;
-
-        Code.loadConst(0);
-        Code.store(i); // i = 0
-
-        // if (i >= set[0])break; // while (i < set[0])
-        int loopStart = Code.pc;
-        Code.load(i); // i
-        Code.load(a);
-        Code.loadConst(0);
-        Code.put(Code.aload); // set[0] - get the size of the set
-        Code.putFalseJump(Code.lt, 0); // if i >= set[0] then break
-        int breakJump = Code.pc - 2;
-
-        // if (set[i +1] == b) return;
-        Code.load(a);
-        Code.load(i);
-        Code.loadConst(1);
-        Code.put(Code.add); // i + 1
-        Code.put(Code.aload); // set[i + 1]
-        Code.load(b);
-        Code.putFalseJump(Code.ne, 0); // if set[i + 1] == b then return
-        int returnJump = Code.pc - 2;
-
-        // i++
-        Code.load(i);
-        Code.loadConst(1);
-        Code.put(Code.add); // i + 1
-        Code.store(i);
-
-        Code.putJump(loopStart); // jump to the start of the loop
-
-        Code.fixup(breakJump);
-        Code.load(a);
-        Code.load(a);
-        Code.loadConst(0);
-        Code.put(Code.aload); // set[0] - get the size of the set
-        Code.loadConst(1);
-        Code.put(Code.add); // set[0] + 1
-        Code.load(b);
-        Code.put(Code.astore); // set[set[0] + 1] = b
-
-        Code.load(a);
-        Code.loadConst(0);
-        Code.load(a);
-        Code.loadConst(0);
-        Code.put(Code.aload); // set[0] - get the size of the set
-        Code.loadConst(1);
-        Code.put(Code.add); // set[0] + 1
-        Code.put(Code.astore); // set[0] = set[0] + 1
-
-        Code.fixup(returnJump);
-        Code.fixup(fullReturnJump);
-
-        Code.put(Code.exit);
-        Code.put(Code.return_);
-
-    }
-
-    private void generateAddAll(){
-//        addAll(a, b)
-//
-//        for (int i = 0; i < b_size; i++){
-//            add(a, b[i])
-//        }
-
-        addAllMeth = Tab.find("addAll");
-
-        Obj a = null; // Local variable for set
-        Obj b = null; // Local variable for element to add
-        Obj i = null;
-        for(Obj member: addMeth.getLocalSymbols()){
-            if (member.getName().equals("a")) {
-                a = member;
-            } else if (member.getName().equals("b")) {
-                b = member;
-            } else if (member.getName().equals("i")) {
-                i = member;
-            }
-        }
-        addAllMeth.setAdr(Code.pc);
-
-        Code.put(Code.enter);
-        Code.put(2); // 2 formalna parametra: a, b
-        Code.put(3); // 2 parametra + 1 lokalna promenljiva (i)
-
-        Code.loadConst(0);
-        Code.store(i); // i = 0
-
-        int loopStart = Code.pc;
-
-        // if (i >= b.length)break; // while (i < b.length)
-        Code.load(i);
-        Code.load(b);
-        Code.put(Code.arraylength);
-        Code.putFalseJump(Code.lt, 0);
-        int loopEnd = Code.pc - 2;
-
-        // add(a, b[i]);
-        Code.load(a);
-        Code.load(b);
-        Code.load(i);
-        Code.put(Code.aload); // b[i]
-        int addOffset = addMeth.getAdr() - Code.pc; // Calculate the offset to the add method
-        Code.put(Code.call);
-        Code.put2(addOffset); // Call the add method
-
-        // i++
-        Code.load(i);
-        Code.loadConst(1);
-        Code.put(Code.add); // i + 1
-        Code.store(i);
-
-        Code.putJump(loopStart); // jump to the start of the loop
-
-        Code.fixup(loopEnd);
-
-        Code.put(Code.exit);
-        Code.put(Code.return_);
-    }
-
-    private void generatePrintSet(){
-        printSetMeth = Tab.find("$printSet");
-
-        Obj a = null; // Local variable for set
-        Obj offset = null;
-        Obj i = null;
-        for(Obj member: printSetMeth.getLocalSymbols()){
-            if (member.getName().equals("a")) {
-                a = member;
-            } else if (member.getName().equals("offset")) {
-                offset = member;
-            } else if (member.getName().equals("i")) {
-                i = member;
-            }
-        }
-        printSetMeth.setAdr(Code.pc);
-
-        Code.put(Code.enter);
-        Code.put(2); // 2 formalna parametra: a, offset
-        Code.put(3); // 2 parametra + 1 lokalna promenljiva (i)
-
-        int loopStart = Code.pc;
-        Code.load(i);
-        Code.load(a);
-        Code.loadConst(0);
-        Code.put(Code.aload); // set[0] - get the size of the set
-        Code.putFalseJump(Code.lt, 0); // if i >= set[0] then break
-        int loopEnd = Code.pc - 2;
-
-        // print set[i + 1]
-        Code.load(a);
-        Code.load(i);
-        Code.loadConst(1);
-        Code.put(Code.add); // i + 1
-        Code.put(Code.aload); // set[i + 1]
-        Code.load(offset);
-        Code.put(Code.print);
-
-        // i++
-        Code.load(i);
-        Code.loadConst(1);
-        Code.put(Code.add); // i + 1
-        Code.store(i);
-
-        Code.putJump(loopStart);
-
-        Code.fixup(loopEnd);
-
-        Code.put(Code.exit);
-        Code.put(Code.return_);
-    }
-
-    // c = a union b
-    private void generateUnionSets(){
-        unionSetsMeth = Tab.find("$union");
-
-        Obj a = null;
-        Obj b = null;
-        Obj c = null;
-        Obj i = null;
-        for(Obj member: unionSetsMeth.getLocalSymbols()){
-            if (member.getName().equals("a")) {
-                a = member;
-            } else if (member.getName().equals("b")) {
-                b = member;
-            } else if (member.getName().equals("c")) {
-                c = member;
-            } else if (member.getName().equals("i")) {
-                i = member;
-            }
-        }
-        unionSetsMeth.setAdr(Code.pc);
-
-        Code.put(Code.enter);
-        Code.put(3); // 3 formalna parametra: a, b, c
-        Code.put(4); // 3 parametra + 1 lokalna promenljiva (i)
-
-        // c = a;
-        Code.loadConst(0);
-        Code.store(i); // i = 0
-
-        int loopStart = Code.pc;
-
-        Code.load(i);
-        Code.load(a);
-        Code.loadConst(0);
-        Code.put(Code.aload);
-
-        Code.putFalseJump(Code.lt, 0);
-        int loopEnd = Code.pc - 2;
-
-        // add(c, a[i + 1])
-        Code.load(c);
-        Code.load(a);
-        Code.load(i);
-        Code.loadConst(1);
-        Code.put(Code.add); // i + 1
-        Code.put(Code.aload); // a[i + 1]
-        int addOffset = addMeth.getAdr() - Code.pc; // Calculate the offset to the add method
-        Code.put(Code.call);
-        Code.put2(addOffset); // Call the add method
-
-        // i++
-        Code.load(i);
-        Code.loadConst(1);
-        Code.put(Code.add); // i + 1
-        Code.store(i);
-
-        Code.putJump(loopStart);
-
-        Code.fixup(loopEnd);
-
-        // c = c union b
-        Code.loadConst(0);
-        Code.store(i); // i = 0
-
-        int loopStart1 = Code.pc;
-
-        Code.load(i);
-        Code.load(b);
-        Code.loadConst(0);
-        Code.put(Code.aload);
-
-        Code.putFalseJump(Code.lt, 0);
-        int loopEnd1 = Code.pc - 2;
-
-        // add(c, b[i + 1])
-        Code.load(c);
-        Code.load(b);
-        Code.load(i);
-        Code.loadConst(1);
-        Code.put(Code.add);
-        Code.put(Code.aload); // b[i + 1]
-        int addOffset1 = addMeth.getAdr() - Code.pc; // Calculate the offset to the add method
-        Code.put(Code.call);
-        Code.put2(addOffset1); // Call the add method
-
-        // i++
-        Code.load(i);
-        Code.loadConst(1);
-        Code.put(Code.add); // i + 1
-        Code.store(i);
-
-        Code.putJump(loopStart1);
-
-        Code.fixup(loopEnd1);
-
-        Code.put(Code.exit);
-        Code.put(Code.return_);
-    }
-
-    // </editor-fold>
-
     private void initializeMethods(){
         generateOrdChrLenMethods();
-        generateAdd();
-        generateAddAll();
-        generatePrintSet();
-        generateUnionSets();
+
     }
 
     CodeGenerator(){
@@ -475,7 +144,7 @@ public class CodeGenerator extends VisitorAdaptor {
     public void visit(StatementPrint node){
         if (es.equals(node.getExpr().struct, setType)) {
             Code.loadConst(0);
-            int offset = printSetMeth.getAdr() - Code.pc; // Calculate the offset to the printSet method
+            int offset = setHandler.printSetMeth.getAdr() - Code.pc; // Calculate the offset to the printSet method
             Code.put(Code.call);
             Code.put2(offset); // Call the printSet method
             return;
@@ -489,7 +158,7 @@ public class CodeGenerator extends VisitorAdaptor {
     public void visit(StatementPrintNumber node){
         if (es.equals(node.getExpr().struct, setType)) {
             Code.loadConst(node.getN2());
-            int offset = printSetMeth.getAdr() - Code.pc; // Calculate the offset to the printSet method
+            int offset = setHandler.printSetMeth.getAdr() - Code.pc; // Calculate the offset to the printSet method
             Code.put(Code.call);
             Code.put2(offset); // Call the printSet method
             return;
@@ -699,7 +368,7 @@ public class CodeGenerator extends VisitorAdaptor {
         Code.load(node.getDesignator1().obj);
         Code.load(node.getDesignator2().obj);
         Code.load(node.getDesignator().obj);
-        int offset = unionSetsMeth.getAdr() - Code.pc; // Calculate the offset to the add method
+        int offset = setHandler.unionSetsMeth.getAdr() - Code.pc; // Calculate the offset to the add method
         Code.put(Code.call);
         Code.put2(offset); // Call the unionSets method
     }
@@ -709,7 +378,7 @@ public class CodeGenerator extends VisitorAdaptor {
         Code.load(node.getDesignator1().obj);
         Code.load(node.getDesignator2().obj);
         Code.load(node.getDesignator().obj);
-        int offset = unionSetsMeth.getAdr() - Code.pc; // Calculate the offset to the add method
+        int offset = setHandler.unionSetsMeth.getAdr() - Code.pc; // Calculate the offset to the add method
         Code.put(Code.call);
         Code.put2(offset); // Call the unionSets method
     }

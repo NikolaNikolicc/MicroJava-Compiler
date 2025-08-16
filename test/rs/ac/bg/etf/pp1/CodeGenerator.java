@@ -401,7 +401,7 @@ public class CodeGenerator extends VisitorAdaptor {
     public void visit(DesignatorVar node){
         if (node.obj.getKind() == Obj.Fld){
             Code.put(Code.load_n);
-        } else if (node.obj.getKind() == Obj.Meth && (currClass != null || currInterface != null) && !Compiler.isMethodEmbedded(node.obj.getName())) {
+        } else if (node.obj.getKind() == Obj.Meth && (currClass != null || currInterface != null) && !TabExtended.isMethodEmbedded(node.obj.getName())) {
             // If the designator is a method and we are in a class or interface context, prepare for virtual invocation
             Code.put(Code.load_n);
             prepareForInvokeVirtual();

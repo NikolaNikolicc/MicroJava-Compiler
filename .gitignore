@@ -2,7 +2,6 @@
 .settings/
 bin/*
 config/*
-lib/*
 logs/*
 .classpath
 .project

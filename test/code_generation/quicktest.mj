@@ -1,0 +1,15 @@
+program Quicktest
+
+{
+
+    void main(){
+
+        print(13, 2);
+        print(24, 6);
+        print('a', 3);
+
+    }
+
+}
+
+

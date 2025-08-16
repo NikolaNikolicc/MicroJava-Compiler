@@ -266,7 +266,7 @@ public class SetHandler {
         Code.loadConst(1);
         Code.put(Code.add); // i + 1
         Code.put(Code.aload); // set[i + 1]
-        Code.load(offset);
+        Code.loadConst(0);
         Code.put(Code.print);
         printChar(',', null);
 
@@ -285,10 +285,10 @@ public class SetHandler {
         Code.loadConst(1);
         Code.put(Code.add);
         Code.put(Code.aload);
-        Code.load(offset);
+        Code.loadConst(0);
         Code.put(Code.print); // print last element without comma
 
-        printChar(')', null);
+        printChar(')', offset);
 
         Code.put(Code.exit);
         Code.put(Code.return_);

@@ -31,7 +31,7 @@ public class CodeGenerator extends VisitorAdaptor {
 
     private final ExtendedStruct es = ExtendedStruct.getInstance();
     private final TVFHandler tvfHandler = TVFHandler.getInstance();
-    private final SetHandler setHandler = SetHandler.getInstance();
+    private SetHandler setHandler;
 
     public int getMainPC(){return this.mainPC;}
 
@@ -65,7 +65,7 @@ public class CodeGenerator extends VisitorAdaptor {
 
     private void initializeMethods(){
         generateOrdChrLenMethods();
-
+        setHandler = SetHandler.getInstance();
     }
 
     CodeGenerator(){

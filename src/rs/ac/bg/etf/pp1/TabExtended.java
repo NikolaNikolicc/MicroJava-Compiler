@@ -12,8 +12,22 @@ public class TabExtended {
 
     Obj setObj;
 
+    // <editor-fold desc="Singleton Instance">
+
     private static TabExtended instance;
 
+    private TabExtended() {
+        init();
+    }
+
+    public static TabExtended getInstance() {
+        if (instance == null) {
+            instance = new TabExtended();
+        }
+        return instance;
+    }
+
+    // </editor-fold>
 
     // <editor-fold desc="embedded types">
 
@@ -142,6 +156,7 @@ public class TabExtended {
 
     // </editor-fold>
 
+    // <editor-fold desc="interface methods">
 
     private void init(){
         // inicijalizacija tabele simbola
@@ -163,19 +178,10 @@ public class TabExtended {
         createEmbeddedMethods();
     }
 
-    private TabExtended() {
-        init();
-    }
-
-    public static TabExtended getInstance() {
-        if (instance == null) {
-            instance = new TabExtended();
-        }
-        return instance;
-    }
-
     static boolean isMethodEmbedded(String node) {
         List<String> embeddedMethods = Arrays.asList("add", "addAll", "ord", "ch", "len", "arr", "$printSet", "$union");
         return embeddedMethods.contains(node);
     }
+
+    // </editor-fold>
 }

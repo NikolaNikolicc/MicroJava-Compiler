@@ -13,17 +13,18 @@ public class SetHandler {
 
     // <editor-fold desc="Singleton Instance">
 
-
     private static SetHandler instance;
-    private SetHandler(){}
+
+    private SetHandler(){
+        generateAdd();
+        generateAddAll();
+        generatePrintSet();
+        generateUnionSets();
+    }
 
     public static SetHandler getInstance(){
         if (instance == null) {
             instance = new SetHandler();
-            instance.generateAdd();
-            instance.generateAddAll();
-            instance.generatePrintSet();
-            instance.generateUnionSets();
         }
         return instance;
     }
@@ -143,12 +144,15 @@ public class SetHandler {
 
     }
 
+    /*
+    addAll(a, b)
+
+    for (int i = 0; i < b_size; i++){
+        add(a, b[i])
+    }
+    */
     private void generateAddAll(){
-//        addAll(a, b)
-//
-//        for (int i = 0; i < b_size; i++){
-//            add(a, b[i])
-//        }
+
 
         addAllMeth = Tab.find("addAll");
 

@@ -3,17 +3,17 @@ package rs.ac.bg.etf.pp1;
 import rs.etf.pp1.symboltable.Tab;
 import rs.etf.pp1.symboltable.concepts.Struct;
 
-public class ExtendedStruct {
+public class StructExtended {
     // Singleton instance
-    private static ExtendedStruct instance;
+    private static StructExtended instance;
 
     // Private constructor to prevent instantiation
-    private ExtendedStruct() {}
+    private StructExtended() {}
 
     // Public method to get the singleton instance
-    public static ExtendedStruct getInstance() {
+    public static StructExtended getInstance() {
         if (instance == null) {
-            instance = new ExtendedStruct();
+            instance = new StructExtended();
         }
         return instance;
     }

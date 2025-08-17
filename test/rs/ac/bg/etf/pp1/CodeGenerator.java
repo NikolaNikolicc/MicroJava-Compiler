@@ -30,7 +30,7 @@ public class CodeGenerator extends VisitorAdaptor {
     private final Stack<Collection<Integer>> whileJumps = new Stack<>(); // for continue statements
     private final Stack<Collection<Integer>> skipWhile = new Stack<>(); // for break statements
 
-    private final ExtendedStruct es = ExtendedStruct.getInstance();
+    private final StructExtended es = StructExtended.getInstance();
     private final TVFHandler tvfHandler = TVFHandler.getInstance();
     private SetHandler setHandler;
 

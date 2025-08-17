@@ -7,7 +7,6 @@
                 <exclude name="util/MySymbolTableVisitor.java"/>
                 <exclude name="RuleVisitor.java"/>
                 <exclude name="SemanticAnalyzer.java"/>
-                <exclude name="ExtendedStruct.java"/>
                 <exclude name="StructExtended.java"/>
                 <exclude name="TabExtended.java"/>
             </fileset>

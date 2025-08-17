@@ -79,7 +79,6 @@ nonterminal MethodSignature MethodSignature;
 nonterminal TypeChoice TypeChoice;
 nonterminal FormParsOptional FormParsOptional;
 nonterminal FormPars FormPars;
-nonterminal MethodDecl MethodDecl;
 nonterminal VarDeclList VarDeclList;
 nonterminal MethodDeclList MethodDeclList;
 nonterminal StatementList StatementList;
@@ -110,7 +109,7 @@ nonterminal HandleWhileCondition HandleWhileCondition;
 nonterminal GoToStart GoToStart;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr, CondFact, CondTerm, Condition, StatementCondition, Type, ClassDeclName, ExtendsClass, ClassDecl, InterfaceDeclName, InterfaceDecl;
-nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue, Designator, DesignatorArrayName, DesignatorClassMore, DesignatorClassArrayName, DesignatorClassName, DesignatorClassElem, VarDeclFinal;
+nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue, Designator, DesignatorArrayName, DesignatorClassMore, DesignatorClassArrayName, DesignatorClassName, DesignatorClassElem, VarDeclFinal, MethodDecl;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Obj MethodName;
 

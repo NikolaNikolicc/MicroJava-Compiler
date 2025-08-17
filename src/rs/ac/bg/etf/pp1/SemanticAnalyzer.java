@@ -36,7 +36,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     private boolean thisVarDetectedFlag = false;
 
     private Struct currTypeVar = Tab.noType; // Tab.noType - invalid type
-    private Struct currTypeMeth = null; // null - void method, Tab.noType - invalid return type
+    private Struct currTypeMeth = null; // Tab.noType - void method
     private String currTypeName = "";
 
     private Obj mainMeth = null;
@@ -383,6 +383,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         if (!voidMethodFlag && !returnExprFlag && !currMeth.getName().equals("main")){
             report_error("[MethodDecl] U metodu("+ currMeth.getName() +") povratnog tipa koji nije void se mora pojaviti barem jedna return naredba koja vraca vrednost", node);
         }
+        node.obj = currMeth;
         closeMethod();
     }
 

@@ -16,6 +16,7 @@ public class CodeGenerator extends VisitorAdaptor {
     private final Struct setType = Tab.find("set").getType(); // Set type from the symbol table
 
     private boolean chainingMethodCall = false;
+    private int noReturnFromNoVoidMethodTrapPointer = 0;
 
     private int mainPC;
     private final static int fieldSize = 4;
@@ -63,8 +64,30 @@ public class CodeGenerator extends VisitorAdaptor {
         Code.put(Code.return_);
     }
 
+    static void printChar(char ch, Obj width){
+        Code.loadConst(ch);
+        if (width != null) {
+            Code.load(width);
+        } else {
+            Code.loadConst(0); // Default width if not provided
+        }
+        Code.put(Code.bprint);
+    }
+
+    private int generateTrap(String message){
+        int pointer = Code.pc;
+        for(char ch: message.toCharArray()){
+            printChar(ch, null);
+        }
+        Code.put(Code.trap);
+        Code.put(1);
+        return pointer;
+    }
+
     private void initializeMethods(){
         generateOrdChrLenMethods();
+        String noReturnFromNoVoidMethodMessage = "No return from non-void method";
+        noReturnFromNoVoidMethodTrapPointer = generateTrap(noReturnFromNoVoidMethodMessage);
         setHandler = SetHandler.getInstance();
     }
 
@@ -114,16 +137,27 @@ public class CodeGenerator extends VisitorAdaptor {
         tvfHandler.putAllTVFsInMemory();
     }
 
-    @Override
-    public void visit(MethodDecl node){
+    private void exitReturnFromMethod(){
         Code.put(Code.exit);
         Code.put(Code.return_);
     }
 
     @Override
+    public void visit(MethodDecl node){
+        if (!es.equals(node.obj.getType(), Tab.noType)){
+            Code.putJump(noReturnFromNoVoidMethodTrapPointer);
+        }
+        exitReturnFromMethod();
+    }
+
+    @Override
     public void visit(StatementReturn node){
-        Code.put(Code.exit);
-        Code.put(Code.return_);
+        exitReturnFromMethod();
+    }
+
+    @Override
+    public void visit(StatementReturnExpr node){
+        exitReturnFromMethod();
     }
 
     // </editor-fold>

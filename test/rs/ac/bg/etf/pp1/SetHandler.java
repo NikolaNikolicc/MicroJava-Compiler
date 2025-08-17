@@ -212,16 +212,6 @@ public class SetHandler {
         Code.put(Code.return_);
     }
 
-    private void printChar(char ch, Obj width){
-        Code.loadConst(ch);
-        if (width != null) {
-            Code.load(width);
-        } else {
-            Code.loadConst(0); // Default width if not provided
-        }
-        Code.put(Code.bprint);
-    }
-
     private void generatePrintSet(){
         printSetMeth = Tab.find("$printSet");
 
@@ -246,12 +236,12 @@ public class SetHandler {
         Code.put(2); // 2 formalna parametra: a, offset
         Code.put(3); // 2 parametra + 1 lokalna promenljiva (i)
 
-        printChar('s', null);
-        printChar('e', null);
-        printChar('t', null);
-        printChar(':', null);
-        printChar(' ', null);
-        printChar('(', null);
+        CodeGenerator.printChar('s', null);
+        CodeGenerator.printChar('e', null);
+        CodeGenerator.printChar('t', null);
+        CodeGenerator.printChar(':', null);
+        CodeGenerator.printChar(' ', null);
+        CodeGenerator.printChar('(', null);
 
         int loopStart = Code.pc;
 
@@ -272,7 +262,7 @@ public class SetHandler {
         Code.put(Code.aload); // set[i + 1]
         Code.loadConst(0);
         Code.put(Code.print);
-        printChar(',', null);
+        CodeGenerator.printChar(',', null);
 
         // i++
         Code.load(i);
@@ -292,7 +282,7 @@ public class SetHandler {
         Code.loadConst(0);
         Code.put(Code.print); // print last element without comma
 
-        printChar(')', offset);
+        CodeGenerator.printChar(')', offset);
 
         Code.put(Code.exit);
         Code.put(Code.return_);

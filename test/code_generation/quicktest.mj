@@ -2,11 +2,13 @@ program Quicktest
 
 {
 
+    int method1(){
+        if (2 == 3)return 1;
+    }
+
     void main(){
 
-        print(13, 2);
-        print(24, 6);
-        print('a', 3);
+        method1();
 
     }
 

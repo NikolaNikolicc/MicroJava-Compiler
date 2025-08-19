@@ -11,6 +11,7 @@ public class SetHandler {
     Obj printSetMeth;
     Obj unionSetsMeth;
     Obj intersectSetsMeth;
+    Obj differenceSetsMeth;
 
     // <editor-fold desc="Singleton Instance">
 
@@ -22,6 +23,7 @@ public class SetHandler {
         generatePrintSet();
         generateUnionSets();
         generateIntersectionSets();
+        generateDifferenceSets();
     }
 
     public static SetHandler getInstance(){
@@ -379,12 +381,6 @@ public class SetHandler {
         Code.put(Code.call);
         Code.put2(addOffset);
 
-        Code.load(dst);
-        Code.loadConst(0);
-        addOffset = printSetMeth.getAdr() - Code.pc;
-        Code.put(Code.call);
-        Code.put2(addOffset);
-
         Code.putJump(0);
         int inci = Code.pc - 2;
 
@@ -413,6 +409,125 @@ public class SetHandler {
         Code.put(Code.exit);
         Code.put(Code.return_);
 
+    }
+
+    /* difference
+     size = s1[0];
+     int i = 1;
+     while (i <= s1[0]){
+          int j = 1;
+          while (j <= s2[0]){
+             if (s1[i] == s2[j]){
+                 goto next;
+             }
+             j++;
+         }
+         res.add(res, s1[i]);
+         next: i++;
+    }
+    */
+    private void generateDifferenceSets(){
+        differenceSetsMeth = Tab.find("$difference");
+
+        Obj dst = null;
+        Obj s1 = null;
+        Obj s2 = null;
+        Obj i = null;
+        Obj j = null;
+        for(Obj member: differenceSetsMeth.getLocalSymbols()){
+            if (member.getName().equals("s1")) {
+                s1 = member;
+            } else if (member.getName().equals("s2")) {
+                s2 = member;
+            } else if (member.getName().equals("dst")) {
+                dst = member;
+            } else if (member.getName().equals("i")) {
+                i = member;
+            } else if (member.getName().equals("j")){
+                j = member;
+            }
+        }
+
+        assert dst != null && s1 != null && s2 != null && i != null && j != null: "Local variables not found in add method";
+
+        differenceSetsMeth.setAdr(Code.pc);
+
+        Code.put(Code.enter);
+        Code.put(3);
+        Code.put(5); // 3 formalna parametra: dst, s1, s2 + 2 lokalne promenljive (i, j)
+
+        Code.loadConst(1);
+        Code.store(i); // i = 1
+
+        int loopStart = Code.pc;
+        // if (i > s1[0])break; // while (i <= s1[0])
+        Code.load(i);
+        Code.load(s1);
+        Code.loadConst(0);
+        Code.put(Code.aload); // s1[0] - get the size of the set
+        Code.putFalseJump(Code.le, 0); // if i > s1[0] then break
+        int loopEnd = Code.pc - 2;
+
+        Code.loadConst(1);
+        Code.store(j); // j = 1
+
+        int innerLoopStart = Code.pc;
+        Code.load(j);
+        Code.load(s2);
+        Code.loadConst(0);
+        Code.put(Code.aload); // s2[0] - get the size of the set
+        Code.putFalseJump(Code.le, 0);
+        int innerLoopEnd = Code.pc - 2;
+
+        // if (s1[i] == s2[j])
+        Code.load(s1);
+        Code.load(i);
+        Code.put(Code.aload);
+
+        Code.load(s2);
+        Code.load(j);
+        Code.put(Code.aload);
+        Code.putFalseJump(Code.eq, 0); // if s1[i] != s2[j] then continue
+        int incj = Code.pc - 2;
+
+        Code.putJump(0);
+        int inci = Code.pc - 2;
+
+        Code.fixup(incj);
+        // j++
+        Code.load(j);
+        Code.loadConst(1);
+        Code.put(Code.add); // j + 1
+        Code.store(j);
+
+        Code.putJump(innerLoopStart); // jump to the start of the inner loop
+        Code.fixup(innerLoopEnd);
+
+        // set params
+        Code.load(dst);
+        Code.load(s1);
+        Code.load(i);
+        Code.put(Code.aload);
+
+        // call add method
+        int addOffset = addMeth.getAdr() - Code.pc;
+        Code.put(Code.call);
+        Code.put2(addOffset);
+
+        Code.fixup(inci);
+        // i++
+        Code.load(i);
+        Code.loadConst(1);
+        Code.put(Code.add);
+        Code.store(i);
+        Code.putJump(loopStart); // jump to the start of the outer loop
+
+        Code.fixup(loopEnd);
+
+        Code.load(dst); // load the result set
+
+        Code.put(Code.exit);
+        Code.put(Code.return_);
     }
 
     // c = a union b

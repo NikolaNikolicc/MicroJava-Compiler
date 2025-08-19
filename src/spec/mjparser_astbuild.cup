@@ -54,7 +54,7 @@ scan with {:
 :}
 
 
-terminal PROG, BREAK, CLASS, ELSE, CONST, IF, NEW, PRINT, READ, RETURN, VOID, EXTENDS, CONTINUE, UNION, INTERSECTION, DO, WHILE, MAP, INTERFACE, PLUS, MINUS, MUL, DIV, MOD, EQEQ, NOTEQ, GR, GREQ, LE, LEQ, AND, OR, EQ, INC, DEC, SEMI, COLON, COMMA, DOT, LPAREN, RPAREN, LBRACKET, RBRACKET, LBRACE, RBRACE, MAIN ;
+terminal PROG, BREAK, CLASS, ELSE, CONST, IF, NEW, PRINT, READ, RETURN, VOID, EXTENDS, CONTINUE, UNION, INTERSECTION, DIFFERENCE, DO, WHILE, MAP, INTERFACE, PLUS, MINUS, MUL, DIV, MOD, EQEQ, NOTEQ, GR, GREQ, LE, LEQ, AND, OR, EQ, INC, DEC, SEMI, COLON, COMMA, DOT, LPAREN, RPAREN, LBRACKET, RBRACKET, LBRACE, RBRACE, MAIN ;
 terminal Integer NUMBER, BOOL ;
 terminal String IDENT ;
 terminal Character CHAR ;
@@ -455,4 +455,4 @@ Addop ::= (AddopPlus)PLUS {: RESULT=new AddopPlus(); :} | (AddopMinus)MINUS {: R
 
 Mulop ::= (MulopMul)MUL {: RESULT=new MulopMul(); :} | (MulopDiv)DIV {: RESULT=new MulopDiv(); :} | (MulopMod)MOD {: RESULT=new MulopMod(); :} ;
 
-Setop ::= (SetopUnion) UNION {: RESULT=new SetopUnion(); :} | (SetopIntersection) INTERSECTION {: RESULT=new SetopIntersection(); :} ;
+Setop ::= (SetopUnion) UNION {: RESULT=new SetopUnion(); :} | (SetopIntersection) INTERSECTION {: RESULT=new SetopIntersection(); :} | (SetopDifference) DIFFERENCE {: RESULT=new SetopDifference(); :} ;

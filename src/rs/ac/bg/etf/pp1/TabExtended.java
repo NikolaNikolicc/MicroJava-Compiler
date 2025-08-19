@@ -173,12 +173,40 @@ public class TabExtended {
         }
     }
 
+    private void createDifferenceSetsMethod(){
+        Obj differenceSetsObj;
+        Tab.currentScope().addToLocals(differenceSetsObj = new Obj(Obj.Meth, "$difference", setObj.getType(), 0, 5));
+        {
+            Tab.openScope();
+
+            Obj s1 = new Obj(Obj.Var, "s1", setObj.getType(), 0, SemanticAnalyzer.LEVEL_GLOBAL_METH_VAR);
+            Obj s2 = new Obj(Obj.Var, "s2", setObj.getType(), 1, SemanticAnalyzer.LEVEL_GLOBAL_METH_VAR);
+            Obj dest = new Obj(Obj.Var, "dst", setObj.getType(), 2, SemanticAnalyzer.LEVEL_GLOBAL_METH_VAR); // hidden parameter for return value
+            Obj i = new Obj(Obj.Var, "i", Tab.intType, 3, SemanticAnalyzer.LEVEL_GLOBAL_METH_VAR);
+            Obj j = new Obj(Obj.Var, "j", Tab.intType, 4, SemanticAnalyzer.LEVEL_GLOBAL_METH_VAR);
+
+            dest.setFpPos(SemanticAnalyzer.FP_POS_FORMAL_PARAMETER);
+            s1.setFpPos(SemanticAnalyzer.FP_POS_FORMAL_PARAMETER);
+            s2.setFpPos(SemanticAnalyzer.FP_POS_FORMAL_PARAMETER);
+
+            Tab.currentScope().addToLocals(s1);
+            Tab.currentScope().addToLocals(s2);
+            Tab.currentScope().addToLocals(dest);
+            Tab.currentScope().addToLocals(i);
+            Tab.currentScope().addToLocals(j);
+
+            differenceSetsObj.setLocals(Tab.currentScope.getLocals());
+            Tab.closeScope();
+        }
+    }
+
     private void createEmbeddedMethods() {
         createAddMethod();
         createAddAllMethod();
         createPrintSetMethod();
         createUnionSetMethod();
         createIntersectSetsMethod();
+        createDifferenceSetsMethod();
     }
 
     // </editor-fold>

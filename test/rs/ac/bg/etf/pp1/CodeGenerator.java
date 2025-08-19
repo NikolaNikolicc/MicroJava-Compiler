@@ -414,6 +414,8 @@ public class CodeGenerator extends VisitorAdaptor {
             offset = setHandler.unionSetsMeth.getAdr() - Code.pc; // Calculate the offset to the add method
         } else if (node.getSetop() instanceof  SetopIntersection){
             offset = setHandler.intersectSetsMeth.getAdr() - Code.pc;
+        } else if (node.getSetop() instanceof SetopDifference){
+            offset = setHandler.differenceSetsMeth.getAdr() - Code.pc;
         }
 
         Code.put(Code.call);
@@ -438,6 +440,8 @@ public class CodeGenerator extends VisitorAdaptor {
             offset = setHandler.unionSetsMeth.getAdr() - Code.pc; // Calculate the offset to the add method
         } else if (node.getSetop() instanceof  SetopIntersection){
             offset = setHandler.intersectSetsMeth.getAdr() - Code.pc;
+        } else if (node.getSetop() instanceof SetopDifference){
+            offset = setHandler.differenceSetsMeth.getAdr() - Code.pc;
         }
 
         Code.put(Code.call);

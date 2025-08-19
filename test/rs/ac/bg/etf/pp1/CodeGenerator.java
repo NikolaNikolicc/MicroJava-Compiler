@@ -401,10 +401,15 @@ public class CodeGenerator extends VisitorAdaptor {
     public void visit(DesignatorAssignSetop node){
         Code.load(node.getDesignator1().obj);
         Code.load(node.getDesignator2().obj);
+        // create new result array for the union result (same size as the assign left operand)
         Code.load(node.getDesignator().obj);
+        Code.put(Code.arraylength);
+        Code.put(Code.newarray);
+        Code.put(1);
         int offset = setHandler.unionSetsMeth.getAdr() - Code.pc; // Calculate the offset to the add method
         Code.put(Code.call);
         Code.put2(offset); // Call the unionSets method
+        Code.store(node.getDesignator().obj); // store the result of the union in the assign left operand
     }
 
     @Override

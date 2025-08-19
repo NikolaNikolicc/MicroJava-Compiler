@@ -386,6 +386,8 @@ public class SetHandler {
 
         Code.fixup(loopEnd1);
 
+        Code.load(c);
+
         Code.put(Code.exit);
         Code.put(Code.return_);
     }

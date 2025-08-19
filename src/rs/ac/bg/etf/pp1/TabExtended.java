@@ -56,13 +56,12 @@ public class TabExtended {
 
     private void createAddMethod(){
         Obj addObj;
-        Tab.currentScope().addToLocals(addObj = new Obj(Obj.Meth, "add", Tab.noType, 0, 2));
+        Tab.currentScope().addToLocals(addObj = new Obj(Obj.Meth, "add", Tab.noType, 0, 3));
         {
             Tab.openScope();
-            Obj a = new Obj(Obj.Var, "a", setObj.getType(), 0, 2);
-            Obj b = new Obj(Obj.Var, "b", Tab.intType, 0, 1);
-
-            Obj i = new Obj(Obj.Var, "i", Tab.intType, 0, 1);
+            Obj a = new Obj(Obj.Var, "a", setObj.getType(), 0, SemanticAnalyzer.LEVEL_GLOBAL_METH_VAR);
+            Obj b = new Obj(Obj.Var, "b", Tab.intType, 1, SemanticAnalyzer.LEVEL_GLOBAL_METH_VAR);
+            Obj i = new Obj(Obj.Var, "i", Tab.intType, 2, SemanticAnalyzer.LEVEL_GLOBAL_METH_VAR);
 
             a.setFpPos(SemanticAnalyzer.FP_POS_FORMAL_PARAMETER);
             b.setFpPos(SemanticAnalyzer.FP_POS_FORMAL_PARAMETER);
@@ -78,15 +77,15 @@ public class TabExtended {
 
     private void createAddAllMethod(){
         Obj addAllObj;
-        Tab.currentScope().addToLocals(addAllObj = new Obj(Obj.Meth, "addAll", Tab.noType, 0, 2));
+        Tab.currentScope().addToLocals(addAllObj = new Obj(Obj.Meth, "addAll", Tab.noType, 0, 3));
         {
             Tab.openScope();
 
             Struct intArr = new Struct(Struct.Array, Tab.intType);
 
-            Obj a = new Obj(Obj.Var, "a", setObj.getType(), 0, 1);
-            Obj b = new Obj(Obj.Var, "b", intArr, 0, 1);
-            Obj i = new Obj(Obj.Var, "i", Tab.intType, 0, 1);
+            Obj a = new Obj(Obj.Var, "a", setObj.getType(), 0, SemanticAnalyzer.LEVEL_GLOBAL_METH_VAR);
+            Obj b = new Obj(Obj.Var, "b", intArr, 1, SemanticAnalyzer.LEVEL_GLOBAL_METH_VAR);
+            Obj i = new Obj(Obj.Var, "i", Tab.intType, 2, SemanticAnalyzer.LEVEL_GLOBAL_METH_VAR);
 
             a.setFpPos(SemanticAnalyzer.FP_POS_FORMAL_PARAMETER);
             b.setFpPos(SemanticAnalyzer.FP_POS_FORMAL_PARAMETER);
@@ -106,9 +105,9 @@ public class TabExtended {
         {
             Tab.openScope();
 
-            Obj a = new Obj(Obj.Var, "a", setObj.getType(), 0, 1);
-            Obj offset = new Obj(Obj.Var, "offset", Tab.intType, 0, 1);
-            Obj i = new Obj(Obj.Var, "i", Tab.intType, 0, 1);
+            Obj a = new Obj(Obj.Var, "a", setObj.getType(), 0, SemanticAnalyzer.LEVEL_GLOBAL_METH_VAR);
+            Obj offset = new Obj(Obj.Var, "offset", Tab.intType, 1, SemanticAnalyzer.LEVEL_GLOBAL_METH_VAR);
+            Obj i = new Obj(Obj.Var, "i", Tab.intType, 2, SemanticAnalyzer.LEVEL_GLOBAL_METH_VAR);
 
             a.setFpPos(SemanticAnalyzer.FP_POS_FORMAL_PARAMETER);
             offset.setFpPos(SemanticAnalyzer.FP_POS_FORMAL_PARAMETER);
@@ -124,14 +123,14 @@ public class TabExtended {
 
     private void createUnionSetMethod(){
         Obj unionSetObj;
-        Tab.currentScope().addToLocals(unionSetObj = new Obj(Obj.Meth, "$union", Tab.noType, 0, 3));
+        Tab.currentScope().addToLocals(unionSetObj = new Obj(Obj.Meth, "$union", Tab.noType, 0, 4));
         {
             Tab.openScope();
 
-            Obj a = new Obj(Obj.Var, "a", setObj.getType(), 0, 1);
-            Obj b = new Obj(Obj.Var, "b", setObj.getType(), 0, 1);
-            Obj c = new Obj(Obj.Var, "c", setObj.getType(), 0, 1);
-            Obj i = new Obj(Obj.Var, "i", Tab.intType, 0, 1);
+            Obj a = new Obj(Obj.Var, "a", setObj.getType(), 0, SemanticAnalyzer.LEVEL_GLOBAL_METH_VAR);
+            Obj b = new Obj(Obj.Var, "b", setObj.getType(), 1, SemanticAnalyzer.LEVEL_GLOBAL_METH_VAR);
+            Obj c = new Obj(Obj.Var, "c", setObj.getType(), 2, SemanticAnalyzer.LEVEL_GLOBAL_METH_VAR);
+            Obj i = new Obj(Obj.Var, "i", Tab.intType, 3, SemanticAnalyzer.LEVEL_GLOBAL_METH_VAR);
 
             a.setFpPos(SemanticAnalyzer.FP_POS_FORMAL_PARAMETER);
             b.setFpPos(SemanticAnalyzer.FP_POS_FORMAL_PARAMETER);

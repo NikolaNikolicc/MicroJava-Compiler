@@ -1,17 +1,45 @@
-program Quicktest
+program ComprehensiveSetTests
+
+
+// Declare sets for various scenarios
+set sA, sB, sC, sEmpty, sResult;
 
 {
+    void main() {
+        // --- Setup ---
+        sA = new set[5]; add(sA, 10); add(sA, 20); add(sA, 30);
+        sB = new set[5]; add(sB, 20); add(sB, 30); add(sB, 40);
+        sC = new set[5]; add(sC, 50); add(sC, 60);
+        sEmpty = new set[5];
+        sResult = new set[10];
 
-    int method1(){
-        if (2 == 3)return 1;
+        // Print initial sets for clarity
+        print('s'); print('A'); print(':'); print(' '); print(sA); print(eol);
+        print('s'); print('B'); print(':'); print(' '); print(sB); print(eol);
+        print('s'); print('C'); print(':'); print(' '); print(sC); print(eol);
+        print(eol);
+
+        // ==========================================================
+        // --- UNION TESTS ---
+        // ==========================================================
+        print('U'); print('N'); print('I'); print('O'); print('N'); print(' '); print('T'); print('E'); print('S'); print('T'); print('S'); print(':'); print(eol);
+
+        // Case 1: Partial Overlap
+        sResult = sA union sB;
+        print('s'); print('A'); print(' '); print('u'); print('n'); print('i'); print('o'); print('n'); print(' '); print('s'); print('B'); print(' '); print('='); print(' ');
+        print(sResult); print(eol); // Expected: 10 20 30 40
+
+        // Case 2: Disjoint Sets
+        sResult = sA union sC;
+        print('s'); print('A'); print(' '); print('u'); print('n'); print('i'); print('o'); print('n'); print(' '); print('s'); print('C'); print(' '); print('='); print(' ');
+        print(sResult); print(eol); // Expected: 10 20 30 50 60
+
+        // Case 3: With an Empty Set
+        sResult = sA union sEmpty;
+        print('s'); print('A'); print(' '); print('u'); print('n'); print('i'); print('o'); print('n'); print(' '); print('E'); print('m'); print('p'); print('t'); print('y'); print(' '); print('='); print(' ');
+        print(sResult); print(eol); // Expected: 10 20 30
+        print(eol);
+
+
     }
-
-    void main(){
-
-        method1();
-
-    }
-
 }
-
-

@@ -20,6 +20,7 @@ public class SetHandler {
         generateAddAll();
         generatePrintSet();
         generateUnionSets();
+        generateIntersectionSets();
     }
 
     public static SetHandler getInstance(){
@@ -286,6 +287,10 @@ public class SetHandler {
 
         Code.put(Code.exit);
         Code.put(Code.return_);
+    }
+
+    private void generateIntersectionSets(){
+
     }
 
     // c = a union b

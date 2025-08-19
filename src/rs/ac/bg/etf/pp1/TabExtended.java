@@ -146,11 +146,37 @@ public class TabExtended {
         }
     }
 
+    private void createIntersectSetsMethod(){
+        Obj intersectSetsObj;
+        Tab.currentScope().addToLocals(intersectSetsObj = new Obj(Obj.Meth, "$intersect", setObj.getType(), 0, 4));
+        {
+            Tab.openScope();
+
+            Obj dest = new Obj(Obj.Var, "dest", setObj.getType(), 0, SemanticAnalyzer.LEVEL_GLOBAL_METH_VAR); // hidden parameter for return vallue
+            Obj s1 = new Obj(Obj.Var, "s1", setObj.getType(), 1, SemanticAnalyzer.LEVEL_GLOBAL_METH_VAR);
+            Obj s2 = new Obj(Obj.Var, "s2", setObj.getType(), 2, SemanticAnalyzer.LEVEL_GLOBAL_METH_VAR);
+            Obj i = new Obj(Obj.Var, "i", Tab.intType, 3, SemanticAnalyzer.LEVEL_GLOBAL_METH_VAR);
+
+            dest.setFpPos(SemanticAnalyzer.FP_POS_FORMAL_PARAMETER);
+            s1.setFpPos(SemanticAnalyzer.FP_POS_FORMAL_PARAMETER);
+            s2.setFpPos(SemanticAnalyzer.FP_POS_FORMAL_PARAMETER);
+
+            Tab.currentScope().addToLocals(dest);
+            Tab.currentScope().addToLocals(s1);
+            Tab.currentScope().addToLocals(s2);
+            Tab.currentScope().addToLocals(i);
+
+            intersectSetsObj.setLocals(Tab.currentScope.getLocals());
+            Tab.closeScope();
+        }
+    }
+
     private void createEmbeddedMethods() {
         createAddMethod();
         createAddAllMethod();
         createPrintSetMethod();
         createUnionSetMethod();
+        createIntersectSetsMethod();
     }
 
     // </editor-fold>

@@ -53,6 +53,7 @@ import java_cup.runtime.Symbol;
 "extends" 	{ return new_symbol(sym.EXTENDS, yytext()); }
 "continue" 	{ return new_symbol(sym.CONTINUE, yytext()); }
 "union" 	{ return new_symbol(sym.UNION, yytext()); }
+"intersect" { return new_symbol(sym.INTERSECTION, yytext()); }
 "do" 		{ return new_symbol(sym.DO, yytext()); }
 "while" 	{ return new_symbol(sym.WHILE, yytext()); }
 "map" 		{ return new_symbol(sym.MAP, yytext()); }

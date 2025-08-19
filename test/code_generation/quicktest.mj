@@ -40,6 +40,49 @@ set sA, sB, sC, sEmpty, sResult;
         print(sResult); print(eol); // Expected: 10 20 30
         print(eol);
 
+        // difference
+        // size = s1[0];
+        // int i = 1;
+        // while (i <= s1[0]){
+        //      int j = 1;
+        //      while (j <= s2[0]){
+        //         if (s1[i] == s2[j]){
+        //             goto next;
+        //         }
+        //         j++;
+        //     }
+        //     res.add(res, s1[i]);
+        //     next: i++;
+        // }
+
+        // ==========================================================
+        // --- Test 2: sA = sA intersection sB ---
+        // ==========================================================
+        print('T'); print('e'); print('s'); print('t'); print('i'); print('n'); print('g'); print(' '); print('I'); print('n'); print('t'); print('e'); print('r'); print('s'); print('e'); print('c'); print('t'); print('i'); print('o'); print('n'); print(':');
+        print(eol);
+
+        // Re-initialize sets for a clean test
+        sA = new set[5];
+        add(sA, 10);
+        add(sA, 20);
+
+        sB = new set[5];
+        add(sB, 20);
+        add(sB, 30);
+
+        print(' '); print('I'); print('n'); print('i'); print('t'); print('i'); print('a'); print('l'); print(' '); print('s'); print('A'); print(':'); print(' ');
+        print(sA); // Expected: 10 20
+        print(eol);
+
+        // Perform the self-assignment operation
+        sA = sA intersect sB;
+
+        print(' '); print('F'); print('i'); print('n'); print('a'); print('l'); print(' '); print('s'); print('A'); print(':'); print(' ');
+        print(sA); // Expected: 20
+        print(eol);
+        print(eol);
+
+
 
     }
 }

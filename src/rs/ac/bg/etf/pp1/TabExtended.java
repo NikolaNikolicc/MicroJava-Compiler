@@ -123,11 +123,11 @@ public class TabExtended {
 
     private void createUnionSetMethod(){
         Obj unionSetObj;
-        Tab.currentScope().addToLocals(unionSetObj = new Obj(Obj.Meth, "$union", Tab.noType, 0, 4));
+        Tab.currentScope().addToLocals(unionSetObj = new Obj(Obj.Meth, "$union", setObj.getType(), 0, 4));
         {
             Tab.openScope();
 
-            Obj a = new Obj(Obj.Var, "a", setObj.getType(), 0, SemanticAnalyzer.LEVEL_GLOBAL_METH_VAR);
+            Obj a = new Obj(Obj.Var, "a", setObj.getType(), 0, SemanticAnalyzer.LEVEL_GLOBAL_METH_VAR); // hidden parameter for return vallue
             Obj b = new Obj(Obj.Var, "b", setObj.getType(), 1, SemanticAnalyzer.LEVEL_GLOBAL_METH_VAR);
             Obj c = new Obj(Obj.Var, "c", setObj.getType(), 2, SemanticAnalyzer.LEVEL_GLOBAL_METH_VAR);
             Obj i = new Obj(Obj.Var, "i", Tab.intType, 3, SemanticAnalyzer.LEVEL_GLOBAL_METH_VAR);

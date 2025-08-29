@@ -72,6 +72,7 @@
             </classpath>
         </java>
     </target>
+
     <target name="jarGen" depends="compile">
         <jar destfile="bin/mjcompiler.jar" basedir="bin">
             <zipgroupfileset dir="lib" includes="*.jar"/>

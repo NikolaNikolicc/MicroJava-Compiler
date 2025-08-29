@@ -1,27 +1,31 @@
 package rs.ac.bg.etf.pp1;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.List;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import java_cup.runtime.Symbol;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
-import rs.ac.bg.etf.pp1.ast.*;
+import rs.ac.bg.etf.pp1.syntax_analysis.output.*;
+import rs.ac.bg.etf.pp1.lexical_analysis.output.Yylex;
+import rs.ac.bg.etf.pp1.code_generation.CodeGenerator;
+import rs.ac.bg.etf.pp1.semantic_analysis.SemanticAnalyzer;
+import rs.ac.bg.etf.pp1.syntax_analysis.output.ast.Program;
 import rs.ac.bg.etf.pp1.util.Log4JUtils;
+import rs.ac.bg.etf.pp1.util.TabExtended;
+import rs.ac.bg.etf.pp1.util.MySymbolTableVisitor;
 import rs.etf.pp1.mj.runtime.Code;
 import rs.etf.pp1.symboltable.Tab;
 import rs.etf.pp1.symboltable.concepts.*;
-import rs.etf.pp1.symboltable.visitors.DumpSymbolTableVisitor;
-import rs.etf.pp1.symboltable.visitors.SymbolTableVisitor;
-import rs.ac.bg.etf.pp1.util.MySymbolTableVisitor;
 
 public class Compiler {
 
     static {
-        DOMConfigurator.configure(Log4JUtils.instance().findLoggerConfigFile());
+        Path configPath = Paths.get("config/log4j.xml");
+        DOMConfigurator.configure(configPath.toString());
         Log4JUtils.instance().prepareLogFile(Logger.getRootLogger());
     }
 
@@ -48,12 +52,10 @@ public class Compiler {
 
         Reader br = null;
         try {
-//             File sourceCode = new File("test/GenerisanjeKoda-TestPrimeri_24_25_jan_feb/test301.mj");
-//            File sourceCode = new File("test/GenerisanjeKoda-TestPrimeri_24_25_jan_feb/test302.mj");
-//            File sourceCode = new File("test/GenerisanjeKoda-TestPrimeri_24_25_jan_feb/test303.mj");
-//            File sourceCode = new File("test/code_generation/ifelse1.mj");
-            File sourceCode = new File("test/code_generation/quicktest.mj");
-//            File sourceCode = new File("test/semantic_analysis/test_full.mj");
+//            File sourceCode = new File("test/official_tests/test301.mj");
+//            File sourceCode = new File("test/official_tests/test302.mj");
+            File sourceCode = new File("test/official_tests/test303.mj");
+//            File sourceCode = new File("test/code_generation/quicktest.mj");
 //            File sourceCode = new File("test/semantic_analysis/test_method_calls.mj");
             log.info("Compiling source file: " + sourceCode.getAbsolutePath());
 
@@ -81,10 +83,10 @@ public class Compiler {
             log.info("===================================");
             tsdump();
 
-			if(!p.errorDetected && sa.passed()){
+			if(!p.isErrorDetected() && sa.passed()){
 				log.info("Parsiranje uspesno zavrseno!");
                 /* generisanje koda */
-                File objFile = new File("output/program.obj");
+                File objFile = new File("src/rs/ac/bg/etf/pp1/code_generation/output/program.obj");
                 if (objFile.exists()) objFile.delete();
 
                 CodeGenerator codeGen = new CodeGenerator();

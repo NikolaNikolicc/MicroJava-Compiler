@@ -1,6 +1,4 @@
-package rs.ac.bg.etf.pp1;
-
-import rs.etf.pp1.symboltable.concepts.Obj;
+package rs.ac.bg.etf.pp1.code_generation;
 
 /**
  * Predstavlja jedan unos u virtuelnoj tabeli metoda (VMT).

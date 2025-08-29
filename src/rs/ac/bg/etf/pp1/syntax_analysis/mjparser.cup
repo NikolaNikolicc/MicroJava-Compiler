@@ -1,11 +1,9 @@
-package rs.ac.bg.etf.pp1;
+package rs.ac.bg.etf.pp1.syntax_analysis.output;
 
 import java_cup.runtime.*;
 import org.apache.log4j.*;
 
-// import java.io.*;
-import rs.ac.bg.etf.pp1.ast.*;
-
+import rs.ac.bg.etf.pp1.syntax_analysis.output.ast.*;
 
 parser code {:
 
@@ -42,6 +40,10 @@ parser code {:
     	if (info instanceof Symbol)
             msg.append (" na liniji ").append(((Symbol)info).left);
         log.info(msg.toString());
+    }
+
+    public boolean isErrorDetected() {
+    	return errorDetected;
     }
 
 :}

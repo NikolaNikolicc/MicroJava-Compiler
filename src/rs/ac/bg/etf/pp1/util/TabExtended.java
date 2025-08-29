@@ -1,6 +1,6 @@
-package rs.ac.bg.etf.pp1;
+package rs.ac.bg.etf.pp1.util;
 
-import rs.etf.pp1.mj.runtime.Code;
+import rs.ac.bg.etf.pp1.semantic_analysis.SemanticAnalyzer;
 import rs.etf.pp1.symboltable.Tab;
 import rs.etf.pp1.symboltable.concepts.Obj;
 import rs.etf.pp1.symboltable.concepts.Struct;
@@ -233,7 +233,7 @@ public class TabExtended {
         createEmbeddedMethods();
     }
 
-    static boolean isMethodEmbedded(String node) {
+    public static boolean isMethodEmbedded(String node) {
         List<String> embeddedMethods = Arrays.asList("add", "addAll", "ord", "ch", "len", "arr", "$printSet", "$union");
         return embeddedMethods.contains(node);
     }

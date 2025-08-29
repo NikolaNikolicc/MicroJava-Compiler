@@ -1,60 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="MJCompiler" default="compile" basedir=".">
     <target name="delete">
-        <delete>
-            <fileset dir="src/rs/ac/bg/etf/pp1">
-                <exclude name="util/Log4JUtils.java"/>
-                <exclude name="util/MySymbolTableVisitor.java"/>
-                <exclude name="RuleVisitor.java"/>
-                <exclude name="SemanticAnalyzer.java"/>
-                <exclude name="StructExtended.java"/>
-                <exclude name="TabExtended.java"/>
-            </fileset>
-        </delete>
+        <delete dir="bin"/>
+        <delete dir="src/rs/ac/bg/etf/pp1/lexical_analysis/output/"/>
+        <delete dir="src/rs/ac/bg/etf/pp1/syntax_analysis/output/"/>
+        <delete dir="src/rs/ac/bg/etf/pp1/code_generation/output"/>
+
+        <mkdir dir="bin"/>
+        <mkdir dir="src/rs/ac/bg/etf/pp1/lexical_analysis/output"/>
+        <mkdir dir="src/rs/ac/bg/etf/pp1/syntax_analysis/output"/>
+        <mkdir dir="src/rs/ac/bg/etf/pp1/code_generation/output"/>
     </target>
 
     <target name="lexerGen" depends="delete">
         <java jar="lib/JFlex.jar" fork="true" failonerror="true">
             <arg value="-d"/>
-            <arg value="src/rs/ac/bg/etf/pp1"/>
-            <arg value="src/spec/mjlexer.flex"/>
+            <arg value="src/rs/ac/bg/etf/pp1/lexical_analysis/output"/>
+            <arg value="src/rs/ac/bg/etf/pp1/lexical_analysis/mjlexer.flex"/>
         </java>
     </target>
 
     <target name="parserGen" depends="lexerGen">
         <java jar="lib/cup_v10k.jar" dir="src" fork="true" failonerror="true">
             <arg value="-destdir"/>
-            <arg value="rs/ac/bg/etf/pp1"/>
+            <arg value="rs/ac/bg/etf/pp1/syntax_analysis/output/"/>
             <arg value="-ast"/>
-            <arg value="rs.ac.bg.etf.pp1.ast"/>
+            <arg value="rs.ac.bg.etf.pp1.syntax_analysis.output.ast"/>
             <arg value="-parser"/>
             <arg value="MJParser"/>
             <arg value="-dump_states"/>
             <arg value="-buildtree"/>
-            <arg value="spec/mjparser.cup"/>
+            <arg value="rs/ac/bg/etf/pp1/syntax_analysis/mjparser.cup"/>
         </java>
+        <move file="src/rs/ac/bg/etf/pp1/syntax_analysis/mjparser_astbuild.cup"
+              tofile="src/rs/ac/bg/etf/pp1/syntax_analysis/output/mjparser_astbuild.cup"/>
     </target>
 
-    <target name="repackage" depends="parserGen">
-        <!--  Replaces all of the references to the old package name in files in the "src" directory  -->
-        <replace dir="src" value="rs.ac.bg.etf.pp1.ast" token="src.rs.ac.bg.etf.pp1.ast" summary="true"/>
-    </target>
-
-    <target name="compile" depends="repackage">
-        <javac srcdir="src/rs/ac/bg/etf/pp1" includeantruntime="false">
+    <target name="compile" depends="parserGen">
+        <javac destdir="bin" includeantruntime="false" debug="true" fork="true" failonerror="true">
+            <src path="src/rs/ac/bg/etf/pp1"/>
             <classpath>
-                <pathelement path="lib/JFlex.jar"/>
-                <pathelement path="lib/cup_v10k.jar"/>
-                <pathelement path="lib/log4j-1.2.17.jar"/>
-                <pathelement path="lib/symboltable.jar"/>
-                <pathelement path="lib/mj-runtime-1.1.jar"/>
+                <fileset dir="lib" includes="*.jar"/>
             </classpath>
         </javac>
     </target>
 
     <target name="disasm">
         <java classname="rs.etf.pp1.mj.runtime.disasm">
-            <arg value="output/program.obj"/>
+            <arg value="src/rs/ac/bg/etf/pp1/code_generation/output/program.obj"/>
             <classpath>
                 <pathelement location="lib/mj-runtime-1.1.jar"/>
             </classpath>
@@ -62,10 +55,9 @@
     </target>
 
     <target name="debugObj" depends="disasm">
-        <java classname="rs.etf.pp1.mj.runtime.Run" input="input/input.txt">
-            <arg value="output/program.obj"/>
+        <java classname="rs.etf.pp1.mj.runtime.Run" input="src/rs/ac/bg/etf/pp1/code_generation/input/input.txt">
+            <arg value="src/rs/ac/bg/etf/pp1/code_generation/output/program.obj"/>
             <arg value="-debug"/>
-            <!--            <redirector input="input/input.txt" />-->
             <classpath>
                 <pathelement location="lib/mj-runtime-1.1.jar"/>
             </classpath>
@@ -73,13 +65,19 @@
     </target>
 
     <target name="runObj" depends="debugObj">
-        <java classname="rs.etf.pp1.mj.runtime.Run" input="input/input.txt">
-            <arg value="output/program.obj"/>
-            <!--            <redirector input="input/input.txt" />-->
+        <java classname="rs.etf.pp1.mj.runtime.Run" input="src/rs/ac/bg/etf/pp1/code_generation/input/input.txt">
+            <arg value="src/rs/ac/bg/etf/pp1/code_generation/output/program.obj"/>
             <classpath>
                 <pathelement location="lib/mj-runtime-1.1.jar"/>
             </classpath>
         </java>
     </target>
-
+    <target name="jarGen" depends="compile">
+        <jar destfile="bin/mjcompiler.jar" basedir="bin">
+            <zipgroupfileset dir="lib" includes="*.jar"/>
+            <manifest>
+                <attribute name="Main-Class" value="rs.ac.bg.etf.pp1.Compiler"/>
+            </manifest>
+        </jar>
+    </target>
 </project>

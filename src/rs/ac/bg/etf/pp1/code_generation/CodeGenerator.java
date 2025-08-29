@@ -1,7 +1,10 @@
-package rs.ac.bg.etf.pp1;
+package rs.ac.bg.etf.pp1.code_generation;
 
-import rs.ac.bg.etf.pp1.ast.VisitorAdaptor;
-import rs.ac.bg.etf.pp1.ast.*;
+import rs.ac.bg.etf.pp1.syntax_analysis.output.ast.VisitorAdaptor;
+import rs.ac.bg.etf.pp1.syntax_analysis.output.ast.*;
+import rs.ac.bg.etf.pp1.semantic_analysis.SemanticAnalyzer;
+import rs.ac.bg.etf.pp1.util.StructExtended;
+import rs.ac.bg.etf.pp1.util.TabExtended;
 import rs.etf.pp1.symboltable.concepts.*;
 import rs.etf.pp1.mj.runtime.Code;
 import rs.etf.pp1.symboltable.Tab;
@@ -91,7 +94,7 @@ public class CodeGenerator extends VisitorAdaptor {
         setHandler = SetHandler.getInstance();
     }
 
-    CodeGenerator(){
+    public CodeGenerator(){
         initializeMethods();
     }
 

@@ -1,12 +1,12 @@
-package rs.ac.bg.etf.pp1;
+package rs.ac.bg.etf.pp1.code_generation;
 
 import org.apache.log4j.Logger;
-import rs.ac.bg.etf.pp1.ast.SyntaxNode;
+import rs.ac.bg.etf.pp1.syntax_analysis.output.ast.SyntaxNode;
+import rs.ac.bg.etf.pp1.semantic_analysis.SemanticAnalyzer;
 import rs.etf.pp1.symboltable.Tab;
 import rs.etf.pp1.symboltable.concepts.Obj;
 import rs.etf.pp1.symboltable.concepts.Struct;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

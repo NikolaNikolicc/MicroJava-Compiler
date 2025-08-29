@@ -1,8 +1,10 @@
-package rs.ac.bg.etf.pp1;
+package rs.ac.bg.etf.pp1.semantic_analysis;
 
 import org.apache.log4j.Logger;
 
-import rs.ac.bg.etf.pp1.ast.*;
+import rs.ac.bg.etf.pp1.util.TabExtended;
+import rs.ac.bg.etf.pp1.syntax_analysis.output.ast.*;
+import rs.ac.bg.etf.pp1.util.StructExtended;
 import rs.etf.pp1.symboltable.*;
 import rs.etf.pp1.symboltable.concepts.*;
 import rs.etf.pp1.symboltable.structure.*;
@@ -14,17 +16,17 @@ import java.util.Stack;
 
 public class SemanticAnalyzer extends VisitorAdaptor{
 
-    static final int FP_POS_GLOBAL_METHOD = 0; // by default fp pos is set to 0
-    static final int FP_POS_IMPLEMENTED_NONGLOBAL_METHOD = 1;
-    static final int FP_POS_UNIMPLEMENTED_INTERFACE_METHOD = 2;
+    public static final int FP_POS_GLOBAL_METHOD = 0; // by default fp pos is set to 0
+    public static final int FP_POS_IMPLEMENTED_NONGLOBAL_METHOD = 1;
+    public static final int FP_POS_UNIMPLEMENTED_INTERFACE_METHOD = 2;
 
-    static final int FP_POS_FORMAL_PARAMETER = 1;
+    public static final int FP_POS_FORMAL_PARAMETER = 1;
 
-    static final int LEVEL_INTERFACE_VAR = 3; // interface method variables
-    static final int LEVEL_CLASS_FLD = 1; // class field variables
-    static final int LEVEL_CLASS_VAR = 2; // class method variables
-    static final int LEVEL_GLOBAL_METH_VAR = 1; // global method variables
-    static final int LEVEL_GLOBAL_VAR = 0; // global variables
+    public static final int LEVEL_INTERFACE_VAR = 3; // interface method variables
+    public static final int LEVEL_CLASS_FLD = 1; // class field variables
+    public static final int LEVEL_CLASS_VAR = 2; // class method variables
+    public static final int LEVEL_GLOBAL_METH_VAR = 1; // global method variables
+    public static final int LEVEL_GLOBAL_VAR = 0; // global variables
 
     // package rs.ac.bg.etf.pp1;
     int nVars;

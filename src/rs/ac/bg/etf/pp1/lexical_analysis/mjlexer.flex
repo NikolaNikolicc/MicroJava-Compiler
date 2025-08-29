@@ -1,6 +1,8 @@
-package rs.ac.bg.etf.pp1;
+package rs.ac.bg.etf.pp1.lexical_analysis.output;
 
+import rs.ac.bg.etf.pp1.syntax_analysis.output.sym;
 import java_cup.runtime.Symbol;
+import org.apache.log4j.*;
 
 %%
 
@@ -17,6 +19,10 @@ import java_cup.runtime.Symbol;
 	}
 
 %}
+
+%public
+%class Yylex
+
 // indicates that the lexer will work with Java CUP, a parser generator
 %cup
 // enable tracking of line(yyline) and column (yycolumn) numbers for tokens

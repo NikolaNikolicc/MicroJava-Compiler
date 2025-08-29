@@ -1,4 +1,4 @@
-package rs.ac.bg.etf.pp1;
+package rs.ac.bg.etf.pp1.code_generation;
 
 import rs.etf.pp1.mj.runtime.Code;
 

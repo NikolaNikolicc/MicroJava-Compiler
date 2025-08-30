@@ -1,5 +1,4 @@
 .idea/
-.settings/
 bin/*
 config/*
 logs/*
@@ -7,7 +6,5 @@ src/rs/ac/bg/etf/pp1/lexical_analysis/output/*
 src/rs/ac/bg/etf/pp1/syntax_analysis/output/*
 src/rs/ac/bg/etf/pp1/code_generation/output/*
 src/rs/ac/bg/etf/pp1/code_generation/input/*
-.classpath
-.project
 MJCompiler.iml
 MJProjekat.docx

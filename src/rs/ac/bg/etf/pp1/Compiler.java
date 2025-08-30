@@ -52,11 +52,11 @@ public class Compiler {
 
         Reader br = null;
         try {
-//            File sourceCode = new File("test/official_tests/test301.mj");
-//            File sourceCode = new File("test/official_tests/test302.mj");
-            File sourceCode = new File("test/official_tests/test303.mj");
-//            File sourceCode = new File("test/code_generation/quicktest.mj");
-//            File sourceCode = new File("test/semantic_analysis/test_method_calls.mj");
+//            File sourceCode = new File("test/rs/ac/bg/etf/pp1/official_tests/test301.mj");
+//            File sourceCode = new File("test/rs/ac/bg/etf/pp1/official_tests/test302.mj");
+            File sourceCode = new File("test/rs/ac/bg/etf/pp1/official_tests/test303.mj");
+//            File sourceCode = new File("test/rs/ac/bg/etf/pp1/code_generation/quicktest.mj");
+//            File sourceCode = new File("test/rs/ac/bg/etf/pp1/semantic_analysis/test_method_calls.mj");
             log.info("Compiling source file: " + sourceCode.getAbsolutePath());
 
             br = new BufferedReader(new FileReader(sourceCode));

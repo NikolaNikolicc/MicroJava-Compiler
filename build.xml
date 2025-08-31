@@ -12,7 +12,7 @@
         <mkdir dir="src/rs/ac/bg/etf/pp1/code_generation/output"/>
     </target>
 
-    <target name="lexerGen" depends="delete">
+    <target name="generateLexer" depends="delete">
         <java jar="lib/JFlex.jar" fork="true" failonerror="true">
             <arg value="-d"/>
             <arg value="src/rs/ac/bg/etf/pp1/lexical_analysis/output"/>
@@ -20,7 +20,7 @@
         </java>
     </target>
 
-    <target name="parserGen" depends="lexerGen">
+    <target name="generateParser" depends="generateLexer">
         <java jar="lib/cup_v10k.jar" dir="src" fork="true" failonerror="true">
             <arg value="-destdir"/>
             <arg value="rs/ac/bg/etf/pp1/syntax_analysis/output/"/>
@@ -36,7 +36,7 @@
               tofile="src/rs/ac/bg/etf/pp1/syntax_analysis/output/mjparser_astbuild.cup"/>
     </target>
 
-    <target name="compile" depends="parserGen">
+    <target name="compile" depends="generateParser">
         <javac destdir="bin" includeantruntime="false" debug="true" fork="true" failonerror="true">
             <src path="src/rs/ac/bg/etf/pp1"/>
             <classpath>
@@ -45,7 +45,7 @@
         </javac>
     </target>
 
-    <target name="disasm">
+    <target name="objDisasm">
         <java classname="rs.etf.pp1.mj.runtime.disasm">
             <arg value="src/rs/ac/bg/etf/pp1/code_generation/output/mjprogram.obj"/>
             <classpath>
@@ -54,7 +54,7 @@
         </java>
     </target>
 
-    <target name="debugObj" depends="disasm">
+    <target name="objDebug" depends="objDisasm">
         <java classname="rs.etf.pp1.mj.runtime.Run" input="src/rs/ac/bg/etf/pp1/code_generation/input/input.txt">
             <arg value="src/rs/ac/bg/etf/pp1/code_generation/output/mjprogram.obj"/>
             <arg value="-debug"/>
@@ -64,7 +64,7 @@
         </java>
     </target>
 
-    <target name="runObj" depends="debugObj">
+    <target name="objRun" depends="objDebug">
         <java classname="rs.etf.pp1.mj.runtime.Run" input="src/rs/ac/bg/etf/pp1/code_generation/input/input.txt">
             <arg value="src/rs/ac/bg/etf/pp1/code_generation/output/mjprogram.obj"/>
             <classpath>
@@ -73,7 +73,7 @@
         </java>
     </target>
 
-    <target name="jarGen" depends="compile">
+    <target name="generateJar" depends="compile">
         <jar destfile="bin/mjcompiler.jar" basedir="bin">
             <zipgroupfileset dir="lib" includes="*.jar"/>
             <manifest>

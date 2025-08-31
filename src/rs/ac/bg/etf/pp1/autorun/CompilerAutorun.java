@@ -153,34 +153,34 @@ public class CompilerAutorun {
         }
 
         try ( BufferedReader bufferedReader = new BufferedReader(new FileReader(MJProgramFilePath))) {
-            logger.debug("Compiling source file: " + MJProgramFilePath + "\n");
+            logger.info("Compiling source file: " + MJProgramFilePath + "\n");
 
             Yylex lexer = new Yylex(bufferedReader);
             MJParser parser = new MJParser(lexer);
             Symbol abstractSyntaxTreeRootSymbol = parser.parse();
             Program programSyntaxNode = (Program) abstractSyntaxTreeRootSymbol.value;
-            logger.debug("=====================ABSTRACT SYNTAX TREE DUMP=========================");
-            logger.debug(programSyntaxNode.toString(""));
-            logger.debug("=====================ABSTRACT SYNTAX TREE END=========================");
+            logger.info("=====================ABSTRACT SYNTAX TREE DUMP=========================");
+            logger.info(programSyntaxNode.toString(""));
+            logger.info("=====================ABSTRACT SYNTAX TREE END=========================");
             if (parser.isErrorDetected()) {
                 logger.error("Errors were detected during syntax analysis, aborting compilation.");
                 System.exit(RUNTIME_ERROR_CODE_SYNTAX_ANALYSIS_ERROR);
             }
-            logger.debug("Syntax analysis has completed successfully for the source file: " + MJProgramFilePath + "\n");
+            logger.info("Syntax analysis has completed successfully for the source file: " + MJProgramFilePath + "\n");
 
             TabExtended.getInstance();
             SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer();
-            logger.debug("===================================");
+            logger.info("===================================");
             programSyntaxNode.traverseBottomUp(semanticAnalyzer);
-            logger.debug("===================================");
-            logger.debug("=====================SYMBOL TABLE DUMP=========================");
+            logger.info("===================================");
+            logger.info("=====================SYMBOL TABLE DUMP=========================");
             printSymbolTable();
-            logger.debug("=========================SYMBOL TABLE END=========================");
+            logger.info("=========================SYMBOL TABLE END=========================");
             if (semanticAnalyzer.errorDetected) {
                 logger.error("Errors were detected during semantic analysis, aborting compilation.");
                 System.exit(RUNTIME_ERROR_CODE_SEMANTIC_ANALYSIS_ERROR);
             }
-            logger.debug("Semantic analysis has completed successfully for the source file: " + MJProgramFilePath + "\n");
+            logger.info("Semantic analysis has completed successfully for the source file: " + MJProgramFilePath + "\n");
 
             Code.dataSize = 1;
             CodeGenerator codeGenerator = new CodeGenerator();
@@ -191,7 +191,7 @@ public class CompilerAutorun {
                 objectCodeFile.delete();
             }
             Code.write(Files.newOutputStream(objectCodeFile.toPath()));
-            logger.debug("Code generation has completed successfully for the source file: " + MJProgramFilePath + "\n");
+            logger.info("Code generation has completed successfully for the source file: " + MJProgramFilePath + "\n");
         }
         catch (Exception exception) {
             logger.error(exception);
@@ -205,11 +205,11 @@ public class CompilerAutorun {
         }
 
         try {
-            logger.debug("Disassembling the generated object code file: " + MJObjectCodeFilePath + "\n");
+            logger.info("Disassembling the generated object code file: " + MJObjectCodeFilePath + "\n");
             String[] disassemblyargs = new String[] { MJObjectCodeFilePath };
             disasm.main(disassemblyargs);
             System.out.println();
-            logger.debug("Disassembly has completed successfully for the generated object code file: " + MJObjectCodeFilePath + "\n");
+            logger.info("Disassembly has completed successfully for the generated object code file: " + MJObjectCodeFilePath + "\n");
         }
         catch (Exception exception) {
             logger.error(exception);
@@ -243,13 +243,13 @@ public class CompilerAutorun {
         }
 
         try {
-            logger.debug("Running the object code file in MicroJava Virtual Machine: " + MJObjectCodeFilePath + "\n");
+            logger.info("Running the object code file in MicroJava Virtual Machine: " + MJObjectCodeFilePath + "\n");
             String[] runargs = new String[] { MJObjectCodeFilePath };
             System.setIn(Files.newInputStream(MJInputFilePath));
             Run.main(runargs);
             System.out.println();
             System.out.println();
-            logger.debug("Run has completed successfully for the object code file in MicroJava Virtual Machine: " + MJObjectCodeFilePath + "\n");
+            logger.info("Run has completed successfully for the object code file in MicroJava Virtual Machine: " + MJObjectCodeFilePath + "\n");
         }
         catch (Exception exception) {
             logger.error(exception);

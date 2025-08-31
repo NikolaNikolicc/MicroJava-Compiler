@@ -11,6 +11,7 @@ import java.util.List;
 public class TabExtended {
 
     Obj setObj;
+    private static List<String> embeddedMethods;
 
     // <editor-fold desc="Singleton Instance">
 
@@ -56,7 +57,9 @@ public class TabExtended {
 
     private void createAddMethod(){
         Obj addObj;
-        Tab.currentScope().addToLocals(addObj = new Obj(Obj.Meth, "add", Tab.noType, 0, 3));
+        String name = "add";
+        embeddedMethods.add(name);
+        Tab.currentScope().addToLocals(addObj = new Obj(Obj.Meth, name, Tab.noType, 0, 3));
         {
             Tab.openScope();
             Obj a = new Obj(Obj.Var, "a", setObj.getType(), 0, SemanticAnalyzer.LEVEL_GLOBAL_METH_VAR);
@@ -77,7 +80,9 @@ public class TabExtended {
 
     private void createAddAllMethod(){
         Obj addAllObj;
-        Tab.currentScope().addToLocals(addAllObj = new Obj(Obj.Meth, "addAll", Tab.noType, 0, 3));
+        String name = "addAll";
+        embeddedMethods.add(name);
+        Tab.currentScope().addToLocals(addAllObj = new Obj(Obj.Meth, name, Tab.noType, 0, 3));
         {
             Tab.openScope();
 
@@ -101,7 +106,9 @@ public class TabExtended {
 
     private void createPrintSetMethod(){
         Obj printSetObj;
-        Tab.currentScope().addToLocals(printSetObj = new Obj(Obj.Meth, "$printSet", Tab.noType, 0, 3));
+        String name = "$printSet";
+        embeddedMethods.add(name);
+        Tab.currentScope().addToLocals(printSetObj = new Obj(Obj.Meth, name, Tab.noType, 0, 3));
         {
             Tab.openScope();
 
@@ -123,7 +130,9 @@ public class TabExtended {
 
     private void createUnionSetMethod(){
         Obj unionSetObj;
-        Tab.currentScope().addToLocals(unionSetObj = new Obj(Obj.Meth, "$union", setObj.getType(), 0, 4));
+        String name = "$union";
+        embeddedMethods.add(name);
+        Tab.currentScope().addToLocals(unionSetObj = new Obj(Obj.Meth, name, setObj.getType(), 0, 4));
         {
             Tab.openScope();
 
@@ -148,7 +157,9 @@ public class TabExtended {
 
     private void createIntersectSetsMethod(){
         Obj intersectSetsObj;
-        Tab.currentScope().addToLocals(intersectSetsObj = new Obj(Obj.Meth, "$intersect", setObj.getType(), 0, 5));
+        String name = "$intersect";
+        embeddedMethods.add(name);
+        Tab.currentScope().addToLocals(intersectSetsObj = new Obj(Obj.Meth, name, setObj.getType(), 0, 5));
         {
             Tab.openScope();
 
@@ -175,7 +186,9 @@ public class TabExtended {
 
     private void createDifferenceSetsMethod(){
         Obj differenceSetsObj;
-        Tab.currentScope().addToLocals(differenceSetsObj = new Obj(Obj.Meth, "$difference", setObj.getType(), 0, 5));
+        String name = "$difference";
+        embeddedMethods.add(name);
+        Tab.currentScope().addToLocals(differenceSetsObj = new Obj(Obj.Meth, name, setObj.getType(), 0, 5));
         {
             Tab.openScope();
 
@@ -226,6 +239,7 @@ public class TabExtended {
                 for (Obj local: node.getLocalSymbols()){
                     local.setFpPos(SemanticAnalyzer.FP_POS_FORMAL_PARAMETER);
                 }
+                embeddedMethods.add(node.getName());
             }
         }
 
@@ -233,8 +247,9 @@ public class TabExtended {
         createEmbeddedMethods();
     }
 
+
+
     public static boolean isMethodEmbedded(String node) {
-        List<String> embeddedMethods = Arrays.asList("add", "addAll", "ord", "ch", "len", "arr", "$printSet", "$union");
         return embeddedMethods.contains(node);
     }
 

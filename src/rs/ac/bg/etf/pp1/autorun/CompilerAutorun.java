@@ -83,9 +83,8 @@ public class CompilerAutorun {
 
             DOMConfigurator.configure(configPath.toString());
             Log4JUtils.instance().prepareLogFile(Logger.getRootLogger());
-            logger = Logger.getLogger(Compiler.class);
-        }
-        catch (Exception e) {
+            logger = Logger.getLogger(CompilerAutorun.class);
+        } catch (Exception e) {
             System.err.println("Failed to initialize logger: " + e.getMessage());
             System.exit(RUNTIME_ERROR_CODE_LOGGER_INITIALIZATION_FAILED);
         }
@@ -109,8 +108,7 @@ public class CompilerAutorun {
         int programFilePathIndex = programCommandIndex + 1;
         if (programCommandIndex != -1 && programFilePathIndex < args.length){
             MJProgramFilePath = args[programFilePathIndex];
-        }
-        else {
+        } else {
             logger.error("Path to the MicroJava program file not specified.");
             System.exit(RUNTIME_ERROR_CODE_PROGRAM_FILE_PATH_NOT_SPECIFIED);
         }
@@ -120,8 +118,7 @@ public class CompilerAutorun {
 
         if (inputCommandIndex != -1 && MJInputFilePathIndex < args.length) {
             MJInputFilePath = Paths.get(args[MJInputFilePathIndex]);
-        }
-        else {
+        } else {
             logger.error("Path to the input file for the MicroJava program not specified.");
             System.exit(RUNTIME_ERROR_CODE_INPUT_FILE_PATH_NOT_SPECIFIED);
         }
@@ -130,9 +127,7 @@ public class CompilerAutorun {
         int outputFilePathIndex = outputCommandIndex + 1;
         if (outputCommandIndex != -1 && outputFilePathIndex < args.length) {
             MJObjectCodeFilePath = args[outputFilePathIndex] + "/mjprogram.obj";
-        }
-        else
-        {
+        } else {
             logger.error("Path to the folder where MicroJava object code file should be generated not specified.");
             System.exit(RUNTIME_ERROR_CODE_OBJECT_CODE_FILE_PATH_NOT_SPECIFIED);
         }
@@ -192,8 +187,7 @@ public class CompilerAutorun {
             }
             Code.write(Files.newOutputStream(objectCodeFile.toPath()));
             logger.info("Code generation has completed successfully for the source file: " + MJProgramFilePath + "\n");
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             logger.error(exception);
             System.exit(RUNTIME_ERROR_CODE_GENERIC_RUNTIME_EXCEPTION);
         }
@@ -210,8 +204,7 @@ public class CompilerAutorun {
             disasm.main(disassemblyargs);
             System.out.println();
             logger.info("Disassembly has completed successfully for the generated object code file: " + MJObjectCodeFilePath + "\n");
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             logger.error(exception);
             System.exit(RUNTIME_ERROR_CODE_GENERIC_RUNTIME_EXCEPTION);
         }
@@ -230,8 +223,7 @@ public class CompilerAutorun {
             System.out.println();
             System.out.println();
             logger.debug("Run in debug mode has completed successfully for the object code file in MicroJava Virtual Machine: " + MJObjectCodeFilePath + "\n");
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             logger.error(exception);
             System.exit(RUNTIME_ERROR_CODE_GENERIC_RUNTIME_EXCEPTION);
         }
@@ -250,8 +242,7 @@ public class CompilerAutorun {
             System.out.println();
             System.out.println();
             logger.info("Run has completed successfully for the object code file in MicroJava Virtual Machine: " + MJObjectCodeFilePath + "\n");
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             logger.error(exception);
             System.exit(RUNTIME_ERROR_CODE_GENERIC_RUNTIME_EXCEPTION);
         }

@@ -1,6 +1,7 @@
 package rs.ac.bg.etf.pp1;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -29,79 +30,66 @@ public class Compiler {
         Log4JUtils.instance().prepareLogFile(Logger.getRootLogger());
     }
 
-    public static void dump(MySymbolTableVisitor stv) {
-        System.out.println("=====================SYMBOL TABLE DUMP=========================");
-        if (stv == null) {
-            stv = new MySymbolTableVisitor();
-        }
-
+    public static void dump() {
+        MySymbolTableVisitor stv = new MySymbolTableVisitor();
         for(Scope s = Tab.currentScope; s != null; s = s.getOuter()) {
             s.accept(stv);
         }
-
         System.out.println(stv.getOutput());
-    }
-
-    public static void tsdump(){
-        dump((MySymbolTableVisitor) null);
     }
 
     public static void main(String[] args) throws Exception {
 
         Logger log = Logger.getLogger(MJParser.class);
 
-        Reader br = null;
+        Reader bufferedReader = null;
         try {
-//            File sourceCode = new File("test/rs/ac/bg/etf/pp1/official_tests/test301.mj");
-//            File sourceCode = new File("test/rs/ac/bg/etf/pp1/official_tests/test302.mj");
             File sourceCode = new File("test/rs/ac/bg/etf/pp1/official_tests/test303.mj");
-//            File sourceCode = new File("test/rs/ac/bg/etf/pp1/code_generation/quicktest.mj");
-//            File sourceCode = new File("test/rs/ac/bg/etf/pp1/semantic_analysis/test_method_calls.mj");
             log.info("Compiling source file: " + sourceCode.getAbsolutePath());
 
-            br = new BufferedReader(new FileReader(sourceCode));
-            Yylex lexer = new Yylex(br);
-
-            // formiranje AST
-            MJParser p = new MJParser(lexer);
-            Symbol s = p.parse();  //pocetak parsiranja
-
-            Program prog = (Program)(s.value);
-
-            // inicijalizacija tabele simbola
+            bufferedReader = new BufferedReader(new FileReader(sourceCode));
+            // lexical analysis
+            Yylex lexer = new Yylex(bufferedReader);
+            // syntax analysis
+            MJParser parser = new MJParser(lexer);
+            Symbol abstractSyntaxTreeRootSymbol = parser.parse();
+            Program programSyntaxNode = (Program)(abstractSyntaxTreeRootSymbol.value);
+            log.info("=====================ABSTRACT SYNTAX TREE DUMP=========================");
+            log.info(programSyntaxNode.toString(""));
+            log.info("=====================ABSTRACT SYNTAX TREE END=========================");
+            if (parser.isErrorDetected()) {
+            	log.error("Errors were detected during syntax analysis, compilation aborted.");
+            	return;
+            }
+            log.info("Syntax analysis has completed successfully.");
+            // semantic analysis
             TabExtended.getInstance();
-
-            log.info(prog.toString(""));
+            SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer();
             log.info("===================================");
-
-            // semanticka analiza
-            Code.dataSize = 10;
-            SemanticAnalyzer sa = new SemanticAnalyzer();
-            prog.traverseBottomUp(sa);
-
-            // ispis sintaksnog stabla
+            programSyntaxNode.traverseBottomUp(semanticAnalyzer);
             log.info("===================================");
-            tsdump();
-
-			if(!p.isErrorDetected() && sa.passed()){
-				log.info("Parsiranje uspesno zavrseno!");
-                /* generisanje koda */
-                File objFile = new File("src/rs/ac/bg/etf/pp1/code_generation/output/program.obj");
-                if (objFile.exists()) objFile.delete();
-
-                CodeGenerator codeGen = new CodeGenerator();
-                prog.traverseBottomUp(codeGen);
-//                Code.dataSize += sa.nVars;
-                Code.mainPc = codeGen.getMainPC();
-                Code.write(new FileOutputStream(objFile));
-			}else{
-				log.error("Parsiranje NIJE uspesno zavrseno!");
-			}
+            log.info("=====================SYMBOL TABLE DUMP=========================");
+            dump();
+            log.info("=====================SYMBOL TABLE END=========================");
+            if (semanticAnalyzer.errorDetected) {
+                log.error("Errors were detected during semantic analysis, aborting compilation.");
+                return;
+            }
+            log.info("Semantic analysis has completed successfully");
+            // code generation
+            Code.dataSize = 1;
+            CodeGenerator codeGenerator = new CodeGenerator();
+            programSyntaxNode.traverseBottomUp(codeGenerator);
+            Code.mainPc = codeGenerator.getMainPC();
+            log.info("Code generation has completed successfully.");
+            // save generated code to .obj file
+            File objFile = new File("src/rs/ac/bg/etf/pp1/code_generation/output/mjprogram.obj");
+            if (objFile.exists()) objFile.delete();
+            Code.write(Files.newOutputStream(objFile.toPath()));
         }
         finally {
-            if (br != null) try { br.close(); } catch (IOException e1) { log.error(e1.getMessage(), e1); }
+            if (bufferedReader != null) try { bufferedReader.close(); } catch (IOException e1) { log.error(e1.getMessage(), e1); }
         }
 
     }
-
 }

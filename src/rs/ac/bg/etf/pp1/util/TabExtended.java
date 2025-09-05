@@ -247,8 +247,6 @@ public class TabExtended {
         createEmbeddedMethods();
     }
 
-
-
     public static boolean isMethodEmbedded(String node) {
         return embeddedMethods.contains(node);
     }

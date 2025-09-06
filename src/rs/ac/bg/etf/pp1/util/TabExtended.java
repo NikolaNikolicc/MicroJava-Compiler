@@ -5,13 +5,14 @@ import rs.etf.pp1.symboltable.Tab;
 import rs.etf.pp1.symboltable.concepts.Obj;
 import rs.etf.pp1.symboltable.concepts.Struct;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class TabExtended {
 
     Obj setObj;
-    private static List<String> embeddedMethods;
+    private final static List<String> embeddedMethods = new ArrayList<>();
 
     // <editor-fold desc="Singleton Instance">
 

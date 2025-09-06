@@ -8,3 +8,11 @@ src/rs/ac/bg/etf/pp1/code_generation/output/*
 src/rs/ac/bg/etf/pp1/code_generation/input/*
 MJCompiler.iml
 MJProjekat.docx
+
+# IntelliJ
+.idea/
+*.iml
+
+# Build folders
+out/
+bin/

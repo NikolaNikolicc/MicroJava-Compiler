@@ -49,7 +49,7 @@
         <java classname="rs.etf.pp1.mj.runtime.disasm">
             <arg value="src/rs/ac/bg/etf/pp1/code_generation/output/mjprogram.obj"/>
             <classpath>
-                <pathelement location="lib/mj-runtime-1.1.jar"/>
+                <pathelement location="lib/mj-runtime.jar"/>
             </classpath>
         </java>
     </target>
@@ -59,7 +59,7 @@
             <arg value="src/rs/ac/bg/etf/pp1/code_generation/output/mjprogram.obj"/>
             <arg value="-debug"/>
             <classpath>
-                <pathelement location="lib/mj-runtime-1.1.jar"/>
+                <pathelement location="lib/mj-runtime.jar"/>
             </classpath>
         </java>
     </target>
@@ -68,7 +68,7 @@
         <java classname="rs.etf.pp1.mj.runtime.Run" input="src/rs/ac/bg/etf/pp1/code_generation/input/input.txt">
             <arg value="src/rs/ac/bg/etf/pp1/code_generation/output/mjprogram.obj"/>
             <classpath>
-                <pathelement location="lib/mj-runtime-1.1.jar"/>
+                <pathelement location="lib/mj-runtime.jar"/>
             </classpath>
         </java>
     </target>

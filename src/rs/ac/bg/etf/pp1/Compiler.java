@@ -19,6 +19,7 @@ import rs.ac.bg.etf.pp1.util.Log4JUtils;
 import rs.ac.bg.etf.pp1.util.TabExtended;
 import rs.ac.bg.etf.pp1.util.MySymbolTableVisitor;
 import rs.etf.pp1.mj.runtime.Code;
+import rs.etf.pp1.symboltable.ModuleHandler;
 import rs.etf.pp1.symboltable.Tab;
 import rs.etf.pp1.symboltable.concepts.*;
 
@@ -44,7 +45,8 @@ public class Compiler {
 
         Reader bufferedReader = null;
         try {
-            File sourceCode = new File("test/rs/ac/bg/etf/pp1/official_tests/test303.mj");
+            Path fullPath = Paths.get("test/rs/ac/bg/etf/pp1/official_tests/test303.mj");
+            File sourceCode = new File(fullPath.toString());
             log.info("Compiling source file: " + sourceCode.getAbsolutePath());
 
             bufferedReader = new BufferedReader(new FileReader(sourceCode));
@@ -64,6 +66,7 @@ public class Compiler {
             log.info("Syntax analysis has completed successfully.");
             // semantic analysis
             TabExtended.getInstance();
+            ModuleHandler.getInstance().modulePath = fullPath.getParent();
             SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer();
             log.info("===================================");
             programSyntaxNode.traverseBottomUp(semanticAnalyzer);

@@ -82,9 +82,9 @@ ImportDeclList ::= ImportDeclList ImportDeclElem
                   /* epsilon */
                   ;
 
-ImportDeclElem ::= IMPORT IDENT SEMI
+ImportDeclElem ::= (ImportModule) IMPORT IDENT SEMI
                    |
-                   IMPORT IDENT DOT IDENT SEMI
+                   (ImportAlias) IMPORT IDENT DOT IDENT SEMI
                    ;
 
 ProgramDeclList ::= ProgramDeclList ProgramDeclElem

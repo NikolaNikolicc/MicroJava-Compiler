@@ -9,6 +9,8 @@ import rs.etf.pp1.symboltable.*;
 import rs.etf.pp1.symboltable.concepts.*;
 import rs.etf.pp1.symboltable.structure.*;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -60,7 +62,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     private final Stack<Struct> apStack = new Stack<>();
 
-    private final StructExtended es = StructExtended.getInstance();
+    private static final StructExtended es = StructExtended.getInstance();
+    private static final ModuleHandler moduleHandler = ModuleHandler.getInstance();
     Logger log = Logger.getLogger(getClass());
 
     // <editor-fold desc="log methods">
@@ -71,6 +74,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         int line = (info == null) ? 0: info.getLine();
         if (line != 0)
             msg.append(" on line ").append(line);
+        msg.append(" in module ").append(moduleHandler.getCurrentModule().getName());
         log.error(msg.toString());
     }
 
@@ -140,7 +144,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         nVars = Tab.currentScope().getnVars();
         Tab.chainLocalSymbols(node.getProgName().obj);
         Tab.closeScope();
-        ModuleHandler.getInstance().closeModule();
+        moduleHandler.closeModule();
 
         if(mainMeth == null){
             report_error("[Program] Main method must be defined", node);
@@ -154,7 +158,10 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     @Override
     public void visit(ProgName node){
         node.obj = Tab.insert(Obj.Prog, node.getProgName(), Tab.noType);
-        ModuleHandler.getInstance().openModule(node.getProgName());
+        moduleHandler.openModule(node.getProgName());
+        if (moduleHandler.getCurrentModule() == moduleHandler.noModule){
+            report_error("[ProgName] Circular dependency detected, module " + node.getProgName() + " has been imported multiple times.", node);
+        }
         Tab.openScope();
     }
 
@@ -177,6 +184,51 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         node.struct = typeNode.getType();
         currTypeVar = typeNode.getType();
         currTypeName = node.getI1();
+    }
+
+    // </editor-fold>
+
+    // <editor-fold desc="Imports">
+
+    @Override
+    public void visit(ImportModule node){
+        // if we have circular dependency we can't import module
+        if (moduleHandler.getCurrentModule() == moduleHandler.noModule){
+            return;
+        }
+        // exists module in path is checked in openModule
+        if (!moduleHandler.existsModuleOnPath(node.getI1())){
+            report_error("[ImportModule] Module " + node.getI1() + " not found in module path", node);
+            return;
+        }
+        // load module
+        Module module = moduleHandler.getModule(node.getI1());
+        if (module == moduleHandler.noModule){
+            // recursive import
+            Path importedModulePath = Paths.get(moduleHandler.joinModulePath(node.getI1()));
+
+        }
+        // add module in importedModules list of current module
+    }
+
+    @Override
+    public void visit(ImportAlias node){
+        // if we have circular dependency we can't import alias
+        if (moduleHandler.getCurrentModule() == moduleHandler.noModule){
+            return;
+        }
+        // exists module in path
+        if (!moduleHandler.existsModuleOnPath(node.getI1())){
+            report_error("[ImportAlias] Module " + node.getI1() + " not found in module path", node);
+            return;
+        }
+        // load module
+        Module module = moduleHandler.getModule(node.getI1());
+        if (module == moduleHandler.noModule){
+            // recursive import
+        }
+        // check module exports contains alias
+        // add alias to importedAliases list of current module
     }
 
     // </editor-fold>

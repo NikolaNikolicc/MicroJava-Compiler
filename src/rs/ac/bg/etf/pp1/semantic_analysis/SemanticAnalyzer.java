@@ -160,7 +160,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         node.obj = Tab.insert(Obj.Prog, node.getProgName(), Tab.noType);
         moduleHandler.openModule(node.getProgName());
         if (moduleHandler.getCurrentModule() == moduleHandler.noModule){
-            report_error("[ProgName] Circular dependency detected, module " + node.getProgName() + " has been imported multiple times.", node);
+            report_error("[ProgName] Circular imports detected, module " + node.getProgName() + " has been imported multiple times.", node);
         }
         Tab.openScope();
     }

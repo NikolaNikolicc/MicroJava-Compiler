@@ -5,6 +5,7 @@ import rs.ac.bg.etf.pp1.syntax_analysis.output.ast.*;
 import rs.ac.bg.etf.pp1.semantic_analysis.SemanticAnalyzer;
 import rs.ac.bg.etf.pp1.util.StructExtended;
 import rs.ac.bg.etf.pp1.util.TabExtended;
+import rs.etf.pp1.symboltable.ModuleHandler;
 import rs.etf.pp1.symboltable.concepts.*;
 import rs.etf.pp1.mj.runtime.Code;
 import rs.etf.pp1.symboltable.Tab;
@@ -114,6 +115,20 @@ public class CodeGenerator extends VisitorAdaptor {
         if (node.obj.getLevel() == SemanticAnalyzer.LEVEL_GLOBAL_VAR){
             node.obj.setAdr(Code.dataSize++);
         }
+    }
+
+    // </editor-fold>
+
+    // <editor-fold desc="program start and end">
+
+    @Override
+    public void visit(ProgName node){
+        ModuleHandler.getInstance().openModule(node.getProgName());
+    }
+
+    @Override
+    public void visit(Program node){
+        ModuleHandler.getInstance().closeModule();
     }
 
     // </editor-fold>

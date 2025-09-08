@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class TVFHandler {
 
-    public Map<Struct, TVF> tvfMap; // map of all TVFs, key is class type
+    public Map<Struct, TVF> tvfMap = new LinkedHashMap<>(); // map of all TVFs, key is class type
 
     Logger log = Logger.getLogger(getClass());
 

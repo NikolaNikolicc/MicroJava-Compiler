@@ -46,6 +46,7 @@ public class Compiler {
         Reader bufferedReader = null;
         try {
             Path fullPath = Paths.get("test/rs/ac/bg/etf/pp1/official_tests/test303.mj");
+            ModuleHandler.getInstance().modulePath = fullPath.getParent();
             File sourceCode = new File(fullPath.toString());
             log.info("Compiling source file: " + sourceCode.getAbsolutePath());
 
@@ -64,9 +65,13 @@ public class Compiler {
             	return;
             }
             log.info("Syntax analysis has completed successfully.");
-            // semantic analysis
+            // create universe module and initialize embedded methods
+            ModuleHandler.getInstance().openModule("universe");
             TabExtended.getInstance();
-            ModuleHandler.getInstance().modulePath = fullPath.getParent();
+            CodeGenerator embeddedMethodsCodeGenerator = new CodeGenerator();
+            embeddedMethodsCodeGenerator.initializeMethods();
+            ModuleHandler.getInstance().closeModule();
+            // semantic analysis
             SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer();
             log.info("===================================");
             programSyntaxNode.traverseBottomUp(semanticAnalyzer);

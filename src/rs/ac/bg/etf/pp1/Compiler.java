@@ -46,7 +46,6 @@ public class Compiler {
         Reader bufferedReader = null;
         try {
             Path fullPath = Paths.get("test/rs/ac/bg/etf/pp1/official_tests/test303.mj");
-            ModuleHandler.getInstance().modulePath = fullPath.getParent();
             File sourceCode = new File(fullPath.toString());
             log.info("Compiling source file: " + sourceCode.getAbsolutePath());
 
@@ -66,6 +65,7 @@ public class Compiler {
             }
             log.info("Syntax analysis has completed successfully.");
             // create universe module and initialize embedded methods
+            ModuleHandler.getInstance().modulePath = fullPath.getParent();
             ModuleHandler.getInstance().openModule("universe");
             TabExtended.getInstance();
             CodeGenerator embeddedMethodsCodeGenerator = new CodeGenerator();

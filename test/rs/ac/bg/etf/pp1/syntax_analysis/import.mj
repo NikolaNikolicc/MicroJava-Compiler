@@ -1,0 +1,12 @@
+program Import
+
+import ime;
+import modul.alijas;
+
+{
+
+    void main(){
+
+    }
+
+}

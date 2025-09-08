@@ -24,6 +24,7 @@ import rs.ac.bg.etf.pp1.util.TabExtended;
 import rs.etf.pp1.mj.runtime.Code;
 import rs.etf.pp1.mj.runtime.Run;
 import rs.etf.pp1.mj.runtime.disasm;
+import rs.etf.pp1.symboltable.ModuleHandler;
 import rs.etf.pp1.symboltable.Tab;
 import rs.etf.pp1.symboltable.concepts.Scope;
 import rs.etf.pp1.symboltable.visitors.SymbolTableVisitor;
@@ -163,7 +164,14 @@ public class CompilerAutorun {
             }
             logger.info("Syntax analysis has completed successfully for the source file: " + MJProgramFilePath + "\n");
 
+            // create universe module and initialize embedded methods
+            Path fullPath = Paths.get(MJProgramFilePath);
+            ModuleHandler.getInstance().modulePath = fullPath.getParent();
+            ModuleHandler.getInstance().openModule("universe");
             TabExtended.getInstance();
+            CodeGenerator embeddedMethodsCodeGenerator = new CodeGenerator();
+            embeddedMethodsCodeGenerator.initializeMethods();
+            ModuleHandler.getInstance().closeModule();
             SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer();
             logger.info("===================================");
             programSyntaxNode.traverseBottomUp(semanticAnalyzer);

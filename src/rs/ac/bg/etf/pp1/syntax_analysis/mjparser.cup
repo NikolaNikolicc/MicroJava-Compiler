@@ -56,7 +56,7 @@ scan with {:
 :}
 
 
-terminal PROG, BREAK, CLASS, ELSE, CONST, IF, NEW, PRINT, READ, RETURN, VOID, EXTENDS, CONTINUE, UNION, INTERSECTION, DIFFERENCE, DO, WHILE, MAP, INTERFACE, PLUS, MINUS, MUL, DIV, MOD, EQEQ, NOTEQ, GR, GREQ, LE, LEQ, AND, OR, EQ, INC, DEC, SEMI, COLON, COMMA, DOT, LPAREN, RPAREN, LBRACKET, RBRACKET, LBRACE, RBRACE, MAIN ;
+terminal PROG, BREAK, CLASS, ELSE, CONST, IF, NEW, PRINT, READ, RETURN, VOID, EXTENDS, CONTINUE, UNION, INTERSECTION, DIFFERENCE, DO, WHILE, MAP, INTERFACE, PLUS, MINUS, MUL, DIV, MOD, EQEQ, NOTEQ, GR, GREQ, LE, LEQ, AND, OR, EQ, INC, DEC, SEMI, COLON, COMMA, DOT, LPAREN, RPAREN, LBRACKET, RBRACKET, LBRACE, RBRACE, MAIN, IMPORT ;
 terminal Integer NUMBER, BOOL ;
 terminal String IDENT ;
 terminal Character CHAR ;
@@ -64,7 +64,7 @@ terminal Character CHAR ;
 nonterminal MethodSignatureEndFormPars, MethodSignatureStartFormPars, ConstDeclAssign, Setop, Mulop, Addop, Relop, Assignop, Label, ProgramDeclList, ProgramDeclElem, ConstDecl, ConstDeclList, VarDecl, VarDeclOptionalList, VarDeclListOptional, MethodSignature, TypeChoice, FormParsOptional, FormPars, VarDeclList, MethodDeclList, StatementList, Statement, DesignatorStatement;
 nonterminal ActPars, DesignatorFuncCall, DesignatorStatementUnary, StackInitialize, MapDesignator, ClassMethodDeclListStart;
 nonterminal Program, InterfaceDeclOptionList, VarDeclProgram, VarDeclErrorComma, VarDeclErrorSemi, DesignatorAssign, VarDeclClass, ClassDeclErrorLBrace, DesignatorAssignWhile, DesignatorStatementWhile, DoStatement ;
-nonterminal SetClassFieldAddress, CloseMethodScope, Else, WhileStatement, HandleWhileCondition, GoToStart;
+nonterminal SetClassFieldAddress, CloseMethodScope, Else, WhileStatement, HandleWhileCondition, GoToStart, ImportDeclElem, ImportDeclList;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr, CondFact, CondTerm, Condition, StatementCondition, Type, ClassDeclName, ExtendsClass, ClassDecl, InterfaceDeclName, InterfaceDecl;
 nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue, Designator, DesignatorArrayName, DesignatorClassMore, DesignatorClassArrayName, DesignatorClassName, DesignatorClassElem, VarDeclFinal, MethodDecl;
@@ -73,9 +73,19 @@ nonterminal rs.etf.pp1.symboltable.concepts.Obj MethodName;
 
 precedence left ELSE;
 
-Program ::= (Program)  PROG ProgName ProgramDeclList LBRACE MethodDeclList RBRACE ;
+Program ::= (Program)  PROG ProgName ImportDeclList ProgramDeclList LBRACE MethodDeclList RBRACE ;
 
 ProgName ::= (ProgName) IDENT:progName;
+
+ImportDeclList ::= ImportDeclList ImportDeclElem
+                  |
+                  /* epsilon */
+                  ;
+
+ImportDeclElem ::= IMPORT IDENT SEMI
+                   |
+                   IMPORT IDENT DOT IDENT SEMI
+                   ;
 
 ProgramDeclList ::= ProgramDeclList ProgramDeclElem
                     |

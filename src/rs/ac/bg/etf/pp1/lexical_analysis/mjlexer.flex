@@ -65,6 +65,7 @@ import org.apache.log4j.*;
 "while" 	      { return new_symbol(sym.WHILE, yytext()); }
 "map" 		      { return new_symbol(sym.MAP, yytext()); }
 "interface"       { return new_symbol(sym.INTERFACE, yytext()); }
+"import"          { return new_symbol(sym.IMPORT, yytext()); }
 
 "+" 		{ return new_symbol(sym.PLUS, yytext()); }
 "-" 		{ return new_symbol(sym.MINUS, yytext()); }

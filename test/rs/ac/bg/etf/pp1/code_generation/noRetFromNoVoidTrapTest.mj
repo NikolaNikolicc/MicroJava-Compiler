@@ -1,0 +1,13 @@
+program NoRetFromNoVoidTrapTest
+{
+
+    int meth(){
+        if (1 == 2){
+            return 1;
+        }
+    }
+    void main() {
+        meth();
+    }
+
+}

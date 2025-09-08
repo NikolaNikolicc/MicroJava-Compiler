@@ -1,6 +1,10 @@
-program QuickTest
+Program QuickTest
+
+
 {
-    void main() {
+
+    void main(){
 
     }
+
 }

@@ -20,7 +20,7 @@ public class CodeGenerator extends VisitorAdaptor {
     private final Struct setType = Tab.find("set").getType(); // Set type from the symbol table
 
     private boolean chainingMethodCall = false;
-    private int noReturnFromNoVoidMethodTrapPointer = 0;
+    private Obj noReturnFromNoVoidMethodTrapPointer;
 
     private int mainPC;
     private final static int fieldSize = 4;
@@ -78,20 +78,20 @@ public class CodeGenerator extends VisitorAdaptor {
         Code.put(Code.bprint);
     }
 
-    private int generateTrap(String message){
-        int pointer = Code.pc;
+    private void generateTrap(String message, Obj trapPointer){
+        trapPointer.setAdr(Code.pc);
         for(char ch: message.toCharArray()){
             printChar(ch, null);
         }
         Code.put(Code.trap);
         Code.put(1);
-        return pointer;
     }
 
     private void initializeMethods(){
         generateOrdChrLenMethods();
         String noReturnFromNoVoidMethodMessage = "No return from non-void method";
-        noReturnFromNoVoidMethodTrapPointer = generateTrap(noReturnFromNoVoidMethodMessage);
+        noReturnFromNoVoidMethodTrapPointer = new Obj(Obj.Meth, "$noReturnFromNoVoidMethodTrap", Tab.noType, 0, 0);
+        generateTrap(noReturnFromNoVoidMethodMessage, noReturnFromNoVoidMethodTrapPointer);
         setHandler = SetHandler.getInstance();
     }
 
@@ -163,7 +163,7 @@ public class CodeGenerator extends VisitorAdaptor {
     @Override
     public void visit(MethodDecl node){
         if (!es.equals(node.obj.getType(), Tab.noType)){
-            Code.putJump(noReturnFromNoVoidMethodTrapPointer);
+            Code.putJump(noReturnFromNoVoidMethodTrapPointer.getAdr());
         }
         exitReturnFromMethod();
     }

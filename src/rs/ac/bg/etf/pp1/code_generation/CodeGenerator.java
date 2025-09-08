@@ -20,7 +20,8 @@ public class CodeGenerator extends VisitorAdaptor {
     private final Struct setType = Tab.find("set").getType(); // Set type from the symbol table
 
     private boolean chainingMethodCall = false;
-    private Obj noReturnFromNoVoidMethodTrapPointer;
+    private static boolean embeddedMethodsInitialized = false;
+    private static Obj noReturnFromNoVoidMethodTrapPointer;
 
     private int mainPC;
     private final static int fieldSize = 4;
@@ -35,7 +36,7 @@ public class CodeGenerator extends VisitorAdaptor {
     private final Stack<Collection<Integer>> skipWhile = new Stack<>(); // for break statements
 
     private final StructExtended es = StructExtended.getInstance();
-    private final TVFHandler tvfHandler = TVFHandler.getInstance();
+    private final TVFHandler tvfHandler = new TVFHandler();
     private SetHandler setHandler;
 
     public int getMainPC(){return this.mainPC;}
@@ -87,12 +88,14 @@ public class CodeGenerator extends VisitorAdaptor {
         Code.put(1);
     }
 
-    private void initializeMethods(){
+    public void initializeMethods(){
+        if (embeddedMethodsInitialized) return;
         generateOrdChrLenMethods();
         String noReturnFromNoVoidMethodMessage = "No return from non-void method";
         noReturnFromNoVoidMethodTrapPointer = new Obj(Obj.Meth, "$noReturnFromNoVoidMethodTrap", Tab.noType, 0, 0);
         generateTrap(noReturnFromNoVoidMethodMessage, noReturnFromNoVoidMethodTrapPointer);
         setHandler = SetHandler.getInstance();
+        embeddedMethodsInitialized = true;
     }
 
     public CodeGenerator(){

@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class TVFHandler {
 
-    public static Map<Struct, TVF> tvfMap; // map of all TVFs, key is class type
+    public Map<Struct, TVF> tvfMap; // map of all TVFs, key is class type
 
     Logger log = Logger.getLogger(getClass());
 
@@ -25,21 +25,21 @@ public class TVFHandler {
     }
 
 
-    // Singleton instance
-    private static TVFHandler instance;
-
-    // Private constructor to prevent instantiation
-    private TVFHandler() {
-        tvfMap = new LinkedHashMap<>();
-    }
-
-    // Public method to get the singleton instance
-    public static TVFHandler getInstance() {
-        if (instance == null) {
-            instance = new TVFHandler();
-        }
-        return instance;
-    }
+//    // Singleton instance
+//    private static TVFHandler instance;
+//
+//    // Private constructor to prevent instantiation
+//    private TVFHandler() {
+//        tvfMap = new LinkedHashMap<>();
+//    }
+//
+//    // Public method to get the singleton instance
+//    public static TVFHandler getInstance() {
+//        if (instance == null) {
+//            instance = new TVFHandler();
+//        }
+//        return instance;
+//    }
 
     public void createTVF(Struct classType) {
         TVF tvf = new TVF();

@@ -108,6 +108,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         builder.append(sym.getLevel()); // level
         builder.append(", FPPOS: ");
         builder.append(sym.getFpPos()); // fppos
+        builder.append(", MODULE: ");
+        builder.append(sym.getModule().getName());
         builder.append("]");
 
         log.info(builder.toString());
@@ -138,6 +140,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         nVars = Tab.currentScope().getnVars();
         Tab.chainLocalSymbols(node.getProgName().obj);
         Tab.closeScope();
+        ModuleHandler.getInstance().closeModule();
 
         if(mainMeth == null){
             report_error("[Program] Main method must be defined", node);
@@ -151,6 +154,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     @Override
     public void visit(ProgName node){
         node.obj = Tab.insert(Obj.Prog, node.getProgName(), Tab.noType);
+        ModuleHandler.getInstance().openModule(node.getProgName());
         Tab.openScope();
     }
 

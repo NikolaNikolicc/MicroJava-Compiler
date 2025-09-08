@@ -35,7 +35,8 @@ public class CodeGenerator extends VisitorAdaptor {
     private final Stack<Collection<Integer>> whileJumps = new Stack<>(); // for continue statements
     private final Stack<Collection<Integer>> skipWhile = new Stack<>(); // for break statements
 
-    private final StructExtended es = StructExtended.getInstance();
+    private static final StructExtended es = StructExtended.getInstance();
+    private static final ModuleHandler moduleHandler = ModuleHandler.getInstance();
     private final TVFHandler tvfHandler = new TVFHandler();
     private SetHandler setHandler;
 
@@ -126,12 +127,16 @@ public class CodeGenerator extends VisitorAdaptor {
 
     @Override
     public void visit(ProgName node){
-        ModuleHandler.getInstance().openModule(node.getProgName());
+        Code.saveContext(moduleHandler.getCurrentModule());
+        moduleHandler.openModule(node.getProgName());
+        Code.restoreContext(moduleHandler.getCurrentModule());
     }
 
     @Override
     public void visit(Program node){
-        ModuleHandler.getInstance().closeModule();
+        Code.saveContext(moduleHandler.getCurrentModule());
+        moduleHandler.closeModule();
+        Code.restoreContext(moduleHandler.getCurrentModule());
     }
 
     // </editor-fold>

@@ -146,9 +146,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         Tab.chainLocalSymbols(node.getProgName().obj);
         Tab.closeScope();
 
-        Code.saveContext(moduleHandler.getCurrentModule());
         moduleHandler.closeModule();
-        Code.restoreContext(moduleHandler.getCurrentModule());
 
         if(mainMeth == null){
             report_error("[Program] Main method must be defined", node);
@@ -163,9 +161,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     public void visit(ProgName node){
         node.obj = Tab.insert(Obj.Prog, node.getProgName(), Tab.noType);
 
-        Code.saveContext(moduleHandler.getCurrentModule());
         moduleHandler.openModule(node.getProgName());
-        Code.restoreContext(moduleHandler.getCurrentModule());
 
         if (moduleHandler.getCurrentModule() == moduleHandler.noModule){
             report_error("[ProgName] Circular imports detected, module " + node.getProgName() + " has been imported multiple times.", node);

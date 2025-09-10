@@ -2,6 +2,8 @@ package rs.ac.bg.etf.pp1.semantic_analysis;
 
 import org.apache.log4j.Logger;
 
+import rs.ac.bg.etf.pp1.autorun.CompilerAutorun;
+import rs.ac.bg.etf.pp1.util.CompilerService;
 import rs.ac.bg.etf.pp1.util.TabExtended;
 import rs.ac.bg.etf.pp1.syntax_analysis.output.ast.*;
 import rs.ac.bg.etf.pp1.util.StructExtended;
@@ -52,14 +54,16 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     public static Struct boolType = Tab.find("bool").getType();
     public static Struct setType = Tab.find("set").getType();
 
+    private static final String[] objKindNames = { "Con", "Var", "Type", "Meth", "Fld", "Elem", "Prog" };
+    private static final String[] structKindNames = { "None", "Int", "Char", "Array", "Class", "Bool", "Set", "Interface" };
+
     private boolean parsingFormPars = false;
 
     private int loopCounter = 0;
 
-    private static final String[] objKindNames = { "Con", "Var", "Type", "Meth", "Fld", "Elem", "Prog" };
-    private static final String[] structKindNames = { "None", "Int", "Char", "Array", "Class", "Bool", "Set", "Interface" };
-
     private final Stack<Struct> apStack = new Stack<>();
+
+    private String importQualifiedName = "";
 
     private static final StructExtended es = StructExtended.getInstance();
     private static final ModuleHandler moduleHandler = ModuleHandler.getInstance();
@@ -198,6 +202,38 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     // </editor-fold>
 
     // <editor-fold desc="Imports">
+
+    @Override
+    public void visit(ImportNameFinal node) {
+        importQualifiedName = node.getI1();
+    }
+
+    @Override
+    public void visit(ImportNameDot node) {
+        importQualifiedName += "." + node.getI1();
+    }
+
+    private Module loadModule(Path modulePath) {
+        Module m = moduleHandler.getModule(CompilerService.toPackageName(modulePath));
+        if (m != null) {
+            // if loaded in moduleHandler return it
+            return m;
+        }
+        // else load module from file, recuresive call
+        return null;
+    }
+
+    @Override
+    public void visit(ImportDeclElem node){
+        Path importPath = CompilerService.fromPackageName(importQualifiedName);
+        if (moduleHandler.existsModuleOnPath(importPath)) {
+            // module import
+            Module module = loadModule(CompilerService.removeExtension(importPath));
+        } else if (moduleHandler.existsModuleOnPath(importPath.getParent())) {
+            // alias import
+            Module module = loadModule(importPath.getParent());
+        }
+    }
 
 //    @Override
 //    public void visit(ImportModule node){

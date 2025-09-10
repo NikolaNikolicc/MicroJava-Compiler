@@ -14,6 +14,7 @@ import org.apache.log4j.xml.DOMConfigurator;
 
 import rs.ac.bg.etf.pp1.code_generation.CodeGenerator;
 import rs.ac.bg.etf.pp1.lexical_analysis.output.Yylex;
+import rs.ac.bg.etf.pp1.util.CompilerService;
 import rs.ac.bg.etf.pp1.util.MySymbolTableVisitor;
 import rs.ac.bg.etf.pp1.semantic_analysis.SemanticAnalyzer;
 import rs.ac.bg.etf.pp1.syntax_analysis.output.MJParser;
@@ -142,18 +143,6 @@ public class CompilerAutorun {
         logger.debug(symbolTableVisitor.getOutput());
     }
 
-    public static String toPackageName(Path fullPath) {
-        // Convert to string
-        String pathStr = fullPath.toString();
-
-        // Remove extension if present
-        int dotIndex = pathStr.lastIndexOf('.');
-        String withoutExtension = (dotIndex == -1) ? pathStr : pathStr.substring(0, dotIndex);
-
-        // Replace OS-specific separator (\ or /) with '.'
-        return withoutExtension.replace(File.separatorChar, '.');
-    }
-
     private static void executeBuildCommand(String[] args) {
         if (!Arrays.asList(args).contains("--build")) {
             logger.error("Command for compiling the MicroJava program (--build) is missing.");
@@ -182,7 +171,7 @@ public class CompilerAutorun {
             CodeGenerator embeddedMethodsCodeGenerator = new CodeGenerator("universe");
             embeddedMethodsCodeGenerator.initializeMethods();
             ModuleHandler.getInstance().closeModule();
-            SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(toPackageName(MJProgramFilePath));
+            SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(CompilerService.toPackageName(MJProgramFilePath));
             logger.info("===================================");
             programSyntaxNode.traverseBottomUp(semanticAnalyzer);
             logger.info("===================================");
@@ -196,7 +185,7 @@ public class CompilerAutorun {
             logger.info("Semantic analysis has completed successfully for the source file: " + MJProgramFilePath.toString() + "\n");
 
             Code.dataSize = 1;
-            CodeGenerator codeGenerator = new CodeGenerator(toPackageName(MJInputFilePath));
+            CodeGenerator codeGenerator = new CodeGenerator(CompilerService.toPackageName(MJInputFilePath));
             programSyntaxNode.traverseBottomUp(codeGenerator);
             Code.mainPc = codeGenerator.getMainPC();
             File objectCodeFile = new File(MJObjectCodeFilePath.toString());

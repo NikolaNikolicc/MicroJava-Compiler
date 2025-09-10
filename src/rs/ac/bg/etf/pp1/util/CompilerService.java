@@ -88,15 +88,36 @@ public class CompilerService {
         }
     }
 
-    public static void dump() {
-        MySymbolTableVisitor stv = new MySymbolTableVisitor();
-        for(Scope s = Tab.currentScope; s != null; s = s.getOuter()) {
-            s.accept(stv);
-        }
-        System.out.println(stv.getOutput());
+    public static String toPackageName(Path fullPath) {
+        // Convert to string
+        String pathStr = fullPath.toString();
+
+        // Remove extension if present
+        int dotIndex = pathStr.lastIndexOf('.');
+        String withoutExtension = (dotIndex == -1) ? pathStr : pathStr.substring(0, dotIndex);
+
+        // Replace OS-specific separator (\ or /) with '.'
+        return withoutExtension.replace(File.separatorChar, '.');
     }
 
-    public static void build(String sourceFile, String outputDir) {
+    public static Path fromPackageName(String packageName) {
+        // zameni '.' sa sistemskim separatorom
+        String pathStr = packageName.replace('.', File.separatorChar);
 
+        // dodaj ekstenziju
+        pathStr = pathStr + ".mj";
+
+        return Paths.get(pathStr);
+    }
+
+
+    public static Path removeExtension(Path path) {
+        String fileName = path.getFileName().toString();
+        int dotIndex = fileName.lastIndexOf('.');
+        String baseName = (dotIndex == -1) ? fileName : fileName.substring(0, dotIndex);
+
+        return path.getParent() != null
+                ? path.getParent().resolve(baseName)
+                : Paths.get(baseName);
     }
 }

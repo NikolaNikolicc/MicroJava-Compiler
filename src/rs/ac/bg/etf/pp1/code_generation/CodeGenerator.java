@@ -14,6 +14,8 @@ import java.util.*;
 
 public class CodeGenerator extends VisitorAdaptor {
 
+    private String name;
+
     private Struct currClass = null;
     private Struct currInterface = null;
 
@@ -99,8 +101,9 @@ public class CodeGenerator extends VisitorAdaptor {
         embeddedMethodsInitialized = true;
     }
 
-    public CodeGenerator(){
+    public CodeGenerator(String name){
         initializeMethods();
+        this.name = name;
     }
 
     // </editor-fold>
@@ -128,7 +131,7 @@ public class CodeGenerator extends VisitorAdaptor {
     @Override
     public void visit(ProgName node){
         Code.saveContext(moduleHandler.getCurrentModule());
-        moduleHandler.openModule(node.getProgName());
+        moduleHandler.openModule(this.name);
         Code.restoreContext(moduleHandler.getCurrentModule());
     }
 

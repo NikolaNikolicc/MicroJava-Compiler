@@ -19,10 +19,11 @@ import java.util.Stack;
 
 public class SemanticAnalyzer extends VisitorAdaptor{
 
+    private String name;
+
     public static final int FP_POS_GLOBAL_METHOD = 0; // by default fp pos is set to 0
     public static final int FP_POS_IMPLEMENTED_NONGLOBAL_METHOD = 1;
     public static final int FP_POS_UNIMPLEMENTED_INTERFACE_METHOD = 2;
-
     public static final int FP_POS_FORMAL_PARAMETER = 1;
 
     public static final int LEVEL_INTERFACE_VAR = 3; // interface method variables
@@ -30,9 +31,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     public static final int LEVEL_CLASS_VAR = 2; // class method variables
     public static final int LEVEL_GLOBAL_METH_VAR = 1; // global method variables
     public static final int LEVEL_GLOBAL_VAR = 0; // global variables
-
-    // package rs.ac.bg.etf.pp1;
-    int nVars;
 
     public boolean errorDetected = false;
     private boolean classMethodDecl = false; // used to check if we are in class method declaration or not
@@ -66,6 +64,14 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     private static final StructExtended es = StructExtended.getInstance();
     private static final ModuleHandler moduleHandler = ModuleHandler.getInstance();
     Logger log = Logger.getLogger(getClass());
+
+    // <editor-fold desc="Constructors">
+
+    public SemanticAnalyzer(String name){
+        this.name = name;
+    }
+
+    // </editor-fold>
 
     // <editor-fold desc="log methods">
 
@@ -142,7 +148,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(Program node){
-        nVars = Tab.currentScope().getnVars();
         Tab.chainLocalSymbols(node.getProgName().obj);
         Tab.closeScope();
 
@@ -161,7 +166,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     public void visit(ProgName node){
         node.obj = Tab.insert(Obj.Prog, node.getProgName(), Tab.noType);
 
-        moduleHandler.openModule(node.getProgName());
+        moduleHandler.openModule(this.name);
 
         if (moduleHandler.getCurrentModule() == moduleHandler.noModule){
             report_error("[ProgName] Circular imports detected, module " + node.getProgName() + " has been imported multiple times.", node);
@@ -209,7 +214,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         Module module = moduleHandler.getModule(node.getI1());
         if (module == moduleHandler.noModule){
             // recursive import
-            Path importedModulePath = Paths.get(moduleHandler.joinModulePath(node.getI1()));
 
         }
         // add module in importedModules list of current module

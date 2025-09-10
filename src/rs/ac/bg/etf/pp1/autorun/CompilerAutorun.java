@@ -45,9 +45,9 @@ public class CompilerAutorun {
 
     private static Logger logger;
 
-    private static String MJProgramFilePath;
+    private static Path MJProgramFilePath;
     private static Path MJInputFilePath;
-    private static String MJObjectCodeFilePath;
+    private static Path MJObjectCodeFilePath;
 
     private static void initializeLogger() {
         Path configPath = Paths.get("config/log4j.xml");
@@ -108,7 +108,7 @@ public class CompilerAutorun {
         int programCommandIndex = Arrays.asList(args).indexOf("--program");
         int programFilePathIndex = programCommandIndex + 1;
         if (programCommandIndex != -1 && programFilePathIndex < args.length){
-            MJProgramFilePath = args[programFilePathIndex];
+            MJProgramFilePath = Paths.get(args[programFilePathIndex]);
         } else {
             logger.error("Path to the MicroJava program file not specified.");
             System.exit(RUNTIME_ERROR_CODE_PROGRAM_FILE_PATH_NOT_SPECIFIED);
@@ -127,7 +127,7 @@ public class CompilerAutorun {
         int outputCommandIndex = Arrays.asList(args).indexOf("--output");
         int outputFilePathIndex = outputCommandIndex + 1;
         if (outputCommandIndex != -1 && outputFilePathIndex < args.length) {
-            MJObjectCodeFilePath = args[outputFilePathIndex] + "/mjprogram.obj";
+            MJObjectCodeFilePath = Paths.get(args[outputFilePathIndex],"/mjprogram.obj");
         } else {
             logger.error("Path to the folder where MicroJava object code file should be generated not specified.");
             System.exit(RUNTIME_ERROR_CODE_OBJECT_CODE_FILE_PATH_NOT_SPECIFIED);
@@ -142,14 +142,26 @@ public class CompilerAutorun {
         logger.debug(symbolTableVisitor.getOutput());
     }
 
+    public static String toPackageName(Path fullPath) {
+        // Convert to string
+        String pathStr = fullPath.toString();
+
+        // Remove extension if present
+        int dotIndex = pathStr.lastIndexOf('.');
+        String withoutExtension = (dotIndex == -1) ? pathStr : pathStr.substring(0, dotIndex);
+
+        // Replace OS-specific separator (\ or /) with '.'
+        return withoutExtension.replace(File.separatorChar, '.');
+    }
+
     private static void executeBuildCommand(String[] args) {
         if (!Arrays.asList(args).contains("--build")) {
             logger.error("Command for compiling the MicroJava program (--build) is missing.");
             System.exit(RUNTIME_ERROR_CODE_BUILD_COMMAND_MISSING);
         }
 
-        try ( BufferedReader bufferedReader = new BufferedReader(new FileReader(MJProgramFilePath))) {
-            logger.info("Compiling source file: " + MJProgramFilePath + "\n");
+        try ( BufferedReader bufferedReader = new BufferedReader(new FileReader(MJProgramFilePath.toString()))) {
+            logger.info("Compiling source file: " + MJProgramFilePath.toString() + "\n");
 
             Yylex lexer = new Yylex(bufferedReader);
             MJParser parser = new MJParser(lexer);
@@ -162,17 +174,15 @@ public class CompilerAutorun {
                 logger.error("Errors were detected during syntax analysis, aborting compilation.");
                 System.exit(RUNTIME_ERROR_CODE_SYNTAX_ANALYSIS_ERROR);
             }
-            logger.info("Syntax analysis has completed successfully for the source file: " + MJProgramFilePath + "\n");
+            logger.info("Syntax analysis has completed successfully for the source file: " + MJProgramFilePath.toString() + "\n");
 
             // create universe module and initialize embedded methods
-            Path fullPath = Paths.get(MJProgramFilePath);
-            ModuleHandler.getInstance().modulePath = fullPath.getParent();
             ModuleHandler.getInstance().openModule("universe");
             TabExtended.getInstance();
-            CodeGenerator embeddedMethodsCodeGenerator = new CodeGenerator();
+            CodeGenerator embeddedMethodsCodeGenerator = new CodeGenerator("universe");
             embeddedMethodsCodeGenerator.initializeMethods();
             ModuleHandler.getInstance().closeModule();
-            SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer();
+            SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(toPackageName(MJProgramFilePath));
             logger.info("===================================");
             programSyntaxNode.traverseBottomUp(semanticAnalyzer);
             logger.info("===================================");
@@ -183,18 +193,18 @@ public class CompilerAutorun {
                 logger.error("Errors were detected during semantic analysis, aborting compilation.");
                 System.exit(RUNTIME_ERROR_CODE_SEMANTIC_ANALYSIS_ERROR);
             }
-            logger.info("Semantic analysis has completed successfully for the source file: " + MJProgramFilePath + "\n");
+            logger.info("Semantic analysis has completed successfully for the source file: " + MJProgramFilePath.toString() + "\n");
 
             Code.dataSize = 1;
-            CodeGenerator codeGenerator = new CodeGenerator();
+            CodeGenerator codeGenerator = new CodeGenerator(toPackageName(MJInputFilePath));
             programSyntaxNode.traverseBottomUp(codeGenerator);
             Code.mainPc = codeGenerator.getMainPC();
-            File objectCodeFile = new File(MJObjectCodeFilePath);
+            File objectCodeFile = new File(MJObjectCodeFilePath.toString());
             if (objectCodeFile.exists()) {
                 objectCodeFile.delete();
             }
             Code.write(Files.newOutputStream(objectCodeFile.toPath()));
-            logger.info("Code generation has completed successfully for the source file: " + MJProgramFilePath + "\n");
+            logger.info("Code generation has completed successfully for the source file: " + MJProgramFilePath.toString() + "\n");
         } catch (Exception exception) {
             logger.error(exception);
             System.exit(RUNTIME_ERROR_CODE_GENERIC_RUNTIME_EXCEPTION);
@@ -207,11 +217,11 @@ public class CompilerAutorun {
         }
 
         try {
-            logger.info("Disassembling the generated object code file: " + MJObjectCodeFilePath + "\n");
-            String[] disassemblyargs = new String[] { MJObjectCodeFilePath };
+            logger.info("Disassembling the generated object code file: " + MJObjectCodeFilePath.toString() + "\n");
+            String[] disassemblyargs = new String[] { MJObjectCodeFilePath.toString() };
             disasm.main(disassemblyargs);
             System.out.println();
-            logger.info("Disassembly has completed successfully for the generated object code file: " + MJObjectCodeFilePath + "\n");
+            logger.info("Disassembly has completed successfully for the generated object code file: " + MJObjectCodeFilePath.toString() + "\n");
         } catch (Exception exception) {
             logger.error(exception);
             System.exit(RUNTIME_ERROR_CODE_GENERIC_RUNTIME_EXCEPTION);
@@ -224,13 +234,13 @@ public class CompilerAutorun {
         }
 
         try {
-            logger.debug("Running the object code file in debug mode in MicroJava Virtual Machine: " + MJObjectCodeFilePath);
-            String[] debugargs = new String[] { MJObjectCodeFilePath, "-debug" };
+            logger.debug("Running the object code file in debug mode in MicroJava Virtual Machine: " + MJObjectCodeFilePath.toString());
+            String[] debugargs = new String[] { MJObjectCodeFilePath.toString(), "-debug" };
             System.setIn(Files.newInputStream(MJInputFilePath));
             Run.main(debugargs);
             System.out.println();
             System.out.println();
-            logger.debug("Run in debug mode has completed successfully for the object code file in MicroJava Virtual Machine: " + MJObjectCodeFilePath + "\n");
+            logger.debug("Run in debug mode has completed successfully for the object code file in MicroJava Virtual Machine: " + MJObjectCodeFilePath.toString() + "\n");
         } catch (Exception exception) {
             logger.error(exception);
             System.exit(RUNTIME_ERROR_CODE_GENERIC_RUNTIME_EXCEPTION);
@@ -243,13 +253,13 @@ public class CompilerAutorun {
         }
 
         try {
-            logger.info("Running the object code file in MicroJava Virtual Machine: " + MJObjectCodeFilePath + "\n");
-            String[] runargs = new String[] { MJObjectCodeFilePath };
+            logger.info("Running the object code file in MicroJava Virtual Machine: " + MJObjectCodeFilePath.toString() + "\n");
+            String[] runargs = new String[] { MJObjectCodeFilePath.toString() };
             System.setIn(Files.newInputStream(MJInputFilePath));
             Run.main(runargs);
             System.out.println();
             System.out.println();
-            logger.info("Run has completed successfully for the object code file in MicroJava Virtual Machine: " + MJObjectCodeFilePath + "\n");
+            logger.info("Run has completed successfully for the object code file in MicroJava Virtual Machine: " + MJObjectCodeFilePath.toString() + "\n");
         } catch (Exception exception) {
             logger.error(exception);
             System.exit(RUNTIME_ERROR_CODE_GENERIC_RUNTIME_EXCEPTION);

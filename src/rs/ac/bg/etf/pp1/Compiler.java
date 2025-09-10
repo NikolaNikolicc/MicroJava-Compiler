@@ -65,14 +65,13 @@ public class Compiler {
             }
             log.info("Syntax analysis has completed successfully.");
             // create universe module and initialize embedded methods
-            ModuleHandler.getInstance().modulePath = fullPath.getParent();
             ModuleHandler.getInstance().openModule("universe");
             TabExtended.getInstance();
-            CodeGenerator embeddedMethodsCodeGenerator = new CodeGenerator();
+            CodeGenerator embeddedMethodsCodeGenerator = new CodeGenerator("universe");
             embeddedMethodsCodeGenerator.initializeMethods();
             ModuleHandler.getInstance().closeModule();
             // semantic analysis
-            SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer();
+            SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(fullPath.getParent().toString());
             log.info("===================================");
             programSyntaxNode.traverseBottomUp(semanticAnalyzer);
             log.info("===================================");
@@ -86,7 +85,7 @@ public class Compiler {
             log.info("Semantic analysis has completed successfully");
             // code generation
             Code.dataSize = 1;
-            CodeGenerator codeGenerator = new CodeGenerator();
+            CodeGenerator codeGenerator = new CodeGenerator(fullPath.getParent().toString());
             programSyntaxNode.traverseBottomUp(codeGenerator);
             Code.mainPc = codeGenerator.getMainPC();
             log.info("Code generation has completed successfully.");

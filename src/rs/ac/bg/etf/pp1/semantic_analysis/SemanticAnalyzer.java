@@ -213,26 +213,48 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         importQualifiedName += "." + node.getI1();
     }
 
-    private Module loadModule(Path modulePath) {
-        Module m = moduleHandler.getModule(CompilerService.toPackageName(modulePath));
+    private Module getAndFetch(Path modulePath) {
+        Module m = moduleHandler.getModule(moduleHandler.toPackageName(modulePath));
         if (m != null) {
             // if loaded in moduleHandler return it
             return m;
         }
         // else load module from file, recuresive call
-        return null;
+        if (!moduleHandler.existsModuleOnPath(modulePath)) {
+            return null;
+        }
+        // recursive import
+
+        // we are sure that module exists in path and is loaded in moduleHandler now
+        m = moduleHandler.getModule(moduleHandler.toPackageName(modulePath));
+        if (m == null){
+            report_error("[getAndFetch] Error occured while importing: " + modulePath.toString() + " module.", null);
+            return null;
+        }
+        return m;
     }
 
     @Override
     public void visit(ImportDeclElem node){
-        Path importPath = CompilerService.fromPackageName(importQualifiedName);
-        if (moduleHandler.existsModuleOnPath(importPath)) {
-            // module import
-            Module module = loadModule(CompilerService.removeExtension(importPath));
-        } else if (moduleHandler.existsModuleOnPath(importPath.getParent())) {
-            // alias import
-            Module module = loadModule(importPath.getParent());
+        // if we have circular dependency we can't import module
+        if (moduleHandler.getCurrentModule() == moduleHandler.noModule){
+            return;
         }
+        Path importPath = moduleHandler.fromPackageName(importQualifiedName);
+        Path mod1 = moduleHandler.removeExtension(importPath);
+        Module module = getAndFetch(mod1);
+        if (module != null) {
+            // add module in importedModules list of current module
+            return;
+        }
+        Path mod2 = importPath.getParent();
+        module = getAndFetch(mod2);
+        if (module != null) {
+            // check module exports contains alias
+            // add alias to importedAliases list of current module
+            return;
+        }
+        report_error("[ImportDeclElem] Neither module: " + mod1.toString() + "nor module: " + mod2.toString() + " was found.", node);
     }
 
 //    @Override

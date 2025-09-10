@@ -87,37 +87,4 @@ public class CompilerService {
             System.exit(RUNTIME_ERROR_CODE_LOGGER_INITIALIZATION_FAILED);
         }
     }
-
-    public static String toPackageName(Path fullPath) {
-        // Convert to string
-        String pathStr = fullPath.toString();
-
-        // Remove extension if present
-        int dotIndex = pathStr.lastIndexOf('.');
-        String withoutExtension = (dotIndex == -1) ? pathStr : pathStr.substring(0, dotIndex);
-
-        // Replace OS-specific separator (\ or /) with '.'
-        return withoutExtension.replace(File.separatorChar, '.');
-    }
-
-    public static Path fromPackageName(String packageName) {
-        // zameni '.' sa sistemskim separatorom
-        String pathStr = packageName.replace('.', File.separatorChar);
-
-        // dodaj ekstenziju
-        pathStr = pathStr + ".mj";
-
-        return Paths.get(pathStr);
-    }
-
-
-    public static Path removeExtension(Path path) {
-        String fileName = path.getFileName().toString();
-        int dotIndex = fileName.lastIndexOf('.');
-        String baseName = (dotIndex == -1) ? fileName : fileName.substring(0, dotIndex);
-
-        return path.getParent() != null
-                ? path.getParent().resolve(baseName)
-                : Paths.get(baseName);
-    }
 }

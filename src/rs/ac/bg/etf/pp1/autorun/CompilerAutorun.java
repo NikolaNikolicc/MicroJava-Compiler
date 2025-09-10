@@ -171,7 +171,7 @@ public class CompilerAutorun {
             CodeGenerator embeddedMethodsCodeGenerator = new CodeGenerator("universe");
             embeddedMethodsCodeGenerator.initializeMethods();
             ModuleHandler.getInstance().closeModule();
-            SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(CompilerService.toPackageName(MJProgramFilePath));
+            SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(ModuleHandler.getInstance().toPackageName(MJProgramFilePath));
             logger.info("===================================");
             programSyntaxNode.traverseBottomUp(semanticAnalyzer);
             logger.info("===================================");
@@ -185,7 +185,7 @@ public class CompilerAutorun {
             logger.info("Semantic analysis has completed successfully for the source file: " + MJProgramFilePath.toString() + "\n");
 
             Code.dataSize = 1;
-            CodeGenerator codeGenerator = new CodeGenerator(CompilerService.toPackageName(MJInputFilePath));
+            CodeGenerator codeGenerator = new CodeGenerator(ModuleHandler.getInstance().toPackageName(MJInputFilePath));
             programSyntaxNode.traverseBottomUp(codeGenerator);
             Code.mainPc = codeGenerator.getMainPC();
             File objectCodeFile = new File(MJObjectCodeFilePath.toString());

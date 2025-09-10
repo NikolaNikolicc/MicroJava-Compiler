@@ -64,7 +64,7 @@ terminal Character CHAR ;
 nonterminal MethodSignatureEndFormPars, MethodSignatureStartFormPars, ConstDeclAssign, Setop, Mulop, Addop, Relop, Assignop, Label, ProgramDeclList, ProgramDeclElem, ConstDecl, ConstDeclList, VarDecl, VarDeclOptionalList, VarDeclListOptional, MethodSignature, TypeChoice, FormParsOptional, FormPars, VarDeclList, MethodDeclList, StatementList, Statement, DesignatorStatement;
 nonterminal ActPars, DesignatorFuncCall, DesignatorStatementUnary, StackInitialize, MapDesignator, ClassMethodDeclListStart;
 nonterminal Program, InterfaceDeclOptionList, VarDeclProgram, VarDeclErrorComma, VarDeclErrorSemi, DesignatorAssign, VarDeclClass, ClassDeclErrorLBrace, DesignatorAssignWhile, DesignatorStatementWhile, DoStatement ;
-nonterminal SetClassFieldAddress, CloseMethodScope, Else, WhileStatement, HandleWhileCondition, GoToStart, ImportDeclElem, ImportDeclList;
+nonterminal SetClassFieldAddress, CloseMethodScope, Else, WhileStatement, HandleWhileCondition, GoToStart, ImportDeclElem, ImportDeclList, ImportName;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Struct Factor, Term, Expr, CondFact, CondTerm, Condition, StatementCondition, Type, ClassDeclName, ExtendsClass, ClassDecl, InterfaceDeclName, InterfaceDecl;
 nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, ConstDeclListValue, Designator, DesignatorArrayName, DesignatorClassMore, DesignatorClassArrayName, DesignatorClassName, DesignatorClassElem, VarDeclFinal, MethodDecl;
@@ -82,10 +82,13 @@ ImportDeclList ::= ImportDeclList ImportDeclElem
                   /* epsilon */
                   ;
 
-ImportDeclElem ::= (ImportModule) IMPORT IDENT SEMI
-                   |
-                   (ImportAlias) IMPORT IDENT DOT IDENT SEMI
+ImportDeclElem ::= (ImportDeclElem) IMPORT ImportName SEMI
                    ;
+
+ImportName ::= (ImportNameDot) IDENT DOT ImportName
+               |
+               (ImportNameFinal) IDENT
+               ;
 
 ProgramDeclList ::= ProgramDeclList ProgramDeclElem
                     |

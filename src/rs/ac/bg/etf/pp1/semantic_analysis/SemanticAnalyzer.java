@@ -199,45 +199,45 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     // <editor-fold desc="Imports">
 
-    @Override
-    public void visit(ImportModule node){
-        // if we have circular dependency we can't import module
-        if (moduleHandler.getCurrentModule() == moduleHandler.noModule){
-            return;
-        }
-        // exists module in path is checked in openModule
-        if (!moduleHandler.existsModuleOnPath(node.getI1())){
-            report_error("[ImportModule] Module " + node.getI1() + " not found in module path", node);
-            return;
-        }
-        // load module
-        Module module = moduleHandler.getModule(node.getI1());
-        if (module == moduleHandler.noModule){
-            // recursive import
+//    @Override
+//    public void visit(ImportModule node){
+//        // if we have circular dependency we can't import module
+//        if (moduleHandler.getCurrentModule() == moduleHandler.noModule){
+//            return;
+//        }
+//        // exists module in path is checked in openModule
+//        if (!moduleHandler.existsModuleOnPath(node.getI1())){
+//            report_error("[ImportModule] Module " + node.getI1() + " not found in module path", node);
+//            return;
+//        }
+//        // load module
+//        Module module = moduleHandler.getModule(node.getI1());
+//        if (module == moduleHandler.noModule){
+//            // recursive import
+//
+//        }
+//        // add module in importedModules list of current module
+//    }
 
-        }
-        // add module in importedModules list of current module
-    }
-
-    @Override
-    public void visit(ImportAlias node){
-        // if we have circular dependency we can't import alias
-        if (moduleHandler.getCurrentModule() == moduleHandler.noModule){
-            return;
-        }
-        // exists module in path
-        if (!moduleHandler.existsModuleOnPath(node.getI1())){
-            report_error("[ImportAlias] Module " + node.getI1() + " not found in module path", node);
-            return;
-        }
-        // load module
-        Module module = moduleHandler.getModule(node.getI1());
-        if (module == moduleHandler.noModule){
-            // recursive import
-        }
-        // check module exports contains alias
-        // add alias to importedAliases list of current module
-    }
+//    @Override
+//    public void visit(ImportAlias node){
+//        // if we have circular dependency we can't import alias
+//        if (moduleHandler.getCurrentModule() == moduleHandler.noModule){
+//            return;
+//        }
+//        // exists module in path
+//        if (!moduleHandler.existsModuleOnPath(node.getI1())){
+//            report_error("[ImportAlias] Module " + node.getI1() + " not found in module path", node);
+//            return;
+//        }
+//        // load module
+//        Module module = moduleHandler.getModule(node.getI1());
+//        if (module == moduleHandler.noModule){
+//            // recursive import
+//        }
+//        // check module exports contains alias
+//        // add alias to importedAliases list of current module
+//    }
 
     // </editor-fold>
 

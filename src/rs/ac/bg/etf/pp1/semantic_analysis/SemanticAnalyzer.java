@@ -210,10 +210,14 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(ImportNameDot node) {
-        importQualifiedName += "." + node.getI1();
+        importQualifiedName += "." + node.getI2();
     }
 
     private Module getAndFetch(Path modulePath) {
+        // this will occur when we call getAndFetch with null path (its happens when we call getParent on root module path)
+        if (modulePath == null) {
+            return null;
+        }
         Module m = moduleHandler.getModule(moduleHandler.toPackageName(modulePath));
         if (m != null) {
             // if loaded in moduleHandler return it
@@ -248,13 +252,18 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         Path mod2 = importPath.getParent();
+        report_info("stigli", node);
         module = getAndFetch(mod2);
+        report_info("stigli", node);
         if (module != null) {
             // check module exports contains alias
             // add alias to importedAliases list of current module
             return;
         }
-        report_error("[ImportDeclElem] Neither module: " + mod1.toString() + "nor module: " + mod2.toString() + " was found.", node);
+
+        String mod1Str = (mod1 != null) ? mod1.toString() : "null";
+        String mod2Str = (mod2 != null) ? mod2.toString() : "null";
+        report_error("[ImportDeclElem] Import failed: could not resolve module: " + mod1Str + " or its parent: " + mod2Str, node);
     }
 
 //    @Override

@@ -1,6 +1,7 @@
 program Imports_Test
 
 import missing_module;
+import test.rs.ac.bg.etf.pp1.semantic_analysis.program;
 
 {
 

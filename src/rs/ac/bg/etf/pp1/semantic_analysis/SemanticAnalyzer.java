@@ -252,9 +252,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         Path mod2 = importPath.getParent();
-        report_info("stigli", node);
         module = getAndFetch(mod2);
-        report_info("stigli", node);
         if (module != null) {
             // check module exports contains alias
             // add alias to importedAliases list of current module

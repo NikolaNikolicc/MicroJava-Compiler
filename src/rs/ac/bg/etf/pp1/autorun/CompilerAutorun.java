@@ -128,14 +128,15 @@ public class CompilerAutorun {
         int outputCommandIndex = Arrays.asList(args).indexOf("--output");
         int outputFilePathIndex = outputCommandIndex + 1;
         if (outputCommandIndex != -1 && outputFilePathIndex < args.length) {
-            MJObjectCodeFilePath = Paths.get(args[outputFilePathIndex],"/mjprogram.obj");
+            MJObjectCodeFilePath = Paths.get(args[outputFilePathIndex],CompilerService.parseFileNameFromPath(MJProgramFilePath) + ".obj");
+            CompilerService.setOutputFolderPath(Paths.get(args[outputFilePathIndex]));
         } else {
             logger.error("Path to the folder where MicroJava object code file should be generated not specified.");
             System.exit(RUNTIME_ERROR_CODE_OBJECT_CODE_FILE_PATH_NOT_SPECIFIED);
         }
     }
 
-    private static void printSymbolTable() {
+    public static void printSymbolTable() {
         SymbolTableVisitor symbolTableVisitor = new MySymbolTableVisitor();
         for (Scope currentScope = Tab.currentScope; currentScope != null; currentScope = currentScope.getOuter()) {
             currentScope.accept(symbolTableVisitor);
@@ -149,54 +150,10 @@ public class CompilerAutorun {
             System.exit(RUNTIME_ERROR_CODE_BUILD_COMMAND_MISSING);
         }
 
-        try ( BufferedReader bufferedReader = new BufferedReader(new FileReader(MJProgramFilePath.toString()))) {
-            logger.info("Compiling source file: " + MJProgramFilePath.toString() + "\n");
-
-            Yylex lexer = new Yylex(bufferedReader);
-            MJParser parser = new MJParser(lexer);
-            Symbol abstractSyntaxTreeRootSymbol = parser.parse();
-            Program programSyntaxNode = (Program) abstractSyntaxTreeRootSymbol.value;
-            logger.info("=====================ABSTRACT SYNTAX TREE DUMP=========================");
-            logger.info(programSyntaxNode.toString(""));
-            logger.info("=====================ABSTRACT SYNTAX TREE END=========================");
-            if (parser.isErrorDetected()) {
-                logger.error("Errors were detected during syntax analysis, aborting compilation.");
-                System.exit(RUNTIME_ERROR_CODE_SYNTAX_ANALYSIS_ERROR);
-            }
-            logger.info("Syntax analysis has completed successfully for the source file: " + MJProgramFilePath.toString() + "\n");
-
-            // create universe module and initialize embedded methods
-            ModuleHandler.getInstance().openModule("universe");
-            TabExtended.getInstance();
-            CodeGenerator embeddedMethodsCodeGenerator = new CodeGenerator("universe");
-            embeddedMethodsCodeGenerator.initializeMethods();
-            ModuleHandler.getInstance().closeModule();
-            SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(ModuleHandler.getInstance().toPackageName(MJProgramFilePath));
-            logger.info("===================================");
-            programSyntaxNode.traverseBottomUp(semanticAnalyzer);
-            logger.info("===================================");
-            logger.info("=====================SYMBOL TABLE DUMP=========================");
-            printSymbolTable();
-            logger.info("=========================SYMBOL TABLE END=========================");
-            if (semanticAnalyzer.errorDetected) {
-                logger.error("Errors were detected during semantic analysis, aborting compilation.");
-                System.exit(RUNTIME_ERROR_CODE_SEMANTIC_ANALYSIS_ERROR);
-            }
-            logger.info("Semantic analysis has completed successfully for the source file: " + MJProgramFilePath.toString() + "\n");
-
-            Code.dataSize = 1;
-            CodeGenerator codeGenerator = new CodeGenerator(ModuleHandler.getInstance().toPackageName(MJInputFilePath));
-            programSyntaxNode.traverseBottomUp(codeGenerator);
-            Code.mainPc = codeGenerator.getMainPC();
-            File objectCodeFile = new File(MJObjectCodeFilePath.toString());
-            if (objectCodeFile.exists()) {
-                objectCodeFile.delete();
-            }
-            Code.write(Files.newOutputStream(objectCodeFile.toPath()));
-            logger.info("Code generation has completed successfully for the source file: " + MJProgramFilePath.toString() + "\n");
-        } catch (Exception exception) {
-            logger.error(exception);
-            System.exit(RUNTIME_ERROR_CODE_GENERIC_RUNTIME_EXCEPTION);
+        CompilerService.initializeLogger();
+        int status = CompilerService.build(MJProgramFilePath);
+        if (status != 0) {
+            System.exit(status);
         }
     }
 
@@ -258,6 +215,7 @@ public class CompilerAutorun {
     public static void main(String[] args) {
         initializeLogger();
         loadFilePaths(args);
+        CompilerService.initializaUniverseModule();
         executeBuildCommand(args);
         executeDisasmCommand(args);
         executeDebugCommand(args);

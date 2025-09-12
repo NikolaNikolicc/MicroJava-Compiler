@@ -228,6 +228,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return null;
         }
         // recursive import
+        
 
         // we are sure that module exists in path and is loaded in moduleHandler now
         m = moduleHandler.getModule(moduleHandler.toPackageName(modulePath));
@@ -310,6 +311,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(ConstDeclAssign node){
+        report_info("stigli", null);
         if(checkIsObjNodeDeclared(node.getI1())){
             report_error("[ConstDeclAssign] Constant with name " + node.getI1() + " is already declared", node);
             return;

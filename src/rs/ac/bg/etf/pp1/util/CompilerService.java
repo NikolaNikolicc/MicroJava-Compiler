@@ -36,6 +36,8 @@ public class CompilerService {
 
     static Logger logger;
 
+    static Path outputFolderPath = null;
+
     static {
         Path configPath = Paths.get("config/log4j.xml");
         DOMConfigurator.configure(configPath.toString());
@@ -43,10 +45,16 @@ public class CompilerService {
     }
 
     public static void initializaUniverseModule(){
-
+        // create universe module and initialize embedded methods
+        ModuleHandler.getInstance().openModule("universe");
+        TabExtended.getInstance();
+        CodeGenerator embeddedMethodsCodeGenerator = new CodeGenerator("universe");
+        embeddedMethodsCodeGenerator.initializeMethods();
+        ModuleHandler.getInstance().closeModule();
     }
 
-    private static void initializeLogger() {
+
+    public static void initializeLogger() {
         Path configPath = Paths.get("config/log4j.xml");
         try {
             if (!Files.exists(configPath.getParent())) {
@@ -86,5 +94,67 @@ public class CompilerService {
             System.err.println("Failed to initialize logger: " + e.getMessage());
             System.exit(RUNTIME_ERROR_CODE_LOGGER_INITIALIZATION_FAILED);
         }
+    }
+
+    public static String parseFileNameFromPath(Path filePath) {
+        String fileName = filePath.getFileName().toString();
+        int dotIndex = fileName.lastIndexOf('.');
+        return (dotIndex == -1) ? fileName : fileName.substring(0, dotIndex);
+    }
+
+    public static void setOutputFolderPath(Path outputFolderPath) {
+        CompilerService.outputFolderPath = outputFolderPath;
+    }
+
+    public static int build (Path inputFilePath) {
+        // Concatenate with output folder path and add .obj extension
+        Path outputFilePath = outputFolderPath.resolve(parseFileNameFromPath(inputFilePath) + ".obj");
+
+        logger.info("Input file path: " + inputFilePath.toString());
+
+        try ( BufferedReader bufferedReader = new BufferedReader(new FileReader(inputFilePath.toString()))) {
+            logger.info("Compiling source file: " + inputFilePath.toString() + "\n");
+
+            Yylex lexer = new Yylex(bufferedReader);
+            MJParser parser = new MJParser(lexer);
+            Symbol abstractSyntaxTreeRootSymbol = parser.parse();
+            Program programSyntaxNode = (Program) abstractSyntaxTreeRootSymbol.value;
+            logger.info("=====================ABSTRACT SYNTAX TREE DUMP=========================");
+            logger.info(programSyntaxNode.toString(""));
+            logger.info("=====================ABSTRACT SYNTAX TREE END=========================");
+            if (parser.isErrorDetected()) {
+                logger.error("Errors were detected during syntax analysis, aborting compilation.");
+                return RUNTIME_ERROR_CODE_SYNTAX_ANALYSIS_ERROR;
+            }
+            logger.info("Syntax analysis has completed successfully for the source file: " + inputFilePath.toString() + "\n");
+
+            SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(ModuleHandler.getInstance().toPackageName(inputFilePath));
+            logger.info("===================================");
+            programSyntaxNode.traverseBottomUp(semanticAnalyzer);
+            logger.info("===================================");
+            logger.info("=====================SYMBOL TABLE DUMP=========================");
+            CompilerAutorun.printSymbolTable();
+            logger.info("=========================SYMBOL TABLE END=========================");
+            if (semanticAnalyzer.errorDetected) {
+                logger.error("Errors were detected during semantic analysis, aborting compilation.");
+                return RUNTIME_ERROR_CODE_SEMANTIC_ANALYSIS_ERROR;
+            }
+            logger.info("Semantic analysis has completed successfully for the source file: " + inputFilePath.toString() + "\n");
+
+            Code.dataSize = 1;
+            CodeGenerator codeGenerator = new CodeGenerator(ModuleHandler.getInstance().toPackageName(inputFilePath));
+            programSyntaxNode.traverseBottomUp(codeGenerator);
+            Code.mainPc = codeGenerator.getMainPC();
+            File objectCodeFile = new File(outputFilePath.toString());
+            if (objectCodeFile.exists()) {
+                objectCodeFile.delete();
+            }
+            Code.write(Files.newOutputStream(objectCodeFile.toPath()));
+            logger.info("Code generation has completed successfully for the source file: " + inputFilePath.toString() + "\n");
+        } catch (Exception exception) {
+            logger.error(exception);
+            return RUNTIME_ERROR_CODE_GENERIC_RUNTIME_EXCEPTION;
+        }
+        return 0;
     }
 }

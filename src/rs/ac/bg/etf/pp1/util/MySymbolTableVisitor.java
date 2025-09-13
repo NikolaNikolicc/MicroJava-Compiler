@@ -115,16 +115,6 @@ public class MySymbolTableVisitor extends DumpSymbolTableVisitor {
             localSymbol.accept(this);
             output.append("\n");
         }
-        output.append(currentIndent.toString() + "----------------------------------\n");
-        // print exported symbols
-        if (moduleToVisit.getExportedSymbols().size() == 0) {
-            output.append(currentIndent.toString() + "Exports: <none>\n");
-        }
-        for (Module.ListNode exportNode: moduleToVisit.getExportedSymbols()) {
-            output.append(currentIndent.toString() + "Exports: ");
-            exportNode.obj.accept(this);
-            output.append("\n");
-        }
         previousIndentationLevel();
         output.append("------- End of module --------");
     }

@@ -25,78 +25,78 @@ import rs.etf.pp1.symboltable.concepts.*;
 
 public class Compiler {
 
-    static {
-        Path configPath = Paths.get("config/log4j.xml");
-        DOMConfigurator.configure(configPath.toString());
-        Log4JUtils.instance().prepareLogFile(Logger.getRootLogger());
-    }
+//    static {
+//        Path configPath = Paths.get("config/log4j.xml");
+//        DOMConfigurator.configure(configPath.toString());
+//        Log4JUtils.instance().prepareLogFile(Logger.getRootLogger());
+//    }
 
-    public static void dump() {
-        MySymbolTableVisitor stv = new MySymbolTableVisitor();
-        for(Scope s = Tab.currentScope; s != null; s = s.getOuter()) {
-            s.accept(stv);
-        }
-        System.out.println(stv.getOutput());
-    }
+//    public static void dump() {
+//        MySymbolTableVisitor stv = new MySymbolTableVisitor();
+//        for(Scope s = Tab.currentScope; s != null; s = s.getOuter()) {
+//            s.accept(stv);
+//        }
+//        System.out.println(stv.getOutput());
+//    }
 
     public static void main(String[] args) throws Exception {
 
-        Logger log = Logger.getLogger(MJParser.class);
-
-        Reader bufferedReader = null;
-        try {
-            Path fullPath = Paths.get("test/rs/ac/bg/etf/pp1/official_tests/test303.mj");
-            File sourceCode = new File(fullPath.toString());
-            log.info("Compiling source file: " + sourceCode.getAbsolutePath());
-
-            bufferedReader = new BufferedReader(new FileReader(sourceCode));
-            // lexical analysis
-            Yylex lexer = new Yylex(bufferedReader);
-            // syntax analysis
-            MJParser parser = new MJParser(lexer);
-            Symbol abstractSyntaxTreeRootSymbol = parser.parse();
-            Program programSyntaxNode = (Program)(abstractSyntaxTreeRootSymbol.value);
-            log.info("=====================ABSTRACT SYNTAX TREE DUMP=========================");
-            log.info(programSyntaxNode.toString(""));
-            log.info("=====================ABSTRACT SYNTAX TREE END=========================");
-            if (parser.isErrorDetected()) {
-            	log.error("Errors were detected during syntax analysis, compilation aborted.");
-            	return;
-            }
-            log.info("Syntax analysis has completed successfully.");
-            // create universe module and initialize embedded methods
-            ModuleHandler.getInstance().openModule("universe");
-            TabExtended.getInstance();
-            CodeGenerator embeddedMethodsCodeGenerator = new CodeGenerator("universe");
-            embeddedMethodsCodeGenerator.initializeMethods();
-            ModuleHandler.getInstance().closeModule();
-            // semantic analysis
-            SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(fullPath.getParent().toString());
-            log.info("===================================");
-            programSyntaxNode.traverseBottomUp(semanticAnalyzer);
-            log.info("===================================");
-            log.info("=====================SYMBOL TABLE DUMP=========================");
-            dump();
-            log.info("=====================SYMBOL TABLE END=========================");
-            if (semanticAnalyzer.errorDetected) {
-                log.error("Errors were detected during semantic analysis, aborting compilation.");
-                return;
-            }
-            log.info("Semantic analysis has completed successfully");
-            // code generation
-            Code.dataSize = 1;
-            CodeGenerator codeGenerator = new CodeGenerator(fullPath.getParent().toString());
-            programSyntaxNode.traverseBottomUp(codeGenerator);
-            Code.mainPc = codeGenerator.getMainPC();
-            log.info("Code generation has completed successfully.");
-            // save generated code to .obj file
-            File objFile = new File("src/rs/ac/bg/etf/pp1/code_generation/output/mjprogram.obj");
-            if (objFile.exists()) objFile.delete();
-            Code.write(Files.newOutputStream(objFile.toPath()));
-        }
-        finally {
-            if (bufferedReader != null) try { bufferedReader.close(); } catch (IOException e1) { log.error(e1.getMessage(), e1); }
-        }
+//        Logger log = Logger.getLogger(MJParser.class);
+//
+//        Reader bufferedReader = null;
+//        try {
+//            Path fullPath = Paths.get("test/rs/ac/bg/etf/pp1/official_tests/test303.mj");
+//            File sourceCode = new File(fullPath.toString());
+//            log.info("Compiling source file: " + sourceCode.getAbsolutePath());
+//
+//            bufferedReader = new BufferedReader(new FileReader(sourceCode));
+//            // lexical analysis
+//            Yylex lexer = new Yylex(bufferedReader);
+//            // syntax analysis
+//            MJParser parser = new MJParser(lexer);
+//            Symbol abstractSyntaxTreeRootSymbol = parser.parse();
+//            Program programSyntaxNode = (Program)(abstractSyntaxTreeRootSymbol.value);
+//            log.info("=====================ABSTRACT SYNTAX TREE DUMP=========================");
+//            log.info(programSyntaxNode.toString(""));
+//            log.info("=====================ABSTRACT SYNTAX TREE END=========================");
+//            if (parser.isErrorDetected()) {
+//            	log.error("Errors were detected during syntax analysis, compilation aborted.");
+//            	return;
+//            }
+//            log.info("Syntax analysis has completed successfully.");
+//            // create universe module and initialize embedded methods
+//            ModuleHandler.getInstance().openModule("universe");
+//            TabExtended.getInstance();
+//            CodeGenerator embeddedMethodsCodeGenerator = new CodeGenerator("universe");
+//            embeddedMethodsCodeGenerator.initializeMethods();
+//            ModuleHandler.getInstance().closeModule();
+//            // semantic analysis
+//            SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(fullPath.getParent().toString());
+//            log.info("===================================");
+//            programSyntaxNode.traverseBottomUp(semanticAnalyzer);
+//            log.info("===================================");
+//            log.info("=====================SYMBOL TABLE DUMP=========================");
+//            dump();
+//            log.info("=====================SYMBOL TABLE END=========================");
+//            if (semanticAnalyzer.errorDetected) {
+//                log.error("Errors were detected during semantic analysis, aborting compilation.");
+//                return;
+//            }
+//            log.info("Semantic analysis has completed successfully");
+//            // code generation
+//            Code.dataSize = 1;
+//            CodeGenerator codeGenerator = new CodeGenerator(fullPath.getParent().toString());
+//            programSyntaxNode.traverseBottomUp(codeGenerator);
+//            Code.mainPc = codeGenerator.getMainPC();
+//            log.info("Code generation has completed successfully.");
+//            // save generated code to .obj file
+//            File objFile = new File("src/rs/ac/bg/etf/pp1/code_generation/output/mjprogram.obj");
+//            if (objFile.exists()) objFile.delete();
+//            Code.write(Files.newOutputStream(objFile.toPath()));
+//        }
+//        finally {
+//            if (bufferedReader != null) try { bufferedReader.close(); } catch (IOException e1) { log.error(e1.getMessage(), e1); }
+//        }
 
     }
 }

@@ -39,12 +39,6 @@ public class CompilerService {
 
     static Path outputFolderPath = null;
 
-    static {
-        Path configPath = Paths.get("config/log4j.xml");
-        DOMConfigurator.configure(configPath.toString());
-        Log4JUtils.instance().prepareLogFile(Logger.getRootLogger());
-    }
-
     public static void initializaUniverseModule(){
         // create universe module and initialize embedded methods
         ModuleHandler.getInstance().openModule("universe");

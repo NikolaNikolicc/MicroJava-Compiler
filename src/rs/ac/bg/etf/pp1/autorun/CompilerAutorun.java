@@ -51,48 +51,6 @@ public class CompilerAutorun {
     private static Path MJInputFilePath;
     private static Path MJObjectCodeFilePath;
 
-    private static void initializeLogger() {
-        Path configPath = Paths.get("config/log4j.xml");
-        try {
-            if (!Files.exists(configPath.getParent())) {
-                Files.createDirectories(configPath.getParent());
-            }
-
-            if (!Files.exists(configPath)) {
-                String configContent =
-                        "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
-                                "<!DOCTYPE log4j:configuration SYSTEM \"log4j.dtd\">\n" +
-                                "<log4j:configuration xmlns:log4j=\"http://jakarta.apache.org/log4j/\">\n" +
-                                "    <appender name=\"console\" class=\"org.apache.log4j.ConsoleAppender\">\n" +
-                                "        <param name=\"Target\" value=\"System.out\"/>\n" +
-                                "        <layout class=\"org.apache.log4j.PatternLayout\">\n" +
-                                "            <param name=\"ConversionPattern\" value=\"%-5p %d{ABSOLUTE} - %m%n\"/>\n" +
-                                "        </layout>\n" +
-                                "    </appender>\n" +
-                                "    <appender name=\"file\" class=\"org.apache.log4j.DailyRollingFileAppender\">\n" +
-                                "        <param name=\"file\" value=\"logs/microjava_compiler.log\"/>\n" +
-                                "        <layout class=\"org.apache.log4j.PatternLayout\">\n" +
-                                "            <param name=\"ConversionPattern\" value=\"%-5p %d{ABSOLUTE} - %m%n\"/>\n" +
-                                "        </layout>\n" +
-                                "    </appender>\n" +
-                                "    <root>\n" +
-                                "        <priority value=\"debug\"/>\n" +
-                                "        <appender-ref ref=\"file\"/>\n" +
-                                "        <appender-ref ref=\"console\"/>\n" +
-                                "    </root>\n" +
-                                "</log4j:configuration>\n";
-                Files.write(configPath, configContent.getBytes(StandardCharsets.UTF_8));
-            }
-
-            DOMConfigurator.configure(configPath.toString());
-            Log4JUtils.instance().prepareLogFile(Logger.getRootLogger());
-            logger = Logger.getLogger(CompilerAutorun.class);
-        } catch (Exception e) {
-            System.err.println("Failed to initialize logger: " + e.getMessage());
-            System.exit(RUNTIME_ERROR_CODE_LOGGER_INITIALIZATION_FAILED);
-        }
-    }
-
     private static void loadFilePaths(String[] args) {
         if (!Arrays.asList(args).contains("--program")) {
             logger.error("--program command is missing.");

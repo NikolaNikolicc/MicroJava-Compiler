@@ -152,7 +152,7 @@ public class CompilerAutorun {
 
         CompilerService.initializeLogger();
         int status = CompilerService.build(MJProgramFilePath);
-        if (status != 0) {
+        if (status != CompilerService.COMPILATION_SUCCESSFUL) {
             System.exit(status);
         }
     }

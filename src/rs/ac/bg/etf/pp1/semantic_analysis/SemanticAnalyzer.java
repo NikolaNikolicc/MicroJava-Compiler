@@ -228,7 +228,10 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return null;
         }
         // recursive import
-        
+        int status =  CompilerService.build(modulePath);
+        if (status != CompilerService.COMPILATION_SUCCESSFUL) {
+            System.exit(status);
+        }
 
         // we are sure that module exists in path and is loaded in moduleHandler now
         m = moduleHandler.getModule(moduleHandler.toPackageName(modulePath));

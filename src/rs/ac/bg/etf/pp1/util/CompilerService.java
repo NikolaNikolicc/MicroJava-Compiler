@@ -22,6 +22,7 @@ import java.nio.file.Paths;
 
 public class CompilerService {
 
+    public static final int COMPILATION_SUCCESSFUL = 0;
     private static final int RUNTIME_ERROR_CODE_PROGRAM_FILE_PATH_NOT_SPECIFIED = 1;
     private static final int RUNTIME_ERROR_CODE_INPUT_FILE_PATH_NOT_SPECIFIED = 2;
     private static final int RUNTIME_ERROR_CODE_OBJECT_CODE_FILE_PATH_NOT_SPECIFIED = 3;
@@ -155,6 +156,6 @@ public class CompilerService {
             logger.error(exception);
             return RUNTIME_ERROR_CODE_GENERIC_RUNTIME_EXCEPTION;
         }
-        return 0;
+        return COMPILATION_SUCCESSFUL;
     }
 }

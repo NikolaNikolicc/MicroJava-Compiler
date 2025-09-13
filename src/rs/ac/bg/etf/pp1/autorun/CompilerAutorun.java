@@ -28,6 +28,7 @@ import rs.etf.pp1.mj.runtime.disasm;
 import rs.etf.pp1.symboltable.ModuleHandler;
 import rs.etf.pp1.symboltable.Tab;
 import rs.etf.pp1.symboltable.concepts.Scope;
+import rs.etf.pp1.symboltable.visitors.DumpSymbolTableVisitor;
 import rs.etf.pp1.symboltable.visitors.SymbolTableVisitor;
 
 
@@ -137,7 +138,7 @@ public class CompilerAutorun {
     }
 
     public static void printSymbolTable() {
-        SymbolTableVisitor symbolTableVisitor = new MySymbolTableVisitor();
+        SymbolTableVisitor symbolTableVisitor = new DumpSymbolTableVisitor();
         for (Scope currentScope = Tab.currentScope; currentScope != null; currentScope = currentScope.getOuter()) {
             currentScope.accept(symbolTableVisitor);
         }
@@ -150,7 +151,7 @@ public class CompilerAutorun {
             System.exit(RUNTIME_ERROR_CODE_BUILD_COMMAND_MISSING);
         }
 
-        CompilerService.initializeLogger();
+//        CompilerService.initializeLogger();
         int status = CompilerService.build(MJProgramFilePath);
         if (status != CompilerService.COMPILATION_SUCCESSFUL) {
             System.exit(status);
@@ -213,10 +214,15 @@ public class CompilerAutorun {
     }
 
     public static void main(String[] args) {
-        initializeLogger();
+//        initializeLogger();
+        CompilerService.initializeLogger();
+        logger = CompilerService.logger;
         loadFilePaths(args);
         CompilerService.initializaUniverseModule();
         executeBuildCommand(args);
+        SymbolTableVisitor symbolTableVisitor = new DumpSymbolTableVisitor();
+        ModuleHandler.getInstance().dumpModules(symbolTableVisitor);
+        logger.debug(symbolTableVisitor.getOutput());
         executeDisasmCommand(args);
         executeDebugCommand(args);
         executeRunCommand(args);

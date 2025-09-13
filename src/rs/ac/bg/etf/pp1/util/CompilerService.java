@@ -35,7 +35,7 @@ public class CompilerService {
     private static final int RUNTIME_ERROR_CODE_OUTPUT_COMMAND_MISSING = 10;
     private static final int RUNTIME_ERROR_CODE_LOGGER_INITIALIZATION_FAILED = 11;
 
-    static Logger logger;
+    public static Logger logger;
 
     static Path outputFolderPath = null;
 

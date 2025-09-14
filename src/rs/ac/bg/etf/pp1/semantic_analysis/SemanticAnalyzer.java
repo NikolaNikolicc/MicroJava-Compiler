@@ -173,7 +173,9 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         moduleHandler.openModule(this.name);
         Module universe = moduleHandler.getModule("universe");
         if (universe != null){
-            moduleHandler.getCurrentModule().importModule(universe);
+            if (!moduleHandler.getCurrentModule().importModule(universe)) {
+                report_error("[ProgName] Failed to import universe module", node);
+            }
         } else {
             report_error("[ProgName] Universe module not found and can't be implicitely imported", node);
         }
@@ -259,13 +261,25 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         Module module = getAndFetch(mod1);
         if (module != null) {
             // add module in importedModules list of current module
+            if (!moduleHandler.getCurrentModule().importModule(module)) {
+                report_error("[ImportDeclElem] Failed to import module: " + module.getName(), node);
+            }
             return;
         }
         Path mod2 = importPath.getParent();
         module = getAndFetch(mod2);
         if (module != null) {
-            // check module exports contains alias
-            // add alias to importedAliases list of current module
+            // check module exports contains name
+            String fileName = moduleHandler.removeExtension(importPath).getFileName().toString();
+            Obj importedName = module.findNameInLocals(fileName);
+            if (importedName != Tab.noObj) {
+                // add importedName to importedNames list of current module
+                if (!moduleHandler.getCurrentModule().importName(importedName)) {
+                    report_error("[ImportDeclElem] Failed to import name: " + importedName.getName() + " from module: " + module.getName(), node);
+                }
+            } else {
+                report_error("[ImportDeclElem] Import failed: module: " + module.getName() + " does not export name: " + fileName, node);
+            }
             return;
         }
 
@@ -273,46 +287,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         String mod2Str = (mod2 != null) ? mod2.toString() : "null";
         report_error("[ImportDeclElem] Import failed: could not resolve module: " + mod1Str + " or its parent: " + mod2Str, node);
     }
-
-//    @Override
-//    public void visit(ImportModule node){
-//        // if we have circular dependency we can't import module
-//        if (moduleHandler.getCurrentModule() == moduleHandler.noModule){
-//            return;
-//        }
-//        // exists module in path is checked in openModule
-//        if (!moduleHandler.existsModuleOnPath(node.getI1())){
-//            report_error("[ImportModule] Module " + node.getI1() + " not found in module path", node);
-//            return;
-//        }
-//        // load module
-//        Module module = moduleHandler.getModule(node.getI1());
-//        if (module == moduleHandler.noModule){
-//            // recursive import
-//
-//        }
-//        // add module in importedModules list of current module
-//    }
-
-//    @Override
-//    public void visit(ImportAlias node){
-//        // if we have circular dependency we can't import alias
-//        if (moduleHandler.getCurrentModule() == moduleHandler.noModule){
-//            return;
-//        }
-//        // exists module in path
-//        if (!moduleHandler.existsModuleOnPath(node.getI1())){
-//            report_error("[ImportAlias] Module " + node.getI1() + " not found in module path", node);
-//            return;
-//        }
-//        // load module
-//        Module module = moduleHandler.getModule(node.getI1());
-//        if (module == moduleHandler.noModule){
-//            // recursive import
-//        }
-//        // check module exports contains alias
-//        // add alias to importedAliases list of current module
-//    }
 
     // </editor-fold>
 

@@ -174,6 +174,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         Module universe = moduleHandler.getModule("universe");
         if (universe != null){
             moduleHandler.getCurrentModule().importModule(universe);
+        } else {
+            report_error("[ProgName] Universe module not found and can't be implicitely imported", node);
         }
 
         if (moduleHandler.getCurrentModule() == moduleHandler.noModule){

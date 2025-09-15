@@ -150,9 +150,10 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     @Override
     public void visit(Program node){
         Tab.chainLocalSymbols(node.getProgName().obj);
-        Tab.closeScope();
-
+        // we don't want to add symbols out of program scope (even it is empty)
+        Tab.chainLocalSymbols(moduleHandler.getCurrentModule());
         moduleHandler.closeModule();
+        Tab.closeScope();
 
         if(mainMeth == null){
             report_error("[Program] Main method must be defined", node);
@@ -272,7 +273,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             Obj importedName = module.findNameInLocals(fileName);
             if (importedName != null) {
                 // add importedName to importedNames list of current module
-                if (!moduleHandler.getCurrentModule().importName(importedName)) {
+                if (!moduleHandler.getCurrentModule().addToImportedNames(importedName)) {
                     report_error("[ImportDeclElem] Failed to import name: " + importedName.getName() + " from module: " + module.getName(), node);
                 }
             } else {

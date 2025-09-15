@@ -88,6 +88,19 @@ public class CompilerAutorun {
         logger.debug(symbolTableVisitor.getOutput());
     }
 
+    private static void printRecursive(Scope currentScope, SymbolTableVisitor symbolTableVisitor) {
+        if (currentScope.getOuter() != null) {
+            printRecursive(currentScope.getOuter(), symbolTableVisitor);
+        }
+        currentScope.accept(symbolTableVisitor);
+    }
+
+    public static void printSymbolTableBottomUpScopes() {
+        SymbolTableVisitor symbolTableVisitor = new DumpSymbolTableVisitor();
+        printRecursive(Tab.currentScope, symbolTableVisitor);
+        logger.debug(symbolTableVisitor.getOutput());
+    }
+
     private static void executeBuildCommand(String[] args) {
         if (!Arrays.asList(args).contains("--build")) {
             logger.error("Command for compiling the MicroJava program (--build) is missing.");

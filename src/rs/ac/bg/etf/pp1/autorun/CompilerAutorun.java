@@ -1,28 +1,13 @@
 package rs.ac.bg.etf.pp1.autorun;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.xml.DOMConfigurator;
 
-import rs.ac.bg.etf.pp1.code_generation.CodeGenerator;
-import rs.ac.bg.etf.pp1.lexical_analysis.output.Yylex;
 import rs.ac.bg.etf.pp1.util.CompilerService;
-import rs.ac.bg.etf.pp1.util.MySymbolTableVisitor;
-import rs.ac.bg.etf.pp1.semantic_analysis.SemanticAnalyzer;
-import rs.ac.bg.etf.pp1.syntax_analysis.output.MJParser;
-import rs.ac.bg.etf.pp1.syntax_analysis.output.ast.Program;
-import rs.ac.bg.etf.pp1.util.Log4JUtils;
-import java_cup.runtime.Symbol;
-import rs.ac.bg.etf.pp1.util.TabExtended;
-import rs.etf.pp1.mj.runtime.Code;
 import rs.etf.pp1.mj.runtime.Run;
 import rs.etf.pp1.mj.runtime.disasm;
 import rs.etf.pp1.symboltable.ModuleHandler;

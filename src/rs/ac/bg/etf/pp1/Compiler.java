@@ -17,7 +17,6 @@ import rs.ac.bg.etf.pp1.semantic_analysis.SemanticAnalyzer;
 import rs.ac.bg.etf.pp1.syntax_analysis.output.ast.Program;
 import rs.ac.bg.etf.pp1.util.Log4JUtils;
 import rs.ac.bg.etf.pp1.util.TabExtended;
-import rs.ac.bg.etf.pp1.util.MySymbolTableVisitor;
 import rs.etf.pp1.mj.runtime.Code;
 import rs.etf.pp1.symboltable.ModuleHandler;
 import rs.etf.pp1.symboltable.Tab;

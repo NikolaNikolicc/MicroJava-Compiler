@@ -2,18 +2,15 @@ package rs.ac.bg.etf.pp1.semantic_analysis;
 
 import org.apache.log4j.Logger;
 
-import rs.ac.bg.etf.pp1.autorun.CompilerAutorun;
 import rs.ac.bg.etf.pp1.util.CompilerService;
 import rs.ac.bg.etf.pp1.util.TabExtended;
 import rs.ac.bg.etf.pp1.syntax_analysis.output.ast.*;
 import rs.ac.bg.etf.pp1.util.StructExtended;
-import rs.etf.pp1.mj.runtime.Code;
 import rs.etf.pp1.symboltable.*;
 import rs.etf.pp1.symboltable.concepts.*;
 import rs.etf.pp1.symboltable.structure.*;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -273,7 +270,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         } else {
             // check module exports contains name
             Obj importedName = module.findNameInLocals(fileName);
-            if (importedName != Tab.noObj) {
+            if (importedName != null) {
                 // add importedName to importedNames list of current module
                 if (!moduleHandler.getCurrentModule().importName(importedName)) {
                     report_error("[ImportDeclElem] Failed to import name: " + importedName.getName() + " from module: " + module.getName(), node);

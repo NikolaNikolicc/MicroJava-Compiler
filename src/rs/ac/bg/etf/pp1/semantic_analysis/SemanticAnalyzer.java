@@ -213,7 +213,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(ImportNameFinal node) {
-        importQualifiedName = node.getI1();
+        importQualifiedName = node.getI1() + "." + node.getI2();
     }
 
     @Override
@@ -257,20 +257,21 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return;
         }
         Path importPath = moduleHandler.fromPackageName(importQualifiedName);
-        Path mod1 = moduleHandler.removeExtension(importPath);
-        Module module = getAndFetch(mod1);
-        if (module != null) {
-            // add module in importedModules list of current module
+        Path parentPath = importPath.getParent();
+        Module module = getAndFetch(parentPath);
+        if (module == null) {
+            String modStr = (parentPath != null) ? parentPath.toString() : "null";
+            report_error("[ImportDeclElem] Import failed: could not resolve module: " + modStr, node);
+        }
+        // get file name from import path
+        String fileName = moduleHandler.removeExtension(importPath).getFileName().toString();
+        if (fileName.equals("*")){
+            // import all names from module
             if (!moduleHandler.getCurrentModule().importModule(module)) {
                 report_error("[ImportDeclElem] Failed to import module: " + module.getName(), node);
             }
-            return;
-        }
-        Path mod2 = importPath.getParent();
-        module = getAndFetch(mod2);
-        if (module != null) {
+        } else {
             // check module exports contains name
-            String fileName = moduleHandler.removeExtension(importPath).getFileName().toString();
             Obj importedName = module.findNameInLocals(fileName);
             if (importedName != Tab.noObj) {
                 // add importedName to importedNames list of current module
@@ -280,12 +281,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             } else {
                 report_error("[ImportDeclElem] Import failed: module: " + module.getName() + " does not export name: " + fileName, node);
             }
-            return;
         }
-
-        String mod1Str = (mod1 != null) ? mod1.toString() : "null";
-        String mod2Str = (mod2 != null) ? mod2.toString() : "null";
-        report_error("[ImportDeclElem] Import failed: could not resolve module: " + mod1Str + " or its parent: " + mod2Str, node);
     }
 
     // </editor-fold>

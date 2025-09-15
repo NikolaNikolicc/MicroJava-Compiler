@@ -87,7 +87,7 @@ ImportDeclElem ::= (ImportDeclElem) IMPORT ImportName SEMI
 
 ImportName ::= (ImportNameDot) ImportName DOT IDENT
                |
-               (ImportNameFinal) IDENT
+               (ImportNameFinal) IDENT DOT IDENT
                ;
 
 ProgramDeclList ::= ProgramDeclList ProgramDeclElem

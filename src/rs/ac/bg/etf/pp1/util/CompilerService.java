@@ -45,6 +45,7 @@ public class CompilerService {
         TabExtended.getInstance();
         CodeGenerator embeddedMethodsCodeGenerator = new CodeGenerator("universe");
         embeddedMethodsCodeGenerator.initializeMethods();
+        Tab.chainLocalSymbols(ModuleHandler.getInstance().getCurrentModule());
         ModuleHandler.getInstance().closeModule();
     }
 

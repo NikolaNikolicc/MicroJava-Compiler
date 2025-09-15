@@ -157,12 +157,14 @@ public class CompilerAutorun {
     }
 
     public static void main(String[] args) {
-//        initializeLogger();
         CompilerService.initializeLogger();
         logger = CompilerService.logger;
         loadFilePaths(args);
         CompilerService.initializaUniverseModule();
+        // in this scope all modules will be defined
+        Tab.openScope();
         executeBuildCommand(args);
+        Tab.closeScope();
         SymbolTableVisitor symbolTableVisitor = new DumpSymbolTableVisitor();
         ModuleHandler.getInstance().dumpModules(symbolTableVisitor);
         logger.debug(symbolTableVisitor.getOutput());

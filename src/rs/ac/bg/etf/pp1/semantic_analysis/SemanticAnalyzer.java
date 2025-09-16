@@ -166,7 +166,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(ProgName node){
-        node.obj = Tab.insert(Obj.Prog, node.getProgName(), Tab.noType);
+//        node.obj = Tab.insert(Obj.Prog, node.getProgName(), Tab.noType);
+        node.obj = new Obj(Obj.Prog, node.getProgName(), Tab.noType);
 
         moduleHandler.openModule(this.name);
         Module universe = moduleHandler.getModule("universe");

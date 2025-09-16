@@ -1,6 +1,6 @@
 Set-Location -Path (Join-Path $PSScriptRoot "..")
 
-$defaultProgramPath = "test/official_tests/test303.mj"
+$defaultProgramPath = "test/official_tests/test302.mj"
 $defaultInputPath = "src/rs/ac/bg/etf/pp1/code_generation/input/input.txt"
 $defaultOutputPath = "src/rs/ac/bg/etf/pp1/code_generation/output"
 # $defaultCommands = "--build --disasm --debug --run"

@@ -92,6 +92,8 @@ public class CompilerAutorun {
         if (currentScope.getOuter() != null) {
             printRecursive(currentScope.getOuter(), symbolTableVisitor);
         }
+        // this will prove that we have one empty scope where all modules are defined
+        // print result should have one empty scope
         currentScope.accept(symbolTableVisitor);
     }
 

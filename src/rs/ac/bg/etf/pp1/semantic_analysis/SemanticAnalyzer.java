@@ -152,6 +152,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         Tab.chainLocalSymbols(node.getProgName().obj);
         // we don't want to add symbols out of program scope (even it is empty)
         Tab.chainLocalSymbols(moduleHandler.getCurrentModule());
+        // we need to import transitive imports for the next phase (Code Generation) and for runtime because we need transitive import for inherited class methods
+        moduleHandler.getCurrentModule().addAllTransitiveImports();
         moduleHandler.closeModule();
         Tab.closeScope();
 

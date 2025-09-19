@@ -1,0 +1,14 @@
+program import2
+
+import test.code_generation.import1.*;
+
+int y;
+
+{
+
+    void main() {
+        y = 1;
+        print(y);
+    }
+
+}

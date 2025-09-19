@@ -129,7 +129,7 @@ public class CompilerService {
             programSyntaxNode.traverseBottomUp(semanticAnalyzer);
             logger.info("===================================");
             logger.info("=====================SYMBOL TABLE DUMP=========================");
-            CompilerAutorun.printSymbolTableBottomUpScopes();
+            // CompilerAutorun.printSymbolTableBottomUpScopes();
             logger.info("=========================SYMBOL TABLE END=========================");
             if (semanticAnalyzer.errorDetected) {
                 logger.error("Errors were detected during semantic analysis, aborting compilation.");

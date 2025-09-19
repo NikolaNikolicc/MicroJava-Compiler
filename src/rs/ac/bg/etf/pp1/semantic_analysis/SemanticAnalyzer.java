@@ -11,6 +11,7 @@ import rs.etf.pp1.symboltable.concepts.*;
 import rs.etf.pp1.symboltable.structure.*;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.Stack;
 
 public class SemanticAnalyzer extends VisitorAdaptor{
 
-    private String name;
+    private final String name;
 
     public static final int FP_POS_GLOBAL_METHOD = 0; // by default fp pos is set to 0
     public static final int FP_POS_IMPLEMENTED_NONGLOBAL_METHOD = 1;
@@ -156,7 +157,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         moduleHandler.getCurrentModule().addAllTransitiveImports();
         moduleHandler.closeModule();
         Tab.closeScope();
-
         if(mainMeth == null){
             report_error("[Program] Main method must be defined", node);
         }
@@ -179,10 +179,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             }
         } else {
             report_error("[ProgName] Universe module not found and can't be implicitely imported", node);
-        }
-
-        if (moduleHandler.getCurrentModule() == moduleHandler.noModule){
-            report_error("[ProgName] Circular imports detected, module " + node.getProgName() + " has been imported multiple times.", node);
         }
         Tab.openScope();
     }
@@ -218,10 +214,27 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     }
 
     @Override
+    public void visit(ImportNameFinalStar node) {
+        if (!(node.getParent() instanceof ImportDeclElem)) {
+            report_error("[ImportNameFinalStar] Import with * must be at the end of import declaration", node);
+        }
+        importQualifiedName = node.getI1() + ".*";
+    }
+
+    @Override
     public void visit(ImportNameDot node) {
         importQualifiedName += "." + node.getI2();
     }
 
+    @Override
+    public void visit(ImportNameDotStar node) {
+        if (!(node.getParent() instanceof ImportDeclElem)) {
+            report_error("[ImportNameDotStar] Import with * must be at the end of import declaration", node);
+        }
+        importQualifiedName += ".*";
+    }
+
+    // here we are passing directory path of module, not the file path
     private Module getAndFetch(Path modulePath) {
         // this will occur when we call getAndFetch with null path (its happens when we call getParent on root module path)
         if (modulePath == null) {
@@ -237,7 +250,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return null;
         }
         // recursive import
-        int status =  CompilerService.build(modulePath);
+        int status =  CompilerService.build(Paths.get(modulePath.toString() + ".mj"));
         if (status != CompilerService.COMPILATION_SUCCESSFUL) {
             System.exit(status);
         }
@@ -253,19 +266,23 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(ImportDeclElem node){
-        // if we have circular dependency we can't import module
-        if (moduleHandler.getCurrentModule() == moduleHandler.noModule){
+        // split importQualifiedName into module path and file name
+        int lastDot = importQualifiedName.lastIndexOf('.');
+        String fileName = importQualifiedName.substring(lastDot + 1);
+        String cleanedImportName = importQualifiedName.substring(0, lastDot);
+        // check for circular import
+        if (moduleHandler.isCircularImport(cleanedImportName)) {
+            report_error("[ImportDeclElem] Circular import detected: " + cleanedImportName + " can't be imported", node);
             return;
         }
-        Path importPath = moduleHandler.fromPackageName(importQualifiedName);
-        Path parentPath = importPath.getParent();
+        // get module from moduleHandler or load it from file if not loaded yet
+        Path parentPath = moduleHandler.fromPackageName(cleanedImportName);
         Module module = getAndFetch(parentPath);
         if (module == null) {
             String modStr = (parentPath != null) ? parentPath.toString() : "null";
             report_error("[ImportDeclElem] Import failed: could not resolve module: " + modStr, node);
+            return;
         }
-        // get file name from import path
-        String fileName = moduleHandler.removeExtension(importPath).getFileName().toString();
         if (fileName.equals("*")){
             // import all names from module
             if (!moduleHandler.getCurrentModule().importModule(module)) {
@@ -291,7 +308,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     @Override
     public void visit(ConstDeclAssign node){
-        report_info("stigli", null);
         if(checkIsObjNodeDeclared(node.getI1())){
             report_error("[ConstDeclAssign] Constant with name " + node.getI1() + " is already declared", node);
             return;
@@ -480,13 +496,11 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         } else {
             report_error("[MainMethod] Main method is already defined", node.getParent());
         }
-
         node.obj = currMeth;
     }
 
     @Override
     public void visit(MethodDecl node){
-
         if(currClass != null || currInterface != null){
             currMeth.setFpPos(FP_POS_IMPLEMENTED_NONGLOBAL_METHOD);
         } else {

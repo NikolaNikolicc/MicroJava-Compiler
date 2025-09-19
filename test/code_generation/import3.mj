@@ -1,0 +1,14 @@
+program import3
+
+import test.code_generation.import2.*; // transitive import test (transitive import1)
+
+int y; // test shadows import2.y
+
+{
+
+    void main() {
+        y = 1;
+        print(y);
+    }
+
+}

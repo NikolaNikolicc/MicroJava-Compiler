@@ -1,0 +1,13 @@
+program import1
+
+// import test.code_generation.import2.*; // circular import test - passed
+
+int x;
+
+{
+
+    void main() {
+        print(x);
+    }
+
+}

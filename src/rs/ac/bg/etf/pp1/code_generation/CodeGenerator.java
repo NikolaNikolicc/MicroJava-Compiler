@@ -130,16 +130,12 @@ public class CodeGenerator extends VisitorAdaptor {
 
     @Override
     public void visit(ProgName node){
-        Code.saveContext(moduleHandler.getCurrentModule());
         moduleHandler.openModule(this.name);
-        Code.restoreContext(moduleHandler.getCurrentModule());
     }
 
     @Override
     public void visit(Program node){
-        Code.saveContext(moduleHandler.getCurrentModule());
         moduleHandler.closeModule();
-        Code.restoreContext(moduleHandler.getCurrentModule());
     }
 
     // </editor-fold>

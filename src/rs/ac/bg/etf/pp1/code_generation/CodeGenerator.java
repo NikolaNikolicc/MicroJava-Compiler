@@ -133,6 +133,7 @@ public class CodeGenerator extends VisitorAdaptor {
     public void visit(ProgName node){
         moduleHandler.openModule(this.name);
         Code.moduleMap = moduleHandler.getCurrentModule().getImportedModules();
+        Code.moduleIndex = moduleHandler.getCurrentModule().getIndex();
     }
 
     @Override

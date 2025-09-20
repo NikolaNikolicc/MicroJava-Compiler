@@ -104,6 +104,7 @@ public class CodeGenerator extends VisitorAdaptor {
     public CodeGenerator(String name){
         initializeMethods();
         this.name = name;
+        Code.moduleName = name;
     }
 
     // </editor-fold>
@@ -131,6 +132,7 @@ public class CodeGenerator extends VisitorAdaptor {
     @Override
     public void visit(ProgName node){
         moduleHandler.openModule(this.name);
+        Code.moduleMap = moduleHandler.getCurrentModule().getImportedModules();
     }
 
     @Override

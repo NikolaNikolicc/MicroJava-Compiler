@@ -1,6 +1,7 @@
 package rs.ac.bg.etf.pp1.code_generation;
 
 import rs.etf.pp1.mj.runtime.Code;
+import rs.etf.pp1.symboltable.ModuleHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,7 @@ public class TVF {
 
     private int memoryStartTVF;
     List<TVFEntry> entries; // list of all methods in one TVF
+    int currentModuleIndex = ModuleHandler.getInstance().getCurrentModule().getIndex();
 
     TVF() {
         this.entries = new ArrayList<>();
@@ -68,16 +70,19 @@ public class TVF {
                 Code.loadConst(ch);
                 Code.put(Code.putstatic);
                 Code.put2(memAddress++);
+                Code.put(currentModuleIndex);
             }
             // add -1 terminator for end of string
             Code.loadConst(-1);
             Code.put(Code.putstatic);
             Code.put2(memAddress++);
+            Code.put(currentModuleIndex);
 
             // add method address
             Code.loadConst(entry.methodAddress);
             Code.put(Code.putstatic);
             Code.put2(memAddress++);
+            Code.put(currentModuleIndex);
 
             Code.dataSize += entry.methodName.length() + 2; // 1 for the -1 terminator and 1 for the address
         }
@@ -86,6 +91,7 @@ public class TVF {
         Code.loadConst(-2);
         Code.put(Code.putstatic);
         Code.put2(memAddress);
+        Code.put(currentModuleIndex);
 
         Code.dataSize++; // 1 for the -2 terminator
     }

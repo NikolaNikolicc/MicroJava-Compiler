@@ -382,6 +382,7 @@ public class CodeGenerator extends VisitorAdaptor {
             // load TVF
             Code.put(Code.getstatic);
             Code.put2(0);
+            Code.put(node.getModule().getIndex());
             Code.put(Code.getfield);
             Code.put2(0);
             // invokevirtual
@@ -485,9 +486,11 @@ public class CodeGenerator extends VisitorAdaptor {
     private void prepareForInvokeVirtual(){
         Code.put(Code.putstatic);
         Code.put2(0); // 0 is the offset for the TVF in the class instance
+        Code.put(moduleHandler.getCurrentModule().getIndex());
         // load this
         Code.put(Code.getstatic);
         Code.put2(0);
+        Code.put(moduleHandler.getCurrentModule().getIndex());
         // set flag
         chainingMethodCall = true;
     }

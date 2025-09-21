@@ -586,11 +586,7 @@ public class CodeGenerator extends VisitorAdaptor {
 
     @Override
     public void visit(FactorDesignator node){
-        if (node.getDesignator().obj.getKind() == Obj.Con) {
-            Code.loadConst(node.getDesignator().obj.getAdr());
-        } else {
-            Code.load(node.getDesignator().obj);
-        }
+        Code.load(node.getDesignator().obj);
     }
 
     @Override

@@ -47,6 +47,18 @@ public class CompilerService {
         embeddedMethodsCodeGenerator.initializeMethods();
         Tab.chainLocalSymbols(ModuleHandler.getInstance().getCurrentModule());
         ModuleHandler.getInstance().closeModule();
+        Path outputFilePath = outputFolderPath.resolve("universe.obj");
+        File objectCodeFile = new File(outputFilePath.toString());
+        if (objectCodeFile.exists()) {
+            objectCodeFile.delete();
+        }
+        try{
+            Code.write(Files.newOutputStream(objectCodeFile.toPath()));
+            logger.info("Code generation has completed successfully for universe scope"+ "\n");
+        } catch (IOException e) {
+            logger.error(e);
+            System.exit(RUNTIME_ERROR_CODE_GENERIC_RUNTIME_EXCEPTION);
+        }
     }
 
 

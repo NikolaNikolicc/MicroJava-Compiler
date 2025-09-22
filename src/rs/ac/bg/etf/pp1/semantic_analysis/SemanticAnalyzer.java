@@ -70,6 +70,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     // <editor-fold desc="Constructors">
 
     public SemanticAnalyzer(String name){
+
         this.name = name;
     }
 
@@ -170,7 +171,6 @@ public class SemanticAnalyzer extends VisitorAdaptor{
     public void visit(ProgName node){
 //        node.obj = Tab.insert(Obj.Prog, node.getProgName(), Tab.noType);
         node.obj = new Obj(Obj.Prog, node.getProgName(), Tab.noType);
-
         moduleHandler.openModule(this.name);
         Module universe = moduleHandler.getModule("universe");
         if (universe != null){

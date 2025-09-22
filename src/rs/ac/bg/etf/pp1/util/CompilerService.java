@@ -53,9 +53,13 @@ public class CompilerService {
             objectCodeFile.delete();
         }
         try{
+            Code.moduleIndex = ModuleHandler.getInstance().getModule("universe").getIndex();
             Code.write(Files.newOutputStream(objectCodeFile.toPath()));
             logger.info("Code generation has completed successfully for universe scope"+ "\n");
-//            Code.buf = new byte[8192];
+            Code.buf = new byte[8192];
+            Code.pc = 0;
+            Code.dataSize = 1;
+            Code.mainPc = -1;
         } catch (IOException e) {
             logger.error(e);
             System.exit(RUNTIME_ERROR_CODE_GENERIC_RUNTIME_EXCEPTION);

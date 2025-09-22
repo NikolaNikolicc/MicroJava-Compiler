@@ -1,5 +1,6 @@
 package rs.ac.bg.etf.pp1.code_generation;
 
+import org.apache.log4j.Logger;
 import rs.ac.bg.etf.pp1.syntax_analysis.output.ast.VisitorAdaptor;
 import rs.ac.bg.etf.pp1.syntax_analysis.output.ast.*;
 import rs.ac.bg.etf.pp1.semantic_analysis.SemanticAnalyzer;
@@ -43,6 +44,16 @@ public class CodeGenerator extends VisitorAdaptor {
     private SetHandler setHandler;
 
     public int getMainPC(){return this.mainPC;}
+
+    Logger log = Logger.getLogger(getClass());
+
+    public void report_info(String message, SyntaxNode info) {
+        StringBuilder msg = new StringBuilder(message);
+        int line = (info == null) ? 0: info.getLine();
+        if (line != 0)
+            msg.append(" on line ").append(line);
+        log.info(msg.toString());
+    }
 
     // <editor-fold desc="Initialization">
 
@@ -102,7 +113,8 @@ public class CodeGenerator extends VisitorAdaptor {
     }
 
     public CodeGenerator(String name){
-        initializeMethods();
+//        initializeMethods();
+        setHandler = SetHandler.getInstance();
         this.name = name;
         Code.moduleName = name;
     }
@@ -207,8 +219,11 @@ public class CodeGenerator extends VisitorAdaptor {
         if (es.equals(node.getExpr().struct, setType)) {
             Code.loadConst(0);
             int offset = setHandler.printSetMeth.getAdr() - Code.pc; // Calculate the offset to the printSet method
+            report_info("StatementPrint start call", node);
             Code.put(Code.call);
             Code.put2(offset); // Call the printSet method
+            Code.put(setHandler.printSetMeth.getModule().getIndex());
+            report_info("StatementPrint end call", node);
             return;
         }
         Code.loadConst(0);
@@ -221,8 +236,11 @@ public class CodeGenerator extends VisitorAdaptor {
         if (es.equals(node.getExpr().struct, setType)) {
             Code.loadConst(node.getN2());
             int offset = setHandler.printSetMeth.getAdr() - Code.pc; // Calculate the offset to the printSet method
+            report_info("StatementPrintNumber start call", node);
             Code.put(Code.call);
             Code.put2(offset); // Call the printSet method
+            Code.put(setHandler.printSetMeth.getModule().getIndex());
+            report_info("StatementPrintNumber end call", node);
             return;
         }
         Code.loadConst(node.getN2());
@@ -303,8 +321,11 @@ public class CodeGenerator extends VisitorAdaptor {
         Code.load(i); // i
         Code.put(Code.aload); // arr[i]
         int offset = methAdr - Code.pc;
+        report_info("ExprDesignatorMap start call", node);
         Code.put(Code.call);
         Code.put2(offset);
+        Code.put(node.getDesignator().obj.getModule().getIndex());
+        report_info("ExprDesignatorMap end call", node);
         Code.load(sum); // sum
         Code.put(Code.add);
         Code.store(sum); // sum
@@ -393,8 +414,11 @@ public class CodeGenerator extends VisitorAdaptor {
             Code.put4(-1);
         } else {
             int offset = node.getAdr() - Code.pc; // Calculate the offset to the function address
+            report_info("functionCall start call: " + node.getName(), null);
             Code.put(Code.call);
             Code.put2(offset);
+            Code.put(node.getModule().getIndex());
+            report_info("functionCall end call", null);
         }
     }
 
@@ -439,16 +463,23 @@ public class CodeGenerator extends VisitorAdaptor {
         Code.put(1);
 
         int offset = 0;
+        int moduleIndex = -1;
         if (node.getSetop() instanceof SetopUnion){
             offset = setHandler.unionSetsMeth.getAdr() - Code.pc; // Calculate the offset to the add method
+            report_info("stigli do union", node);
+            moduleIndex = setHandler.unionSetsMeth.getModule().getIndex();
         } else if (node.getSetop() instanceof  SetopIntersection){
             offset = setHandler.intersectSetsMeth.getAdr() - Code.pc;
+            moduleIndex = setHandler.intersectSetsMeth.getModule().getIndex();
         } else if (node.getSetop() instanceof SetopDifference){
             offset = setHandler.differenceSetsMeth.getAdr() - Code.pc;
+            moduleIndex = setHandler.differenceSetsMeth.getModule().getIndex();
         }
-
+        report_info("DesignatorAssignSetop start call", node);
         Code.put(Code.call);
         Code.put2(offset); // Call the unionSets method
+        report_info("DesignatorAssignSetop end call", node);
+        Code.put(moduleIndex);
 
         Code.store(node.getDesignator().obj); // store the result of the union in the assign left operand
     }
@@ -465,16 +496,22 @@ public class CodeGenerator extends VisitorAdaptor {
         Code.put(1);
 
         int offset = 0;
+        int moduleIndex = -1;
         if (node.getSetop() instanceof SetopUnion){
             offset = setHandler.unionSetsMeth.getAdr() - Code.pc; // Calculate the offset to the add method
+            moduleIndex = setHandler.unionSetsMeth.getModule().getIndex();
         } else if (node.getSetop() instanceof  SetopIntersection){
             offset = setHandler.intersectSetsMeth.getAdr() - Code.pc;
+            moduleIndex = setHandler.intersectSetsMeth.getModule().getIndex();
         } else if (node.getSetop() instanceof SetopDifference){
             offset = setHandler.differenceSetsMeth.getAdr() - Code.pc;
+            moduleIndex = setHandler.differenceSetsMeth.getModule().getIndex();
         }
-
+        report_info("DesignatorAssignSetopWhile start call", node);
         Code.put(Code.call);
         Code.put2(offset); // Call the unionSets method
+        report_info("DesignatorAssignSetopWhile end call", node);
+        Code.put(moduleIndex);
 
         Code.store(node.getDesignator().obj); // store the result of the union in the assign left operand
     }

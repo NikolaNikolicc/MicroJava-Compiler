@@ -201,6 +201,7 @@ public class SetHandler {
         int addOffset = addMeth.getAdr() - Code.pc; // Calculate the offset to the add method
         Code.put(Code.call);
         Code.put2(addOffset); // Call the add method
+        Code.put(addMeth.getModule().getIndex());
 
         // i++
         Code.load(i);
@@ -380,6 +381,7 @@ public class SetHandler {
         int addOffset = addMeth.getAdr() - Code.pc;
         Code.put(Code.call);
         Code.put2(addOffset);
+        Code.put(addMeth.getModule().getIndex());
 
         Code.putJump(0);
         int inci = Code.pc - 2;
@@ -513,6 +515,7 @@ public class SetHandler {
         int addOffset = addMeth.getAdr() - Code.pc;
         Code.put(Code.call);
         Code.put2(addOffset);
+        Code.put(addMeth.getModule().getIndex());
 
         Code.fixup(inci);
         // i++
@@ -582,6 +585,7 @@ public class SetHandler {
         int addOffset = addMeth.getAdr() - Code.pc; // Calculate the offset to the add method
         Code.put(Code.call);
         Code.put2(addOffset); // Call the add method
+        Code.put(addMeth.getModule().getIndex());
 
         // i++
         Code.load(i);
@@ -617,6 +621,7 @@ public class SetHandler {
         int addOffset1 = addMeth.getAdr() - Code.pc; // Calculate the offset to the add method
         Code.put(Code.call);
         Code.put2(addOffset1); // Call the add method
+        Code.put(addMeth.getModule().getIndex());
 
         // i++
         Code.load(i);

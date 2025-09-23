@@ -409,22 +409,24 @@ public class CodeGenerator extends VisitorAdaptor {
             // load TVF
             Code.put(Code.getstatic);
             Code.put2(0);
-            Code.put(node.getModule().getIndex());
+            Code.put(node.getModule().getIndex()); // load object address on heap
             Code.put(Code.getfield);
-            Code.put2(0);
+            Code.put2(0); // load TVF address from object
             // invokevirtual
             Code.put(Code.invokevirtual);
             for (char ch: node.getName().toCharArray()){
                 Code.put4(ch);
             }
             Code.put4(-1);
+            // load module index of the object
+            Code.put(node.getType().getModuleIndex());
         } else {
             int offset = node.getAdr() - Code.pc; // Calculate the offset to the function address
-            report_info("functionCall start call: " + node.getName(), null);
+//            report_info("functionCall start call: " + node.getName(), null);
             Code.put(Code.call);
             Code.put2(offset);
             Code.put(node.getModule().getIndex());
-            report_info("functionCall end call", null);
+//            report_info("functionCall end call", null);
         }
     }
 

@@ -43,6 +43,8 @@ public class CodeGenerator extends VisitorAdaptor {
     private final TVFHandler tvfHandler = new TVFHandler();
     private SetHandler setHandler;
 
+    private static final Map<Module, TVFHandler> moduleTVFMap = new HashMap<>();
+
     public int getMainPC(){return this.mainPC;}
 
     Logger log = Logger.getLogger(getClass());
@@ -147,6 +149,7 @@ public class CodeGenerator extends VisitorAdaptor {
         Code.moduleMap = moduleHandler.getCurrentModule().getImportedModules();
         Code.moduleIndex = moduleHandler.getCurrentModule().getIndex();
         tvfHandler.setParentModuleIndex(moduleHandler.getCurrentModule().getIndex());
+        moduleTVFMap.put(moduleHandler.getCurrentModule(), tvfHandler);
     }
 
     @Override
@@ -175,7 +178,9 @@ public class CodeGenerator extends VisitorAdaptor {
         Code.put(node.obj.getLevel()); // b1 - number of formal parameters
         Code.put(node.obj.getLocalSymbols().size()); // b2 - number of local variables (formal + local)
 
-        tvfHandler.putAllTVFsInMemory();
+        for (TVFHandler tvfh: moduleTVFMap.values()){
+            tvfh.putAllTVFsInMemory();
+        }
     }
 
     private void exitReturnFromMethod(){

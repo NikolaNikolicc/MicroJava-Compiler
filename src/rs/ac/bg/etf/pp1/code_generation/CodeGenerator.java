@@ -22,6 +22,8 @@ public class CodeGenerator extends VisitorAdaptor {
 
     private final Struct setType = Tab.find("set").getType(); // Set type from the symbol table
 
+    private Struct nodeObjectCallerType = null;
+
     private boolean chainingMethodCall = false;
     private static boolean embeddedMethodsInitialized = false;
     private static Obj noReturnFromNoVoidMethodTrapPointer;
@@ -414,12 +416,13 @@ public class CodeGenerator extends VisitorAdaptor {
             Code.put2(0); // load TVF address from object
             // invokevirtual
             Code.put(Code.invokevirtual);
+            // load module index of the object
+            Code.put(nodeObjectCallerType.getModuleIndex());
+            // load method name
             for (char ch: node.getName().toCharArray()){
                 Code.put4(ch);
             }
             Code.put4(-1);
-            // load module index of the object
-            Code.put(node.getType().getModuleIndex());
         } else {
             int offset = node.getAdr() - Code.pc; // Calculate the offset to the function address
 //            report_info("functionCall start call: " + node.getName(), null);
@@ -548,6 +551,8 @@ public class CodeGenerator extends VisitorAdaptor {
             // If the designator is a method and we are in a class or interface context, prepare for virtual invocation
             Code.put(Code.load_n);
             prepareForInvokeVirtual();
+            if (currClass != null) nodeObjectCallerType = currClass;
+            if (currInterface != null) nodeObjectCallerType = currInterface;
             return;
         }
     }
@@ -558,6 +563,7 @@ public class CodeGenerator extends VisitorAdaptor {
             Code.put(Code.load_n);
         }
         Code.load(node.obj);
+        nodeObjectCallerType = node.obj.getType();
     }
 
     @Override
@@ -566,6 +572,7 @@ public class CodeGenerator extends VisitorAdaptor {
             Code.put(Code.load_n);
         }
         Code.load(node.obj);
+        nodeObjectCallerType = node.obj.getType();
     }
 
     @Override
@@ -578,6 +585,7 @@ public class CodeGenerator extends VisitorAdaptor {
         if (parent instanceof DesignatorClassMoreNotFinal || parent instanceof DesignatorClassMoreNotFinalElem){
             // If the parent is a DesignatorClassMoreFinal or DesignatorClassMoreFinalElem, we need to load the class instance
             Code.load(node.obj); // Load the address of the class instance
+            nodeObjectCallerType = node.obj.getType();
         }
     }
 
@@ -587,6 +595,7 @@ public class CodeGenerator extends VisitorAdaptor {
         if (parent instanceof DesignatorClassMoreNotFinal || parent instanceof DesignatorClassMoreNotFinalElem){
             // If the parent is a DesignatorClassMoreFinal or DesignatorClassMoreFinalElem, we need to load the class instance
             Code.load(node.obj); // Load the address of the class instance
+            nodeObjectCallerType = node.obj.getType();
         }
     }
 
@@ -600,6 +609,7 @@ public class CodeGenerator extends VisitorAdaptor {
         if (parent instanceof DesignatorClassMoreNotFinal || parent instanceof DesignatorClassMoreNotFinalElem){
             // If the parent is a DesignatorClassMoreFinal or DesignatorClassMoreFinalElem, we need to load the class instance
             Code.load(node.obj); // Load the address of the class instance
+            nodeObjectCallerType = node.obj.getType();
         }
     }
 
@@ -609,6 +619,7 @@ public class CodeGenerator extends VisitorAdaptor {
         if (parent instanceof DesignatorClassMoreNotFinal || parent instanceof DesignatorClassMoreNotFinalElem){
             // If the parent is a DesignatorClassMoreFinal or DesignatorClassMoreFinalElem, we need to load the class instance
             Code.load(node.obj); // Load the address of the class instance
+            nodeObjectCallerType = node.obj.getType();
         }
     }
 

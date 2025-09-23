@@ -47,7 +47,7 @@ public class TVFEntry {
         Code.put2(memAddress++);
         Code.put(moduleIndex);
 
-        Code.dataSize += methodName.length() + 2; // 1 for the -1 terminator and 1 for the address
+        Code.dataSize += methodName.length() + 3; // 1 for the -1 terminator and 1 for the address and 1 for the module index
         return memAddress;
     }
 

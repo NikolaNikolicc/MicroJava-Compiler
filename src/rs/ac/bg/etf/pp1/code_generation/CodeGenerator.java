@@ -146,6 +146,7 @@ public class CodeGenerator extends VisitorAdaptor {
         moduleHandler.openModule(this.name);
         Code.moduleMap = moduleHandler.getCurrentModule().getImportedModules();
         Code.moduleIndex = moduleHandler.getCurrentModule().getIndex();
+        tvfHandler.setParentModuleIndex(moduleHandler.getCurrentModule().getIndex());
     }
 
     @Override

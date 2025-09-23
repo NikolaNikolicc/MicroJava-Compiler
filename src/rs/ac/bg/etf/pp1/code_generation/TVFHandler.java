@@ -15,6 +15,7 @@ public class TVFHandler {
     public Map<Struct, TVF> tvfMap = new LinkedHashMap<>(); // map of all TVFs, key is class type
 
     Logger log = Logger.getLogger(getClass());
+    int parentModuleIndex = -1;
 
     public void report_info(String message, SyntaxNode info) {
         StringBuilder msg = new StringBuilder(message);
@@ -42,8 +43,12 @@ public class TVFHandler {
 //    }
 
     public void createTVF(Struct classType) {
-        TVF tvf = new TVF();
+        TVF tvf = new TVF(parentModuleIndex);
         tvfMap.put(classType, tvf);
+    }
+
+    public void setParentModuleIndex(int parentModuleIndex) {
+        this.parentModuleIndex = parentModuleIndex;
     }
 
     public void inheritMethods(Struct classType) {
@@ -65,7 +70,7 @@ public class TVFHandler {
         TVF myTVF = tvfMap.get(classType);
         for (Obj member: classType.getMembers()){
             if (member.getKind() == Obj.Meth && member.getFpPos() == SemanticAnalyzer.FP_POS_IMPLEMENTED_NONGLOBAL_METHOD) {
-                myTVF.addMethod(member.getName(), member.getAdr());
+                myTVF.addMethod(member);
             }
         }
     }

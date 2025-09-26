@@ -196,8 +196,12 @@ public class CodeGenerator extends VisitorAdaptor {
     @Override
     public void visit(MethodDecl node){
         if (!es.equals(node.obj.getType(), Tab.noType)){
+            // if method is not void, we need to put a trap at the end of the method in case there is no return statement at the end of method
+            Code.put(Code.module_switch);
+            Code.put(noReturnFromNoVoidMethodTrapPointer.getModule().getIndex());
             Code.putJump(noReturnFromNoVoidMethodTrapPointer.getAdr());
         }
+        // this is necessary if method is void we don't need return statement
         exitReturnFromMethod();
     }
 

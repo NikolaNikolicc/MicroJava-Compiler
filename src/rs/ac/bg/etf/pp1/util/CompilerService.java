@@ -39,6 +39,13 @@ public class CompilerService {
 
     static Path outputFolderPath = null;
 
+    public static void clearCodeVariables() {
+        Code.buf = new byte[8192];
+        Code.pc = 0;
+        Code.dataSize = 1;
+        Code.mainPc = -1;
+    }
+
     public static void initializaUniverseModule(){
         // create universe module and initialize embedded methods
         ModuleHandler.getInstance().openModule("universe");
@@ -56,11 +63,8 @@ public class CompilerService {
         try{
             Code.moduleIndex = ModuleHandler.getInstance().getModule("universe").getIndex();
             Code.write(Files.newOutputStream(objectCodeFile.toPath()));
+            clearCodeVariables();
             logger.info("Code generation has completed successfully for universe scope"+ "\n");
-            Code.buf = new byte[8192];
-            Code.pc = 0;
-            Code.dataSize = 1;
-            Code.mainPc = -1;
         } catch (IOException e) {
             logger.error(e);
             System.exit(RUNTIME_ERROR_CODE_GENERIC_RUNTIME_EXCEPTION);
@@ -165,6 +169,7 @@ public class CompilerService {
                 objectCodeFile.delete();
             }
             Code.write(Files.newOutputStream(objectCodeFile.toPath()));
+            clearCodeVariables();
             logger.info("Code generation has completed successfully for the source file: " + inputFilePath.toString() + "\n");
         } catch (Exception exception) {
             logger.error(exception);

@@ -21,7 +21,7 @@ public class TVFEntry {
         methodModuleIndex = index;
     }
 
-    public int putTVFEntryInMemory(int memAddress, int moduleIndex) {
+    public int putTVFEntryInMemory(int memAddress, int moduleIndex, CodeGenerator myCodeGenerator) {
         // add method name char by char
         for (char ch: methodName.toCharArray()) {
             Code.loadConst(ch);
@@ -47,7 +47,7 @@ public class TVFEntry {
         Code.put2(memAddress++);
         Code.put(moduleIndex);
 
-        Code.dataSize += methodName.length() + 3; // 1 for the -1 terminator and 1 for the address and 1 for the module index
+        myCodeGenerator.codeDataSize += methodName.length() + 3; // 1 for the -1 terminator and 1 for the address and 1 for the module index
         return memAddress;
     }
 

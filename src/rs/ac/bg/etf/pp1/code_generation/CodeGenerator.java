@@ -16,6 +16,7 @@ import java.util.*;
 public class CodeGenerator extends VisitorAdaptor {
 
     private String name;
+    public int codeDataSize;
 
     private Struct currClass = null;
     private Struct currInterface = null;
@@ -42,7 +43,7 @@ public class CodeGenerator extends VisitorAdaptor {
 
     private static final StructExtended es = StructExtended.getInstance();
     private static final ModuleHandler moduleHandler = ModuleHandler.getInstance();
-    private final TVFHandler tvfHandler = new TVFHandler();
+    private TVFHandler tvfHandler;
     private SetHandler setHandler;
 
     private static final Map<Module, TVFHandler> moduleTVFMap = new HashMap<>();
@@ -116,10 +117,12 @@ public class CodeGenerator extends VisitorAdaptor {
         embeddedMethodsInitialized = true;
     }
 
-    public CodeGenerator(String name){
+    public CodeGenerator(int codeDataSize, String name){
 //        initializeMethods();
+        tvfHandler = new TVFHandler(this);
         setHandler = SetHandler.getInstance();
         this.name = name;
+        this.codeDataSize = codeDataSize;
         Code.moduleName = name;
     }
 
@@ -130,14 +133,14 @@ public class CodeGenerator extends VisitorAdaptor {
     @Override
     public void visit(VarDeclFinalVar node){
         if (node.obj.getLevel() == SemanticAnalyzer.LEVEL_GLOBAL_VAR){
-            node.obj.setAdr(Code.dataSize++);
+            node.obj.setAdr(codeDataSize++);
         }
     }
 
     @Override
     public void visit(VarDeclFinalArray node){
         if (node.obj.getLevel() == SemanticAnalyzer.LEVEL_GLOBAL_VAR){
-            node.obj.setAdr(Code.dataSize++);
+            node.obj.setAdr(codeDataSize++);
         }
     }
 

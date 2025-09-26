@@ -43,8 +43,9 @@ public class CompilerService {
         // create universe module and initialize embedded methods
         ModuleHandler.getInstance().openModule("universe");
         TabExtended.getInstance();
-        CodeGenerator embeddedMethodsCodeGenerator = new CodeGenerator("universe");
+        CodeGenerator embeddedMethodsCodeGenerator = new CodeGenerator(0, "universe");
         embeddedMethodsCodeGenerator.initializeMethods();
+        Code.dataSize = embeddedMethodsCodeGenerator.codeDataSize;
         Tab.chainLocalSymbols(ModuleHandler.getInstance().getCurrentModule());
         ModuleHandler.getInstance().closeModule();
         Path outputFilePath = outputFolderPath.resolve("universe.obj");
@@ -155,9 +156,10 @@ public class CompilerService {
             logger.info("Semantic analysis has completed successfully for the source file: " + inputFilePath.toString() + "\n");
 
             Code.dataSize = 1;
-            CodeGenerator codeGenerator = new CodeGenerator(ModuleHandler.getInstance().toPackageName(inputFilePath));
+            CodeGenerator codeGenerator = new CodeGenerator(Code.dataSize, ModuleHandler.getInstance().toPackageName(inputFilePath));
             programSyntaxNode.traverseBottomUp(codeGenerator);
             Code.mainPc = codeGenerator.getMainPC();
+            Code.dataSize = codeGenerator.codeDataSize;
             File objectCodeFile = new File(outputFilePath.toString());
             if (objectCodeFile.exists()) {
                 objectCodeFile.delete();

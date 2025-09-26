@@ -13,6 +13,7 @@ import java.util.Map;
 public class TVFHandler {
 
     public Map<Struct, TVF> tvfMap = new LinkedHashMap<>(); // map of all TVFs, key is class type
+    CodeGenerator myCodeGenerator;
 
     Logger log = Logger.getLogger(getClass());
     int parentModuleIndex = -1;
@@ -25,22 +26,9 @@ public class TVFHandler {
         log.info(msg.toString());
     }
 
-
-//    // Singleton instance
-//    private static TVFHandler instance;
-//
-//    // Private constructor to prevent instantiation
-//    private TVFHandler() {
-//        tvfMap = new LinkedHashMap<>();
-//    }
-//
-//    // Public method to get the singleton instance
-//    public static TVFHandler getInstance() {
-//        if (instance == null) {
-//            instance = new TVFHandler();
-//        }
-//        return instance;
-//    }
+    public TVFHandler(CodeGenerator myCodeGenerator) {
+        this.myCodeGenerator = myCodeGenerator;
+    }
 
     public void createTVF(Struct classType) {
         TVF tvf = new TVF(parentModuleIndex);
@@ -78,13 +66,13 @@ public class TVFHandler {
     public void putAllTVFsInMemory() {
         for (Struct classType : tvfMap.keySet()) {
             TVF myTVF = tvfMap.get(classType);
-            myTVF.putTVFInMemory();
+            myTVF.putTVFInMemory(myCodeGenerator);
         }
     }
 
     public void putTVFInMemory(Struct classType){
         TVF myTVF = tvfMap.get(classType);
-        myTVF.putTVFInMemory();
+        myTVF.putTVFInMemory(myCodeGenerator);
     }
 
     public int getMyTVFaddressInMemory(Struct classType) {

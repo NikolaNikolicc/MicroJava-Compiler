@@ -56,36 +56,16 @@ public class TVF {
 
     }
 
-    public void putTVFInMemory() {
+    public void putTVFInMemory(CodeGenerator myCodeGenerator) {
 
         if (memoryStartTVF != -1) {
             return;
         }
-        memoryStartTVF = Code.dataSize;
+        memoryStartTVF = myCodeGenerator.codeDataSize;
 
         int memAddress = memoryStartTVF;
         for (TVFEntry entry : entries) {
-            memAddress = entry.putTVFEntryInMemory(memAddress, moduleIndex);
-//            // add method name char by char
-//            for (char ch: entry.methodName.toCharArray()) {
-//                Code.loadConst(ch);
-//                Code.put(Code.putstatic);
-//                Code.put2(memAddress++);
-//                Code.put(currentModuleIndex);
-//            }
-//            // add -1 terminator for end of string
-//            Code.loadConst(-1);
-//            Code.put(Code.putstatic);
-//            Code.put2(memAddress++);
-//            Code.put(currentModuleIndex);
-//
-//            // add method address
-//            Code.loadConst(entry.methodAddress);
-//            Code.put(Code.putstatic);
-//            Code.put2(memAddress++);
-//            Code.put(currentModuleIndex);
-//
-//            Code.dataSize += entry.methodName.length() + 2; // 1 for the -1 terminator and 1 for the address
+            memAddress = entry.putTVFEntryInMemory(memAddress, moduleIndex, myCodeGenerator);
         }
 
         // add -2 terminator for end of TVF
@@ -94,6 +74,6 @@ public class TVF {
         Code.put2(memAddress);
         Code.put(moduleIndex);
 
-        Code.dataSize++; // 1 for the -2 terminator
+        myCodeGenerator.codeDataSize++; // 1 for the -2 terminator
     }
 }

@@ -1493,6 +1493,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         classMethodDecl = true;
         Tab.openScope();
         Tab.insert(Obj.Fld, "$tvf", Tab.intType);
+        Tab.insert(Obj.Fld, "$moduleIndex", Tab.intType);
     }
 
     // </editor-fold>
@@ -1531,6 +1532,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         node.struct = currClass;
         Tab.openScope();
         Tab.insert(Obj.Fld, "$tvf", Tab.intType);
+        Tab.insert(Obj.Fld, "$moduleIndex", Tab.intType);
     }
 
     @Override

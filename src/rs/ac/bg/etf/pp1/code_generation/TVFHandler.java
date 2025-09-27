@@ -41,7 +41,6 @@ public class TVFHandler {
 
     public static void putAllTVFHandlersInMemory() {
         for (TVFHandler tvfh: moduleTVFMap.values()){
-            tvfh.report_info("TVFHandler for module index " + tvfh.parentModuleIndex + " put all TVFs in memory", null);
             tvfh.resetMyCodeGeneratorCodeDataSize(); // reset data size for each module to avoid overlap
             tvfh.putAllTVFsInMemory();
         }
@@ -110,7 +109,6 @@ public class TVFHandler {
             resetCodeDataSize = myCodeGenerator.codeDataSize; // save initial data size to reset later
         }
         for (Struct classType : tvfMap.keySet()) {
-            report_info("Putting TVF for class type in memory", null);
             TVF myTVF = tvfMap.get(classType);
             myTVF.putTVFInMemory(myCodeGenerator);
         }

@@ -38,7 +38,7 @@ public class TVF {
     public void inheritMethodsFromParent(TVF parentTVF) {
         if (parentTVF != null) {
             for (TVFEntry entry : parentTVF.entries) {
-                report_info("member: " + entry.methodName + "module: " + entry.methodModuleIndex, null);
+//                report_info("member: " + entry.methodName + "module: " + entry.methodModuleIndex, null);
                 // Pravimo kopiju TVFEntry-ja za nasleđene metode
                 addEntry(entry.methodName, entry.methodAddress, entry.methodModuleIndex);
             }
@@ -71,9 +71,11 @@ public class TVF {
 
     public void putTVFInMemory(CodeGenerator myCodeGenerator) {
 
-        if (memoryStartTVF != -1) {
-            return;
-        }
+        // this guard needs to be removed, we want to call put in memory multiple times (before every main method in different modules)
+//        if (memoryStartTVF != -1) {
+//            report_info("TVF is already in memory", null);
+//            return;
+//        }
         memoryStartTVF = myCodeGenerator.codeDataSize;
 
         int memAddress = memoryStartTVF;

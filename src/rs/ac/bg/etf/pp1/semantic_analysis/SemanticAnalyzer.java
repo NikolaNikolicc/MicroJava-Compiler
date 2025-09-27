@@ -1569,7 +1569,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
         parentClass = n;
         if (node.getType().struct.getKind() == Struct.Class){
-            currClass.setElementType(n);
+            currClass.setElementType(parentClass);
             for (Struct implementedInterface: parentClass.getImplementedInterfaces()){
                 currClass.addImplementedInterface(implementedInterface);
             }

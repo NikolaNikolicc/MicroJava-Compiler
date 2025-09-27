@@ -42,7 +42,7 @@ public class TVFEntry {
         Code.put(moduleIndex);
 
         // add method module index
-        Code.loadConst(moduleIndex);
+        Code.loadConst(methodModuleIndex);
         Code.put(Code.putstatic);
         Code.put2(memAddress++);
         Code.put(moduleIndex);

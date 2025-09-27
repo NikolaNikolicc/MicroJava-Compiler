@@ -4,16 +4,21 @@ import org.apache.log4j.Logger;
 import rs.ac.bg.etf.pp1.syntax_analysis.output.ast.SyntaxNode;
 import rs.ac.bg.etf.pp1.semantic_analysis.SemanticAnalyzer;
 import rs.etf.pp1.symboltable.Tab;
+import rs.etf.pp1.symboltable.concepts.Module;
 import rs.etf.pp1.symboltable.concepts.Obj;
 import rs.etf.pp1.symboltable.concepts.Struct;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class TVFHandler {
 
-    public Map<Struct, TVF> tvfMap = new LinkedHashMap<>(); // map of all TVFs, key is class type
-    CodeGenerator myCodeGenerator;
+    private static final Map<Module, TVFHandler> moduleTVFMap = new HashMap<>(); // static map of all TVFHandlers, key is module
+    private static final Map<Integer, Module> moduleIndexMap = new HashMap<>(); // static map of all modules, key is module index
+
+    private final  Map<Struct, TVF> tvfMap = new LinkedHashMap<>(); // map of all TVFs in this module's TVFHandler, key is class type
+    private final CodeGenerator myCodeGenerator;
 
     Logger log = Logger.getLogger(getClass());
     int parentModuleIndex = -1;
@@ -24,6 +29,29 @@ public class TVFHandler {
         if (line != 0)
             msg.append (" na liniji ").append(line);
         log.info(msg.toString());
+    }
+
+    public static void putTVFHandlerInModuleTVFMap(Module key, TVFHandler value) {
+        moduleTVFMap.put(key, value);
+        moduleIndexMap.put(key.getIndex(), key);
+    }
+
+    public static void putAllTVFHandlersInMemory() {
+        for (TVFHandler tvfh: TVFHandler.moduleTVFMap.values()){
+            tvfh.putAllTVFsInMemory();
+        }
+    }
+
+    private Module resolveModuleByIndex(int index){
+        return moduleIndexMap.get(index);
+    }
+
+    private TVFHandler resolveTVFHandlerByModuleIndex(int index){
+        Module mod = resolveModuleByIndex(index);
+        if (mod != null){
+            return moduleTVFMap.get(mod);
+        }
+        return null;
     }
 
     public TVFHandler(CodeGenerator myCodeGenerator) {
@@ -44,12 +72,16 @@ public class TVFHandler {
 
         // ingerit interface methods (implemented methods only)
         for(Struct iface: classType.getImplementedInterfaces()){
-            currTvf.inheritMethodsFromParent(tvfMap.get(iface));
+            TVFHandler parentIfaceTVFHandler = resolveTVFHandlerByModuleIndex(iface.getModuleIndex());
+            TVF parentIfaceTVF = parentIfaceTVFHandler.tvfMap.get(iface);
+            currTvf.inheritMethodsFromParent(parentIfaceTVF);
         }
         // inherit methods from parent class
         Struct parent = classType.getElemType();
         while (parent != null && parent != Tab.noType){
-            currTvf.inheritMethodsFromParent(tvfMap.get(parent));
+            TVFHandler parentClassTVFHandler = resolveTVFHandlerByModuleIndex(parent.getModuleIndex());
+            TVF parentClassTVF = parentClassTVFHandler.tvfMap.get(parent);
+            currTvf.inheritMethodsFromParent(parentClassTVF);
             parent = parent.getElemType();
         }
     }

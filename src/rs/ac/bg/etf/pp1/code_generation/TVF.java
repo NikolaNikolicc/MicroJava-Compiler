@@ -1,5 +1,7 @@
 package rs.ac.bg.etf.pp1.code_generation;
 
+import org.apache.log4j.Logger;
+import rs.ac.bg.etf.pp1.syntax_analysis.output.ast.SyntaxNode;
 import rs.etf.pp1.mj.runtime.Code;
 import rs.etf.pp1.symboltable.ModuleHandler;
 import rs.etf.pp1.symboltable.concepts.Obj;
@@ -12,6 +14,16 @@ public class TVF {
     private int memoryStartTVF;
     List<TVFEntry> entries; // list of all methods in one TVF
     int moduleIndex; // index of module where this TVF belongs
+
+    Logger log = Logger.getLogger(getClass());
+
+    public void report_info(String message, SyntaxNode info) {
+        StringBuilder msg = new StringBuilder(message);
+        int line = (info == null) ? 0: info.getLine();
+        if (line != 0)
+            msg.append (" na liniji ").append(line);
+        log.info(msg.toString());
+    }
 
     TVF(int moduleIndex) {
         this.entries = new ArrayList<>();
@@ -26,6 +38,7 @@ public class TVF {
     public void inheritMethodsFromParent(TVF parentTVF) {
         if (parentTVF != null) {
             for (TVFEntry entry : parentTVF.entries) {
+                report_info("member: " + entry.methodName + "module: " + entry.methodModuleIndex, null);
                 // Pravimo kopiju TVFEntry-ja za nasleđene metode
                 addEntry(entry.methodName, entry.methodAddress, entry.methodModuleIndex);
             }

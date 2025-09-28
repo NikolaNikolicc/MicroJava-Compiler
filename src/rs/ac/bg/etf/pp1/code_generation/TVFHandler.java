@@ -67,6 +67,10 @@ public class TVFHandler {
         if (resetCodeDataSize != -1) myCodeGenerator.codeDataSize = resetCodeDataSize;
     }
 
+    public int getResetCodeDataSize() {
+        return resetCodeDataSize;
+    }
+
     public void createTVF(Struct classType) {
         TVF tvf = new TVF(parentModuleIndex);
         tvfMap.put(classType, tvf);

@@ -27,7 +27,7 @@ public class CodeGenerator extends VisitorAdaptor {
     private static boolean embeddedMethodsInitialized = false;
     private static Obj noReturnFromNoVoidMethodTrapPointer;
 
-    private int mainPC;
+    private int mainPC = -1;
     private final static int fieldSize = 4;
     private final Stack<Integer> elseJumps = new Stack<>(); // Stack to hold the addresses of conditional jumps
     private final Stack<Integer> thenJumps = new Stack<>(); // Stack to hold the addresses of skip jumps
@@ -156,6 +156,7 @@ public class CodeGenerator extends VisitorAdaptor {
     @Override
     public void visit(Program node){
         moduleHandler.closeModule();
+        if(tvfHandler.getResetCodeDataSize() == -1) TVFHandler.putAllTVFHandlersInMemory(); // we need to put TVF handlers in memory if there are no main method which initializes them
     }
 
     // </editor-fold>

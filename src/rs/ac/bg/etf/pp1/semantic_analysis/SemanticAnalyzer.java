@@ -20,6 +20,7 @@ import java.util.Stack;
 public class SemanticAnalyzer extends VisitorAdaptor{
 
     private final String name;
+    private final boolean mainModule;
 
     public static final int FP_POS_GLOBAL_METHOD = 0; // by default fp pos is set to 0
     public static final int FP_POS_IMPLEMENTED_NONGLOBAL_METHOD = 1;
@@ -69,8 +70,8 @@ public class SemanticAnalyzer extends VisitorAdaptor{
 
     // <editor-fold desc="Constructors">
 
-    public SemanticAnalyzer(String name){
-
+    public SemanticAnalyzer(String name, boolean mainModule){
+        this.mainModule = mainModule;
         this.name = name;
     }
 
@@ -158,7 +159,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         moduleHandler.getCurrentModule().addAllTransitiveImports();
         moduleHandler.closeModule();
         Tab.closeScope();
-        if(mainMeth == null){
+        if(mainMeth == null && mainModule){
             report_error("[Program] Main method must be defined", node);
         }
 
@@ -250,7 +251,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             return null;
         }
         // recursive import
-        int status =  CompilerService.build(Paths.get(modulePath.toString() + ".mj"));
+        int status =  CompilerService.build(Paths.get(modulePath.toString() + ".mj"), false);
         if (status != CompilerService.COMPILATION_SUCCESSFUL) {
             System.exit(status);
         }

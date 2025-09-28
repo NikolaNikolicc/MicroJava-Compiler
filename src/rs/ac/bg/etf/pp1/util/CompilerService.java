@@ -124,7 +124,7 @@ public class CompilerService {
         CompilerService.outputFolderPath = outputFolderPath;
     }
 
-    public static int build (Path inputFilePath) {
+    public static int build (Path inputFilePath, boolean mainModule) {
         // Concatenate with output folder path and add .obj extension
         Path outputFilePath = outputFolderPath.resolve(parseFileNameFromPath(inputFilePath) + ".obj");
 
@@ -146,7 +146,7 @@ public class CompilerService {
             }
             logger.info("Syntax analysis has completed successfully for the source file: " + inputFilePath.toString() + "\n");
 
-            SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(ModuleHandler.getInstance().toPackageName(inputFilePath));
+            SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(ModuleHandler.getInstance().toPackageName(inputFilePath), mainModule);
             logger.info("===================================");
             programSyntaxNode.traverseBottomUp(semanticAnalyzer);
             logger.info("===================================");

@@ -105,8 +105,9 @@ public class CompilerAutorun {
 
     private static void executeBuildCommand(String[] args) {
         if (!Arrays.asList(args).contains("--build")) {
-            logger.error("Command for compiling the MicroJava program (--build) is missing.");
-            System.exit(RUNTIME_ERROR_CODE_BUILD_COMMAND_MISSING);
+//            logger.error("Command for compiling the MicroJava program (--build) is missing.");
+//            System.exit(RUNTIME_ERROR_CODE_BUILD_COMMAND_MISSING);
+            return;
         }
 
 //        CompilerService.initializeLogger();

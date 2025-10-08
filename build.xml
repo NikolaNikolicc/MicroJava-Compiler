@@ -66,7 +66,7 @@
 
     <target name="objRun" depends="objDebug">
         <java classname="rs.etf.pp1.mj.runtime.Run" input="src/rs/ac/bg/etf/pp1/code_generation/input/input.txt">
-            <arg value="src/rs/ac/bg/etf/pp1/code_generation/output/import5.obj"/>
+            <arg value="src/rs/ac/bg/etf/pp1/code_generation/output/import.obj"/>
             <classpath>
                 <pathelement location="lib/mj-runtime.jar"/>
             </classpath>

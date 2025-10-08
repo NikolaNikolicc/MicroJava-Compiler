@@ -2,6 +2,8 @@ program import4
 
 const int cinilac = 4, delilac = 3;
 
+int tmp;
+
 class Predmet
 {
 	 int tezina;
@@ -23,6 +25,8 @@ class Predmet
 
 {
 
+  void main () {
 
+ }
 
 }

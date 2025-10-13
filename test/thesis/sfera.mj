@@ -1,6 +1,6 @@
 program sfera
 
-import test.thesis.predmet.Predmet;
+import test.thesis.predmet.*;
 
 class Sfera extends Predmet
 {

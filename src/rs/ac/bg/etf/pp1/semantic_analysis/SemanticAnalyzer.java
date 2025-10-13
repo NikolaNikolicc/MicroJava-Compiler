@@ -157,6 +157,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
         Tab.chainLocalSymbols(moduleHandler.getCurrentModule());
         // we need to import transitive imports for the next phase (Code Generation) and for runtime because we need transitive import for inherited class methods
         moduleHandler.getCurrentModule().addAllTransitiveImports();
+        moduleHandler.getCurrentModule().addAllImportedNamesModules();
         moduleHandler.closeModule();
         Tab.closeScope();
         if(mainMeth == null && mainModule){
@@ -294,6 +295,7 @@ public class SemanticAnalyzer extends VisitorAdaptor{
             Obj importedName = module.findNameInLocals(fileName);
             if (importedName != null) {
                 // add importedName to importedNames list of current module
+                report_info("Importing name: " + importedName.getName() + " from module: " + module.getName() + " with index: " + module.getIndex(), node);
                 if (!moduleHandler.getCurrentModule().addToImportedNames(importedName)) {
                     report_error("[ImportDeclElem] Failed to import name: " + importedName.getName() + " from module: " + module.getName(), node);
                 }

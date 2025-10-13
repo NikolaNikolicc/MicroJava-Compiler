@@ -1,4 +1,4 @@
-program main_program
+program main_program_test_1
 
 import test.thesis.predmet.Predmet;
 import test.thesis.sfera.Sfera;

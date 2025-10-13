@@ -309,7 +309,7 @@ cd MicroJava-Libraries/scripts
 
 - Maximum 256 local variables per method  
 - Source code size ≤ 8 KB per module  
-- Maximem 255 user-defined modules per program (module with 0 index is reserved for Universe module)
+- Maximum 255 user-defined modules per program (module with 0 index is reserved for Universe module)
 - No exceptions, threads, or generics (educational simplification)  
 
 ---

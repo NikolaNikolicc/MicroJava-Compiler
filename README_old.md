@@ -1,235 +1,273 @@
-# MicroJava Compiler
+# 🧩 MicroJava Modular Compiler
 
-A compiler for the **MicroJava** programming language, developed as part of the *Compiler Construction* course at the **School of Electrical Engineering, University of Belgrade**.
+A modernized **MicroJava compiler and virtual machine**, developed as part of the *Compiler Construction* course at the **School of Electrical Engineering, University of Belgrade**.
 
----
-
-## 📌 Project Overview
-
-This compiler translates MicroJava source code into bytecode for the **MicroJava Virtual Machine (MJVM)**.\
-MicroJava is a simplified, Java-like language with the following features:
-
-- **Basic types**: `int`, `char`, `bool`
-- **Reference types**: arrays, classes, interfaces, sets
-- **Object-oriented**: inheritance, polymorphism, method overriding
-- **Control structures**: `if-else`, `do-while`
-- **Standard methods**: `print`, `read`, `ord`, `chr`, `len`, `add`, `addAll`
+This project extends the traditional educational MicroJava compiler with **support for modular programming**, enabling compilation and execution of programs distributed across multiple source files.
 
 ---
 
-## ✨ Key Features
+## 📘 Overview
 
-### Language Features
+**MicroJava** is a simplified, statically typed, object-oriented language designed for educational purposes.  
+This compiler translates `.mj` source files into bytecode executable by the **MicroJava Virtual Machine (MJVM)**.
 
-- Static fields and methods
-- Class inheritance and interface implementation
-- Method overloading and overriding
-- Arrays and sets of integers
-- Virtual Method Tables (VMT) for polymorphism
-- Basic input/output operations
+### 🧠 Key Characteristics
 
-### Compiler Components
-
-- Lexical analyzer (JFlex)
-- Parser (CUP)
-- Semantic analyzer
-- Code generator
-- Symbol table management
-
-### Implementation Details
-
-- Handles context-sensitive rules
-- Type checking and compatibility
-- Scope and lifetime management
-- Virtual method table generation
-- Bytecode optimization
+- **Statically typed** and single-pass compiler  
+- **Object-oriented model**: classes, inheritance, interfaces, method overriding  
+- **Modular system** with `import` directive and multi-file compilation  
+- **Runtime virtual machine** (`mj-runtime`) with modular context switching  
+- **Backward compatible** with previous single-file MicroJava versions  
 
 ---
 
-## 🔧 Build Instructions
+## 🧩 Language Features
 
-### Prerequisites
-
-- Java Development Kit (JDK)
-- Apache Ant
-
-### Steps
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/your-repo/microjava-compiler.git
-   cd microjava-compiler
-   ```
-
-2. Compile the project:
-
-   ```bash
-   ant compile
-   ```
-
-This will:
-
-- Generate the lexer and parser
-- Compile all Java sources
-- Create the compiler executable
+| Category | Supported Features |
+|-----------|--------------------|
+| **Primitive types** | `int`, `char`, `bool` |
+| **Reference types** | arrays, classes, interfaces, sets |
+| **Control flow** | `if`, `else`, `do-while`, `break`, `return` |
+| **Object-oriented** | inheritance, polymorphism, dynamic dispatch |
+| **Functions & variables** | static fields/methods, constants |
+| **Modularity** | explicit `import` directive (selective or wildcard imports) |
+| **Built-in methods** | `print`, `read`, `len`, `ord`, `chr`, `add`, `addAll` |
 
 ---
 
-## ▶️ Usage
+## ⚙️ Architecture
 
-To compile a MicroJava program, open the `Compiler.java` file and set the desired `.mj` file path directly in the source code (e.g. inside the `main` method):
+The compiler follows the classical structure of a modern compiler:
 
-```java
-File sourceCode = new File(<"src/test/microjava/Example.mj">);
+| Phase | Description | Tool |
+|-------|--------------|------|
+| **Lexical analysis** | Tokenization of source code | [JFlex](https://jflex.de) |
+| **Syntax analysis** | Grammar parsing and AST construction | [CUP](http://www2.cs.tum.edu/projects/cup/) |
+| **Semantic analysis** | Type checking, scope resolution, module linking | Custom logic |
+| **Code generation** | Bytecode emission for MJVM | Custom backend |
+| **Runtime execution** | Execution of `.obj` files | MicroJava Virtual Machine |
+
+The modular extension introduces:
+- **ModuleHandler** and **ContextHandler** classes for managing modules and execution contexts.  
+- **Extended .obj file format** with module metadata.  
+- **New bytecode instruction** `moduleswitch` for context switching between modules.
+
+---
+
+## 🗂️ Project Structure
+
+```
+MicroJava-Compiler/
+├── src/
+│   ├── lexical_analysis/               # JFlex scanner
+│   ├── syntax_analysis/                # CUP parser
+│   ├── semantic_analysis/              # Semantic analysis
+│   ├── code_generation/                # Bytecode generation
+│   ├── util/                           # Utility classes
+│   ├── autorun/CompilerService.java    # Compiler entry point
+│   └── autorun/CompilerAutorun.java    # Main launcher
+└── scripts/
+    ├── rebuild_microjava_compiler.ps1
+    └── run_microjava_compiler.ps1
+
+MicroJava-Libraries/
+├── symboltable/             # Frontend symbol management
+├── mj-runtime/              # Runtime + MJVM
+└── scripts/
+    └── buildJars.ps1
 ```
 
-Then, run the compiler:
-```
-java rs.ac.bg.etf.pp1.Compiler
-```
+---
 
-After compiling the source file, it will generate:
+## 🧱 Build & Run
 
-- `program.obj` — The compiled bytecode
-- Log files with compilation details
+### 🪛 Prerequisites
+- **Java Development Kit (JDK 8+)**
+- **PowerShell (Windows or Linux via pwsh)**
 
-To execute the compiled program, run:
+### 🏗️ Building the Compiler
+
+From the project root:
 
 ```bash
-ant run
+cd scripts
+./rebuild_microjava_compiler.ps1
 ```
 
-This will execute the `runObj` target defined in `build.xml`, which in turn:
+This script:
+- Recompiles all `.java` files
+- Regenerates the `.jar` compiler executable
+- Cleans the `bin/` directory
 
-- Disassembles the `.obj` file (bytecode)
-- Optionally runs it in debug mode (via `debugObj`)
-- Executes the final program using the MicroJava runtime
+### ▶️ Running the Compiler
+
+To compile and optionally execute a MicroJava program:
+
+```bash
+cd scripts
+./run_microjava_compiler.ps1
+```
+
+You will be prompted to choose whether to:
+- Use **default paths and options** (`--build`, `--disasm`, `--debug`, `--run`), or  
+- Enter custom source and output paths manually.
+
+The compiler will:
+- Translate one or more `.mj` files into `.obj` bytecode
+- Disassemble and execute them via the MJVM runtime
+
+Example output files:
+```
+program.obj       # Compiled bytecode
+logs/             # Compilation logs
+```
 
 ---
 
-## 📄 Example Program
+## 🧮 Example Usage
+
+**Source file (`Main.mj`):**
+```java
+program Main
+
+import utils.*;
+
+{
+   void main() {
+      print("Hello from modular MicroJava!");
+   }
+}
+```
+
+**Utility file (`utils.mj`):**
+```java
+program utils 
+{
+   void helper() {
+      print("Helper module loaded.");
+   }
+}
+```
+
+---
+
+## 💡 Extended Example
+
+Below is a more complex MicroJava example demonstrating **classes, inheritance, interfaces, sets, arrays**, and **modular imports**:
 
 ```java
-program p
-        
-const int tableSize = 10;
+program Example
+
+import mathlib.*;
+import utils.*;
+
+const int SIZE = 5;
 set s1;
-class Table {
-   int pos[], neg[], factor;
-   {
-      void setfactor(int factor) {this.factor = factor;}
-      void putp (int a, int idx) { this.pos[idx] = a; }
-      void putn (int a, int idx) { this.neg[idx] = a; }
-      int getp (int idx) { return pos[idx]; }
-      int getn (int idx) { return neg[idx]; }
-   }
+
+interface Printable {
+    void printAll();
 }
-Table val;
-int rows, columns;
-{
-    void f(char ch, int a, int arg) int x;
-    {
-        x = arg;
+
+class Table extends Printable {
+    int data[];
+    void init(int n) {
+        data = new int[n];
+        int i = 0;
+        do {
+            data[i] = i * i;
+        } while (i < n, i++);
     }
-   void main() int x, i; char c; int arr[];
-   {
-      val = new Table();
-      val.setfactor(2);
-      s1 = new set[5];
-      add(s1, 5); add(s1, 10);
+    void printAll() int i;
+    {
+        i = 0;
+        do {
+            print(data[i]);
+        } while (i < len(data), i++);
+    }
+}
+
+
+
+class ExtendedTable extends Table {
+    int factor;
+    void setFactor(int f) { factor = f; }
+    void multiply() int i;
+    {
+        i = 0;
+        do {
+            data[i] = data[i] * factor;
+        } while (i < len(data), i++);
+    }
+}
+
+{
+   void main() {
+      Table t;
+      ExtendedTable et;
+      t = new Table();
+      t.init(SIZE);
+      et = new ExtendedTable();
+      et.init(SIZE);
+      et.setFactor(3);
+      add(s1, 10);
+      add(s1, 20);
+      print("Set contents:");
       print(s1);
-      arr = new int[3];
-      i = 0;
-      do
-        arr[i] = i;
-      while ( i<3, i++);
-      i = 0;
-      do
-        print(arr[i]);
-      while ( i<3, i++);
-      val.pos = new int [tableSize];
-      val.neg = new int [tableSize];
-      read(x);
-      i = 0;
-      do{
-        val.putp(0, i);
-        val.putn(0, i);
-      } while (i < tableSize, i++);
-      f(c, x, i);
-      read(rows);
-      x=rows;
-      do{
-        if(x <= 0) break;
-        if (0 <= x && x < tableSize)
-        {
-        val.putp(val.getp(x)+1);
-        }
-        else if (‐tableSize < x && x < 0)
-        {
-        val.putn(val.getn(‐x)+1);
-        }
-        read(x);
-      }while();
+      print("Base table:");
+      t.printAll();
+      print("Extended table:");
+      et.multiply();
+      et.printAll();
    }
 }
 ```
 
 ---
 
-## ⚙️ Technical Details
+## 🧰 Included Libraries
 
-### Virtual Machine Architecture
+- **symboltable** – handles symbol resolution, scope management, and modular linking  
+- **mj-runtime** – provides MJVM bytecode execution, disassembly, and debugging tools  
 
-- Code area (bytecode instructions)
-- Static data area (global variables)
-- Heap (dynamic memory allocations)
-- Procedure stack (activation records)
-- Expression stack (operand storage)
+Each library can be rebuilt individually using:
 
-### Bytecode Features
+```bash
+cd MicroJava-Libraries/scripts
+./buildJars.ps1
+```
 
-- 58 instruction types
-- Object creation and manipulation
-- Array operations
-- Static and virtual method calls
-- Arithmetic and logical operations
+---
+
+## 🧭 Modular Compilation Flow
+
+1. **Lexical/Syntax analysis** — parses all `.mj` files.  
+2. **Module resolution** — imports are processed recursively.  
+3. **Semantic linking** — symbols are verified across modules.  
+4. **Code generation** — bytecode emitted for each module.  
+5. **Execution** — MJVM loads `.obj` files, switches contexts dynamically.
 
 ---
 
 ## ⚠️ Limitations
 
-- Max 256 local variables per method
-- Max 65536 global variables
-- Max 65536 class fields
-- Source code size limited to 8KB
+- Maximum 256 local variables per method  
+- Source code size ≤ 8 KB per module  
+- Maximem 255 user-defined modules per program (module with 0 index is reserved for Universe module)
+- No exceptions, threads, or generics (educational simplification)  
 
 ---
 
-## 🔍 Testing
+## 👤 Author
 
-The compiler includes tests for:
-
-- Lexical analysis
-- Syntax parsing
-- Semantic analysis
-- Code generation
-
-To run tests:
-
-```bash
-ant runObj
-```
+**Nikola Nikolić**  
+University of Belgrade, School of Electrical Engineering  
+2026 — *Diploma Thesis: “Development of a Compiler and Extension of the Virtual Machine for the MicroJava Language with Support for Modularity”*
 
 ---
 
-## 📚 License
+## 📄 License
 
-This project is developed for educational purposes as part of the *Compiler Construction* course at the **School of Electrical Engineering, University of Belgrade**.
+This project is released for **educational and research purposes**.  
+Feel free to modify and extend under appropriate attribution.
 
 ---
-
-## 👤 Contributors
-
-- Nikola Nikolić
-

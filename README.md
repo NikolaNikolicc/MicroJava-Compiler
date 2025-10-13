@@ -99,6 +99,63 @@ This script:
 - Regenerates the `.jar` compiler executable
 - Cleans the `bin/` directory
 
+---
+
+## 🚀 Running from Release
+
+If you do not wish to rebuild the compiler manually, you can use the **precompiled release version** available on GitHub:  
+👉 [**MicroJava Compiler v2.0 – GitHub Release**](https://github.com/NikolaNikolicc/MicroJava-Compiler/releases/tag/v2.0)
+
+### Steps
+
+1. Download the file:  
+   `mjcompiler-v2.0.jar` from the release page above.  
+
+2. Place it anywhere on your system, for example:  
+   `MicroJava-Compiler/bin/mjcompiler.jar`  
+
+3. Open PowerShell (or `pwsh` on Linux/Mac) and navigate to the compiler directory:
+
+   ```powershell
+   Set-Location -Path (Join-Path $PSScriptRoot "..")
+   ```
+
+4. Run the compiler with the same arguments used by the PowerShell launcher script:
+
+   ```powershell
+   java -jar "bin/mjcompiler.jar" `
+       --program "test/official_tests/test303.mj" `
+       --input "src/rs/ac/bg/etf/pp1/code_generation/input/input.txt" `
+       --output "src/rs/ac/bg/etf/pp1/code_generation/output" `
+       --build --run
+   ```
+
+5. Optionally, you can replace arguments manually:  
+
+   | Argument | Description |
+   |-----------|-------------|
+   | `--program <path>` | Path to `.mj` source file |
+   | `--input <path>` | Optional path to `.txt` input file |
+   | `--output <path>` | Output directory for `.obj` and logs |
+   | `--build` | Compile program |
+   | `--disasm` | Generate disassembly file |
+   | `--debug` | Start runtime in debug mode |
+   | `--run` | Execute compiled program |
+
+6. Example run with all options:
+
+   ```powershell
+   java -jar "bin/mjcompiler.jar" --program "examples/main.mj" --output "out" --build --disasm --debug --run
+   ```
+
+After execution, the compiler will produce:
+```
+program.obj       # Compiled bytecode
+logs/             # Compiler logs
+```
+
+---
+
 ### ▶️ Running the Compiler
 
 To compile and optionally execute a MicroJava program:

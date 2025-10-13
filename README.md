@@ -59,12 +59,13 @@ The modular extension introduces:
 ```
 MicroJava-Compiler/
 ├── src/
-│   ├── lexer/               # JFlex scanner
-│   ├── parser/              # CUP parser
-│   ├── semantic/            # Semantic analysis
-│   ├── code_generation/     # Bytecode generation
-│   ├── CompilerService.java # Compiler entry point
-│   └── CompilerAutorun.java # Main launcher
+│   ├── lexical_analysis/               # JFlex scanner
+│   ├── syntax_analysis/                # CUP parser
+│   ├── semantic_analysis/              # Semantic analysis
+│   ├── code_generation/                # Bytecode generation
+│   ├── util/                           # Utility classes
+│   ├── autorun/CompilerService.java    # Compiler entry point
+│   └── autorun/CompilerAutorun.java    # Main launcher
 └── scripts/
     ├── rebuild_microjava_compiler.ps1
     └── run_microjava_compiler.ps1

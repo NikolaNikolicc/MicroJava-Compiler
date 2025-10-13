@@ -1,0 +1,25 @@
+program sfera
+
+import test.thesis.predmet.Predmet;
+
+class Sfera extends Predmet
+{
+	int r;
+	{
+
+		 void postaviPoluprecnik(int r) {this.r = r; }
+
+		 int zapremina()
+			int z;
+		{
+			z = cinilac;
+			return z *((r*r*r)/delilac);
+		}
+
+	}
+}
+
+
+{
+
+}

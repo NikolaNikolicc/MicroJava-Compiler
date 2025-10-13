@@ -1,0 +1,20 @@
+program dash
+
+import test.thesis.displayable.Displayable;
+
+class Dash extends Displayable{
+
+	int h;
+	{
+
+		int height(){
+			return h;
+		}
+
+	}
+}
+
+{
+
+
+}

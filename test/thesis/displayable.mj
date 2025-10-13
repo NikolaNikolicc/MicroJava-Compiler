@@ -1,0 +1,17 @@
+program displayable
+
+interface Displayable{
+
+	void display(){
+		print('N'); print('O'); print('T'); print(' '); print('I'); print('M'); print('P'); print('L'); print('E'); print('M'); print('E'); print('N'); print('T'); print('E'); print('D'); print(eol);
+	}
+
+	int height();
+
+}
+
+{
+
+
+
+}

@@ -46,11 +46,11 @@ public class TVFHandler {
         }
     }
 
-    private Module resolveModuleByIndex(int index){
+    private static Module resolveModuleByIndex(int index){
         return moduleIndexMap.get(index);
     }
 
-    private TVFHandler resolveTVFHandlerByModuleIndex(int index){
+    public static TVFHandler resolveTVFHandlerByModuleIndex(int index){
         Module mod = resolveModuleByIndex(index);
         if (mod != null){
             return moduleTVFMap.get(mod);

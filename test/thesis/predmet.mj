@@ -1,0 +1,32 @@
+program predmet
+
+const int cinilac = 4, delilac = 3;
+
+int tmp;
+
+class Predmet
+{
+	 int tezina;
+	 char vrsta;
+	{
+		 void postaviTezinu(int tezina) {this.tezina = tezina;}
+		 void ucitajTezinu() { read(tezina); }
+		 int zapremina() { return 0;}
+		 int Q() {return zapremina() * tezina;}
+		 void postaviVrstu(char vrsta) {this.vrsta = vrsta;}
+		 char dohvVrstu() { return vrsta; }
+		 int dohvTezinu() { return tezina; }
+		 void ispisi() {
+			print(vrsta);
+			print(Q());
+		 }
+	}
+}
+
+{
+
+  void main () {
+
+ }
+
+}

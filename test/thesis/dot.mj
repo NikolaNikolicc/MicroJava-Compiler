@@ -1,0 +1,27 @@
+program dot
+
+import test.thesis.displayable.Displayable;
+
+class Dot extends Displayable{
+
+	int h;
+	{
+		void display(){
+			print(' '); print('O'); print('O'); print(' '); print(eol);
+			print('O'); print('O'); print('O'); print('O'); print(eol);
+			print('O'); print('O'); print('O'); print('O'); print(eol);
+			print(' '); print('O'); print('O'); print(' '); print(eol);
+		}
+
+		int height(){
+			return h;
+		}
+
+	}
+}
+
+{
+
+
+
+}

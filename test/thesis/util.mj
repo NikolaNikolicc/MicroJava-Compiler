@@ -1,0 +1,15 @@
+program util
+
+import test.thesis.predmet.Predmet;
+
+int zapreminaK, zapreminaS;
+int tezinaK, tezinaS;
+
+{
+	void ispis(Predmet p)
+	{
+		p.ispisi();
+		print(eol);
+		print(p.dohvTezinu());
+	}
+}

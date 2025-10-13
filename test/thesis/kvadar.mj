@@ -1,0 +1,25 @@
+program kvadar
+
+import test.thesis.predmet.Predmet;
+
+class Kvadar extends Predmet
+{
+	 int a, b, c;
+	{
+
+		 void postaviStranice(int a, int b, int c) {this.a = a; this.b = b; this.c = c;}
+		 int zapremina()
+			int z;
+		{
+			z = a * b * c;
+			return z;
+		}
+
+	}
+}
+
+
+{
+
+
+}

@@ -678,7 +678,8 @@ public class CodeGenerator extends VisitorAdaptor {
         Code.put(Code.new_);
         Code.put2((classType.getNumberOfFields() + 1) * fieldSize); // Load the address of the class constructor
         Code.put(Code.dup);
-        Code.loadConst(tvfHandler.getMyTVFaddressInMemory(classType)); // Load the address of the TVF for the class
+        TVFHandler tvfh = TVFHandler.resolveTVFHandlerByModuleIndex(node.struct.getModuleIndex());
+        Code.loadConst(tvfh.getMyTVFaddressInMemory(classType)); // Load the address of the TVF for the class
         Code.put(Code.putfield);
         Code.put2(0);
         Code.put(Code.dup);

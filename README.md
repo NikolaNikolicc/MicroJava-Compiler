@@ -318,7 +318,7 @@ cd MicroJava-Libraries/scripts
 
 **Nikola Nikolić**  
 University of Belgrade, School of Electrical Engineering  
-2026 — *Diploma Thesis: “Development of a Compiler and Extension of the Virtual Machine for the MicroJava Language with Support for Modularity”*
+October 2025 — *Diploma Thesis: “Development of a Compiler and Extension of the Virtual Machine for the MicroJava Language with Support for Modularity”*
 
 ---
 

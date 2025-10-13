@@ -81,7 +81,7 @@ MicroJava-Libraries/
 ## 🧱 Build & Run
 
 ### 🪛 Prerequisites
-- **Java Development Kit (JDK 17+)**
+- **Java Development Kit (JDK 8+)**
 - **PowerShell (Windows or Linux via pwsh)**
 
 ### 🏗️ Building the Compiler
@@ -118,7 +118,6 @@ The compiler will:
 Example output files:
 ```
 program.obj       # Compiled bytecode
-program.disasm    # Disassembled code
 logs/             # Compilation logs
 ```
 
@@ -128,9 +127,11 @@ logs/             # Compilation logs
 
 **Source file (`Main.mj`):**
 ```java
+program Main
+
 import utils.*;
 
-program Main {
+{
    void main() {
       print("Hello from modular MicroJava!");
    }
@@ -139,7 +140,8 @@ program Main {
 
 **Utility file (`utils.mj`):**
 ```java
-program utils {
+program utils 
+{
    void helper() {
       print("Helper module loaded.");
    }
@@ -153,48 +155,51 @@ program utils {
 Below is a more complex MicroJava example demonstrating **classes, inheritance, interfaces, sets, arrays**, and **modular imports**:
 
 ```java
+program Example
+
 import mathlib.*;
 import utils.*;
 
-program Example {
+const int SIZE = 5;
+set s1;
 
-   const int SIZE = 5;
-   set s1;
+interface Printable {
+    void printAll();
+}
 
-   class Table {
-      int data[];
-      void init(int n) {
-         data = new int[n];
-         int i = 0;
-         do {
+class Table extends Printable {
+    int data[];
+    void init(int n) {
+        data = new int[n];
+        int i = 0;
+        do {
             data[i] = i * i;
-         } while (i < n, i++);
-      }
-      void printAll() int i;
-      {
-         i = 0;
-         do {
+        } while (i < n, i++);
+    }
+    void printAll() int i;
+    {
+        i = 0;
+        do {
             print(data[i]);
-         } while (i < len(data), i++);
-      }
-   }
+        } while (i < len(data), i++);
+    }
+}
 
-   interface Printable {
-      void printAll();
-   }
 
-   class ExtendedTable extends Table implements Printable {
-      int factor;
-      void setFactor(int f) { factor = f; }
-      void multiply() int i;
-      {
-         i = 0;
-         do {
+
+class ExtendedTable extends Table {
+    int factor;
+    void setFactor(int f) { factor = f; }
+    void multiply() int i;
+    {
+        i = 0;
+        do {
             data[i] = data[i] * factor;
-         } while (i < len(data), i++);
-      }
-   }
+        } while (i < len(data), i++);
+    }
+}
 
+{
    void main() {
       Table t;
       ExtendedTable et;
@@ -246,6 +251,7 @@ cd MicroJava-Libraries/scripts
 
 - Maximum 256 local variables per method  
 - Source code size ≤ 8 KB per module  
+- Maximem 255 user-defined modules per program (module with 0 index is reserved for Universe module)
 - No exceptions, threads, or generics (educational simplification)  
 
 ---
